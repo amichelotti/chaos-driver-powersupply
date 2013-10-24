@@ -7,15 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5303A92918190EBF0070356D /* ChaosPowerSupplyInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92718190EBF0070356D /* ChaosPowerSupplyInterface.cpp */; };
-		5303A92D18190ED00070356D /* GenericPowerSupplyDD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92B18190ED00070356D /* GenericPowerSupplyDD.cpp */; };
 		5303A93218190F4E0070356D /* ocem_cu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92F18190F4E0070356D /* ocem_cu.cpp */; };
-		5303A93318190F4E0070356D /* PowerSupplyControlUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A93018190F4E0070356D /* PowerSupplyControlUnit.cpp */; };
 		5303A93418194CDC0070356D /* GenericPowerSupplyDD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92B18190ED00070356D /* GenericPowerSupplyDD.cpp */; };
 		5303A93518194CDC0070356D /* GenericPowerSupplyDD.h in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92C18190ED00070356D /* GenericPowerSupplyDD.h */; };
 		5303A93618194CDC0070356D /* ChaosPowerSupplyInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92718190EBF0070356D /* ChaosPowerSupplyInterface.cpp */; };
 		5303A93718194CDC0070356D /* ChaosPowerSupplyInterface.h in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92818190EBF0070356D /* ChaosPowerSupplyInterface.h */; };
+		5303A93818197A240070356D /* PowerSupplyControlUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A93018190F4E0070356D /* PowerSupplyControlUnit.cpp */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		5303A93918197A2F0070356D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3285566F17F1C43D00A64ED2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3285568617F1C4AC00A64ED2;
+			remoteInfo = PowerSupplyPowerSupply;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		3285567517F1C43D00A64ED2 /* CopyFiles */ = {
@@ -130,6 +138,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				5303A93A18197A2F0070356D /* PBXTargetDependency */,
 			);
 			name = ocem_cu;
 			productName = Driver;
@@ -185,10 +194,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5303A92918190EBF0070356D /* ChaosPowerSupplyInterface.cpp in Sources */,
+				5303A93818197A240070356D /* PowerSupplyControlUnit.cpp in Sources */,
 				5303A93218190F4E0070356D /* ocem_cu.cpp in Sources */,
-				5303A93318190F4E0070356D /* PowerSupplyControlUnit.cpp in Sources */,
-				5303A92D18190ED00070356D /* GenericPowerSupplyDD.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,6 +211,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5303A93A18197A2F0070356D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3285568617F1C4AC00A64ED2 /* PowerSupplyPowerSupply */;
+			targetProxy = 5303A93918197A2F0070356D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		3285567E17F1C43D00A64ED2 /* Debug */ = {
