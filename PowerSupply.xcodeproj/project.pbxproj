@@ -1,0 +1,383 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3285569117F1C4C700A64ED2 /* PowerSupplyControlUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3285568B17F1C4C700A64ED2 /* PowerSupplyControlUnit.cpp */; };
+		3285569217F1C4C700A64ED2 /* PowerSupplyDriver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3285568D17F1C4C700A64ED2 /* PowerSupplyDriver.cpp */; };
+		3285569317F1C4C700A64ED2 /* PowerSupplyDriverSwitch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3285568F17F1C4C700A64ED2 /* PowerSupplyDriverSwitch.cpp */; };
+		3285569417F1C4C700A64ED2 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3285569017F1C4C700A64ED2 /* main.cpp */; };
+		3285569517F1C8E900A64ED2 /* PowerSupplyDriver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3285568D17F1C4C700A64ED2 /* PowerSupplyDriver.cpp */; };
+		3285569617F1C8E900A64ED2 /* PowerSupplyDriver.h in Headers */ = {isa = PBXBuildFile; fileRef = 3285568E17F1C4C700A64ED2 /* PowerSupplyDriver.h */; };
+		3285569717F1C8E900A64ED2 /* PowerSupplyDriverSwitch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3285568F17F1C4C700A64ED2 /* PowerSupplyDriverSwitch.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3285567517F1C43D00A64ED2 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		3285567717F1C43D00A64ED2 /* PowerSupplyControlUnit */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PowerSupplyControlUnit; sourceTree = BUILT_PRODUCTS_DIR; };
+		3285568717F1C4AC00A64ED2 /* PowerSupplyPowerSupply.extension */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "PowerSupplyPowerSupply.extension"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3285568B17F1C4C700A64ED2 /* PowerSupplyControlUnit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PowerSupplyControlUnit.cpp; path = source/PowerSupplyControlUnit.cpp; sourceTree = SOURCE_ROOT; };
+		3285568C17F1C4C700A64ED2 /* PowerSupplyControlUnit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PowerSupplyControlUnit.h; path = source/PowerSupplyControlUnit.h; sourceTree = SOURCE_ROOT; };
+		3285568D17F1C4C700A64ED2 /* PowerSupplyDriver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PowerSupplyDriver.cpp; path = source/PowerSupplyDriver.cpp; sourceTree = SOURCE_ROOT; };
+		3285568E17F1C4C700A64ED2 /* PowerSupplyDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PowerSupplyDriver.h; path = source/PowerSupplyDriver.h; sourceTree = SOURCE_ROOT; };
+		3285568F17F1C4C700A64ED2 /* PowerSupplyDriverSwitch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PowerSupplyDriverSwitch.cpp; path = source/PowerSupplyDriverSwitch.cpp; sourceTree = SOURCE_ROOT; };
+		3285569017F1C4C700A64ED2 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = source/main.cpp; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3285567417F1C43D00A64ED2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3285568417F1C4AC00A64ED2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3285566E17F1C43D00A64ED2 = {
+			isa = PBXGroup;
+			children = (
+				3285567917F1C43D00A64ED2 /* Driver */,
+				3285567817F1C43D00A64ED2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3285567817F1C43D00A64ED2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3285567717F1C43D00A64ED2 /* PowerSupplyControlUnit */,
+				3285568717F1C4AC00A64ED2 /* PowerSupplyPowerSupply.extension */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3285567917F1C43D00A64ED2 /* Driver */ = {
+			isa = PBXGroup;
+			children = (
+				3285568B17F1C4C700A64ED2 /* PowerSupplyControlUnit.cpp */,
+				3285568C17F1C4C700A64ED2 /* PowerSupplyControlUnit.h */,
+				3285568D17F1C4C700A64ED2 /* PowerSupplyDriver.cpp */,
+				3285568E17F1C4C700A64ED2 /* PowerSupplyDriver.h */,
+				3285568F17F1C4C700A64ED2 /* PowerSupplyDriverSwitch.cpp */,
+				3285569017F1C4C700A64ED2 /* main.cpp */,
+			);
+			path = Driver;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		3285568517F1C4AC00A64ED2 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3285569617F1C8E900A64ED2 /* PowerSupplyDriver.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		3285567617F1C43D00A64ED2 /* PowerSupplyControlUnit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3285568017F1C43D00A64ED2 /* Build configuration list for PBXNativeTarget "PowerSupplyControlUnit" */;
+			buildPhases = (
+				3285567317F1C43D00A64ED2 /* Sources */,
+				3285567417F1C43D00A64ED2 /* Frameworks */,
+				3285567517F1C43D00A64ED2 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PowerSupplyControlUnit;
+			productName = Driver;
+			productReference = 3285567717F1C43D00A64ED2 /* PowerSupplyControlUnit */;
+			productType = "com.apple.product-type.tool";
+		};
+		3285568617F1C4AC00A64ED2 /* PowerSupplyPowerSupply */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3285568A17F1C4AC00A64ED2 /* Build configuration list for PBXNativeTarget "PowerSupplyPowerSupply" */;
+			buildPhases = (
+				3285568317F1C4AC00A64ED2 /* Sources */,
+				3285568417F1C4AC00A64ED2 /* Frameworks */,
+				3285568517F1C4AC00A64ED2 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "PowerSupplyPowerSupply";
+			productName = DriverLib;
+			productReference = 3285568717F1C4AC00A64ED2 /* PowerSupplyPowerSupply.extension */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3285566F17F1C43D00A64ED2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = infn;
+			};
+			buildConfigurationList = 3285567217F1C43D00A64ED2 /* Build configuration list for PBXProject "PowerSupply" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 3285566E17F1C43D00A64ED2;
+			productRefGroup = 3285567817F1C43D00A64ED2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3285567617F1C43D00A64ED2 /* PowerSupplyControlUnit */,
+				3285568617F1C4AC00A64ED2 /* PowerSupplyPowerSupply */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3285567317F1C43D00A64ED2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3285569217F1C4C700A64ED2 /* PowerSupplyDriver.cpp in Sources */,
+				3285569317F1C4C700A64ED2 /* PowerSupplyDriverSwitch.cpp in Sources */,
+				3285569417F1C4C700A64ED2 /* main.cpp in Sources */,
+				3285569117F1C4C700A64ED2 /* PowerSupplyControlUnit.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3285568317F1C4AC00A64ED2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3285569717F1C8E900A64ED2 /* PowerSupplyDriverSwitch.cpp in Sources */,
+				3285569517F1C8E900A64ED2 /* PowerSupplyDriver.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3285567E17F1C43D00A64ED2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "compiler-default";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					../../usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../usr/local/lib";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-lboost_chrono",
+					"-lmemcached",
+					"-lboost_system",
+					"-lboost_thread",
+					"-lboost_program_options",
+					"-lboost_regex",
+					"-lboost_filesystem",
+					"-lmpio",
+					"-lmsgpack",
+					"-lmsgpack-rpc",
+					"-lboost_log",
+					"-lboost_log_setup",
+					"-lchaos_cutoolkit",
+					"-lchaos_common",
+				);
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		3285567F17F1C43D00A64ED2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "compiler-default";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					../../usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../usr/local/lib";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				OTHER_LDFLAGS = (
+					"-lboost_chrono",
+					"-lmemcached",
+					"-lboost_system",
+					"-lboost_thread",
+					"-lboost_program_options",
+					"-lboost_regex",
+					"-lboost_filesystem",
+					"-lmpio",
+					"-lmsgpack",
+					"-lmsgpack-rpc",
+					"-lboost_log",
+					"-lboost_log_setup",
+					"-lchaos_cutoolkit",
+					"-lchaos_common",
+				);
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		3285568117F1C43D00A64ED2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../usr/local/bin";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		3285568217F1C43D00A64ED2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../usr/local/bin";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		3285568817F1C4AC00A64ED2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../usr/local/extension";
+				EXECUTABLE_EXTENSION = extension;
+				EXECUTABLE_PREFIX = "";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					../../usr/local/include,
+				);
+				PRODUCT_NAME = "PowerSupplyPowerSupply";
+			};
+			name = Debug;
+		};
+		3285568917F1C4AC00A64ED2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../usr/local/extension";
+				EXECUTABLE_EXTENSION = extension;
+				EXECUTABLE_PREFIX = "";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					../../usr/local/include,
+				);
+				PRODUCT_NAME = "PowerSupplyPowerSupply";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3285567217F1C43D00A64ED2 /* Build configuration list for PBXProject "PowerSupply" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3285567E17F1C43D00A64ED2 /* Debug */,
+				3285567F17F1C43D00A64ED2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3285568017F1C43D00A64ED2 /* Build configuration list for PBXNativeTarget "PowerSupplyControlUnit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3285568117F1C43D00A64ED2 /* Debug */,
+				3285568217F1C43D00A64ED2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3285568A17F1C4AC00A64ED2 /* Build configuration list for PBXNativeTarget "PowerSupplyPowerSupply" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3285568817F1C4AC00A64ED2 /* Debug */,
+				3285568917F1C4AC00A64ED2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3285566F17F1C43D00A64ED2 /* Project object */;
+}
