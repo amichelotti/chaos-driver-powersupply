@@ -7,12 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5303A93218190F4E0070356D /* ocem_cu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92F18190F4E0070356D /* ocem_cu.cpp */; };
+		5303A93218190F4E0070356D /* powersupply_cu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92F18190F4E0070356D /* powersupply_cu.cpp */; };
 		5303A93418194CDC0070356D /* GenericPowerSupplyDD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92B18190ED00070356D /* GenericPowerSupplyDD.cpp */; };
 		5303A93518194CDC0070356D /* GenericPowerSupplyDD.h in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92C18190ED00070356D /* GenericPowerSupplyDD.h */; };
 		5303A93618194CDC0070356D /* ChaosPowerSupplyInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92718190EBF0070356D /* ChaosPowerSupplyInterface.cpp */; };
 		5303A93718194CDC0070356D /* ChaosPowerSupplyInterface.h in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92818190EBF0070356D /* ChaosPowerSupplyInterface.h */; };
 		5303A93818197A240070356D /* PowerSupplyControlUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A93018190F4E0070356D /* PowerSupplyControlUnit.cpp */; };
+		5303A93B1819BB010070356D /* ChaosPowerSupplyInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 5303A92818190EBF0070356D /* ChaosPowerSupplyInterface.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5303A93C1819BB4C0070356D /* GenericPowerSupplyDD.h in Headers */ = {isa = PBXBuildFile; fileRef = 5303A92C18190ED00070356D /* GenericPowerSupplyDD.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,13 +40,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		3285567717F1C43D00A64ED2 /* PowerSupplyControlUnit */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PowerSupplyControlUnit; sourceTree = BUILT_PRODUCTS_DIR; };
-		3285568717F1C4AC00A64ED2 /* PowerSupplyPowerSupply.extension */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = PowerSupplyPowerSupply.extension; sourceTree = BUILT_PRODUCTS_DIR; };
+		3285567717F1C43D00A64ED2 /* ocem_cu */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ocem_cu; sourceTree = BUILT_PRODUCTS_DIR; };
+		3285568717F1C4AC00A64ED2 /* libdriver_powersupply.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libdriver_powersupply.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		5303A92718190EBF0070356D /* ChaosPowerSupplyInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ChaosPowerSupplyInterface.cpp; sourceTree = "<group>"; };
 		5303A92818190EBF0070356D /* ChaosPowerSupplyInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChaosPowerSupplyInterface.h; sourceTree = "<group>"; };
 		5303A92B18190ED00070356D /* GenericPowerSupplyDD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GenericPowerSupplyDD.cpp; sourceTree = "<group>"; };
 		5303A92C18190ED00070356D /* GenericPowerSupplyDD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericPowerSupplyDD.h; sourceTree = "<group>"; };
-		5303A92F18190F4E0070356D /* ocem_cu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ocem_cu.cpp; sourceTree = "<group>"; };
+		5303A92F18190F4E0070356D /* powersupply_cu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = powersupply_cu.cpp; sourceTree = "<group>"; };
 		5303A93018190F4E0070356D /* PowerSupplyControlUnit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PowerSupplyControlUnit.cpp; sourceTree = "<group>"; };
 		5303A93118190F4E0070356D /* PowerSupplyControlUnit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PowerSupplyControlUnit.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -80,8 +82,8 @@
 		3285567817F1C43D00A64ED2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3285567717F1C43D00A64ED2 /* PowerSupplyControlUnit */,
-				3285568717F1C4AC00A64ED2 /* PowerSupplyPowerSupply.extension */,
+				3285567717F1C43D00A64ED2 /* ocem_cu */,
+				3285568717F1C4AC00A64ED2 /* libdriver_powersupply.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -107,7 +109,7 @@
 		5303A92E18190F4E0070356D /* test */ = {
 			isa = PBXGroup;
 			children = (
-				5303A92F18190F4E0070356D /* ocem_cu.cpp */,
+				5303A92F18190F4E0070356D /* powersupply_cu.cpp */,
 				5303A93018190F4E0070356D /* PowerSupplyControlUnit.cpp */,
 				5303A93118190F4E0070356D /* PowerSupplyControlUnit.h */,
 			);
@@ -121,6 +123,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5303A93C1819BB4C0070356D /* GenericPowerSupplyDD.h in Headers */,
+				5303A93B1819BB010070356D /* ChaosPowerSupplyInterface.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,12 +146,12 @@
 			);
 			name = ocem_cu;
 			productName = Driver;
-			productReference = 3285567717F1C43D00A64ED2 /* PowerSupplyControlUnit */;
+			productReference = 3285567717F1C43D00A64ED2 /* ocem_cu */;
 			productType = "com.apple.product-type.tool";
 		};
-		3285568617F1C4AC00A64ED2 /* PowerSupplyPowerSupply */ = {
+		3285568617F1C4AC00A64ED2 /* driver_powersupply */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3285568A17F1C4AC00A64ED2 /* Build configuration list for PBXNativeTarget "PowerSupplyPowerSupply" */;
+			buildConfigurationList = 3285568A17F1C4AC00A64ED2 /* Build configuration list for PBXNativeTarget "driver_powersupply" */;
 			buildPhases = (
 				3285568317F1C4AC00A64ED2 /* Sources */,
 				3285568417F1C4AC00A64ED2 /* Frameworks */,
@@ -157,9 +161,9 @@
 			);
 			dependencies = (
 			);
-			name = PowerSupplyPowerSupply;
+			name = driver_powersupply;
 			productName = DriverLib;
-			productReference = 3285568717F1C4AC00A64ED2 /* PowerSupplyPowerSupply.extension */;
+			productReference = 3285568717F1C4AC00A64ED2 /* libdriver_powersupply.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -184,7 +188,7 @@
 			projectRoot = "";
 			targets = (
 				3285567617F1C43D00A64ED2 /* ocem_cu */,
-				3285568617F1C4AC00A64ED2 /* PowerSupplyPowerSupply */,
+				3285568617F1C4AC00A64ED2 /* driver_powersupply */,
 			);
 		};
 /* End PBXProject section */
@@ -195,7 +199,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5303A93818197A240070356D /* PowerSupplyControlUnit.cpp in Sources */,
-				5303A93218190F4E0070356D /* ocem_cu.cpp in Sources */,
+				5303A93218190F4E0070356D /* powersupply_cu.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -215,7 +219,7 @@
 /* Begin PBXTargetDependency section */
 		5303A93A18197A2F0070356D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 3285568617F1C4AC00A64ED2 /* PowerSupplyPowerSupply */;
+			target = 3285568617F1C4AC00A64ED2 /* driver_powersupply */;
 			targetProxy = 5303A93918197A2F0070356D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -336,7 +340,31 @@
 		3285568117F1C43D00A64ED2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../usr/local/bin";
+				DSTROOT = /;
+				INSTALL_PATH = "$(SRCROOT)/../../usr/local/bin";
+				OTHER_LDFLAGS = (
+					"-lboost_chrono",
+					"-lmemcached",
+					"-lboost_system",
+					"-lboost_thread",
+					"-lboost_program_options",
+					"-lboost_regex",
+					"-lboost_filesystem",
+					"-lmpio",
+					"-lmsgpack",
+					"-lmsgpack-rpc",
+					"-lboost_log",
+					"-lboost_log_setup",
+					"-lchaos_cutoolkit",
+					"-lchaos_common",
+					"-lcommon_powersupply",
+					"-lcommon_debug",
+					"-lcommon_serial",
+					"-ldriver_powersupply",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -344,7 +372,31 @@
 		3285568217F1C43D00A64ED2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../usr/local/bin";
+				DSTROOT = /;
+				INSTALL_PATH = "$(SRCROOT)/../../usr/local/bin";
+				OTHER_LDFLAGS = (
+					"-lboost_chrono",
+					"-lmemcached",
+					"-lboost_system",
+					"-lboost_thread",
+					"-lboost_program_options",
+					"-lboost_regex",
+					"-lboost_filesystem",
+					"-lmpio",
+					"-lmsgpack",
+					"-lmsgpack-rpc",
+					"-lboost_log",
+					"-lboost_log_setup",
+					"-lchaos_cutoolkit",
+					"-lchaos_common",
+					"-lcommon_powersupply",
+					"-lcommon_debug",
+					"-lcommon_serial",
+					"-ldriver_powersupply",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -355,9 +407,10 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../usr/local/extension";
+				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
-				EXECUTABLE_EXTENSION = extension;
-				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_EXTENSION = dylib;
+				EXECUTABLE_PREFIX = lib;
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -367,7 +420,7 @@
 					../../,
 					"$(SRCROOT)/../../usr/local/include",
 				);
-				INSTALL_PATH = "$(SRCROOT)/../../user/local/lib";
+				INSTALL_PATH = "$(SRCROOT)/../../usr/local/lib";
 				OTHER_LDFLAGS = (
 					"-lboost_chrono",
 					"-lmemcached",
@@ -388,7 +441,7 @@
 					"-lcommon_powersupply",
 				);
 				PRIVATE_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply/core";
-				PRODUCT_NAME = PowerSupplyPowerSupply;
+				PRODUCT_NAME = driver_powersupply;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply";
 			};
 			name = Debug;
@@ -399,15 +452,16 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../usr/local/extension";
+				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
-				EXECUTABLE_EXTENSION = extension;
-				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_EXTENSION = dylib;
+				EXECUTABLE_PREFIX = lib;
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				HEADER_SEARCH_PATHS = (
 					../../,
 					"$(SRCROOT)/../../usr/local/include",
 				);
-				INSTALL_PATH = "$(SRCROOT)/../../user/local/lib";
+				INSTALL_PATH = "$(SRCROOT)/../../usr/local/lib";
 				OTHER_LDFLAGS = (
 					"-lboost_chrono",
 					"-lmemcached",
@@ -428,7 +482,7 @@
 					"-lcommon_powersupply",
 				);
 				PRIVATE_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply/core";
-				PRODUCT_NAME = PowerSupplyPowerSupply;
+				PRODUCT_NAME = driver_powersupply;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply";
 			};
 			name = Release;
@@ -454,7 +508,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3285568A17F1C4AC00A64ED2 /* Build configuration list for PBXNativeTarget "PowerSupplyPowerSupply" */ = {
+		3285568A17F1C4AC00A64ED2 /* Build configuration list for PBXNativeTarget "driver_powersupply" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3285568817F1C4AC00A64ED2 /* Debug */,

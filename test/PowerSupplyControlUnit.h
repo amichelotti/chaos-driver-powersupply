@@ -22,14 +22,19 @@
 #define __driver_PowerSupplyControlUnit_h__
 
 #include <chaos/cu_toolkit/ControlManager/RTAbstractControlUnit.h>
+#include <driver/powersupply/ChaosPowerSupplyInterface.h>
 
 namespace driver {
-	namespace PowerSupply {
+	namespace powersupply {
 		
 		class PowerSupplyControlUnit : public chaos::cu::RTAbstractControlUnit {
 			// init paramter
 			string device_id;
-			
+			string params;
+            chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
+            
+            string device_hw;
+            float current_sp;
 		protected:
 			//define dataset
 			void unitDefineActionAndDataset()throw(chaos::CException);
@@ -51,11 +56,17 @@ namespace driver {
 			
 			//deinit
 			void unitDeinit() throw(chaos::CException);
+            
+            void setCurrent(const std::string& deviceID, const double& current);
+            void setAlimStatus(const std::string& deviceID, const int32_t& current);
+            void setPolarity(const std::string& deviceID, const int32_t& current);
+            void clearAlarms(const std::string& deviceID, const int64_t& current);
+
 		public:
 			/*
 			 Construct a new CU with an identifier
 			 */
-			PowerSupplyControlUnit(string _device_id);
+			PowerSupplyControlUnit(string _device_id,string params);
 			
 			/*
 			 Base destructor

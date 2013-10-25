@@ -22,7 +22,7 @@
 #include <string>
 #include <boost/regex.hpp>
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
-#include "ChaosPowerSupplyInterface.h"
+#include "driver/powersupply/ChaosPowerSupplyInterface.h"
 
 #define PSLAPP		LAPP_ << "[GenericPowerSupply] "
 #define PSDBG		LDBG_ << "[GenericPowerSupply] "
@@ -43,7 +43,7 @@ CLOSE_CU_DRIVER_PLUGIN_CLASS_DEFINITION
 
 //register the two plugin
 OPEN_REGISTER_PLUGIN
-REGISTER_PLUGIN(driver::OcemE642X::OcemE642XDriver)
+REGISTER_PLUGIN(driver::powersupply::GenericPowerSupplyDD)
 CLOSE_REGISTER_PLUGIN
 
 

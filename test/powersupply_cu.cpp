@@ -18,7 +18,7 @@
  *    	limitations under the License.
  */
 
-#include "PowerSupplyDriver.h"
+#include "driver/powersupply/GenericPowerSupplyDD.h"
 #include "PowerSupplyControlUnit.h"
 
 #include <chaos/common/chaos_constants.h>
@@ -40,7 +40,7 @@
 using namespace std;
 using namespace chaos;
 using namespace chaos::cu;
-using namespace driver::PowerSupply;
+using namespace chaos::driver::powersupply;
 
 
 namespace common_plugin = chaos::common::plugin;
@@ -49,30 +49,35 @@ namespace cu_driver_manager = chaos::cu::driver_manager;
 
 
 
-#define OPT_DEVICE_ID		"device_id"
-
+#define OPT_DEVICE_ID		"ocem_id"
+#define OPT_DRIVER_PARAMETERS   "driver"
 int main (int argc, char* argv[] )
 {
-    string tmp_device_id;
+    string tmp_device_id,driver_params;
 	string tmp_definition_param;
 	string tmp_address;
     try {
 		//! [Custom Option]
-		ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_DEVICE_ID, po::value<string>(&tmp_device_id), "Specify the device id of the siemen s7 plc");
+		ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_DEVICE_ID, po::value<string>(&tmp_device_id), "Specify the id of the power supply");
+        ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_DRIVER_PARAMETERS, po::value<string>(&driver_params), "Specify the driver params <DRIVERNAME:'driver specific params'>");
 		//! [Custom Option]
 		
 		//! [CUTOOLKIT Init]
 		ChaosCUToolkit::getInstance()->init(argc, argv);
-		if(!ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_DEVICE_ID)) throw CException(2, "device id option is mandatory", __FUNCTION__);
+		if(!ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_DEVICE_ID))
+            throw CException(2, "device id option is mandatory", __FUNCTION__);
+        
+        if(!ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_DRIVER_PARAMETERS))
+        throw CException(2, "driver name and parameters are mandatory ", __FUNCTION__);
 		//! [CUTOOLKIT Init]
 		
 		//! [Driver Registration]
-		MATERIALIZE_INSTANCE_AND_INSPECTOR_WITH_NS(driver::PowerSupply, PowerSupplyDriver)
-		cu_driver_manager::DriverManager::getInstance()->registerDriver(PowerSupplyDriverInstancer, PowerSupplyDriverInspector);
+		MATERIALIZE_INSTANCE_AND_INSPECTOR_WITH_NS(GenericPowerSupplyDD, GenericPowerSupplyDD)
+		cu_driver_manager::DriverManager::getInstance()->registerDriver(GenericPowerSupplyDDInstancer, GenericPowerSupplyDDInspector);
 		//! [Driver Registration]
 
 		//! [Adding the CustomControlUnit]
-		ChaosCUToolkit::getInstance()->addControlUnit(new PowerSupplyControlUnit(tmp_device_id));
+		ChaosCUToolkit::getInstance()->addControlUnit(new ::driver::powersupply::PowerSupplyControlUnit(tmp_device_id,driver_params));
 		//! [Adding the CustomControlUnit]
 		
 		//! [Starting the Framework]
