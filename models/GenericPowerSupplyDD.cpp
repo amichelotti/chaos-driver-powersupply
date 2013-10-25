@@ -22,7 +22,7 @@
 #include <string>
 #include <boost/regex.hpp>
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
-#include "driver/powersupply/ChaosPowerSupplyInterface.h"
+#include "driver/powersupply/core/ChaosPowerSupplyInterface.h"
 
 #define PSLAPP		LAPP_ << "[GenericPowerSupply] "
 #define PSDBG		LDBG_ << "[GenericPowerSupply] "

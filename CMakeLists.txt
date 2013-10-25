@@ -32,5 +32,10 @@ TARGET_LINK_LIBRARIES(ocem_cu pthread driver_powersupply common_powersupply comm
 TARGET_LINK_LIBRARIES(driver_powersupply pthread driver_powersupply common_powersupply common_serial chaos_cutoolkit chaos_common boost_program_options boost_system boost_thread boost_chrono boost_regex boost_log boost_log_setup boost_atomic memcached msgpack msgpack-rpc mpio)
 
 
-INSTALL_TARGETS(/bin/PowerSupply ocem_cu)
+INSTALL_TARGETS(/bin ocem_cu)
 INSTALL_TARGETS(/lib driver_powersupply)
+FILE(GLOB core_src core/*.h)
+FILE(GLOB models_src models/*.h)
+
+INSTALL(FILES ${core_src} DESTINATION include/driver/powersupply/core) 
+INSTALL(FILES ${models_src} DESTINATION include/driver/powersupply/models) 

@@ -18,7 +18,7 @@
  *    	limitations under the License.
  */
 
-#include "driver/powersupply/GenericPowerSupplyDD.h"
+#include "driver/powersupply/models/GenericPowerSupplyDD.h"
 #include "PowerSupplyControlUnit.h"
 
 #include <chaos/common/chaos_constants.h>

@@ -22,7 +22,7 @@
 #define __driver_PowerSupplyControlUnit_h__
 
 #include <chaos/cu_toolkit/ControlManager/RTAbstractControlUnit.h>
-#include <driver/powersupply/ChaosPowerSupplyInterface.h>
+#include <driver/powersupply/core/ChaosPowerSupplyInterface.h>
 
 namespace driver {
 	namespace powersupply {
