@@ -78,7 +78,7 @@ void PowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CExceptio
     addAttributeToDataSet("Status",
                           "status",
                           DataType::TYPE_STRING,
-                          DataType::Output);
+                          DataType::Output,256);
     
     
     addInputDoubleAttributeToDataSet<PowerSupplyControlUnit>("Setcurrent",
@@ -158,15 +158,15 @@ void PowerSupplyControlUnit::unitInit() throw(chaos::CException) {
 	CUAPP "unitInit";
     chaos::cu::cu_driver::DriverAccessor * power_supply_accessor=AbstractControlUnit::getAccessoInstanceByIndex(0);
     if(power_supply_accessor==NULL){
-        throw new chaos::CException(1, "Cannot retrieve the requested driver", __FUNCTION__);
+        throw chaos::CException(1, "Cannot retrieve the requested driver", __FUNCTION__);
     }
     powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
     if(powersupply_drv==NULL){
-            throw new chaos::CException(1, "Cannot allocate driver resources", __FUNCTION__);
+            throw chaos::CException(1, "Cannot allocate driver resources", __FUNCTION__);
     }
     
     if(powersupply_drv->getHWVersion(device_hw,1000)!=0){
-            throw new chaos::CException(1, "Error cannot get HW version", __FUNCTION__);
+            throw  chaos::CException(1, "Error cannot get HW version", __FUNCTION__);
     }
 }
 

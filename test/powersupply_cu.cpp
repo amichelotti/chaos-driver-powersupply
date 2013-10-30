@@ -59,7 +59,7 @@ int main (int argc, char* argv[] )
     try {
 		//! [Custom Option]
 		ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_DEVICE_ID, po::value<string>(&tmp_device_id), "Specify the id of the power supply");
-        ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_DRIVER_PARAMETERS, po::value<string>(&driver_params), "Specify the driver params <DRIVERNAME:'driver specific params'>");
+        ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_DRIVER_PARAMETERS, po::value<string>(&driver_params), "Specify the driver params <DRIVERNAME:'driver specific params' ie:OcemE642X:/dev/ttyr00,10>");
 		//! [Custom Option]
 		
 		//! [CUTOOLKIT Init]

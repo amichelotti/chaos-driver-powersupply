@@ -29,10 +29,10 @@
 #define PSERR		LERR_ << "[GenericPowerSupply] "
 
 // initialization format is <POWERSUPPLY TYPE>:'<INITALISATION PARAMETERS>'
-static const boost::regex power_supply_init_match("(\w+):\'(.+)\'");
+static const boost::regex power_supply_init_match("(\\w+):(.+)");
 
 // initialisation format for ocem <serial port>,<slaveid>
-static const boost::regex power_supply_ocem_init_match("([\w\/]+),(\d+)");
+static const boost::regex power_supply_ocem_init_match("([\\w\\/]+),(\\d+)");
 
 
 //GET_PLUGIN_CLASS_DEFINITION
@@ -62,9 +62,9 @@ void chaos_powersupply_dd::GenericPowerSupplyDD::driverInit(const char *initPara
     //check the input parameter
 	boost::smatch match;
 	std::string inputStr = initParameter;
-	PSLAPP << "Init GenericPowerSupply driver initialisation string"<<initParameter<<endl;
+	PSLAPP << "Init GenericPowerSupply driver initialisation string:\" "<<initParameter<<"\""<<endl;
     if(power){
-          throw new chaos::CException(1, "Already Initialised", "GenericPowerSupplyDD::driverInit");
+          throw chaos::CException(1, "Already Initialised", "GenericPowerSupplyDD::driverInit");
     }
     if(regex_match(inputStr, match, power_supply_init_match, boost::match_extra)){
         std::string powerSupplyType=match[1];
@@ -76,14 +76,14 @@ void chaos_powersupply_dd::GenericPowerSupplyDD::driverInit(const char *initPara
                 PSLAPP<<"Allocating OcemE642X device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<endl;
                 power = new ::common::powersupply::OcemE642X(dev.c_str(),atoi(slaveid.c_str()));
                 if(power==NULL){
-                      throw new chaos::CException(1, "Cannot allocate resources for OcemE642X", "GenericPowerSupplyDD::driverInit");
+                      throw chaos::CException(1, "Cannot allocate resources for OcemE642X", "GenericPowerSupplyDD::driverInit");
                 }
             }
         } else {
-              throw new chaos::CException(1, "Unsupported Power Supply", "GenericPowerSupplyDD::driverInit");
+              throw chaos::CException(1, "Unsupported Power Supply", "GenericPowerSupplyDD::driverInit");
         }
     } else {
-        throw new chaos::CException(1, "Malformed initialisation string", "GenericPowerSupplyDD::driverInit");
+        throw chaos::CException(1, "Malformed initialisation string", "GenericPowerSupplyDD::driverInit");
 
     }
     std::string ver;
@@ -91,7 +91,7 @@ void chaos_powersupply_dd::GenericPowerSupplyDD::driverInit(const char *initPara
     PSLAPP<<"Initialising PowerSupply Driver \""<<ver<<"\""<<endl;
 
     if(power->init()!=0){
-        throw new chaos::CException(1, "Initialisation of power supply failed", "GenericPowerSupplyDD::driverInit");
+        throw chaos::CException(1, "Initialisation of power supply failed", "GenericPowerSupplyDD::driverInit");
     }
 
     
