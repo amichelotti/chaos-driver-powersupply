@@ -1,7 +1,7 @@
 /*
- *	PowerSupplyControlUnit.h
+ *	SCPowerSupplyControlUnit.h
  *	!CHOAS
- *	Created by Andrea Michelotti.
+ *	Created by Claudio Bisegni.
  *
  *    	Copyright 2013 INFN, National Institute of Nuclear Physics
  *
@@ -17,63 +17,72 @@
  *    	See the License for the specific language governing permissions and
  *    	limitations under the License.
  */
+#ifndef __PowerSupply__SCPowerSupplyControlUnit__
+#define __PowerSupply__SCPowerSupplyControlUnit__
 
-#ifndef __driver_PowerSupplyControlUnit_h__
-#define __driver_PowerSupplyControlUnit_h__
 
-#include <chaos/cu_toolkit/ControlManager/RTAbstractControlUnit.h>
+#include "PowerSupplyStateMachine.h"
+
+
+#include <chaos/cu_toolkit/ControlManager/SCAbstractControlUnit.h>
 #include <driver/powersupply/core/ChaosPowerSupplyInterface.h>
+
+
+using namespace boost::msm::front::euml;
+using namespace boost::msm::front;
+//namespace mpl = boost::mpl;
 
 namespace driver {
 	namespace powersupply {
+
+
 		
-		class PowerSupplyControlUnit : public chaos::cu::RTAbstractControlUnit {
+		class SCPowerSupplyControlUnit : public chaos::cu::SCAbstractControlUnit {
 			// init paramter
 			string device_id;
 			string params;
             chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
-            
-            string device_hw;
-            float current_sp;
+			
+			boost::msm::back::state_machine< powersupply_state_machine_impl > powersupply_sm;
+			
 		protected:
-			//define dataset
+			/*
+			 Define the Control Unit Dataset and Actions
+			 */
 			void unitDefineActionAndDataset()throw(chaos::CException);
 			
-			//defin control unit driver
-			void unitDefineDriver(std::vector<chaos::cu::driver_manager::driver::DrvRequestInfo>& neededDriver);
+			void defineSharedVariable();
 			
-			// init contorl unit
+			void unitDefineDriver(std::vector<chaos::cu::cu_driver::DrvRequestInfo>& neededDriver);
+			/*(Optional)
+			 Initialize the Control Unit and all driver, with received param from MetadataServer
+			 */
 			void unitInit() throw(chaos::CException);
-			
-			//start contor unit
+			/*(Optional)
+			 Execute the work, this is called with a determinated delay, it must be as fast as possible
+			 */
 			void unitStart() throw(chaos::CException);
-			
-			//intervalled scheduled method
-			void unitRun() throw(chaos::CException);
-			
-			//stop contor unit
+			/*(Optional)
+			 The Control Unit will be stopped
+			 */
 			void unitStop() throw(chaos::CException);
-			
-			//deinit
+			/*(Optional)
+			 The Control Unit will be deinitialized and disposed
+			 */
 			void unitDeinit() throw(chaos::CException);
-            
-            void setCurrent(const std::string& deviceID, const double& current);
-            void setAlimStatus(const std::string& deviceID, const int32_t& current);
-            void setPolarity(const std::string& deviceID, const int32_t& current);
-            void clearAlarms(const std::string& deviceID, const int64_t& current);
-
+			
 		public:
 			/*
 			 Construct a new CU with an identifier
 			 */
-			PowerSupplyControlUnit(string _device_id,string params);
+			SCPowerSupplyControlUnit(string _device_id, string _params);
 			
 			/*
 			 Base destructor
 			 */
-			~PowerSupplyControlUnit();
+			~SCPowerSupplyControlUnit();
 		};
 	}
 }
 
-#endif /* defined(__ControlUnitTest__S7ControlUnit__) */
+#endif /* defined(__PowerSupply__SCPowerSupplyControlUnit__) */

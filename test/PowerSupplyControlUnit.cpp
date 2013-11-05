@@ -1,7 +1,7 @@
 /*
  *	PowerSupplyControlUnit.cpp
  *	!CHOAS
- *	Created by Bisegni Claudio.
+ *	Created by Andrea Michelotti.
  *
  *    	Copyright 2013 INFN, National Institute of Nuclear Physics
  *
@@ -40,7 +40,7 @@ PowerSupplyControlUnit::PowerSupplyControlUnit(string _device_id,string _params)
 }
 
 PowerSupplyControlUnit::~PowerSupplyControlUnit() {
-	
+	if(powersupply_drv != NULL) delete(powersupply_drv);
 }
 
 /*
@@ -185,13 +185,13 @@ void PowerSupplyControlUnit::unitRun() throw(chaos::CException) {
     string desc;
     CDataWrapper *acquiredData = getNewDataWrapper();
     if(powersupply_drv->getVoltageOutput(&voltage)==0){
-        acquiredData->addDoubleValue("Voltage", voltage);
+        acquiredData->addDoubleValue("voltage", voltage);
         change ++;
     }
-    acquiredData->addDoubleValue("CurrentSP", current_sp);
+    acquiredData->addDoubleValue("currentSP", current_sp);
 
     if(powersupply_drv->getCurrentOutput(&current)==0){
-        acquiredData->addDoubleValue("Current", current);
+        acquiredData->addDoubleValue("current", current);
         change++;
     }
     

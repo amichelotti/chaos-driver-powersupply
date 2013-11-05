@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		32B8C19E18292A82001CF714 /* DefaultAcquisitionCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32B8C19C18292A82001CF714 /* DefaultAcquisitionCommand.cpp */; };
+		32B8C1A5182931D9001CF714 /* AbstractPowerSupplyCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32B8C1A3182931D9001CF714 /* AbstractPowerSupplyCommand.cpp */; };
+		32CCE8BB1828D90F00BDCEA0 /* SCPowerSupplyControlUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32CCE8B91828D90F00BDCEA0 /* SCPowerSupplyControlUnit.cpp */; };
 		5303A93218190F4E0070356D /* powersupply_cu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92F18190F4E0070356D /* powersupply_cu.cpp */; };
 		5303A93418194CDC0070356D /* GenericPowerSupplyDD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92B18190ED00070356D /* GenericPowerSupplyDD.cpp */; };
 		5303A93518194CDC0070356D /* GenericPowerSupplyDD.h in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92C18190ED00070356D /* GenericPowerSupplyDD.h */; };
@@ -42,6 +45,13 @@
 /* Begin PBXFileReference section */
 		3285567717F1C43D00A64ED2 /* ocem_cu */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ocem_cu; sourceTree = BUILT_PRODUCTS_DIR; };
 		3285568717F1C4AC00A64ED2 /* libdriver_powersupply.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libdriver_powersupply.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		32B8C19C18292A82001CF714 /* DefaultAcquisitionCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DefaultAcquisitionCommand.cpp; sourceTree = "<group>"; };
+		32B8C19D18292A82001CF714 /* DefaultAcquisitionCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultAcquisitionCommand.h; sourceTree = "<group>"; };
+		32B8C1A3182931D9001CF714 /* AbstractPowerSupplyCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AbstractPowerSupplyCommand.cpp; sourceTree = "<group>"; };
+		32B8C1A4182931D9001CF714 /* AbstractPowerSupplyCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbstractPowerSupplyCommand.h; sourceTree = "<group>"; };
+		32B8C1A618294409001CF714 /* PowerSupplyStateMachine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PowerSupplyStateMachine.h; sourceTree = "<group>"; };
+		32CCE8B91828D90F00BDCEA0 /* SCPowerSupplyControlUnit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SCPowerSupplyControlUnit.cpp; sourceTree = "<group>"; };
+		32CCE8BA1828D90F00BDCEA0 /* SCPowerSupplyControlUnit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCPowerSupplyControlUnit.h; sourceTree = "<group>"; };
 		5303A92718190EBF0070356D /* ChaosPowerSupplyInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ChaosPowerSupplyInterface.cpp; sourceTree = "<group>"; };
 		5303A92818190EBF0070356D /* ChaosPowerSupplyInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChaosPowerSupplyInterface.h; sourceTree = "<group>"; };
 		5303A92B18190ED00070356D /* GenericPowerSupplyDD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GenericPowerSupplyDD.cpp; sourceTree = "<group>"; };
@@ -112,6 +122,13 @@
 				5303A92F18190F4E0070356D /* powersupply_cu.cpp */,
 				5303A93018190F4E0070356D /* PowerSupplyControlUnit.cpp */,
 				5303A93118190F4E0070356D /* PowerSupplyControlUnit.h */,
+				32CCE8B91828D90F00BDCEA0 /* SCPowerSupplyControlUnit.cpp */,
+				32CCE8BA1828D90F00BDCEA0 /* SCPowerSupplyControlUnit.h */,
+				32B8C19C18292A82001CF714 /* DefaultAcquisitionCommand.cpp */,
+				32B8C19D18292A82001CF714 /* DefaultAcquisitionCommand.h */,
+				32B8C1A3182931D9001CF714 /* AbstractPowerSupplyCommand.cpp */,
+				32B8C1A4182931D9001CF714 /* AbstractPowerSupplyCommand.h */,
+				32B8C1A618294409001CF714 /* PowerSupplyStateMachine.h */,
 			);
 			path = test;
 			sourceTree = "<group>";
@@ -198,8 +215,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32B8C1A5182931D9001CF714 /* AbstractPowerSupplyCommand.cpp in Sources */,
 				5303A93818197A240070356D /* PowerSupplyControlUnit.cpp in Sources */,
+				32CCE8BB1828D90F00BDCEA0 /* SCPowerSupplyControlUnit.cpp in Sources */,
 				5303A93218190F4E0070356D /* powersupply_cu.cpp in Sources */,
+				32B8C19E18292A82001CF714 /* DefaultAcquisitionCommand.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
