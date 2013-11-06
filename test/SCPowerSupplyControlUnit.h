@@ -20,9 +20,7 @@
 #ifndef __PowerSupply__SCPowerSupplyControlUnit__
 #define __PowerSupply__SCPowerSupplyControlUnit__
 
-
 #include "PowerSupplyStateMachine.h"
-
 
 #include <chaos/cu_toolkit/ControlManager/SCAbstractControlUnit.h>
 #include <driver/powersupply/core/ChaosPowerSupplyInterface.h>
@@ -34,16 +32,16 @@ using namespace boost::msm::front;
 
 namespace driver {
 	namespace powersupply {
-
-
 		
 		class SCPowerSupplyControlUnit : public chaos::cu::SCAbstractControlUnit {
 			// init paramter
 			string device_id;
 			string params;
+			string device_hw;
+			
             chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
 			
-			boost::msm::back::state_machine< powersupply_state_machine_impl > powersupply_sm;
+			PSStateMachine powersupply_sm;
 			
 		protected:
 			/*

@@ -1,5 +1,5 @@
 /*
- *	DefaultAcquisitionCommand.cpp
+ *	CmdPSDefault.cpp
  *	!CHOAS
  *	Created by Claudio Bisegni.
  *
@@ -19,33 +19,37 @@
  */
 
 #include <cstring>
-#include "DefaultAcquisitionCommand.h"
+#include "CmdPSDefault.h"
 
-#define CMDCU_ LAPP_ << "[DefaultAcquisitionCommand] - "
-
+#define CMDCU_ LAPP_ << "[CmdPSDefault] - "
+#define CMDCUDBG_ LDBG_ << "[CmdPSDefault] - "
 
 using namespace chaos::common::data;
 using namespace chaos::cu::control_manager::slow_command;
 using namespace driver::powersupply;
 
 
-DefaultAcquisitionCommand::DefaultAcquisitionCommand() {
+CmdPSDefault::CmdPSDefault() {
 	
 }
 
-DefaultAcquisitionCommand::~DefaultAcquisitionCommand() {
+CmdPSDefault::~CmdPSDefault() {
 	
 }
 
 // return the implemented handler
-uint8_t DefaultAcquisitionCommand::implementedHandler() {
+uint8_t CmdPSDefault::implementedHandler() {
 	//add to default hadnler the acquisition one
 	return  AbstractPowerSupplyCommand::implementedHandler() |
 			HandlerType::HT_Acquisition;
 }
 
 // Start the command execution
-void DefaultAcquisitionCommand::setHandler(c_data::CDataWrapper *data) {
+void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
+	//set command has stackable
+	SL_STACK_RUNNIG_STATE
+	CMDCU_ << "Change running property to SL_STACK_RUNNIG_STATE";
+
 	//call superclass set handler to setup all variable
 	AbstractPowerSupplyCommand::setHandler(data);
 
@@ -57,7 +61,7 @@ void DefaultAcquisitionCommand::setHandler(c_data::CDataWrapper *data) {
  The acquire handler has the purpose to get all necessary data need the by CC handler.
  \return the mask for the runnign state
  */
-void DefaultAcquisitionCommand::acquireHandler() {
+void CmdPSDefault::acquireHandler() {
 	string desc;
 	int stato = 0;
 	float tmp_float = 0.0F;
@@ -69,7 +73,6 @@ void DefaultAcquisitionCommand::acquireHandler() {
 		*o_voltage = (double)tmp_float;
 		acquiredData->addDoubleValue("voltage", *o_voltage);
     }
-
 	
 	acquiredData->addDoubleValue("current_sp", *o_current_sp);
 	

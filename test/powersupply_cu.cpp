@@ -20,6 +20,7 @@
 
 #include "driver/powersupply/models/GenericPowerSupplyDD.h"
 #include "PowerSupplyControlUnit.h"
+#include "SCPowerSupplyControlUnit.h"
 
 #include <chaos/common/chaos_constants.h>
 #include <chaos/cu_toolkit/ChaosCUToolkit.h>
@@ -49,49 +50,80 @@ namespace cu_driver_manager = chaos::cu::driver_manager;
 
 
 
-#define OPT_DEVICE_ID		"ocem_id"
+#define OPT_DEVICE_ID			"ocem_id"
 #define OPT_DRIVER_PARAMETERS   "driver"
+
+#define OPT_SC_DEVICE_ID			"sc_ocem_id"
+#define OPT_SC_DRIVERS_PARAMETERS	"sc_driver"
+
 int main (int argc, char* argv[] )
 {
     string tmp_device_id,driver_params;
 	string tmp_definition_param;
 	string tmp_address;
+	
+	vector< string > sc_device_ids;
+	vector< string > sc_device_param;
     try {
 		//! [Custom Option]
 		ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_DEVICE_ID, po::value<string>(&tmp_device_id), "Specify the id of the power supply");
         ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_DRIVER_PARAMETERS, po::value<string>(&driver_params), "Specify the driver params <DRIVERNAME:'driver specific params' ie:OcemE642X:/dev/ttyr00,10>");
+		
+		ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_SC_DEVICE_ID, po::value< vector< string > >(&sc_device_ids)->multitoken(), "Specify the id's of the slow power supply slow contorl cu");
+		ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_SC_DRIVERS_PARAMETERS, po::value< vector< string > >(&sc_device_param)->multitoken(), "Specify the id's of the slow power supply slow contorl cu");
+		
+		
 		//! [Custom Option]
 		
 		//! [CUTOOLKIT Init]
 		ChaosCUToolkit::getInstance()->init(argc, argv);
-		if(!ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_DEVICE_ID))
-            throw CException(2, "device id option is mandatory", __FUNCTION__);
-        
-        if(!ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_DRIVER_PARAMETERS))
-        throw CException(2, "driver name and parameters are mandatory ", __FUNCTION__);
+		
 		//! [CUTOOLKIT Init]
 		
 		//! [Driver Registration]
 		MATERIALIZE_INSTANCE_AND_INSPECTOR_WITH_NS(GenericPowerSupplyDD, GenericPowerSupplyDD)
 		cu_driver_manager::DriverManager::getInstance()->registerDriver(GenericPowerSupplyDDInstancer, GenericPowerSupplyDDInspector);
 		//! [Driver Registration]
-
+		
 		//! [Adding the CustomControlUnit]
-		ChaosCUToolkit::getInstance()->addControlUnit(new ::driver::powersupply::PowerSupplyControlUnit(tmp_device_id,driver_params));
+		bool rt_cu_ok = ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_DEVICE_ID) &&
+						ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_DRIVER_PARAMETERS);
+		
+		bool sc_cu_ok = ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_SC_DEVICE_ID) &&
+						ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_SC_DRIVERS_PARAMETERS);
+		
+		if(rt_cu_ok) {
+			ChaosCUToolkit::getInstance()->addControlUnit(new ::driver::powersupply::PowerSupplyControlUnit(tmp_device_id, driver_params));
+		}
+		
+		if(sc_cu_ok) {
+			//install all slowcontrol cu for deviceids
+			if(sc_device_ids.size() == sc_device_param.size()) {
+				for (int idx = 0; idx <
+					 sc_device_ids.size();
+					 idx++) {
+					ChaosCUToolkit::getInstance()->addControlUnit(new ::driver::powersupply::PowerSupplyControlUnit(tmp_device_id, driver_params));
+				}
+			} else {
+				throw CException(3, "sc device ids and sc parameter need to have same number of values", __FUNCTION__);
+			}
+		}
 		//! [Adding the CustomControlUnit]
 		
 		//! [Starting the Framework]
-		ChaosCUToolkit::getInstance()->start();
+		if(sc_cu_ok || rt_cu_ok) {
+			ChaosCUToolkit::getInstance()->start();
+		}
 		//! [Starting the Framework]
-    } catch (CException& e) {
-        cerr<<"Exception:"<<endl;
-        std::cerr<< "domain	:"<<e.errorDomain << std::endl;
-        std::cerr<< "cause	:"<<e.errorMessage << std::endl;
-    } catch (program_options::error &e){
-        cerr << "Unable to parse command line: " << e.what() << endl;
-    } catch (...){
-        cerr << "unexpected exception caught.. " << endl;
-    }
+	} catch (CException& e) {
+		cerr<<"Exception:"<<endl;
+		std::cerr<< "domain	:"<<e.errorDomain << std::endl;
+		std::cerr<< "cause	:"<<e.errorMessage << std::endl;
+	} catch (program_options::error &e){
+		cerr << "Unable to parse command line: " << e.what() << endl;
+	} catch (...){
+		cerr << "unexpected exception caught.. " << endl;
+	}
 	
-    return 0;
+	return 0;
 }

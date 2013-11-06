@@ -1,5 +1,5 @@
 /*
- *	DefaultAcquisitionCommand.h
+ *	CmdPSReset.h
  *	!CHOAS
  *	Created by Claudio Bisegni.
  *
@@ -18,11 +18,10 @@
  *    	limitations under the License.
  */
 
-#ifndef __PowerSupply__DefaultAcquisitionCommand__
-#define __PowerSupply__DefaultAcquisitionCommand__
+#ifndef __PowerSupply__CmdPSReset__
+#define __PowerSupply__CmdPSReset__
 
 #include "AbstractPowerSupplyCommand.h"
-
 
 namespace c_data = chaos::common::data;
 namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
@@ -30,31 +29,22 @@ namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
 namespace driver {
 	namespace powersupply {
 		
-		class DefaultAcquisitionCommand : public AbstractPowerSupplyCommand {
-			
-			//power supply standard interface
-			chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
-			
+		//! Command for change the mode of the powersupply
+		class CmdPSReset : public AbstractPowerSupplyCommand {
 		protected:
-			// return the implemented handler
+			//implemented handler
 			uint8_t implementedHandler();
 			
-			// Start the command execution
+			// Set handler
 			void setHandler(c_data::CDataWrapper *data);
 			
-			// Aquire the necessary data for the command
-			/*!
-			 The acquire handler has the purpose to get all necessary data need the by CC handler.
-			 \return the mask for the runnign state
-			 */
-			void acquireHandler();
-		public:
-			DefaultAcquisitionCommand();
-			~DefaultAcquisitionCommand();
+			//Correlation and commit phase
+			void ccHandler();
+			
+			//manage the timeout
+			bool timeoutHandler();
 		};
-		
 	}
 }
 
-
-#endif /* defined(__PowerSupply__DefaultAcquisitionCommand__) */
+#endif /* defined(__PowerSupply__CmdPSReset__) */

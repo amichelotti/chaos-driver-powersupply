@@ -23,6 +23,8 @@
 
 #include "PowerSupplyStateMachine.h"
 
+#include "PowerSupplyCostants.h"
+
 #include <driver/powersupply/core/ChaosPowerSupplyInterface.h>
 
 #include <chaos/cu_toolkit/ControlManager/slow_command/SlowCommand.h>
@@ -48,10 +50,11 @@ namespace driver {
 			//input variable
 			double		*i_slope_up;
 			double		*i_slope_down;
-			uint32_t	*i_timeout;
+			uint32_t	*i_command_timeout;
+			uint32_t	*i_driver_timeout;
 			
 			//pointer to the power supply state machine
-			boost::msm::back::state_machine< powersupply_state_machine_impl > *ps_state_machine_ptr;
+			PSStateMachine *ps_state_machine_ptr;
 			
 			//reference of the chaos bastraction ofpowersupply driver
 			chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;

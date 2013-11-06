@@ -20,23 +20,29 @@
 
 #include "SCPowerSupplyControlUnit.h"
 
-using namespace driver::powersupply;
+//---comands----
+#include "CmdPSDefault.h"
+#include "CmdPSMode.h"
+
 using namespace chaos::common::data;
 using namespace chaos::cu::control_manager::slow_command;
 using namespace chaos::cu::driver_manager::driver;
-using namespace driver::powersupply;
 using namespace chaos;
+namespace own =  ::driver::powersupply;
+
+#define SCCUAPP LAPP_ << "[SCPowerSupplyControlUnit - " << device_id << "] - "
+
 /*
  Construct a new CU with an identifier
  */
-SCPowerSupplyControlUnit::SCPowerSupplyControlUnit(string _device_id, string _params):device_id(_device_id), params(_params),  powersupply_drv(NULL) {
+own::SCPowerSupplyControlUnit::SCPowerSupplyControlUnit(string _device_id, string _params):device_id(_device_id), params(_params),  powersupply_drv(NULL) {
 	
 }
 
 /*
  Base destructor
  */
-SCPowerSupplyControlUnit::~SCPowerSupplyControlUnit() {
+own::SCPowerSupplyControlUnit::~SCPowerSupplyControlUnit() {
 	
 }
 
@@ -44,18 +50,19 @@ SCPowerSupplyControlUnit::~SCPowerSupplyControlUnit() {
 /*
  Return the default configuration
  */
-void SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CException) {
+void own::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CException) {
     //set the base information
     //RangeValueInfo rangeInfoTemp;
     
     //add managed device di
     setDeviceID(device_id);
     
-    //install a command
-    //installCommand<SinWaveCommand>("sinwave_base");
-    
+    //install all command
+    installCommand<CmdPSDefault>(CMD_PS_DEFAULT_ALIAS);
+    installCommand<CmdPSMode>(CMD_PS_MODE_ALIAS);
+	
     //set it has default
-	// setDefaultCommand("sinwave_base");
+	setDefaultCommand(CMD_PS_DEFAULT_ALIAS);
     
     //setup the dataset
 	addAttributeToDataSet("current",
@@ -108,7 +115,12 @@ void SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CExcept
                           DataType::TYPE_DOUBLE,
                           DataType::Input);
 	
-	addAttributeToDataSet("timeout",
+	addAttributeToDataSet("driver_timeout",
+                          "driver timeout in milliseconds",
+                          DataType::TYPE_INT32,
+                          DataType::Input);
+	
+	addAttributeToDataSet("command_timeout",
                           "command timeout in milliseconds",
                           DataType::TYPE_INT32,
                           DataType::Input);
@@ -119,31 +131,77 @@ void SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CExcept
     setSharedVariableValue("pw_sm", (void*)&powersupply_sm, sizeof(void*));
 }
 
-void SCPowerSupplyControlUnit::defineSharedVariable() {
+void own::SCPowerSupplyControlUnit::defineSharedVariable() {
 
 }
 
-void SCPowerSupplyControlUnit::unitDefineDriver(std::vector<DrvRequestInfo>& neededDriver) {
+void own::SCPowerSupplyControlUnit::unitDefineDriver(std::vector<DrvRequestInfo>& neededDriver) {
 	DrvRequestInfo drv1 = {"GenericPowerSupplyDD", "1.0.0", params.c_str() };
 	neededDriver.push_back(drv1);
 }
 
 // Abstract method for the initialization of the control unit
-void SCPowerSupplyControlUnit::unitInit() throw(CException) {
+void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
+	SCCUAPP "unitInit";
 	
+	boost::msm::back::HandledEnum msm_result;
+	int state_id;
+	std::string state_str;
+    chaos::cu::cu_driver::DriverAccessor * power_supply_accessor=AbstractControlUnit::getAccessoInstanceByIndex(0);
+    if(power_supply_accessor==NULL){
+        throw chaos::CException(1, "Cannot retrieve the requested driver", __FUNCTION__);
+    }
+    powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
+    if(powersupply_drv==NULL){
+		throw chaos::CException(1, "Cannot allocate driver resources", __FUNCTION__);
+    }
+    
+	if(powersupply_drv->getState(&state_id, state_str, 30000)!=0){
+		throw  chaos::CException(1, "Error getting the state of the powersupply, possibily off", __FUNCTION__);
+    }
+	
+    if(powersupply_drv->getHWVersion(device_hw,1000)==0){
+		SCCUAPP << "hardware found " << "device_hw";
+    }
+	
+	//allign the state machine with the state of power supply
+	switch(state_id) {
+		case ::common::powersupply::POWER_SUPPLY_STATE_STANDBY:
+		case ::common::powersupply::POWER_SUPPLY_STATE_OPEN:
+			msm_result = powersupply_sm.process_event(own::PowersupplyEventType::init_on_faulty());
+			break;
+			
+		case ::common::powersupply::POWER_SUPPLY_STATE_ON:
+			msm_result = powersupply_sm.process_event(own::PowersupplyEventType::init_on_operational());
+			break;
+			
+		case ::common::powersupply::POWER_SUPPLY_STATE_ERROR:
+		case ::common::powersupply::POWER_SUPPLY_STATE_ALARM:
+		case ::common::powersupply::POWER_SUPPLY_STATE_UKN:
+			msm_result = powersupply_sm.process_event(own::PowersupplyEventType::init_on_faulty());
+		break;
+			
+		default:
+			msm_result = boost::msm::back::HANDLED_TRUE;
+			break;
+	}
+	if(msm_result == boost::msm::back::HANDLED_TRUE) {
+		throw chaos::CException(2, "Current state doesn't permite set the mode ", __FUNCTION__);
+	}
+
 }
 
 // Abstract method for the start of the control unit
-void SCPowerSupplyControlUnit::unitStart() throw(CException) {
+void own::SCPowerSupplyControlUnit::unitStart() throw(CException) {
 	
 }
 
 // Abstract method for the stop of the control unit
-void SCPowerSupplyControlUnit::unitStop() throw(CException) {
+void own::SCPowerSupplyControlUnit::unitStop() throw(CException) {
 	
 }
 
 // Abstract method for the deinit of the control unit
-void SCPowerSupplyControlUnit::unitDeinit() throw(CException) {
+void own::SCPowerSupplyControlUnit::unitDeinit() throw(CException) {
 	
 }

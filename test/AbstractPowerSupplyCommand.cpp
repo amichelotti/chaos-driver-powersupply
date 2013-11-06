@@ -37,8 +37,8 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	//get pointer to the input datase variable
 	i_slope_up = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_INPUT, (chaos_sc::VariableIndexType)0)->getCurrentValue<double>();
 	i_slope_down = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_INPUT, (chaos_sc::VariableIndexType)1)->getCurrentValue<double>();
-	i_timeout = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_INPUT, (chaos_sc::VariableIndexType)2)->getCurrentValue<uint32_t>();
-
+	i_command_timeout = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_INPUT, (chaos_sc::VariableIndexType)2)->getCurrentValue<uint32_t>();
+	i_driver_timeout = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_INPUT, (chaos_sc::VariableIndexType)2)->getCurrentValue<uint32_t>();
 	//get pointer to the custom shared variable
 	ps_state_machine_ptr = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_CUSTOM, (chaos_sc::VariableIndexType)0)->getCurrentValue< boost::msm::back::state_machine< powersupply_state_machine_impl > >();
 	
