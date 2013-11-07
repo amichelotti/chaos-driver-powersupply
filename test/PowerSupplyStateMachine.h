@@ -78,16 +78,9 @@ namespace driver {
 			struct mode_end{};
 			
 			//! identity the start of the "slope" command
-			struct sslp_start{};
-			struct sslp_end{};
-			
-			//! identity the start of the "set" command
-			struct sett_start{};
-			struct sett_end{};
-			
-			//! identity the start of the "powr" command
-			struct powr_start{};
-			struct powr_end{};
+			struct cmd_start{};
+			struct cmd_end{};
+
 		}
 		
 		//--------------------------- state ------------------------------
@@ -97,15 +90,12 @@ namespace driver {
 		struct OPERATIONAL : public boost::msm::front::state<> {};
 		struct FAULTY : public boost::msm::front::state<> {};
 		
-		//! Command proprietary state
+		//! cmd started
+		struct CMD_STBY_RUN : public boost::msm::front::state<> {};
+		struct CMD_OPER_RUN : public boost::msm::front::state<> {};
 		struct MODE_STBY_RUN : public boost::msm::front::state<> {};
 		struct MODE_OPER_RUN : public boost::msm::front::state<> {};
-		struct SSLP_STBY_RUN : public boost::msm::front::state<> {};
-		struct SSLP_OPER_RUN : public boost::msm::front::state<> {};
-		struct SETT_STBY_RUN : public boost::msm::front::state<> {};
-		struct SETT_OPER_RUN : public boost::msm::front::state<> {};
-		struct POWR_RUN : public boost::msm::front::state<> {};
-		
+
 		//--------------------------- MSM definition ------------------------------
 		
 		//! Boost state machine for powersupply amnagment
@@ -133,6 +123,7 @@ namespace driver {
 			typedef OFF initial_state;
 			
 			//non working state
+			typedef boost::msm::front::Row <  OFF,				PowersupplyEventType::turned_on,			STANDBY, boost::msm::front::none , boost::msm::front::none >		turned_on;
 			typedef boost::msm::front::Row <  OFF,				PowersupplyEventType::init_on_standby,		STANDBY, boost::msm::front::none , boost::msm::front::none >		init_on_standby;
 			typedef boost::msm::front::Row <  OFF,				PowersupplyEventType::init_on_operational,	OPERATIONAL, boost::msm::front::none , boost::msm::front::none >	init_on_operational;
 			typedef boost::msm::front::Row <  OFF,				PowersupplyEventType::init_on_faulty,		STANDBY, boost::msm::front::none , boost::msm::front::none >		init_on_faulty;
@@ -141,45 +132,25 @@ namespace driver {
 			typedef boost::msm::front::Row <  FAULTY,			PowersupplyEventType::reset,				STANDBY, boost::msm::front::none , boost::msm::front::none >		faulty_to_standby;
 			
 			//mode command form standby
-			typedef boost::msm::front::Row <  STANDBY,			PowersupplyEventType::mode_start,	MODE_STBY_RUN, boost::msm::front::none , mode_stby_guard >			standby_to_mode_stdby_run;
-			typedef boost::msm::front::Row <  MODE_STBY_RUN,	PowersupplyEventType::mode_end,		OPERATIONAL, boost::msm::front::none , boost::msm::front::none >	mode_stdby_run_to_operation;
-			typedef boost::msm::front::Row <  MODE_STBY_RUN,	PowersupplyEventType::fault,		FAULTY, boost::msm::front::none , boost::msm::front::none >			mode_stdby_run_to_faulty;
-			
+			typedef boost::msm::front::Row <  STANDBY,			PowersupplyEventType::mode_start,	MODE_STBY_RUN,	boost::msm::front::none , mode_stby_guard >			standby_to_mode_stdby_run;
+			typedef boost::msm::front::Row <  MODE_STBY_RUN,	PowersupplyEventType::mode_end,		OPERATIONAL,	boost::msm::front::none , boost::msm::front::none >	mode_stdby_run_to_operation;
+			typedef boost::msm::front::Row <  MODE_STBY_RUN,	PowersupplyEventType::fault,		FAULTY,			boost::msm::front::none , boost::msm::front::none >	mode_stdby_run_to_faulty;
+			typedef boost::msm::front::Row <  STANDBY,			PowersupplyEventType::cmd_start,	CMD_STBY_RUN,	boost::msm::front::none , mode_stby_guard >			standby_to_cmd_stby_run;
+			typedef boost::msm::front::Row <  CMD_STBY_RUN,		PowersupplyEventType::cmd_start,	STANDBY,		boost::msm::front::none , mode_stby_guard >			cmd_stby_run_to_standby;
 			//mode command form operational
-			typedef boost::msm::front::Row <  OPERATIONAL,		PowersupplyEventType::mode_start,	MODE_OPER_RUN, boost::msm::front::none , mode_oper_guard >			standby_to_mode_oper_run;
-			typedef boost::msm::front::Row <  MODE_OPER_RUN,	PowersupplyEventType::mode_end,		OPERATIONAL, boost::msm::front::none , boost::msm::front::none >	mode_oper_run_to_operation;
-			typedef boost::msm::front::Row <  MODE_OPER_RUN,	PowersupplyEventType::fault,		FAULTY, boost::msm::front::none , boost::msm::front::none >			mode_oper_run_to_faulty;
+			typedef boost::msm::front::Row <  OPERATIONAL,		PowersupplyEventType::mode_start,	MODE_OPER_RUN,	boost::msm::front::none , mode_oper_guard >			standby_to_mode_oper_run;
+			typedef boost::msm::front::Row <  MODE_OPER_RUN,		PowersupplyEventType::mode_end,	OPERATIONAL,	boost::msm::front::none , boost::msm::front::none >	mode_oper_run_to_operation;
+			typedef boost::msm::front::Row <  MODE_OPER_RUN,		PowersupplyEventType::fault,	FAULTY,			boost::msm::front::none , boost::msm::front::none >	mode_oper_run_to_faulty;
+			typedef boost::msm::front::Row <  OPERATIONAL,		PowersupplyEventType::cmd_start,	CMD_OPER_RUN,	boost::msm::front::none , mode_stby_guard >			standby_to_cmd_oper_run;
+			typedef boost::msm::front::Row <  CMD_OPER_RUN,		PowersupplyEventType::cmd_start,	STANDBY,		boost::msm::front::none , mode_stby_guard >			cmd_oper_run_to_standby;
 			
-			//sslp command from standby
-			typedef boost::msm::front::Row <  STANDBY,			PowersupplyEventType::sslp_start,	SSLP_STBY_RUN, boost::msm::front::none , boost::msm::front::none >	standby_to_sslp_stby_run;
-			typedef boost::msm::front::Row <  SSLP_STBY_RUN,	PowersupplyEventType::sslp_end,		STANDBY, boost::msm::front::none , boost::msm::front::none >		sslp_stby_run_to_standby;
-			typedef boost::msm::front::Row <  SSLP_STBY_RUN,	PowersupplyEventType::fault,		FAULTY, boost::msm::front::none , boost::msm::front::none >			sslp_stby_run_to_faulty;
-			
-			//sslp command from operational
-			typedef boost::msm::front::Row <  OPERATIONAL,		PowersupplyEventType::sslp_start,	OPERATIONAL, boost::msm::front::none , boost::msm::front::none >	operational_to_sslp_oper_run;
-			typedef boost::msm::front::Row <  SSLP_OPER_RUN,	PowersupplyEventType::sslp_end,		OPERATIONAL, boost::msm::front::none , boost::msm::front::none >	sslp_oper_run_to_operational;
-			typedef boost::msm::front::Row <  SSLP_OPER_RUN,	PowersupplyEventType::fault,		FAULTY, boost::msm::front::none , boost::msm::front::none >			sslp_oper_run_to_faulty;
-			
-			//sett command from standby
-			typedef boost::msm::front::Row <  STANDBY,			PowersupplyEventType::sett_start,	SETT_STBY_RUN, boost::msm::front::none , boost::msm::front::none >	standby_to_sett_stby_run;
-			typedef boost::msm::front::Row <  SETT_STBY_RUN,	PowersupplyEventType::sett_end,		STANDBY, boost::msm::front::none , boost::msm::front::none >		sett_stby_run_to_standby;
-			typedef boost::msm::front::Row <  SETT_STBY_RUN,	PowersupplyEventType::fault,		FAULTY, boost::msm::front::none , boost::msm::front::none >			sett_stby_run_to_faulty;
-			
-			//sett command from operational
-			typedef boost::msm::front::Row <  OPERATIONAL,		PowersupplyEventType::sett_start,	OPERATIONAL, boost::msm::front::none , boost::msm::front::none >	operational_to_sett_oper_run;
-			typedef boost::msm::front::Row <  SETT_OPER_RUN,	PowersupplyEventType::sett_end,		OPERATIONAL, boost::msm::front::none , boost::msm::front::none >	sett_oper_run_to_operational;
-			typedef boost::msm::front::Row <  SETT_OPER_RUN,	PowersupplyEventType::fault,		FAULTY, boost::msm::front::none , boost::msm::front::none >			sett_oper_run_to_faulty;
 			
 			
 			// Transition table for initialization services
-			struct transition_table : boost::mpl::vector<
-			init_on_standby, /*init_on_operational, init_on_faulty, standby_to_faulty, operational_to_faulty, faulty_to_standby,*/
-			standby_to_mode_stdby_run, mode_stdby_run_to_operation, mode_stdby_run_to_faulty,
-			standby_to_mode_oper_run, mode_oper_run_to_operation, mode_oper_run_to_faulty,
-			standby_to_sslp_stby_run, sslp_stby_run_to_standby, sslp_stby_run_to_faulty,
-			operational_to_sslp_oper_run, sslp_oper_run_to_operational, sslp_oper_run_to_faulty,
-			standby_to_sett_stby_run, sett_stby_run_to_standby, sett_stby_run_to_faulty,
-			operational_to_sett_oper_run, sett_oper_run_to_operational, sett_oper_run_to_faulty> {};
+			struct transition_table : boost::mpl::vector<turned_on,init_on_standby,init_on_operational,init_on_faulty,
+			standby_to_faulty,operational_to_faulty,faulty_to_standby,standby_to_mode_stdby_run,mode_stdby_run_to_faulty,
+			standby_to_cmd_stby_run,cmd_stby_run_to_standby,standby_to_mode_oper_run,mode_oper_run_to_operation,
+			mode_oper_run_to_faulty,standby_to_cmd_oper_run,cmd_oper_run_to_standby> {};
 			
 			template <class FSM,class Event>
 			void no_transition(Event const& ,FSM&, int ) {}

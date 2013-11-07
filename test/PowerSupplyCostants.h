@@ -31,7 +31,7 @@ namespace driver {
 		//! The alias of the "mode" command of the type
 		const char * const CMD_PS_MODE_ALIAS = "cmd_ps_mode";
 
-		//! The alias of the parameter of the type
+		//! The alias of the parameter of the type {0-to stadby, 1-to operational}
 		const char * const CMD_PS_MODE_TYPE = "mode_type";
 	}
 }

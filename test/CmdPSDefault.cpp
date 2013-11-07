@@ -69,10 +69,6 @@ void CmdPSDefault::acquireHandler() {
 	uint64_t tmp_uint64 = 0;
 	
     CDataWrapper *acquiredData = getNewDataWrapper();
-    if(!powersupply_drv->getVoltageOutput(&tmp_float)){
-		*o_voltage = (double)tmp_float;
-		acquiredData->addDoubleValue("voltage", *o_voltage);
-    }
 	
 	acquiredData->addDoubleValue("current_sp", *o_current_sp);
 	
@@ -81,6 +77,10 @@ void CmdPSDefault::acquireHandler() {
 		acquiredData->addDoubleValue("current", *o_current);
     }
     
+	if(!powersupply_drv->getVoltageOutput(&tmp_float)){
+		*o_voltage = (double)tmp_float;
+		acquiredData->addDoubleValue("voltage", *o_voltage);
+    }
 	
     if(!powersupply_drv->getPolarity(&tmp_uint32)){
 		*o_polarity = tmp_uint32;
@@ -95,10 +95,13 @@ void CmdPSDefault::acquireHandler() {
 	
     if(!powersupply_drv->getState(&stato, desc)){
 		std::strncpy(*o_status, desc.c_str(), 256);
-		acquiredData->addStringValue("o_status", *o_status);
+		acquiredData->addStringValue("status", *o_status);
     }
 	
-	//set the current device state
+	//set the current device state and last error
+	acquiredData->addInt64Value("dev_state", *o_dev_state);
+	
+	acquiredData->addStringValue("cmd_last_error", *o_cmd_last_error);
 	
     //push data on central cache
 	pushDataSet(acquiredData);

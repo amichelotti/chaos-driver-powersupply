@@ -20,8 +20,6 @@
 #ifndef __PowerSupply__SCPowerSupplyControlUnit__
 #define __PowerSupply__SCPowerSupplyControlUnit__
 
-#include "PowerSupplyStateMachine.h"
-
 #include <chaos/cu_toolkit/ControlManager/SCAbstractControlUnit.h>
 #include <driver/powersupply/core/ChaosPowerSupplyInterface.h>
 
@@ -40,9 +38,7 @@ namespace driver {
 			string device_hw;
 			
             chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
-			
-			PSStateMachine powersupply_sm;
-			
+
 		protected:
 			/*
 			 Define the Control Unit Dataset and Actions

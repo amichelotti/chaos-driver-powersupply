@@ -102,7 +102,7 @@ int main (int argc, char* argv[] )
 				for (int idx = 0; idx <
 					 sc_device_ids.size();
 					 idx++) {
-					ChaosCUToolkit::getInstance()->addControlUnit(new ::driver::powersupply::PowerSupplyControlUnit(tmp_device_id, driver_params));
+					ChaosCUToolkit::getInstance()->addControlUnit(new ::driver::powersupply::SCPowerSupplyControlUnit(sc_device_ids[idx], sc_device_param[idx]));
 				}
 			} else {
 				throw CException(3, "sc device ids and sc parameter need to have same number of values", __FUNCTION__);

@@ -21,8 +21,6 @@
 #ifndef __PowerSupply__AbstractPowerSupplyCommand__
 #define __PowerSupply__AbstractPowerSupplyCommand__
 
-#include "PowerSupplyStateMachine.h"
-
 #include "PowerSupplyCostants.h"
 
 #include <driver/powersupply/core/ChaosPowerSupplyInterface.h>
@@ -38,7 +36,7 @@ namespace driver {
 		class AbstractPowerSupplyCommand : public ccc_slow_command::SlowCommand {
 		protected:
 			//output variable
-			char		**o_ps_state;
+			char		**o_cmd_last_error;
 			uint64_t	*o_dev_state;
 			char		**o_status;
 			uint64_t	*o_alarms;
@@ -53,9 +51,6 @@ namespace driver {
 			uint32_t	*i_command_timeout;
 			uint32_t	*i_driver_timeout;
 			
-			//pointer to the power supply state machine
-			PSStateMachine *ps_state_machine_ptr;
-			
 			//reference of the chaos bastraction ofpowersupply driver
 			chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
 			
@@ -65,7 +60,11 @@ namespace driver {
 			// set the data fr the command
 			void setHandler(c_data::CDataWrapper *data);
 			
-			const char * getCurrentState();
+			bool checkState(common::powersupply::PowerSupplyStates state_to_check);
+			void getState(int& current_state, std::string& current_state_str);
+			
+			void writeErrorMessage(string error_message);
+			void writeErrorMessage(const char * error_message);
 		};
 	}
 }

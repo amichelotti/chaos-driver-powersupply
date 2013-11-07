@@ -100,10 +100,10 @@ void own::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CE
                           DataType::TYPE_INT64,
                           DataType::Output);
 	
-	addAttributeToDataSet("ps_state",
-                          "Current powersupply state",
+	addAttributeToDataSet("cmd_last_error",
+                          "Last Erroro occurred",
                           DataType::TYPE_STRING,
-                          DataType::Output,22);
+                          DataType::Output,256);
 	
 	addAttributeToDataSet("slope_up",
                           "The gain of the noise of the wave",
@@ -121,14 +121,10 @@ void own::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CE
                           DataType::Input);
 	
 	addAttributeToDataSet("command_timeout",
-                          "command timeout in milliseconds",
+                          "command timeout in microseconds",
                           DataType::TYPE_INT32,
                           DataType::Input);
 	//define the custom share, across slow command, variable
-   
-	//here are defined the custom shared variable
-    addSharedVariable("pw_sm", sizeof(void*), chaos::DataType::TYPE_BYTEARRAY);
-    setSharedVariableValue("pw_sm", (void*)&powersupply_sm, sizeof(void*));
 }
 
 void own::SCPowerSupplyControlUnit::defineSharedVariable() {
@@ -143,8 +139,6 @@ void own::SCPowerSupplyControlUnit::unitDefineDriver(std::vector<DrvRequestInfo>
 // Abstract method for the initialization of the control unit
 void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	SCCUAPP "unitInit";
-	
-	boost::msm::back::HandledEnum msm_result;
 	int state_id;
 	std::string state_str;
     chaos::cu::cu_driver::DriverAccessor * power_supply_accessor=AbstractControlUnit::getAccessoInstanceByIndex(0);
@@ -163,32 +157,6 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
     if(powersupply_drv->getHWVersion(device_hw,1000)==0){
 		SCCUAPP << "hardware found " << "device_hw";
     }
-	
-	//allign the state machine with the state of power supply
-	switch(state_id) {
-		case ::common::powersupply::POWER_SUPPLY_STATE_STANDBY:
-		case ::common::powersupply::POWER_SUPPLY_STATE_OPEN:
-			msm_result = powersupply_sm.process_event(own::PowersupplyEventType::init_on_faulty());
-			break;
-			
-		case ::common::powersupply::POWER_SUPPLY_STATE_ON:
-			msm_result = powersupply_sm.process_event(own::PowersupplyEventType::init_on_operational());
-			break;
-			
-		case ::common::powersupply::POWER_SUPPLY_STATE_ERROR:
-		case ::common::powersupply::POWER_SUPPLY_STATE_ALARM:
-		case ::common::powersupply::POWER_SUPPLY_STATE_UKN:
-			msm_result = powersupply_sm.process_event(own::PowersupplyEventType::init_on_faulty());
-		break;
-			
-		default:
-			msm_result = boost::msm::back::HANDLED_TRUE;
-			break;
-	}
-	if(msm_result == boost::msm::back::HANDLED_TRUE) {
-		throw chaos::CException(2, "Current state doesn't permite set the mode ", __FUNCTION__);
-	}
-
 }
 
 // Abstract method for the start of the control unit

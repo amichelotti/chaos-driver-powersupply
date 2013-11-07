@@ -19,6 +19,7 @@
  */
 
 #include "AbstractPowerSupplyCommand.h"
+#include <boost/format.hpp>
 
 using namespace driver::powersupply;
 namespace chaos_sc = chaos::cu::control_manager::slow_command;
@@ -32,18 +33,18 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	o_alarms = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)4)->getCurrentValue<uint64_t>();
 	o_status = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)5)->getCurrentValue<char*>();
 	o_dev_state = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)6)->getCurrentValue<uint64_t>();
-	o_ps_state = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)7)->getCurrentValue<char*>();
+	o_cmd_last_error = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)7)->getCurrentValue<char*>();
 	
 	//get pointer to the input datase variable
 	i_slope_up = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_INPUT, (chaos_sc::VariableIndexType)0)->getCurrentValue<double>();
 	i_slope_down = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_INPUT, (chaos_sc::VariableIndexType)1)->getCurrentValue<double>();
 	i_command_timeout = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_INPUT, (chaos_sc::VariableIndexType)2)->getCurrentValue<uint32_t>();
 	i_driver_timeout = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_INPUT, (chaos_sc::VariableIndexType)2)->getCurrentValue<uint32_t>();
-	//get pointer to the custom shared variable
-	ps_state_machine_ptr = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_CUSTOM, (chaos_sc::VariableIndexType)0)->getCurrentValue< boost::msm::back::state_machine< powersupply_state_machine_impl > >();
 	
 	chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = driverAccessorsErogator->getAccessoInstanceByIndex(0);
 	powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
+	//clean the last error
+	memset(*o_cmd_last_error, ' ', 256);
 }
 
 // return the implemented handler
@@ -51,6 +52,33 @@ uint8_t AbstractPowerSupplyCommand::implementedHandler() {
 	return  chaos_sc::HandlerType::HT_Set;
 }
 
-const char * AbstractPowerSupplyCommand::getCurrentState() {
-	return  get_state_name(ps_state_machine_ptr->current_state()[0]);
+bool AbstractPowerSupplyCommand::checkState(common::powersupply::PowerSupplyStates state_to_check) {
+	int err = 0;
+	int state_id = 0;
+	std::string state_str;
+	if((err=powersupply_drv->getState(&state_id, state_str, *i_driver_timeout?*i_driver_timeout:10000)) != 0) {
+		std::string error =  boost::str( boost::format("Error getting the powersupply state = %1% ") % err);
+		writeErrorMessage(error);
+		throw chaos::CException(1, error.c_str(), __FUNCTION__);
+	}
+	return state_id == state_to_check;
+}
+
+void AbstractPowerSupplyCommand::getState(int& current_state, std::string& current_state_str) {
+	int err = 0;
+	std::string state_str;
+	if((err=powersupply_drv->getState(&current_state, state_str, *i_driver_timeout?*i_driver_timeout:10000)) != 0) {
+		std::string error =  boost::str( boost::format("Error getting the powersupply state = %1% ") % err);
+		writeErrorMessage(error);
+		throw chaos::CException(1, error.c_str(), __FUNCTION__);
+	}
+
+}
+
+void AbstractPowerSupplyCommand::writeErrorMessage(string error_message) {
+	writeErrorMessage(error_message.c_str());
+}
+
+void AbstractPowerSupplyCommand::writeErrorMessage(const char * error_message) {
+	std::strncpy(*o_cmd_last_error, error_message, 256);
 }
