@@ -47,7 +47,6 @@ uint8_t CmdPSDefault::implementedHandler() {
 // Start the command execution
 void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 	//set command has stackable
-	SL_STACK_RUNNIG_STATE
 	CMDCU_ << "Change running property to SL_STACK_RUNNIG_STATE";
 
 	//call superclass set handler to setup all variable
@@ -68,6 +67,9 @@ void CmdPSDefault::acquireHandler() {
 	int tmp_uint32 = 0;
 	uint64_t tmp_uint64 = 0;
 	CMDCU_ << "Acquiring data";
+	
+	SL_STACK_RUNNIG_STATE
+	
     CDataWrapper *acquiredData = getNewDataWrapper();
 	
 	acquiredData->addDoubleValue("current_sp", *o_current_sp);

@@ -141,7 +141,7 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	SCCUAPP "unitInit";
 	int state_id;
 	std::string state_str;
-    chaos::cu::cu_driver::DriverAccessor * power_supply_accessor=AbstractControlUnit::getAccessoInstanceByIndex(0);
+	chaos::cu::cu_driver::DriverAccessor * power_supply_accessor=AbstractControlUnit::getAccessoInstanceByIndex(0);
 	if(power_supply_accessor==NULL){
         throw chaos::CException(1, "Cannot retrieve the requested driver", __FUNCTION__);
     }

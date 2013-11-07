@@ -43,7 +43,9 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	i_driver_timeout = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_INPUT, (chaos_sc::VariableIndexType)2)->getCurrentValue<uint32_t>();
 	
 	chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = driverAccessorsErogator->getAccessoInstanceByIndex(0);
-	powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
+	if(power_supply_accessor != NULL) {
+		powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
+	}
 	//clean the last error
 	writeErrorMessage("");
 }
@@ -54,6 +56,7 @@ uint8_t AbstractPowerSupplyCommand::implementedHandler() {
 }
 
 bool AbstractPowerSupplyCommand::checkState(common::powersupply::PowerSupplyStates state_to_check) {
+	CHAOS_ASSERT(powersupply_drv)
 	int err = 0;
 	int state_id = 0;
 	std::string state_str;
@@ -66,6 +69,7 @@ bool AbstractPowerSupplyCommand::checkState(common::powersupply::PowerSupplyStat
 }
 
 void AbstractPowerSupplyCommand::getState(int& current_state, std::string& current_state_str) {
+	CHAOS_ASSERT(powersupply_drv)
 	int err = 0;
 	std::string state_str;
 	if((err=powersupply_drv->getState(&current_state, state_str, *i_driver_timeout?*i_driver_timeout:10000)) != 0) {
