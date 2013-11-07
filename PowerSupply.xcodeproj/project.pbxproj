@@ -45,7 +45,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		320762DD182AAEF9005B21A7 /* vector100.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = vector100.hpp; sourceTree = "<group>"; };
+		320762E0182BA878005B21A7 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
 		32599919182A7A09001E7D99 /* PowerSupplyCostants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PowerSupplyCostants.h; sourceTree = "<group>"; };
 		3259991A182A815F001E7D99 /* CmdPSReset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CmdPSReset.cpp; sourceTree = "<group>"; };
 		3259991B182A815F001E7D99 /* CmdPSReset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdPSReset.h; sourceTree = "<group>"; };
@@ -90,6 +90,7 @@
 		3285566E17F1C43D00A64ED2 = {
 			isa = PBXGroup;
 			children = (
+				320762E0182BA878005B21A7 /* CMakeLists.txt */,
 				5303A92E18190F4E0070356D /* test */,
 				5303A92A18190ED00070356D /* models */,
 				5303A92618190EBF0070356D /* core */,
@@ -142,7 +143,6 @@
 				32B8C1A4182931D9001CF714 /* AbstractPowerSupplyCommand.h */,
 				32B8C1A618294409001CF714 /* PowerSupplyStateMachine.h */,
 				32599919182A7A09001E7D99 /* PowerSupplyCostants.h */,
-				320762DD182AAEF9005B21A7 /* vector100.hpp */,
 			);
 			path = test;
 			sourceTree = "<group>";
