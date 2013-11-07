@@ -30,7 +30,7 @@ using namespace driver::powersupply;
 
 
 CmdPSDefault::CmdPSDefault() {
-	
+	powersupply_drv = NULL;
 }
 
 CmdPSDefault::~CmdPSDefault() {
@@ -67,33 +67,34 @@ void CmdPSDefault::acquireHandler() {
 	float tmp_float = 0.0F;
 	int tmp_uint32 = 0;
 	uint64_t tmp_uint64 = 0;
-	
+	CMDCU_ << "Acquiring data";
     CDataWrapper *acquiredData = getNewDataWrapper();
 	
 	acquiredData->addDoubleValue("current_sp", *o_current_sp);
 	
-    if(!powersupply_drv->getCurrentOutput(&tmp_float)){
+    if(powersupply_drv && !powersupply_drv->getCurrentOutput(&tmp_float)){
 		*o_current = (double)tmp_float;
 		acquiredData->addDoubleValue("current", *o_current);
     }
     
-	if(!powersupply_drv->getVoltageOutput(&tmp_float)){
+	if(powersupply_drv && !powersupply_drv->getVoltageOutput(&tmp_float)){
 		*o_voltage = (double)tmp_float;
 		acquiredData->addDoubleValue("voltage", *o_voltage);
     }
 	
-    if(!powersupply_drv->getPolarity(&tmp_uint32)){
+    if(powersupply_drv && !powersupply_drv->getPolarity(&tmp_uint32)){
 		*o_polarity = tmp_uint32;
 		acquiredData->addInt32Value("polarity", *o_polarity);
     }
 	
 	
-    if(!powersupply_drv->getAlarms(&tmp_uint64)){
+    if(powersupply_drv && !powersupply_drv->getAlarms(&tmp_uint64)){
 		*o_alarms = tmp_uint64;
 		acquiredData->addInt64Value("alarms", *o_alarms);
     }
 	
-    if(!powersupply_drv->getState(&stato, desc)){
+    if(powersupply_drv && !powersupply_drv->getState(&stato, desc)){
+		CMDCU_ << "got state ->" << desc << "[" << stato << "]";
 		std::strncpy(o_status, desc.c_str(), 256);
 		acquiredData->addStringValue("status", o_status);
     }

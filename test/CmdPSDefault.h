@@ -32,9 +32,6 @@ namespace driver {
 		
 		class CmdPSDefault : public AbstractPowerSupplyCommand {
 			
-			//power supply standard interface
-			chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
-			
 		protected:
 			// return the implemented handler
 			uint8_t implementedHandler();
