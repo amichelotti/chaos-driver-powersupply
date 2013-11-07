@@ -36,9 +36,9 @@ namespace driver {
 		class AbstractPowerSupplyCommand : public ccc_slow_command::SlowCommand {
 		protected:
 			//output variable
-			char		**o_cmd_last_error;
+			char		*o_cmd_last_error;
 			uint64_t	*o_dev_state;
-			char		**o_status;
+			char		*o_status;
 			uint64_t	*o_alarms;
 			int32_t		*o_polarity;
 			double		*o_voltage;

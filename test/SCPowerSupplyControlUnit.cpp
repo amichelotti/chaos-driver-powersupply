@@ -128,12 +128,12 @@ void own::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CE
 }
 
 void own::SCPowerSupplyControlUnit::defineSharedVariable() {
-
+	
 }
 
 void own::SCPowerSupplyControlUnit::unitDefineDriver(std::vector<DrvRequestInfo>& neededDriver) {
-	DrvRequestInfo drv1 = {"GenericPowerSupplyDD", "1.0.0", params.c_str() };
-	neededDriver.push_back(drv1);
+	//DrvRequestInfo drv1 = {"GenericPowerSupplyDD", "1.0.0", params.c_str() };
+	//neededDriver.push_back(drv1);
 }
 
 // Abstract method for the initialization of the control unit
@@ -142,13 +142,13 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	int state_id;
 	std::string state_str;
     chaos::cu::cu_driver::DriverAccessor * power_supply_accessor=AbstractControlUnit::getAccessoInstanceByIndex(0);
-    if(power_supply_accessor==NULL){
+	if(power_supply_accessor==NULL){
         throw chaos::CException(1, "Cannot retrieve the requested driver", __FUNCTION__);
     }
-    powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
-    if(powersupply_drv==NULL){
+	powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
+	if(powersupply_drv==NULL){
 		throw chaos::CException(1, "Cannot allocate driver resources", __FUNCTION__);
-    }
+	}
     
 	if(powersupply_drv->getState(&state_id, state_str, 30000)!=0){
 		throw  chaos::CException(1, "Error getting the state of the powersupply, possibily off", __FUNCTION__);

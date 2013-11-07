@@ -17,7 +17,7 @@
  *    	See the License for the specific language governing permissions and
  *    	limitations under the License.
  */
-
+#define CMDCUDBG_ LDBG_ << "[AbstractPowerSupplyCommand] - "
 #include "AbstractPowerSupplyCommand.h"
 #include <boost/format.hpp>
 
@@ -25,15 +25,16 @@ using namespace driver::powersupply;
 namespace chaos_sc = chaos::cu::control_manager::slow_command;
 
 void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
+	CMDCUDBG_ << "loading pointer for output channel";
 	//get pointer to the output datase variable
 	o_current = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)0)->getCurrentValue<double>();
 	o_current_sp = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)1)->getCurrentValue<double>();
 	o_voltage = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)2)->getCurrentValue<double>();
 	o_polarity = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)3)->getCurrentValue<int32_t>();
 	o_alarms = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)4)->getCurrentValue<uint64_t>();
-	o_status = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)5)->getCurrentValue<char*>();
+	o_status = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)5)->getCurrentValue<char>();
 	o_dev_state = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)6)->getCurrentValue<uint64_t>();
-	o_cmd_last_error = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)7)->getCurrentValue<char*>();
+	o_cmd_last_error = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)7)->getCurrentValue<char>();
 	
 	//get pointer to the input datase variable
 	i_slope_up = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_INPUT, (chaos_sc::VariableIndexType)0)->getCurrentValue<double>();
@@ -44,7 +45,7 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = driverAccessorsErogator->getAccessoInstanceByIndex(0);
 	powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
 	//clean the last error
-	memset(*o_cmd_last_error, ' ', 256);
+	writeErrorMessage("");
 }
 
 // return the implemented handler
@@ -80,5 +81,5 @@ void AbstractPowerSupplyCommand::writeErrorMessage(string error_message) {
 }
 
 void AbstractPowerSupplyCommand::writeErrorMessage(const char * error_message) {
-	std::strncpy(*o_cmd_last_error, error_message, 256);
+	std::strncpy(o_cmd_last_error, error_message, 256);
 }

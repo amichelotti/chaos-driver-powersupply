@@ -94,14 +94,14 @@ void CmdPSDefault::acquireHandler() {
     }
 	
     if(!powersupply_drv->getState(&stato, desc)){
-		std::strncpy(*o_status, desc.c_str(), 256);
-		acquiredData->addStringValue("status", *o_status);
+		std::strncpy(o_status, desc.c_str(), 256);
+		acquiredData->addStringValue("status", o_status);
     }
 	
 	//set the current device state and last error
 	acquiredData->addInt64Value("dev_state", *o_dev_state);
 	
-	acquiredData->addStringValue("cmd_last_error", *o_cmd_last_error);
+	acquiredData->addStringValue("cmd_last_error", o_cmd_last_error);
 	
     //push data on central cache
 	pushDataSet(acquiredData);
