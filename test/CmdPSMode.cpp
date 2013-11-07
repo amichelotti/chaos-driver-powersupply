@@ -24,7 +24,7 @@ uint8_t own::CmdPSMode::implementedHandler() {
 
 void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	CMDCU_ << "Mode Command set handler";
-	
+	SL_EXEC_RUNNIG_STATE
 	AbstractPowerSupplyCommand::setHandler(data);
 	int state;
 	string state_str;
@@ -41,20 +41,26 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	switch (state_to_go) {
 		case 0://to standby
 			//i need to be in operational to exec
-			CMDCU_ << "Going to stanby";
+			CMDCU_ << "Request to go to stanby";
 			if((state != common::powersupply::POWER_SUPPLY_STATE_OPEN) &&
 			   (state != common::powersupply::POWER_SUPPLY_STATE_ON)) {
 				throw chaos::CException(2, boost::str( boost::format("Cant go to standby, current state is %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
 			}
-			CMDCU_ << "Gone to stanby";
+			if(powersupply_drv->standby() != 0) {
+				throw chaos::CException(3, "Error issuing standby on powersupply", __FUNCTION__);
+			}
+			CMDCU_ << "Can go to stanby";
 			break;
 			
 		case 1://to operational
-			CMDCU_ << "Going to operational";
+			CMDCU_ << "Request to go to operational";
 			if((state != common::powersupply::POWER_SUPPLY_STATE_STANDBY)) {
 				throw chaos::CException(3, boost::str( boost::format("Cant go to operational, current state is %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
 			}
-			CMDCU_ << "Gone to operational";
+			if(powersupply_drv->poweron() != 0) {
+				throw chaos::CException(3, "Error issuing poweron on powersupply", __FUNCTION__);
+			}
+			CMDCU_ << "Can go to operational";
 			break;
 	}
 	
@@ -63,20 +69,20 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
 	
 	//send comamnd to driver
-	powersupply_drv->poweron();
+
 }
 
 void own::CmdPSMode::ccHandler() {
 	int state_id;
 	std::string state_str;
 	getState(state_id, state_str);
-	
+	SL_EXEC_RUNNIG_STATE
+	CMDCU_ << "Check if we are gone";
 	switch(state_to_go) {
 		case 0://we need to go in stanby
 			if(state_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
 				//we are terminated the command
-				std::string error =  boost::str( boost::format("State reached %1% [%2%] we end command") % state_str % state_id);
-				CMDCU_ << error;
+				CMDCU_ << boost::str( boost::format("State reached %1% [%2%] we end command") % state_str % state_id);
 				SL_END_RUNNIG_STATE
 				return;
 			}
@@ -86,8 +92,7 @@ void own::CmdPSMode::ccHandler() {
 			if(state_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY ||
 			   state_id == common::powersupply::POWER_SUPPLY_STATE_ON) {
 				//we are terminated the command
-				std::string error =  boost::str( boost::format("State reached %1% [%2%] we end command") % state_str % state_id);
-				CMDCU_ << error;
+				CMDCU_ << boost::str( boost::format("State reached %1% [%2%] we end command") % state_str % state_id);
 				SL_END_RUNNIG_STATE
 				return;
 			}
