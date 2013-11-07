@@ -26,7 +26,7 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	CMDCU_ << "Mode Command set handler";
 	SL_EXEC_RUNNIG_STATE
 	AbstractPowerSupplyCommand::setHandler(data);
-	int state;
+	int state = 1;
 	string state_str;
 	//requested mode
 	if(!data->hasKey(CMD_PS_MODE_TYPE)) {
@@ -66,14 +66,17 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	
 	
 	//set comamnd timeout for this instance
-	setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
+	if(*i_command_timeout) {
+		//we have a timeout for command so apply it to this instance
+		setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
+	}
 	
 	//send comamnd to driver
 
 }
 
 void own::CmdPSMode::ccHandler() {
-	int state_id;
+	int state_id = 0;
 	std::string state_str;
 	getState(state_id, state_str);
 	SL_EXEC_RUNNIG_STATE

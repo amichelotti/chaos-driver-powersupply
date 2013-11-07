@@ -132,8 +132,8 @@ void own::SCPowerSupplyControlUnit::defineSharedVariable() {
 }
 
 void own::SCPowerSupplyControlUnit::unitDefineDriver(std::vector<DrvRequestInfo>& neededDriver) {
-	DrvRequestInfo drv1 = {"GenericPowerSupplyDD", "1.0.0", params.c_str() };
-	neededDriver.push_back(drv1);
+	//DrvRequestInfo drv1 = {"GenericPowerSupplyDD", "1.0.0", params.c_str() };
+	//neededDriver.push_back(drv1);
 }
 
 // Abstract method for the initialization of the control unit
@@ -141,7 +141,7 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	SCCUAPP "unitInit";
 	int state_id;
 	std::string state_str;
-	chaos::cu::cu_driver::DriverAccessor * power_supply_accessor=AbstractControlUnit::getAccessoInstanceByIndex(0);
+	/*chaos::cu::cu_driver::DriverAccessor * power_supply_accessor=AbstractControlUnit::getAccessoInstanceByIndex(0);
 	if(power_supply_accessor==NULL){
         throw chaos::CException(1, "Cannot retrieve the requested driver", __FUNCTION__);
     }
@@ -156,7 +156,7 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	
     if(powersupply_drv->getHWVersion(device_hw,1000)==0){
 		SCCUAPP << "hardware found " << "device_hw";
-    }
+    }*/
 }
 
 // Abstract method for the start of the control unit
