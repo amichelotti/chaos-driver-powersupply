@@ -23,6 +23,8 @@ uint8_t own::CmdPSMode::implementedHandler() {
 }
 
 void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
+	CMDCU_ << "Mode Command set handler";
+	
 	AbstractPowerSupplyCommand::setHandler(data);
 	int state;
 	string state_str;
