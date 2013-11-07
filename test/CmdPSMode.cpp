@@ -41,9 +41,9 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	switch (tmp_int) {
 		case 0://to standby
 			//i need to be in operational to exec
-			if((state != common::powersupply::POWER_SUPPLY_STATE_OPEN)||
+			if((state != common::powersupply::POWER_SUPPLY_STATE_OPEN) &&
 			   (state != common::powersupply::POWER_SUPPLY_STATE_ON)) {
-				throw chaos::CException(2, boost::str( boost::format("Cant go to operational, current state is %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
+				throw chaos::CException(2, boost::str( boost::format("Cant go to standby, current state is %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
 			}
 			break;
 			
