@@ -31,6 +31,8 @@ namespace driver {
 		
 		//! Command for change the mode of the powersupply
 		class CmdPSMode : public AbstractPowerSupplyCommand {
+			uint32_t state_to_go;
+			
 		protected:
 			//implemented handler
 			uint8_t implementedHandler();

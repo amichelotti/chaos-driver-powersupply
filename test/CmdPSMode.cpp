@@ -32,25 +32,29 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	if(!data->hasKey(CMD_PS_MODE_TYPE)) {
 		throw chaos::CException(0, "Mode type not present", __FUNCTION__);
 	}
-	int32_t tmp_int = data->getInt32Value(CMD_PS_MODE_TYPE);
-	if(tmp_int>1) {
+	state_to_go = data->getInt32Value(CMD_PS_MODE_TYPE);
+	if(state_to_go>1) {
 		throw chaos::CException(1, "Requeste mode type not implemented", __FUNCTION__);
 	}
 		
 	getState(state, state_str);
-	switch (tmp_int) {
+	switch (state_to_go) {
 		case 0://to standby
 			//i need to be in operational to exec
+			CMDCU_ << "Going to stanby";
 			if((state != common::powersupply::POWER_SUPPLY_STATE_OPEN) &&
 			   (state != common::powersupply::POWER_SUPPLY_STATE_ON)) {
 				throw chaos::CException(2, boost::str( boost::format("Cant go to standby, current state is %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
 			}
+			CMDCU_ << "Gone to stanby";
 			break;
 			
 		case 1://to operational
+			CMDCU_ << "Going to operational";
 			if((state != common::powersupply::POWER_SUPPLY_STATE_STANDBY)) {
 				throw chaos::CException(3, boost::str( boost::format("Cant go to operational, current state is %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
 			}
+			CMDCU_ << "Gone to operational";
 			break;
 	}
 	
@@ -67,13 +71,33 @@ void own::CmdPSMode::ccHandler() {
 	std::string state_str;
 	getState(state_id, state_str);
 	
-	if(state_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
-		//we are terminated the command
-		SL_END_RUNNIG_STATE
-		return;
+	switch(state_to_go) {
+		case 0://we need to go in stanby
+			if(state_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
+				//we are terminated the command
+				std::string error =  boost::str( boost::format("State reached %1% [%2%] we end command") % state_str % state_id);
+				CMDCU_ << error;
+				SL_END_RUNNIG_STATE
+				return;
+			}
+			break;
+			
+		case 1://we need to go on operational
+			if(state_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY ||
+			   state_id == common::powersupply::POWER_SUPPLY_STATE_ON) {
+				//we are terminated the command
+				std::string error =  boost::str( boost::format("State reached %1% [%2%] we end command") % state_str % state_id);
+				CMDCU_ << error;
+				SL_END_RUNNIG_STATE
+				return;
+			}
+			break;
 	}
 	
-	if(state_id != common::powersupply::POWER_SUPPLY_STATE_ON) {
+	
+	if(state_id == common::powersupply::POWER_SUPPLY_STATE_ALARM ||
+	   state_id == common::powersupply::POWER_SUPPLY_STATE_ERROR ||
+	   state_id == common::powersupply::POWER_SUPPLY_STATE_UKN ) {
 		std::string error =  boost::str( boost::format("Bad state got = %1% - [%2%]") % state_id % state_str);
 		writeErrorMessage(error);
 		throw chaos::CException(1, error.c_str(), __FUNCTION__);
