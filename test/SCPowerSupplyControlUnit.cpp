@@ -132,8 +132,8 @@ void own::SCPowerSupplyControlUnit::defineSharedVariable() {
 }
 
 void own::SCPowerSupplyControlUnit::unitDefineDriver(std::vector<DrvRequestInfo>& neededDriver) {
-	//DrvRequestInfo drv1 = {"GenericPowerSupplyDD", "1.0.0", params.c_str() };
-	//neededDriver.push_back(drv1);
+	DrvRequestInfo drv1 = {"GenericPowerSupplyDD", "1.0.0", params.c_str() };
+	neededDriver.push_back(drv1);
 }
 
 // Abstract method for the initialization of the control unit
