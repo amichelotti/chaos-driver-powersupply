@@ -24,6 +24,7 @@
 #include <boost/format.hpp>
 
 #define CMDCU_ LAPP_ << "[CmdPSReset] - "
+#define CMDCUDBG_ LDBG_ << "[CmdPSReset] - "
 
 namespace own =  driver::powersupply;
 namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
@@ -47,36 +48,54 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 			case common::powersupply::POWER_SUPPLY_STATE_ERROR:
 			case common::powersupply::POWER_SUPPLY_STATE_UKN:
 			//i need to be in operational to exec
-			CMDCU_ << "Reset command callend on the rigth state";
+			CMDCUDBG_ << "We can start the reset command";
 			break;
 			
 		default:
 			if((state != common::powersupply::POWER_SUPPLY_STATE_OPEN)||
 			   (state != common::powersupply::POWER_SUPPLY_STATE_ON)) {
-				throw chaos::CException(2, boost::str( boost::format("Bas state for reset  comamnd %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
+				throw chaos::CException(1, boost::str( boost::format("Bas state for reset  comamnd %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
 			}
 	}
 	
 	
 	//set comamnd timeout for this instance
-	setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
+	CMDCUDBG_ << "Checking for timout";
+	if(*i_command_timeout) {
+		CMDCUDBG_ << "Timeout will be set to ms -> " << *i_command_timeout;
+		setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
+	}
 	
 	//send comamnd to driver
-	powersupply_drv->poweron();
+	CMDCUDBG_ << "Resetting allarm";
+	if(powersupply_drv->resetAlarms(0) != 0) {
+		throw chaos::CException(2, boost::str( boost::format("Error resetting the allarms %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
+	}
+	
+	CMDCUDBG_ << "Go to standby";
+	if(powersupply_drv->standby() != 0) {
+		throw chaos::CException(2, boost::str( boost::format("Error set to standby the allarms %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
+	}
+	
+	//set working flag
+	//setWorking(true);
 }
 
 void own::CmdPSReset::ccHandler() {
 	int state_id;
 	std::string state_str;
 	getState(state_id, state_str);
-	
+	CMDCUDBG_ << "Reset command correlation";
 	if(state_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
+		CMDCUDBG_ << "We have reached standby state";
 		//we are terminated the command
 		SL_END_RUNNIG_STATE
 		return;
 	}
 	
-	if(state_id != common::powersupply::POWER_SUPPLY_STATE_ON) {
+	if(state_id == common::powersupply::POWER_SUPPLY_STATE_ALARM ||
+	   state_id == common::powersupply::POWER_SUPPLY_STATE_ERROR ||
+	   state_id == common::powersupply::POWER_SUPPLY_STATE_UKN ) {
 		std::string error =  boost::str( boost::format("Bad state got = %1% - [%2%]") % state_id % state_str);
 		writeErrorMessage(error);
 		throw chaos::CException(1, error.c_str(), __FUNCTION__);

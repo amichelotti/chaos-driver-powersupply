@@ -87,3 +87,7 @@ void AbstractPowerSupplyCommand::writeErrorMessage(string error_message) {
 void AbstractPowerSupplyCommand::writeErrorMessage(const char * error_message) {
 	std::strncpy(o_cmd_last_error, error_message, 256);
 }
+
+void AbstractPowerSupplyCommand::setWorkState(bool working_flag) {
+	*o_dev_state = working_flag;
+}
