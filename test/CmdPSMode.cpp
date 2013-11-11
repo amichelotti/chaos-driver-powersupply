@@ -19,11 +19,11 @@ namespace c_data = chaos::common::data;
 // return the implemented handler
 uint8_t own::CmdPSMode::implementedHandler() {
     return	AbstractPowerSupplyCommand::implementedHandler() |
-	ccc_slow_command::HandlerType::HT_Correlation;
+			ccc_slow_command::HandlerType::HT_Correlation;
 }
 
 void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
-	CMDCU_ << "Mode Command set handler";
+	CMDCU_ << "Executing set handler";
 	SL_EXEC_RUNNIG_STATE
 	AbstractPowerSupplyCommand::setHandler(data);
 	int state = 1;
@@ -67,12 +67,13 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	
 	//set comamnd timeout for this instance
 	if(*i_command_timeout) {
+		CMDCU_ << "Set time out in "<< *i_command_timeout << "milliseconds";
 		//we have a timeout for command so apply it to this instance
 		setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
 	}
 	
 	//send comamnd to driver
-
+	setWorkState(true);
 }
 
 void own::CmdPSMode::ccHandler() {
@@ -84,6 +85,7 @@ void own::CmdPSMode::ccHandler() {
 	switch(state_to_go) {
 		case 0://we need to go in stanby
 			if(state_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
+				setWorkState(false);
 				//we are terminated the command
 				CMDCU_ << boost::str( boost::format("State reached %1% [%2%] we end command") % state_str % state_id);
 				SL_END_RUNNIG_STATE
@@ -94,6 +96,7 @@ void own::CmdPSMode::ccHandler() {
 		case 1://we need to go on operational
 			if(state_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY ||
 			   state_id == common::powersupply::POWER_SUPPLY_STATE_ON) {
+				setWorkState(false);
 				//we are terminated the command
 				CMDCU_ << boost::str( boost::format("State reached %1% [%2%] we end command") % state_str % state_id);
 				SL_END_RUNNIG_STATE
@@ -106,6 +109,7 @@ void own::CmdPSMode::ccHandler() {
 	if(state_id == common::powersupply::POWER_SUPPLY_STATE_ALARM ||
 	   state_id == common::powersupply::POWER_SUPPLY_STATE_ERROR ||
 	   state_id == common::powersupply::POWER_SUPPLY_STATE_UKN ) {
+		setWorkState(false);
 		std::string error =  boost::str( boost::format("Bad state got = %1% - [%2%]") % state_id % state_str);
 		writeErrorMessage(error);
 		throw chaos::CException(1, error.c_str(), __FUNCTION__);
@@ -114,6 +118,7 @@ void own::CmdPSMode::ccHandler() {
 
 bool own::CmdPSMode::timeoutHandler() {
 	//move the state machine on fault
+	setWorkState(false);
 	std::string error =  "Command operation has gone on timeout";
 	writeErrorMessage(error);
 	throw chaos::CException(1, error.c_str(), __FUNCTION__);

@@ -26,10 +26,10 @@ namespace driver {
 	namespace powersupply {
 		
 		//! The alias of the default command of the type
-		const char * const CMD_PS_DEFAULT_ALIAS = "cmd_ps_dafault";
+		const char * const CMD_PS_DEFAULT_ALIAS = "default";
 		
 		//! The alias of the "mode" command of the type
-		const char * const CMD_PS_MODE_ALIAS = "cmd_ps_mode";
+		const char * const CMD_PS_MODE_ALIAS = "mode";
 
 		//! The alias of the parameter of the type {0-to stadby, 1-to operational}
 		const char * const CMD_PS_MODE_TYPE = "mode_type";

@@ -66,7 +66,7 @@ namespace driver {
 			void writeErrorMessage(string error_message);
 			void writeErrorMessage(const char * error_message);
 			
-			void setWorkState(bool);
+			void setWorkState(bool working);
 		};
 	}
 }

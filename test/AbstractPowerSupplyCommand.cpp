@@ -61,6 +61,7 @@ bool AbstractPowerSupplyCommand::checkState(common::powersupply::PowerSupplyStat
 	int state_id = 0;
 	std::string state_str;
 	if((err=powersupply_drv->getState(&state_id, state_str, *i_driver_timeout?*i_driver_timeout:10000)) != 0) {
+		setWorkState(false);
 		std::string error =  boost::str( boost::format("Error getting the powersupply state = %1% ") % err);
 		writeErrorMessage(error);
 		throw chaos::CException(1, error.c_str(), __FUNCTION__);
@@ -73,6 +74,7 @@ void AbstractPowerSupplyCommand::getState(int& current_state, std::string& curre
 	int err = 0;
 	std::string state_str;
 	if((err=powersupply_drv->getState(&current_state, state_str, *i_driver_timeout?*i_driver_timeout:10000)) != 0) {
+		setWorkState(false);
 		std::string error =  boost::str( boost::format("Error getting the powersupply state = %1% ") % err);
 		writeErrorMessage(error);
 		throw chaos::CException(1, error.c_str(), __FUNCTION__);
