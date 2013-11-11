@@ -54,7 +54,7 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 		default:
 			if((state != common::powersupply::POWER_SUPPLY_STATE_OPEN)||
 			   (state != common::powersupply::POWER_SUPPLY_STATE_ON)) {
-				throw chaos::CException(1, boost::str( boost::format("Bas state for reset  comamnd %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
+				throw chaos::CException(1, boost::str( boost::format("Bas state for reset comamnd %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
 			}
 	}
 	
@@ -69,16 +69,16 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 	//send comamnd to driver
 	CMDCUDBG_ << "Resetting allarm";
 	if(powersupply_drv->resetAlarms(0) != 0) {
-		throw chaos::CException(2, boost::str( boost::format("Error resetting the allarms %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
+		throw chaos::CException(2, boost::str( boost::format("Error resetting the allarms in state %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
 	}
 	
 	CMDCUDBG_ << "Go to standby";
 	if(powersupply_drv->standby() != 0) {
-		throw chaos::CException(2, boost::str( boost::format("Error set to standby the allarms %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
+		throw chaos::CException(2, boost::str( boost::format("Error set to standby in state %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
 	}
 	
 	//set working flag
-	//setWorking(true);
+	setWorkState(true);
 }
 
 void own::CmdPSReset::ccHandler() {
@@ -88,6 +88,7 @@ void own::CmdPSReset::ccHandler() {
 	CMDCUDBG_ << "Reset command correlation";
 	if(state_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
 		CMDCUDBG_ << "We have reached standby state";
+		setWorkState(false);
 		//we are terminated the command
 		SL_END_RUNNIG_STATE
 		return;
@@ -98,6 +99,7 @@ void own::CmdPSReset::ccHandler() {
 	   state_id == common::powersupply::POWER_SUPPLY_STATE_UKN ) {
 		std::string error =  boost::str( boost::format("Bad state got = %1% - [%2%]") % state_id % state_str);
 		writeErrorMessage(error);
+		setWorkState(false);
 		throw chaos::CException(1, error.c_str(), __FUNCTION__);
 	}
 }
@@ -106,6 +108,7 @@ bool own::CmdPSReset::timeoutHandler() {
 	//move the state machine on fault
 	std::string error =  "Comamdn operation has gone on timeout";
 	writeErrorMessage(error);
+	setWorkState(false);
 	throw chaos::CException(1, error.c_str(), __FUNCTION__);
 	return true;
 }

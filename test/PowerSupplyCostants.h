@@ -30,9 +30,23 @@ namespace driver {
 		
 		//! The alias of the "mode" command of the type
 		const char * const CMD_PS_MODE_ALIAS = "mode";
-
 		//! The alias of the parameter of the type {0-to stadby, 1-to operational}
 		const char * const CMD_PS_MODE_TYPE = "mode_type";
+		
+		//! The alias of the "reset" command of the type
+		const char * const CMD_PS_RESET_ALIAS = "rset";
+
+		//! The alias of the "set slope" command of the type
+		const char * const CMD_PS_SET_SLOPE_ALIAS = "sslp";
+		//! The alias of the slope up parameter
+		const char * const CMD_PS_SET_SLOPE_UP = "sslp_up";
+		//! The alias of the slope down parameter
+		const char * const CMD_PS_SET_SLOPE_DOWN = "sslp_down";
+		
+		//! The alias of the "set slope" command of the type
+		const char * const CMD_PS_SET_CURRENT_ALIAS = "sett";
+		//! The alias of the current to set
+		const char * const CMD_PS_SET_CURRENT = "sett_cur";
 	}
 }
 #endif

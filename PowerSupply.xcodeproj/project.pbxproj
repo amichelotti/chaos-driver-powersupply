@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		3259991C182A815F001E7D99 /* CmdPSReset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3259991A182A815F001E7D99 /* CmdPSReset.cpp */; };
+		3288CE9E1830CF4700476B85 /* CmdPSSetSlope.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3288CE9C1830CF4700476B85 /* CmdPSSetSlope.cpp */; };
+		3288CEA11830E6EC00476B85 /* CmdPSSetCurrent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3288CE9F1830E6EC00476B85 /* CmdPSSetCurrent.cpp */; };
 		329C7A12182A353300AF1465 /* CmdPSMode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 329C7A10182A353300AF1465 /* CmdPSMode.cpp */; };
 		32B8C19E18292A82001CF714 /* CmdPSDefault.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32B8C19C18292A82001CF714 /* CmdPSDefault.cpp */; };
 		32B8C1A5182931D9001CF714 /* AbstractPowerSupplyCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32B8C1A3182931D9001CF714 /* AbstractPowerSupplyCommand.cpp */; };
@@ -51,6 +53,10 @@
 		3259991B182A815F001E7D99 /* CmdPSReset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdPSReset.h; sourceTree = "<group>"; };
 		3285567717F1C43D00A64ED2 /* ocem_cu */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ocem_cu; sourceTree = BUILT_PRODUCTS_DIR; };
 		3285568717F1C4AC00A64ED2 /* libdriver_powersupply.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libdriver_powersupply.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		3288CE9C1830CF4700476B85 /* CmdPSSetSlope.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CmdPSSetSlope.cpp; sourceTree = "<group>"; };
+		3288CE9D1830CF4700476B85 /* CmdPSSetSlope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdPSSetSlope.h; sourceTree = "<group>"; };
+		3288CE9F1830E6EC00476B85 /* CmdPSSetCurrent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CmdPSSetCurrent.cpp; sourceTree = "<group>"; };
+		3288CEA01830E6EC00476B85 /* CmdPSSetCurrent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdPSSetCurrent.h; sourceTree = "<group>"; };
 		329C7A10182A353300AF1465 /* CmdPSMode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CmdPSMode.cpp; sourceTree = "<group>"; };
 		329C7A11182A353300AF1465 /* CmdPSMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdPSMode.h; sourceTree = "<group>"; };
 		32B8C19C18292A82001CF714 /* CmdPSDefault.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CmdPSDefault.cpp; sourceTree = "<group>"; };
@@ -139,6 +145,10 @@
 				329C7A11182A353300AF1465 /* CmdPSMode.h */,
 				3259991A182A815F001E7D99 /* CmdPSReset.cpp */,
 				3259991B182A815F001E7D99 /* CmdPSReset.h */,
+				3288CE9C1830CF4700476B85 /* CmdPSSetSlope.cpp */,
+				3288CE9D1830CF4700476B85 /* CmdPSSetSlope.h */,
+				3288CE9F1830E6EC00476B85 /* CmdPSSetCurrent.cpp */,
+				3288CEA01830E6EC00476B85 /* CmdPSSetCurrent.h */,
 				32B8C1A3182931D9001CF714 /* AbstractPowerSupplyCommand.cpp */,
 				32B8C1A4182931D9001CF714 /* AbstractPowerSupplyCommand.h */,
 				32B8C1A618294409001CF714 /* PowerSupplyStateMachine.h */,
@@ -229,7 +239,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3288CE9E1830CF4700476B85 /* CmdPSSetSlope.cpp in Sources */,
 				32B8C1A5182931D9001CF714 /* AbstractPowerSupplyCommand.cpp in Sources */,
+				3288CEA11830E6EC00476B85 /* CmdPSSetCurrent.cpp in Sources */,
 				5303A93818197A240070356D /* PowerSupplyControlUnit.cpp in Sources */,
 				329C7A12182A353300AF1465 /* CmdPSMode.cpp in Sources */,
 				32CCE8BB1828D90F00BDCEA0 /* SCPowerSupplyControlUnit.cpp in Sources */,
