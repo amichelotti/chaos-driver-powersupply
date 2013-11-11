@@ -53,6 +53,7 @@ void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
 
 	//no adiditonal setup here
+	SL_STACK_RUNNIG_STATE
 }
 
 // Aquire the necessary data for the command
@@ -67,18 +68,17 @@ void CmdPSDefault::acquireHandler() {
 	int tmp_uint32 = 0;
 	uint64_t tmp_uint64 = 0;
 	CMDCU_ << "Acquiring data";
-	
-	SL_STACK_RUNNIG_STATE
+
 	
     CDataWrapper *acquiredData = getNewDataWrapper();
-	
-	acquiredData->addDoubleValue("current_sp", *o_current_sp);
 	
     if(powersupply_drv && !powersupply_drv->getCurrentOutput(&tmp_float)){
 		*o_current = (double)tmp_float;
 		acquiredData->addDoubleValue("current", *o_current);
     }
     
+	acquiredData->addDoubleValue("current_sp", *o_current_sp);
+	
 	if(powersupply_drv && !powersupply_drv->getVoltageOutput(&tmp_float)){
 		*o_voltage = (double)tmp_float;
 		acquiredData->addDoubleValue("voltage", *o_voltage);
@@ -98,6 +98,7 @@ void CmdPSDefault::acquireHandler() {
     if(powersupply_drv && !powersupply_drv->getState(&stato, desc)){
 		CMDCU_ << "got state ->" << desc << "[" << stato << "]";
 		std::strncpy(o_status, desc.c_str(), 256);
+		acquiredData->addInt32Value("status_id", (*o_status_id = stato));
 		acquiredData->addStringValue("status", o_status);
     }
 	

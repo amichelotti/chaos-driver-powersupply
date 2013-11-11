@@ -33,17 +33,13 @@ namespace c_data = chaos::common::data;
 
 // return the implemented handler
 uint8_t own::CmdPSReset::implementedHandler() {
-    return	AbstractPowerSupplyCommand::implementedHandler() |
-	ccc_slow_command::HandlerType::HT_Correlation;
+    return	AbstractPowerSupplyCommand::implementedHandler();
 }
 
 void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
-	int state;
-	string state_str;
 
-	getState(state, state_str);
-	switch (state) {
+	switch (*o_status_id) {
 		case common::powersupply::POWER_SUPPLY_STATE_ALARM:
 			case common::powersupply::POWER_SUPPLY_STATE_ERROR:
 			case common::powersupply::POWER_SUPPLY_STATE_UKN:
@@ -52,9 +48,9 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 			break;
 			
 		default:
-			if((state != common::powersupply::POWER_SUPPLY_STATE_OPEN)||
-			   (state != common::powersupply::POWER_SUPPLY_STATE_ON)) {
-				throw chaos::CException(1, boost::str( boost::format("Bas state for reset comamnd %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
+			if((*o_status_id != common::powersupply::POWER_SUPPLY_STATE_OPEN)||
+			   (*o_status_id != common::powersupply::POWER_SUPPLY_STATE_ON)) {
+				throw chaos::CException(1, boost::str( boost::format("Bas state for reset comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__));
 			}
 	}
 	
@@ -69,12 +65,12 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 	//send comamnd to driver
 	CMDCUDBG_ << "Resetting allarm";
 	if(powersupply_drv->resetAlarms(0) != 0) {
-		throw chaos::CException(2, boost::str( boost::format("Error resetting the allarms in state %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
+		throw chaos::CException(2, boost::str( boost::format("Error resetting the allarms in state %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__));
 	}
 	
 	CMDCUDBG_ << "Go to standby";
 	if(powersupply_drv->standby() != 0) {
-		throw chaos::CException(2, boost::str( boost::format("Error set to standby in state %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
+		throw chaos::CException(2, boost::str( boost::format("Error set to standby in state %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__));
 	}
 	
 	//set working flag
@@ -82,11 +78,10 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 }
 
 void own::CmdPSReset::ccHandler() {
-	int state_id;
-	std::string state_str;
-	getState(state_id, state_str);
+	AbstractPowerSupplyCommand::ccHandler();
+	
 	CMDCUDBG_ << "Reset command correlation";
-	if(state_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
+	if(*o_status_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
 		CMDCUDBG_ << "We have reached standby state";
 		setWorkState(false);
 		//we are terminated the command
@@ -94,10 +89,10 @@ void own::CmdPSReset::ccHandler() {
 		return;
 	}
 	
-	if(state_id == common::powersupply::POWER_SUPPLY_STATE_ALARM ||
-	   state_id == common::powersupply::POWER_SUPPLY_STATE_ERROR ||
-	   state_id == common::powersupply::POWER_SUPPLY_STATE_UKN ) {
-		std::string error =  boost::str( boost::format("Bad state got = %1% - [%2%]") % state_id % state_str);
+	if(*o_status_id == common::powersupply::POWER_SUPPLY_STATE_ALARM ||
+	   *o_status_id == common::powersupply::POWER_SUPPLY_STATE_ERROR ||
+	   *o_status_id == common::powersupply::POWER_SUPPLY_STATE_UKN ) {
+		std::string error =  boost::str( boost::format("Bad state got = %1% - [%2%]") % o_status_id % o_status);
 		writeErrorMessage(error);
 		setWorkState(false);
 		throw chaos::CException(1, error.c_str(), __FUNCTION__);

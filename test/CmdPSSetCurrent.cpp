@@ -43,20 +43,17 @@ uint8_t own::CmdPSSetCurrent::implementedHandler() {
 void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
 	int err = 0;
-	int state;
-	string state_str;
+
 	float stored_current = 0.f;
 	float current = 0.f;
 	float slope_speed = 0.f;
 	
-	
-	getState(state, state_str);
-	switch (state) {
+	switch (*o_status_id) {
 		case common::powersupply::POWER_SUPPLY_STATE_ALARM:
 		case common::powersupply::POWER_SUPPLY_STATE_ERROR:
 		case common::powersupply::POWER_SUPPLY_STATE_UKN:
 			//i need to be in operational to exec
-			throw chaos::CException(1, boost::str( boost::format("Bas state for set current comamnd %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
+			throw chaos::CException(1, boost::str( boost::format("Bas state for set current comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__));
 			break;
 			
 		case common::powersupply::POWER_SUPPLY_STATE_OPEN:
@@ -66,9 +63,8 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 			break;
 			
 		default:
-			throw chaos::CException(1, boost::str( boost::format("Unrecognized state %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
+			throw chaos::CException(2, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__));
 	}
-	
 	
 	//set comamnd timeout for this instance
 	SCLDBG_ << "Checking for timout";
@@ -82,13 +78,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	}
 	
 	if(!data || !data->hasKey(CMD_PS_SET_CURRENT)) {
-		throw chaos::CException(1, boost::str( boost::format("Set current parameter not present") % state_str % state), std::string(__FUNCTION__));
-	}
-	
-	current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
-	SCLDBG_ << "Set current to value" << current;
-	if((err = powersupply_drv->setCurrentSP(current)) != 0) {
-		throw chaos::CException(2, boost::str( boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__));
+		throw chaos::CException(1, boost::str( boost::format("Set current parameter not present") % o_status % *o_status_id), std::string(__FUNCTION__));
 	}
 	
 	if(stored_current > current) {
@@ -102,25 +92,41 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	int32_t delta_current = std::abs(stored_current - current);
 	SCLDBG_ << "Delta current is = " << delta_current;
 	SCLDBG_ << "Slope speed is = " << slope_speed;
+	uint64_t computed_timeout = std::ceil((delta_current / slope_speed)) * 1000000;
 	
 	//set current set poi into the output channel
-	*o_current_sp = current;
+	float affinity_check = std::abs(*o_current_sp - current);
+	if( affinity_check < *i_setpoint_affinity) {
+		SCLDBG_ << "New currenti don't pass affinity check affinity_check = " << affinity_check << " setpoint_affinity = "<<*i_setpoint_affinity;
+	}
 	
-	//compute timeout
-	uint64_t computed_timeout = std::ceil((delta_current / slope_speed)) * 1000000;
+	current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
+	SCLDBG_ << "Set current to value" << current;
+	if((err = powersupply_drv->setCurrentSP(current)) != 0) {
+		throw chaos::CException(2, boost::str( boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__));
+	}
+	
+	//assign new current setpoint
+	*o_current_sp = current;
 	setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
 	setWorkState(true);
 }
 
 void own::CmdPSSetCurrent::ccHandler() {
-	
-	
+	AbstractPowerSupplyCommand::ccHandler();
 }
 
 bool own::CmdPSSetCurrent::timeoutHandler() {
 	//move the state machine on fault
+	SCLDBG_ << "Timeout reached  with readout current " << *o_current;
 	setWorkState(false);
-	std::string error =  "Set current operation has gone on timeout";
-	writeErrorMessage(error);
-	throw chaos::CException(1, error.c_str(), __FUNCTION__);
+	bool result = false;
+	if( *i_delta_setpoint && (std::abs(*o_current - *o_current_sp) < *i_delta_setpoint)) {
+		std::string error =  "Out of SP";
+		SL_FAULT_RUNNIG_STATE
+		writeErrorMessage(error);
+	}else {
+		SL_END_RUNNIG_STATE
+	}
+	return result;
 }

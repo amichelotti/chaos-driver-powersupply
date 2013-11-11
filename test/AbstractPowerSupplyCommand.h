@@ -39,6 +39,7 @@ namespace driver {
 			char		*o_cmd_last_error;
 			uint64_t	*o_dev_state;
 			char		*o_status;
+			int32_t		*o_status_id;
 			uint64_t	*o_alarms;
 			int32_t		*o_polarity;
 			double		*o_voltage;
@@ -50,12 +51,16 @@ namespace driver {
 			double		*i_slope_down;
 			uint32_t	*i_command_timeout;
 			uint32_t	*i_driver_timeout;
+			uint32_t	*i_delta_setpoint;
+			uint32_t	*i_setpoint_affinity;
 			
 			//reference of the chaos bastraction ofpowersupply driver
 			chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
 			
 			//implemented handler
 			uint8_t implementedHandler();
+			
+			void ccHandler();
 			
 			// set the data fr the command
 			void setHandler(c_data::CDataWrapper *data);

@@ -77,7 +77,7 @@ void own::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CE
                           DataType::TYPE_DOUBLE,
                           DataType::Output);
     
-    addAttributeToDataSet("currentSP",
+    addAttributeToDataSet("current_sp",
                           "current Set Point",
                           DataType::TYPE_DOUBLE,
                           DataType::Output);
@@ -95,6 +95,11 @@ void own::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CE
     addAttributeToDataSet("alarms",
                           "Alarms",
                           DataType::TYPE_INT64,
+                          DataType::Output);
+	
+	addAttributeToDataSet("status_id",
+                          "status_id",
+                          DataType::TYPE_INT32,
                           DataType::Output);
 	
     addAttributeToDataSet("status",
@@ -123,12 +128,22 @@ void own::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CE
                           DataType::Input);
 	
 	addAttributeToDataSet("driver_timeout",
-                          "driver timeout in milliseconds",
+                          "Driver timeout in milliseconds",
                           DataType::TYPE_INT32,
                           DataType::Input);
 	
 	addAttributeToDataSet("command_timeout",
-                          "command timeout in microseconds",
+                          "General command timeout in microseconds",
+                          DataType::TYPE_INT32,
+                          DataType::Input);
+	
+	addAttributeToDataSet("delta_setpoint",
+                          "Delta of the setpoint",
+                          DataType::TYPE_INT32,
+                          DataType::Input);
+	
+	addAttributeToDataSet("setpoint_affinity",
+                          "Delta of the setpoint",
                           DataType::TYPE_INT32,
                           DataType::Input);
 	//define the custom share, across slow command, variable
@@ -161,18 +176,6 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 		throw chaos::CException(1, "Cannot allocate driver resources", __FUNCTION__);
 	}
     
-	if(powersupply_drv->getState(&state_id, state_str, 30000)!=0){
-		throw  chaos::CException(1, "Error getting the state of the powersupply, possibily off", __FUNCTION__);
-    }
-	
-    if(powersupply_drv->getHWVersion(device_hw,1000)==0){
-		SCCUAPP << "hardware found " << "device_hw";
-    }
-	
-
-	
-	
-        
 	// retrive the attribute description from the device database
 	getAttributeRangeValueInfo("slope_up", attributeInfo);
 	if(attributeInfo.defaultValue.size()) {
@@ -184,6 +187,15 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	if(attributeInfo.defaultValue.size()) {
 		asdown = boost::lexical_cast<float>(attributeInfo.defaultValue);
 	}
+	
+	if(powersupply_drv->getState(&state_id, state_str, 30000)!=0){
+		throw  chaos::CException(1, "Error getting the state of the powersupply, possibily off", __FUNCTION__);
+    }
+	
+    if(powersupply_drv->getHWVersion(device_hw,1000)==0){
+		SCCUAPP << "hardware found " << "device_hw";
+    }
+
 	if( (asup > 0) && (asdown > 0)) {
 		SCCUAPP << "set defaultl slope value";
 		if(powersupply_drv->setCurrentRampSpeed(asup, asdown) != 0) {

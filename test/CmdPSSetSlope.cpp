@@ -41,18 +41,15 @@ uint8_t own::CmdPSSetSlope::implementedHandler() {
 
 void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
-	int state;
-	string state_str;
 	float asup = 0.f;
 	float asdown = 0.f;
 	
-	getState(state, state_str);
-	switch (state) {
+	switch (*o_status_id) {
 		case common::powersupply::POWER_SUPPLY_STATE_ALARM:
 		case common::powersupply::POWER_SUPPLY_STATE_ERROR:
 		case common::powersupply::POWER_SUPPLY_STATE_UKN:
 			//i need to be in operational to exec
-			throw chaos::CException(1, boost::str( boost::format("Bas state for set slope comamnd %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
+			throw chaos::CException(1, boost::str( boost::format("Bas state for set slope comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__));
 			break;
 			
 		case common::powersupply::POWER_SUPPLY_STATE_OPEN:
@@ -62,7 +59,7 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 			break;
 			
 		default:
-			throw chaos::CException(1, boost::str( boost::format("Unrecognized state %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
+			throw chaos::CException(2, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__));
 	}
 	
 	
@@ -91,15 +88,14 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 	if((asup > 0) && (asdown > 0)) {
 		SCLDBG_ << " set slope with asup=" << asup << " asdown=" << asdown;
 		if(powersupply_drv->setCurrentRampSpeed(asup, asdown) != 0) {
-			throw chaos::CException(2, boost::str( boost::format("Error setting the slope %1%[%2%]") % state_str % state), std::string(__FUNCTION__));
+			throw chaos::CException(2, boost::str( boost::format("Error setting the slope %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__));
 		}
 	}
 	
 }
 
 void own::CmdPSSetSlope::ccHandler() {
-	
-	
+	AbstractPowerSupplyCommand::ccHandler();
 }
 
 bool own::CmdPSSetSlope::timeoutHandler() {
