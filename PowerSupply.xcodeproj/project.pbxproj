@@ -22,6 +22,8 @@
 		5303A93818197A240070356D /* PowerSupplyControlUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A93018190F4E0070356D /* PowerSupplyControlUnit.cpp */; };
 		5303A93B1819BB010070356D /* ChaosPowerSupplyInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 5303A92818190EBF0070356D /* ChaosPowerSupplyInterface.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5303A93C1819BB4C0070356D /* GenericPowerSupplyDD.h in Headers */ = {isa = PBXBuildFile; fileRef = 5303A92C18190ED00070356D /* GenericPowerSupplyDD.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5367761718339349006A7B25 /* ocem_test_ui.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5367761618339349006A7B25 /* ocem_test_ui.1 */; };
+		5367761C18339379006A7B25 /* test_ui_client.c in Sources */ = {isa = PBXBuildFile; fileRef = 5367761B18339379006A7B25 /* test_ui_client.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +43,16 @@
 			dstPath = /usr/share/man/man1/;
 			dstSubfolderSpec = 0;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		5367761018339349006A7B25 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				5367761718339349006A7B25 /* ocem_test_ui.1 in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
@@ -73,6 +85,9 @@
 		5303A92F18190F4E0070356D /* powersupply_cu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = powersupply_cu.cpp; sourceTree = "<group>"; };
 		5303A93018190F4E0070356D /* PowerSupplyControlUnit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PowerSupplyControlUnit.cpp; sourceTree = "<group>"; };
 		5303A93118190F4E0070356D /* PowerSupplyControlUnit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PowerSupplyControlUnit.h; sourceTree = "<group>"; };
+		5367761218339349006A7B25 /* ocem_test_ui */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ocem_test_ui; sourceTree = BUILT_PRODUCTS_DIR; };
+		5367761618339349006A7B25 /* ocem_test_ui.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = ocem_test_ui.1; sourceTree = "<group>"; };
+		5367761B18339379006A7B25 /* test_ui_client.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test_ui_client.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +105,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5367760F18339349006A7B25 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -100,6 +122,7 @@
 				5303A92E18190F4E0070356D /* test */,
 				5303A92A18190ED00070356D /* models */,
 				5303A92618190EBF0070356D /* core */,
+				5367761318339349006A7B25 /* ocem_test_ui */,
 				3285567817F1C43D00A64ED2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -109,6 +132,7 @@
 			children = (
 				3285567717F1C43D00A64ED2 /* ocem_cu */,
 				3285568717F1C4AC00A64ED2 /* libdriver_powersupply.dylib */,
+				5367761218339349006A7B25 /* ocem_test_ui */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -155,6 +179,15 @@
 				32599919182A7A09001E7D99 /* PowerSupplyCostants.h */,
 			);
 			path = test;
+			sourceTree = "<group>";
+		};
+		5367761318339349006A7B25 /* ocem_test_ui */ = {
+			isa = PBXGroup;
+			children = (
+				5367761B18339379006A7B25 /* test_ui_client.c */,
+				5367761618339349006A7B25 /* ocem_test_ui.1 */,
+			);
+			path = ocem_test_ui;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -207,6 +240,23 @@
 			productReference = 3285568717F1C4AC00A64ED2 /* libdriver_powersupply.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
+		5367761118339349006A7B25 /* ocem_test_ui */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5367761A18339349006A7B25 /* Build configuration list for PBXNativeTarget "ocem_test_ui" */;
+			buildPhases = (
+				5367760E18339349006A7B25 /* Sources */,
+				5367760F18339349006A7B25 /* Frameworks */,
+				5367761018339349006A7B25 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ocem_test_ui;
+			productName = ocem_test_ui;
+			productReference = 5367761218339349006A7B25 /* ocem_test_ui */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -230,6 +280,7 @@
 			targets = (
 				3285567617F1C43D00A64ED2 /* ocem_cu */,
 				3285568617F1C4AC00A64ED2 /* driver_powersupply */,
+				5367761118339349006A7B25 /* ocem_test_ui */,
 			);
 		};
 /* End PBXProject section */
@@ -259,6 +310,14 @@
 				5303A93518194CDC0070356D /* GenericPowerSupplyDD.h in Sources */,
 				5303A93618194CDC0070356D /* ChaosPowerSupplyInterface.cpp in Sources */,
 				5303A93718194CDC0070356D /* ChaosPowerSupplyInterface.h in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5367760E18339349006A7B25 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5367761C18339379006A7B25 /* test_ui_client.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -535,6 +594,66 @@
 			};
 			name = Release;
 		};
+		5367761818339349006A7B25 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LIBRARY = "libc++";
+				DSTROOT = /;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INSTALL_PATH = "$(SRCROOT)/../../usr/local/bin";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				OTHER_LDFLAGS = (
+					"-lboost_chrono",
+					"-lmemcached",
+					"-lboost_system",
+					"-lboost_thread",
+					"-lboost_program_options",
+					"-lboost_regex",
+					"-lboost_filesystem",
+					"-lmpio",
+					"-lmsgpack",
+					"-lmsgpack-rpc",
+					"-lboost_log",
+					"-lboost_log_setup",
+					"-lchaos_cutoolkit",
+					"-lchaos_common",
+					"-lchaos_uitoolkit",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		5367761918339349006A7B25 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LIBRARY = "libc++";
+				DSTROOT = /;
+				INSTALL_PATH = "$(SRCROOT)/../../usr/local/bin";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				OTHER_LDFLAGS = (
+					"-lboost_chrono",
+					"-lmemcached",
+					"-lboost_system",
+					"-lboost_thread",
+					"-lboost_program_options",
+					"-lboost_regex",
+					"-lboost_filesystem",
+					"-lmpio",
+					"-lmsgpack",
+					"-lmsgpack-rpc",
+					"-lboost_log",
+					"-lboost_log_setup",
+					"-lchaos_cutoolkit",
+					"-lchaos_common",
+					"-lchaos_uitoolkit",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -564,6 +683,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		5367761A18339349006A7B25 /* Build configuration list for PBXNativeTarget "ocem_test_ui" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5367761818339349006A7B25 /* Debug */,
+				5367761918339349006A7B25 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
