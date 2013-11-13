@@ -193,6 +193,7 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	getAttributeRangeValueInfo("slope_up", attributeInfo);
 	if(attributeInfo.defaultValue.size()) {
         asup = boost::lexical_cast<float>(attributeInfo.defaultValue);
+        SCCUAPP << "slope_up = "<<asup;
 	} else {
         SCCUAPP << "slope_up not set we need to compute it";
         asup = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
@@ -205,6 +206,7 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	getAttributeRangeValueInfo("slope_down", attributeInfo);
 	if(attributeInfo.defaultValue.size()) {
 		asdown = boost::lexical_cast<float>(attributeInfo.defaultValue);
+        SCCUAPP << "slope_down = "<<asup;
 	} else {
         SCCUAPP << "slope_down not set we need to compute it";
         asdown = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
