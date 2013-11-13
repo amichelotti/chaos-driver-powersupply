@@ -53,8 +53,6 @@ namespace driver {
 			uint32_t	*i_driver_timeout;
 			uint32_t	*i_delta_setpoint;
 			uint32_t	*i_setpoint_affinity;
-			uint32_t	*i_max_current;
-            uint32_t	*i_min_current;
 			//reference of the chaos bastraction ofpowersupply driver
 			chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
 			
