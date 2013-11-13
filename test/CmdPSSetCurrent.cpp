@@ -23,6 +23,7 @@
 
 #include <cmath>
 #include <boost/format.hpp>
+#include <boost/lexical_cast.hpp>
 
 #define LOG_HEAD "[CmdPSSetCurrent-" << getUID() << "] "
 #define SCLAPP_ LAPP_ << LOG_HEAD
@@ -41,6 +42,7 @@ uint8_t own::CmdPSSetCurrent::implementedHandler() {
 }
 
 void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
+    chaos::common::data::RangeValueInfo attributeInfo;
 	AbstractPowerSupplyCommand::setHandler(data);
 	int err = 0;
 
@@ -77,7 +79,26 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	}
     
     current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
-
+    SCLDBG_ << "compute timeout for set current = " << current;
+    
+    SCLDBG_ << "get default current_sp max and min";
+    getDeviceDatabase()->getAttributeRangeValueInfo("current_sp", attributeInfo);
+    if(!attributeInfo.maxRange.size() || !attributeInfo.minRange.size()) {
+        throw chaos::CException(1, "current set point need to have max and min", __FUNCTION__);
+    }
+    SCLDBG_ << "current_sp max="<<attributeInfo.maxRange;
+    SCLDBG_ << "current_sp min="<<attributeInfo.minRange;
+    
+    if(!*i_slope_up) {
+       SCLDBG_ << "o_current_sp not set we need to compute it";
+        *i_slope_up = boost::lexical_cast<float>(attributeInfo.maxRange)/20;
+    }
+    
+    if(!*i_slope_down) {
+        SCLDBG_ << "o_current_sp not set we need to compute it";
+        *i_slope_down = boost::lexical_cast<float>(attributeInfo.maxRange)/20;
+    }
+    
 	if(*o_current_sp > current) {
 		SCLDBG_ << "The new current is lower then actual = " << *o_current_sp << "[new "<<current<<"]";
 		slope_speed  = *i_slope_down;
@@ -85,7 +106,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 		SCLDBG_ << "The new current is higher then actual = " << *o_current_sp << "[new "<<current<<"]";;
 		slope_speed  = *i_slope_up;
 	}
-	SCLDBG_ << "compute timeout for set current = " << current;
+	
 	int32_t delta_current = std::abs(*o_current_sp - current);
 	SCLDBG_ << "Delta current is = " << delta_current;
 	SCLDBG_ << "Slope speed is = " << slope_speed;

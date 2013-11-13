@@ -46,7 +46,9 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	i_driver_timeout = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_INPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
 	i_delta_setpoint = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_INPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
 	i_setpoint_affinity = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_INPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
-	
+    i_max_current = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_INPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
+    i_min_current = getVariableValue(chaos_sc::IOCAttributeShareCache::SVD_INPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
+    
 	chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = driverAccessorsErogator->getAccessoInstanceByIndex(0);
 	if(power_supply_accessor != NULL) {
 		powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);

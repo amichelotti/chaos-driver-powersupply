@@ -177,7 +177,19 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 		throw chaos::CException(1, "Cannot allocate driver resources", __FUNCTION__);
 	}
     
+        //check mandatory default values
+    SCCUAPP << "check mandatory default values";
+    attributeInfo.reset();
+	getAttributeRangeValueInfo("current_sp", attributeInfo);
+    if(!attributeInfo.maxRange.size() || !attributeInfo.minRange.size()) {
+       throw chaos::CException(1, "current set point need to have max and min", __FUNCTION__);
+    }
+    
+    SCCUAPP << "current_sp max="<<attributeInfo.maxRange;
+    SCCUAPP << "current_sp min="<<attributeInfo.minRange;
+    
 	// retrive the attribute description from the device database
+    attributeInfo.reset();
 	getAttributeRangeValueInfo("slope_up", attributeInfo);
 	if(attributeInfo.defaultValue.size()) {
 		asup = boost::lexical_cast<float>(attributeInfo.defaultValue);
