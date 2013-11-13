@@ -119,7 +119,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	if((err = powersupply_drv->setCurrentSP(current)) != 0) {
 		throw chaos::CException(2, boost::str( boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__));
 	}
-	if((err = powersupply_drv->common::powersupply::AbstractPowerSupply::startCurrentRamp()) != 0) {
+	if((err = powersupply_drv->startCurrentRamp()) != 0) {
 		throw chaos::CException(2, boost::str( boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__));
 	}
 	//assign new current setpoint
