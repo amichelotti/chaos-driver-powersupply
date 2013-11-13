@@ -79,10 +79,10 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
 
 	if(*o_current_sp > current) {
-		SCLDBG_ << "The new current is lower then actual = " << *o_current_sp;
+		SCLDBG_ << "The new current is lower then actual = " << *o_current_sp << "[new "<<current<<"]";
 		slope_speed  = *i_slope_down;
 	}else {
-		SCLDBG_ << "The new current is higher then actual = " << *o_current_sp;
+		SCLDBG_ << "The new current is higher then actual = " << *o_current_sp << "[new "<<current<<"]";;
 		slope_speed  = *i_slope_up;
 	}
 	SCLDBG_ << "compute timeout for set current = " << current;
