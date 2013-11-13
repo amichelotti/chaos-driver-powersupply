@@ -167,7 +167,8 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	double asdown = 0.f;
 	std::string state_str;
 	RangeValueInfo attributeInfo;
-
+    RangeValueInfo current_sp_attr_info;
+    
 	chaos::cu::cu_driver::DriverAccessor * power_supply_accessor=AbstractControlUnit::getAccessoInstanceByIndex(0);
 	if(power_supply_accessor==NULL){
         throw chaos::CException(1, "Cannot retrieve the requested driver", __FUNCTION__);
@@ -179,9 +180,8 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
     
         //check mandatory default values
     SCCUAPP << "check mandatory default values";
-    attributeInfo.reset();
-	getAttributeRangeValueInfo("current_sp", attributeInfo);
-    if(!attributeInfo.maxRange.size() || !attributeInfo.minRange.size()) {
+	getAttributeRangeValueInfo("current_sp", current_sp_attr_info);
+    if(!current_sp_attr_info.maxRange.size() || !current_sp_attr_info.minRange.size()) {
        throw chaos::CException(1, "current set point need to have max and min", __FUNCTION__);
     }
     
@@ -192,15 +192,27 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
     attributeInfo.reset();
 	getAttributeRangeValueInfo("slope_up", attributeInfo);
 	if(attributeInfo.defaultValue.size()) {
-		asup = boost::lexical_cast<float>(attributeInfo.defaultValue);
-	}
+        asup = boost::lexical_cast<float>(attributeInfo.defaultValue);
+	} else {
+        SCCUAPP << "slope_up not set we need to compute it";
+        asup = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
+        double d_asup = (double) asup;
+        setVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up", &d_asup, sizeof(double));
+        SCCUAPP << "slope_up computed = " << asup;
+    }
 	
 	attributeInfo.reset();
 	getAttributeRangeValueInfo("slope_down", attributeInfo);
 	if(attributeInfo.defaultValue.size()) {
 		asdown = boost::lexical_cast<float>(attributeInfo.defaultValue);
-	}
-	
+	} else {
+        SCCUAPP << "slope_down not set we need to compute it";
+        asdown = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
+        double d_asdown = (double) asdown;
+        setVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_down", &d_asdown, sizeof(double));
+        SCCUAPP << "slope_down computed = " << asup;
+    }
+    
 	if(powersupply_drv->getState(&state_id, state_str, 30000)!=0){
 		throw  chaos::CException(1, "Error getting the state of the powersupply, possibily off", __FUNCTION__);
     }

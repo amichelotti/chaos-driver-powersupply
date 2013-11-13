@@ -81,22 +81,9 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
     SCLDBG_ << "compute timeout for set current = " << current;
     
-    SCLDBG_ << "get default current_sp max and min";
-    getDeviceDatabase()->getAttributeRangeValueInfo("current_sp", attributeInfo);
-    if(!attributeInfo.maxRange.size() || !attributeInfo.minRange.size()) {
-        throw chaos::CException(1, "current set point need to have max and min", __FUNCTION__);
-    }
-    SCLDBG_ << "current_sp max="<<attributeInfo.maxRange;
-    SCLDBG_ << "current_sp min="<<attributeInfo.minRange;
-    
-    if(!*i_slope_up) {
-       SCLDBG_ << "o_current_sp not set we need to compute it";
-        *i_slope_up = boost::lexical_cast<float>(attributeInfo.maxRange)/20;
-    }
-    
-    if(!*i_slope_down) {
-        SCLDBG_ << "o_current_sp not set we need to compute it";
-        *i_slope_down = boost::lexical_cast<float>(attributeInfo.maxRange)/20;
+    if(!*i_slope_up || !*i_slope_down) {
+       SCLDBG_ << "i_slope_up or i_slope_down has not been setupped";
+       throw chaos::CException(1, "i_slope_up or i_slope_down n]has not been setupped", std::string(__FUNCTION__));
     }
     
 	if(*o_current_sp > current) {
