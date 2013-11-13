@@ -18,7 +18,7 @@ ADD_DEFINITIONS(-g -O2 -Wall)
 add_definitions(-DBOOST_ALL_DYN_LINK)
 
 SET(PowerSupplydriver_src core/ChaosPowerSupplyInterface.cpp models/GenericPowerSupplyDD.cpp)
-SET(PowerSupplycu_src test/powersupply_cu.cpp test/PowerSupplyControlUnit.cpp test/SCPowerSupplyControlUnit.cpp test/CmdPSDefault.cpp test/CmdPSMode.cpp test/CmdPSReset.cpp test/CmdPSSetSlope.cpp test/CmdPSSetCurrent.cpp test/AbstractPowerSupplyCommand.cpp )
+SET(PowerSupplycu_src test/powersupply_cu.cpp test/PowerSupplyControlUnit.cpp test/SCPowerSupplyControlUnit.cpp test/CmdPSDefault.cpp test/CmdPSMode.cpp test/CmdPSReset.cpp test/CmdPSSetSlope.cpp test/CmdPSSetCurrent.cpp test/CmdPSSetPolarity.cpp test/AbstractPowerSupplyCommand.cpp )
 
 INCLUDE_DIRECTORIES(../../ ${PROJECT_SOURCE_DIR}/../../usr/local/include)
 LINK_DIRECTORIES(${PROJECT_SOURCE_DIR}/../../chaosframework/usr/local/lib)

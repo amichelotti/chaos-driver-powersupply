@@ -28,6 +28,7 @@
 #include "CmdPSReset.h"
 #include "CmdPSSetSlope.h"
 #include "CmdPSSetCurrent.h"
+#include "CmdSetPolarity.h"
 using namespace chaos::common::data;
 using namespace chaos::cu::control_manager::slow_command;
 using namespace chaos::cu::driver_manager::driver;
@@ -67,7 +68,7 @@ void own::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CE
 	installCommand<CmdPSMode>(CMD_PS_RESET_ALIAS);
 	installCommand<CmdPSSetSlope>(CMD_PS_SET_SLOPE_ALIAS);
 	installCommand<CmdPSSetCurrent>(CMD_PS_SET_CURRENT_ALIAS);
-	
+	installCommand<CmdSetPolarity>(CMD_PS_SET_POLARITY_ALIAS);
     //set it has default
 	setDefaultCommand(CMD_PS_DEFAULT_ALIAS);
     
