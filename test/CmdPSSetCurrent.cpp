@@ -83,10 +83,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     SCLDBG_ << "compute timeout for set current = " << current;
     
     if(!*i_slope_up || !*i_slope_down) {
-       SCLDBG_ << "i_slope_up or i_slope_down has not been setupped";
-       throw chaos::CException(1, "i_slope_up or i_slope_down n]has not been setupped", std::string(__FUNCTION__));
-    } else {
-        //we need to compute it
+            //we need to compute it
         SCLDBG_ << "check mandatory default values";
         getDeviceDatabase()->getAttributeRangeValueInfo("current_sp", current_sp_attr_info);
         if(!current_sp_attr_info.maxRange.size() || !current_sp_attr_info.minRange.size()) {
@@ -96,7 +93,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
         SCLDBG_ << "current_sp max="<<attributeInfo.maxRange;
         SCLDBG_ << "current_sp min="<<attributeInfo.minRange;
         *i_slope_up = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
-        *i_slope_down = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
+        *i_slope_down = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;;
     }
     
 	if(*o_current_sp > current) {
