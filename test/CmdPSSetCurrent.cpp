@@ -108,20 +108,22 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	SCLDBG_ << "Delta current is = " << delta_current;
 	SCLDBG_ << "Slope speed is = " << slope_speed;
 	uint64_t computed_timeout = (std::ceil((delta_current / slope_speed)) * 1000000) + 2000000; //add two seconds for test
-	
+    setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
+	SCLDBG_ << "computed_timeout is = " << computed_timeout;
 	//set current set poi into the output channel
 	if(*i_setpoint_affinity && (delta_current < *i_setpoint_affinity)) {
 		SCLDBG_ << "New current don't pass affinity check affinity_check = " << delta_current << " setpoint_affinity = "<<*i_setpoint_affinity;
 	}
 	
-	SCLDBG_ << "Set current to value" << current;
+	SCLDBG_ << "Set current to value " << current;
 	if((err = powersupply_drv->setCurrentSP(current)) != 0) {
 		throw chaos::CException(2, boost::str( boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__));
 	}
-	
+	if((err = powersupply_drv->common::powersupply::AbstractPowerSupply::startCurrentRamp()) != 0) {
+		throw chaos::CException(2, boost::str( boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__));
+	}
 	//assign new current setpoint
 	*o_current_sp = current;
-	setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
 	setWorkState(true);
 }
 
