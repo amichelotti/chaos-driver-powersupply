@@ -11,6 +11,7 @@
 		3288CE9E1830CF4700476B85 /* CmdPSSetSlope.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3288CE9C1830CF4700476B85 /* CmdPSSetSlope.cpp */; };
 		3288CEA11830E6EC00476B85 /* CmdPSSetCurrent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3288CE9F1830E6EC00476B85 /* CmdPSSetCurrent.cpp */; };
 		329C7A12182A353300AF1465 /* CmdPSMode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 329C7A10182A353300AF1465 /* CmdPSMode.cpp */; };
+		32A737361833B5A8001D426E /* CmdSetPolarity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32A737341833B5A8001D426E /* CmdSetPolarity.cpp */; };
 		32B8C19E18292A82001CF714 /* CmdPSDefault.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32B8C19C18292A82001CF714 /* CmdPSDefault.cpp */; };
 		32B8C1A5182931D9001CF714 /* AbstractPowerSupplyCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32B8C1A3182931D9001CF714 /* AbstractPowerSupplyCommand.cpp */; };
 		32CCE8BB1828D90F00BDCEA0 /* SCPowerSupplyControlUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32CCE8B91828D90F00BDCEA0 /* SCPowerSupplyControlUnit.cpp */; };
@@ -71,6 +72,8 @@
 		3288CEA01830E6EC00476B85 /* CmdPSSetCurrent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdPSSetCurrent.h; sourceTree = "<group>"; };
 		329C7A10182A353300AF1465 /* CmdPSMode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CmdPSMode.cpp; sourceTree = "<group>"; };
 		329C7A11182A353300AF1465 /* CmdPSMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdPSMode.h; sourceTree = "<group>"; };
+		32A737341833B5A8001D426E /* CmdSetPolarity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CmdSetPolarity.cpp; sourceTree = "<group>"; };
+		32A737351833B5A8001D426E /* CmdSetPolarity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdSetPolarity.h; sourceTree = "<group>"; };
 		32B8C19C18292A82001CF714 /* CmdPSDefault.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CmdPSDefault.cpp; sourceTree = "<group>"; };
 		32B8C19D18292A82001CF714 /* CmdPSDefault.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdPSDefault.h; sourceTree = "<group>"; };
 		32B8C1A3182931D9001CF714 /* AbstractPowerSupplyCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AbstractPowerSupplyCommand.cpp; sourceTree = "<group>"; };
@@ -173,6 +176,8 @@
 				3288CE9D1830CF4700476B85 /* CmdPSSetSlope.h */,
 				3288CE9F1830E6EC00476B85 /* CmdPSSetCurrent.cpp */,
 				3288CEA01830E6EC00476B85 /* CmdPSSetCurrent.h */,
+				32A737341833B5A8001D426E /* CmdSetPolarity.cpp */,
+				32A737351833B5A8001D426E /* CmdSetPolarity.h */,
 				32B8C1A3182931D9001CF714 /* AbstractPowerSupplyCommand.cpp */,
 				32B8C1A4182931D9001CF714 /* AbstractPowerSupplyCommand.h */,
 				32B8C1A618294409001CF714 /* PowerSupplyStateMachine.h */,
@@ -299,6 +304,7 @@
 				3259991C182A815F001E7D99 /* CmdPSReset.cpp in Sources */,
 				5303A93218190F4E0070356D /* powersupply_cu.cpp in Sources */,
 				32B8C19E18292A82001CF714 /* CmdPSDefault.cpp in Sources */,
+				32A737361833B5A8001D426E /* CmdSetPolarity.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

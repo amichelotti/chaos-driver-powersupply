@@ -47,6 +47,11 @@ namespace driver {
 		const char * const CMD_PS_SET_CURRENT_ALIAS = "sett";
 		//! The alias of the current to set
 		const char * const CMD_PS_SET_CURRENT = "sett_cur";
+        
+            //! The alias of the "set polarity" command
+		const char * const CMD_PS_SET_POLARITY_ALIAS = "pola";
+            //! the type of polarity
+		const char * const CMD_PS_SET_POLARITY_VALUE = "pola_value";
 	}
 }
 #endif
