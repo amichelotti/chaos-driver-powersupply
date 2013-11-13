@@ -212,7 +212,7 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
         asdown = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
         double d_asdown = (double) asdown;
         setVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_down", &d_asdown, sizeof(double));
-        SCCUAPP << "slope_down computed = " << asup;
+        SCCUAPP << "slope_down computed = " << asdown;
     }
     
 	if(powersupply_drv->getState(&state_id, state_str, 30000)!=0){
