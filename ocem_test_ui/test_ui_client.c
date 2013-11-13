@@ -19,7 +19,7 @@ int main (int argc, char* argv[] )
     }
     printf("using as MDS %s and CU %s\n",mdsServer,devName);
         //create init string
-    sprintf(tmpInitString, "metadata-server=%s", mdsServer);
+    sprintf(tmpInitString, "metadata-server=%s\nlog-on-console=true", mdsServer);
     
         //init the toolkit
     err = initToolkit(tmpInitString);
@@ -33,6 +33,13 @@ int main (int argc, char* argv[] )
         printf("Error getNewControllerForDeviceID %d\n", err);
         return -1;
     }
+    
+    err = setControllerTimeout(devID, 10000);
+    if (err != 0) {
+        printf("Error setting timeout %d\n", err);
+        return -1;
+    }
+    
     printf("Init device 0x%x\n",devID);
     err = initDevice(devID);
     if (err != 0) {
@@ -45,7 +52,6 @@ int main (int argc, char* argv[] )
         printf("Error startDevice %d\n", err);
         return -1;
     }
-    sleep(5);
     printf("Fetching device 0x%x\n",devID);
     err = fetchLiveData(devID);
     if (err != 0) {
