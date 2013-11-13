@@ -24,15 +24,17 @@ INCLUDE_DIRECTORIES(../../ ${PROJECT_SOURCE_DIR}/../../usr/local/include)
 LINK_DIRECTORIES(${PROJECT_SOURCE_DIR}/../../chaosframework/usr/local/lib)
 
 ADD_EXECUTABLE(ocem_cu ${PowerSupplycu_src})
+ADD_EXECUTABLE(test_ocem_ui_cu test/test_ui_client.c)
 ADD_LIBRARY(driver_powersupply SHARED ${PowerSupplydriver_src})
 # set_target_properties(ocem_cu PROPERTIES PREFIX "" SUFFIX ".extension")
 
 
 TARGET_LINK_LIBRARIES(ocem_cu pthread driver_powersupply common_powersupply common_serial common_debug chaos_cutoolkit chaos_common boost_program_options boost_system boost_thread boost_chrono boost_regex boost_log boost_log_setup boost_atomic memcached msgpack msgpack-rpc mpio)
 TARGET_LINK_LIBRARIES(driver_powersupply pthread driver_powersupply common_powersupply common_serial chaos_cutoolkit chaos_common boost_program_options boost_system boost_thread boost_chrono boost_regex boost_log boost_log_setup boost_atomic memcached msgpack msgpack-rpc mpio)
-
+TARGET_LINK_LIBRARIES(test_ocem_ui_cu chaos_uitoolkit chaos_common boost_program_options boost_system boost_thread boost_chrono boost_regex boost_log boost_log_setup boost_atomic memcached msgpack msgpack-rpc mpio)
 
 INSTALL_TARGETS(/bin ocem_cu)
+INSTALL_TARGETS(/bin test_ocem_ui_cu)
 INSTALL_TARGETS(/lib driver_powersupply)
 FILE(GLOB core_src core/*.h)
 FILE(GLOB models_src models/*.h)
