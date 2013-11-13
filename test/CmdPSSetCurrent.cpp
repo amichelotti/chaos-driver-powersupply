@@ -44,7 +44,6 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
 	int err = 0;
 
-	float stored_current = 0.f;
 	float current = 0.f;
 	float slope_speed = 0.f;
 	
@@ -73,34 +72,30 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 		setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
 	}
 	
-	if((err = powersupply_drv->getCurrentSP(&stored_current)) != 0) {
-		//error to get value...set ne one
-	}
-	
 	if(!data || !data->hasKey(CMD_PS_SET_CURRENT)) {
 		throw chaos::CException(1, boost::str( boost::format("Set current parameter not present") % o_status % *o_status_id), std::string(__FUNCTION__));
 	}
-	
-	if(stored_current > current) {
-		SCLDBG_ << "The new current is lower then actual = " << stored_current;
+    
+    current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
+
+	if(*o_current_sp > current) {
+		SCLDBG_ << "The new current is lower then actual = " << *o_current_sp;
 		slope_speed  = *i_slope_down;
 	}else {
-		SCLDBG_ << "The new current is higher then actual = " << stored_current;
+		SCLDBG_ << "The new current is higher then actual = " << *o_current_sp;
 		slope_speed  = *i_slope_up;
 	}
 	SCLDBG_ << "compute timeout for set current = " << current;
-	int32_t delta_current = std::abs(stored_current - current);
+	int32_t delta_current = std::abs(*o_current_sp - current);
 	SCLDBG_ << "Delta current is = " << delta_current;
 	SCLDBG_ << "Slope speed is = " << slope_speed;
-	uint64_t computed_timeout = std::ceil((delta_current / slope_speed)) * 1000000;
+	uint64_t computed_timeout = (std::ceil((delta_current / slope_speed)) * 1000000) + 2000000; //add two seconds for test
 	
 	//set current set poi into the output channel
-	float affinity_check = std::abs(*o_current_sp - current);
-	if( affinity_check < *i_setpoint_affinity) {
-		SCLDBG_ << "New currenti don't pass affinity check affinity_check = " << affinity_check << " setpoint_affinity = "<<*i_setpoint_affinity;
+	if(*i_setpoint_affinity && (delta_current < *i_setpoint_affinity)) {
+		SCLDBG_ << "New current don't pass affinity check affinity_check = " << delta_current << " setpoint_affinity = "<<*i_setpoint_affinity;
 	}
 	
-	current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
 	SCLDBG_ << "Set current to value" << current;
 	if((err = powersupply_drv->setCurrentSP(current)) != 0) {
 		throw chaos::CException(2, boost::str( boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__));
