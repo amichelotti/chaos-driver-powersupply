@@ -58,7 +58,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
         case common::powersupply::POWER_SUPPLY_STATE_OPEN:
 		case common::powersupply::POWER_SUPPLY_STATE_ON:
                 //i need to be in operational to exec
-			throw chaos::CException(1, boost::str( boost::format("Bas state for set polarity comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__));
+			throw chaos::CException(1, boost::str( boost::format("Bad state for set polarity comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__));
 			break;
 			
 
