@@ -107,7 +107,9 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	int32_t delta_current = std::abs(*o_current_sp - current);
 	SCLDBG_ << "Delta current is = " << delta_current;
 	SCLDBG_ << "Slope speed is = " << slope_speed;
-	uint64_t computed_timeout = (std::ceil((delta_current / slope_speed)) * 1000000) + 2000000; //add two seconds for test
+	uint64_t computed_timeout = (std::ceil((delta_current / slope_speed)) * 1000000);
+    computed_timeout = computed_timeout * 1.2; //add 20% to the real timeout
+    
     setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
 	SCLDBG_ << "computed_timeout is = " << computed_timeout;
 	//set current set poi into the output channel
