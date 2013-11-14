@@ -198,9 +198,10 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
         SCCUAPP << "slope_up not set we need to compute it";
         asup = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
         double tmp_asup = (double) asup;
+        SCCUAPP << "slope_up computed = " << asup << "[" << tmp_asup << "]";
         setVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up", &tmp_asup, sizeof(double));
         tmp_asup = *getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up")->getCurrentValue<double>();
-        SCCUAPP << "slope_up computed = " << asup << "[" << tmp_asup << "]";
+        SCCUAPP << "slope_up re-read = " << asup << "[" << tmp_asup << "]";
     }
 	
 	attributeInfo.reset();
@@ -212,9 +213,10 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
         SCCUAPP << "slope_down not set we need to compute it";
         asdown = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
         double tmp_asdown = (double) asdown;
-        setVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_down", &tmp_asdown, sizeof(double));
-        tmp_asdown = *getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up")->getCurrentValue<double>();
         SCCUAPP << "slope_down computed = " << asdown << "[" << tmp_asdown << "]";;
+        setVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_down", &tmp_asdown, sizeof(double));
+        tmp_asdown = *getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_down")->getCurrentValue<double>();
+        SCCUAPP << "slope_down re-read = " << asdown << "[" << tmp_asdown << "]";
     }
     
 	if(powersupply_drv->getState(&state_id, state_str, 30000)!=0){
