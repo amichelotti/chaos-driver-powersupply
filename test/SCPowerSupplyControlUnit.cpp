@@ -197,9 +197,10 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	} else {
         SCCUAPP << "slope_up not set we need to compute it";
         asup = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
-        double d_asup = (double) asup;
-        setVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up", &d_asup, sizeof(double));
-        SCCUAPP << "slope_up computed = " << asup;
+        double tmp_asup = (double) asup;
+        setVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up", &tmp_asup, sizeof(double));
+        tmp_asup = *getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up")->getCurrentValue<double>();
+        SCCUAPP << "slope_up computed = " << asup << "[" << tmp_asup << "]";
     }
 	
 	attributeInfo.reset();
@@ -210,9 +211,10 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	} else {
         SCCUAPP << "slope_down not set we need to compute it";
         asdown = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
-        double d_asdown = (double) asdown;
-        setVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_down", &d_asdown, sizeof(double));
-        SCCUAPP << "slope_down computed = " << asdown;
+        double tmp_asdown = (double) asdown;
+        setVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_down", &tmp_asdown, sizeof(double));
+        tmp_asdown = *getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up")->getCurrentValue<double>();
+        SCCUAPP << "slope_down computed = " << asdown << "[" << tmp_asdown << "]";;
     }
     
 	if(powersupply_drv->getState(&state_id, state_str, 30000)!=0){
@@ -229,7 +231,8 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 			throw chaos::CException(2, boost::str( boost::format("Error setting the slope in state %1%[%2%]") % state_str % state_id), std::string(__FUNCTION__));
 		}
 	} else {
-		SCCUAPP << "No default slope passed";
+		throw chaos::CException(2, "No default slope value found", std::string(__FUNCTION__));
+
 	}
 	
 }
