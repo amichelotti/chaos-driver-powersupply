@@ -85,13 +85,13 @@ void CmdPSDefault::acquireHandler() {
     }
     
     if(powersupply_drv && !powersupply_drv->getPolarity(&tmp_uint32)){
-        CMDCU_ << "o_polarity ->" << tmp_float;
+        CMDCU_ << "o_polarity ->" << tmp_uint32;
 		*o_polarity = tmp_uint32;
     }
 	
 	
     if(powersupply_drv && !powersupply_drv->getAlarms(&tmp_uint64)){
-        CMDCU_ << "o_alarms ->" << tmp_float;
+        CMDCU_ << "o_alarms ->" << tmp_uint64;
 		*o_alarms = tmp_uint64;
     }
 	
