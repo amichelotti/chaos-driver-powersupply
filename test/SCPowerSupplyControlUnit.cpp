@@ -202,6 +202,8 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
         setVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up", &tmp_asup, sizeof(double));
         tmp_asup = *getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up")->getCurrentValue<double>();
         SCCUAPP << "slope_up re-read = " << asup << "[" << tmp_asup << "]";
+        tmp_asup = *getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up")->getNextValue<double>();
+        SCCUAPP << "slope_up re-read  next= " << asup << "[" << tmp_asup << "]";
     }
 	
 	attributeInfo.reset();
@@ -217,6 +219,8 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
         setVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_down", &tmp_asdown, sizeof(double));
         tmp_asdown = *getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_down")->getCurrentValue<double>();
         SCCUAPP << "slope_down re-read = " << asdown << "[" << tmp_asdown << "]";
+        tmp_asdown = *getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_down")->getNextValue<double>();
+        SCCUAPP << "slope_up re-read  next= " << asdown << "[" << tmp_asdown << "]";
     }
     
 	if(powersupply_drv->getState(&state_id, state_str, 30000)!=0){
