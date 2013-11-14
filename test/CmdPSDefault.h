@@ -31,7 +31,7 @@ namespace driver {
 	namespace powersupply {
 		
 		class CmdPSDefault : public AbstractPowerSupplyCommand {
-			
+			uint64_t sequence_number;
 		protected:
 			// return the implemented handler
 			uint8_t implementedHandler();

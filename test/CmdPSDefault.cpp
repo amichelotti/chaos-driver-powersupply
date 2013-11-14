@@ -54,6 +54,8 @@ void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 
 	//no adiditonal setup here
 	SL_STACK_RUNNIG_STATE
+    
+    sequence_number = 0;
 }
 
 // Aquire the necessary data for the command
@@ -103,7 +105,7 @@ void CmdPSDefault::acquireHandler() {
 	//set the current device state and last error
 	acquiredData->addInt64Value("dev_state", *o_dev_state);
 	acquiredData->addStringValue("cmd_last_error", o_cmd_last_error);
-	
+	acquiredData->addInt64Value("seq", sequence_number++);
     //push data on central cache
 	pushDataSet(acquiredData);
 }
