@@ -75,19 +75,23 @@ void CmdPSDefault::acquireHandler() {
     CDataWrapper *acquiredData = getNewDataWrapper();
 	
     if(powersupply_drv && !powersupply_drv->getCurrentOutput(&tmp_float)){
+        CMDCU_ << "o_current ->" << tmp_float;
 		*o_current = (double)tmp_float;
     }
 	
 	if(powersupply_drv && !powersupply_drv->getVoltageOutput(&tmp_float)){
+        CMDCU_ << "o_voltage ->" << tmp_float;
 		*o_voltage = (double)tmp_float;
     }
     
     if(powersupply_drv && !powersupply_drv->getPolarity(&tmp_uint32)){
+        CMDCU_ << "o_polarity ->" << tmp_float;
 		*o_polarity = tmp_uint32;
     }
 	
 	
     if(powersupply_drv && !powersupply_drv->getAlarms(&tmp_uint64)){
+        CMDCU_ << "o_alarms ->" << tmp_float;
 		*o_alarms = tmp_uint64;
     }
 	
