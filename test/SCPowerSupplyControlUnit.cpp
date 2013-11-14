@@ -162,6 +162,7 @@ void own::SCPowerSupplyControlUnit::unitDefineDriver(std::vector<DrvRequestInfo>
 // Abstract method for the initialization of the control unit
 void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	SCCUAPP "unitInit";
+    int err = 0;
 	int state_id;
 	double *asup = getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up")->getCurrentValue<double>();
 	double *asdown = getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_down")->getCurrentValue<double>();
@@ -221,8 +222,8 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 
 	if( (*asup > 0) && (*asdown > 0)) {
 		SCCUAPP << "set defaultl slope value";
-		if(powersupply_drv->setCurrentRampSpeed(*asup, *asdown) != 0) {
-			throw chaos::CException(2, boost::str( boost::format("Error setting the slope in state %1%[%2%]") % state_str % state_id), std::string(__FUNCTION__));
+		if((err = powersupply_drv->setCurrentRampSpeed(*asup, *asdown) )!= 0) {
+			throw chaos::CException(2, boost::str( boost::format("Error %1 setting the slope in state %2%[%3%]") % err % state_str % state_id), std::string(__FUNCTION__));
 		}
 	} else {
 		throw chaos::CException(2, "No default slope value found", std::string(__FUNCTION__));
