@@ -166,6 +166,7 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	int state_id;
 	double *asup = getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up")->getCurrentValue<double>();
 	double *asdown = getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_down")->getCurrentValue<double>();
+    int32_t *status_id = getVariableValue(IOCAttributeShareCache::SVD_INPUT, "status_id")->getCurrentValue<int32_t>();
 	std::string state_str;
 	RangeValueInfo attributeInfo;
     RangeValueInfo current_sp_attr_info;
@@ -215,7 +216,8 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	if(powersupply_drv->getState(&state_id, state_str, 30000)!=0){
 		throw  chaos::CException(1, "Error getting the state of the powersupply, possibily off", __FUNCTION__);
     }
-	
+	*status_id = state_id;
+    
     if(powersupply_drv->getHWVersion(device_hw,1000)==0){
 		SCCUAPP << "hardware found " << "device_hw";
     }

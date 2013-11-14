@@ -78,7 +78,6 @@ void CmdPSDefault::acquireHandler() {
     CDataWrapper *acquiredData = getNewDataWrapper();
 	
     if(powersupply_drv && !powersupply_drv->getCurrentOutput(&tmp_float)){
-        CMDCU_ << "o_current ->" << tmp_float;
 		*o_current = (double)tmp_float;
     }
     
@@ -88,38 +87,45 @@ void CmdPSDefault::acquireHandler() {
         CMDCU_ << "slow acquire staterd after us=" << time_diff;
         
         if(powersupply_drv && !powersupply_drv->getVoltageOutput(&tmp_float)){
-            CMDCU_ << "o_voltage ->" << tmp_float;
             *o_voltage = (double)tmp_float;
         }
         
         if(powersupply_drv && !powersupply_drv->getPolarity(&tmp_uint32)){
-            CMDCU_ << "o_polarity ->" << tmp_uint32;
             *o_polarity = tmp_uint32;
         }
         
         
         if(powersupply_drv && !powersupply_drv->getAlarms(&tmp_uint64)){
-            CMDCU_ << "o_alarms ->" << tmp_uint64;
             *o_alarms = tmp_uint64;
         }
         
         if(powersupply_drv && !powersupply_drv->getState(&stato, desc)){
-            CMDCU_ << "got state ->" << desc << "[" << stato << "]";
+            *o_status_id = stato;
             std::strncpy(o_status, desc.c_str(), 256);
         }
         
 	}
     acquiredData->addDoubleValue("current", *o_current);
+    CMDCU_ << "current ->" << *o_current;
 	acquiredData->addDoubleValue("current_sp", *o_current_sp);
+    CMDCU_ << "current_sp ->" << *o_current_sp;
     acquiredData->addDoubleValue("voltage", *o_voltage);
+    CMDCU_ << "voltage ->" << *o_voltage;
     acquiredData->addInt32Value("polarity", *o_polarity);
+    CMDCU_ << "polarity ->" << *o_polarity;
     acquiredData->addInt64Value("alarms", *o_alarms);
-    acquiredData->addInt32Value("status_id", (*o_status_id = stato));
+    CMDCU_ << "alarms ->" << *o_alarms;
+    acquiredData->addInt32Value("status_id", *o_status_id );
+    CMDCU_ << "status_id -> " << *o_status_id;
     acquiredData->addStringValue("status", o_status);
+    CMDCU_ << "status -> " << o_status;
         //set the current device state and last error
 	acquiredData->addInt64Value("dev_state", *o_dev_state);
+    CMDCU_ << "dev_state -> " << *o_dev_state;
 	acquiredData->addStringValue("cmd_last_error", o_cmd_last_error);
+    CMDCU_ << "cmd_last_error -> " << o_cmd_last_error;
 	acquiredData->addInt64Value("seq", sequence_number++);
+    CMDCU_ << "sequence_number -> " << sequence_number;
         //push data on central cache
 	pushDataSet(acquiredData);
 }
