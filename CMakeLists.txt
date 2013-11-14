@@ -24,7 +24,7 @@ INCLUDE_DIRECTORIES(../../ ${PROJECT_SOURCE_DIR}/../../usr/local/include)
 LINK_DIRECTORIES(${PROJECT_SOURCE_DIR}/../../chaosframework/usr/local/lib)
 
 ADD_EXECUTABLE(ocem_cu ${PowerSupplycu_src})
-ADD_EXECUTABLE(test_ocem_ui_cu test/test_ui_client.c)
+ADD_EXECUTABLE(test_ocem_ui_cu ocem_test_ui/test_ui_client.c)
 ADD_LIBRARY(driver_powersupply SHARED ${PowerSupplydriver_src})
 # set_target_properties(ocem_cu PROPERTIES PREFIX "" SUFFIX ".extension")
 
