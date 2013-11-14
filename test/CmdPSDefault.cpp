@@ -37,28 +37,29 @@ CmdPSDefault::~CmdPSDefault() {
 	
 }
 
-// return the implemented handler
+    // return the implemented handler
 uint8_t CmdPSDefault::implementedHandler() {
-	//add to default hadnler the acquisition one
+        //add to default hadnler the acquisition one
 	return  AbstractPowerSupplyCommand::implementedHandler() |
-			HandlerType::HT_Acquisition;
+    HandlerType::HT_Acquisition;
 }
 
-// Start the command execution
+    // Start the command execution
 void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
-	//set command has stackable
+        //set command has stackable
 	CMDCU_ << "Change running property to SL_STACK_RUNNIG_STATE";
-
-	//call superclass set handler to setup all variable
+    
+        //call superclass set handler to setup all variable
 	AbstractPowerSupplyCommand::setHandler(data);
-
-	//no adiditonal setup here
+    
+        //no adiditonal setup here
 	SL_STACK_RUNNIG_STATE
     
     sequence_number = 0;
+    last_slow_acq_time = shared_stat->lastCmdStepStart;
 }
 
-// Aquire the necessary data for the command
+    // Aquire the necessary data for the command
 /*!
  The acquire handler has the purpose to get all necessary data need the by CC handler.
  \return the mask for the runnign state
@@ -70,35 +71,44 @@ void CmdPSDefault::acquireHandler() {
 	int tmp_uint32 = 0;
 	uint64_t tmp_uint64 = 0;
 	CMDCU_ << "Acquiring data";
-
-	
+    
+    uint64_t time_diff = shared_stat->lastCmdStepStart - last_slow_acq_time;
+    
+    
     CDataWrapper *acquiredData = getNewDataWrapper();
 	
     if(powersupply_drv && !powersupply_drv->getCurrentOutput(&tmp_float)){
         CMDCU_ << "o_current ->" << tmp_float;
 		*o_current = (double)tmp_float;
     }
-	
-	if(powersupply_drv && !powersupply_drv->getVoltageOutput(&tmp_float)){
-        CMDCU_ << "o_voltage ->" << tmp_float;
-		*o_voltage = (double)tmp_float;
-    }
     
-    if(powersupply_drv && !powersupply_drv->getPolarity(&tmp_uint32)){
-        CMDCU_ << "o_polarity ->" << tmp_uint32;
-		*o_polarity = tmp_uint32;
-    }
-	
-	
-    if(powersupply_drv && !powersupply_drv->getAlarms(&tmp_uint64)){
-        CMDCU_ << "o_alarms ->" << tmp_uint64;
-		*o_alarms = tmp_uint64;
-    }
-	
-    if(powersupply_drv && !powersupply_drv->getState(&stato, desc)){
-		CMDCU_ << "got state ->" << desc << "[" << stato << "]";
-		std::strncpy(o_status, desc.c_str(), 256);
-    }
+    if(time_diff > 10000000 ) {
+        last_slow_acq_time = shared_stat->lastCmdStepStart;
+        
+        CMDCU_ << "slow acquire staterd after us=" << time_diff;
+        
+        if(powersupply_drv && !powersupply_drv->getVoltageOutput(&tmp_float)){
+            CMDCU_ << "o_voltage ->" << tmp_float;
+            *o_voltage = (double)tmp_float;
+        }
+        
+        if(powersupply_drv && !powersupply_drv->getPolarity(&tmp_uint32)){
+            CMDCU_ << "o_polarity ->" << tmp_uint32;
+            *o_polarity = tmp_uint32;
+        }
+        
+        
+        if(powersupply_drv && !powersupply_drv->getAlarms(&tmp_uint64)){
+            CMDCU_ << "o_alarms ->" << tmp_uint64;
+            *o_alarms = tmp_uint64;
+        }
+        
+        if(powersupply_drv && !powersupply_drv->getState(&stato, desc)){
+            CMDCU_ << "got state ->" << desc << "[" << stato << "]";
+            std::strncpy(o_status, desc.c_str(), 256);
+        }
+        
+	}
     acquiredData->addDoubleValue("current", *o_current);
 	acquiredData->addDoubleValue("current_sp", *o_current_sp);
     acquiredData->addDoubleValue("voltage", *o_voltage);
@@ -106,10 +116,10 @@ void CmdPSDefault::acquireHandler() {
     acquiredData->addInt64Value("alarms", *o_alarms);
     acquiredData->addInt32Value("status_id", (*o_status_id = stato));
     acquiredData->addStringValue("status", o_status);
-	//set the current device state and last error
+        //set the current device state and last error
 	acquiredData->addInt64Value("dev_state", *o_dev_state);
 	acquiredData->addStringValue("cmd_last_error", o_cmd_last_error);
 	acquiredData->addInt64Value("seq", sequence_number++);
-    //push data on central cache
+        //push data on central cache
 	pushDataSet(acquiredData);
 }

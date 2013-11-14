@@ -32,6 +32,7 @@ namespace driver {
 		
 		class CmdPSDefault : public AbstractPowerSupplyCommand {
 			uint64_t sequence_number;
+            uint64_t last_slow_acq_time;
 		protected:
 			// return the implemented handler
 			uint8_t implementedHandler();
