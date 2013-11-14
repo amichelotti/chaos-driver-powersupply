@@ -163,8 +163,8 @@ void own::SCPowerSupplyControlUnit::unitDefineDriver(std::vector<DrvRequestInfo>
 void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	SCCUAPP "unitInit";
 	int state_id;
-	double asup = 0.f;
-	double asdown = 0.f;
+	double *asup = getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up")->getCurrentValue<double>();
+	double *asdown = getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_down")->getCurrentValue<double>();
 	std::string state_str;
 	RangeValueInfo attributeInfo;
     RangeValueInfo current_sp_attr_info;
@@ -192,35 +192,23 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
     attributeInfo.reset();
 	getAttributeRangeValueInfo("slope_up", attributeInfo);
 	if(attributeInfo.defaultValue.size()) {
-        asup = boost::lexical_cast<float>(attributeInfo.defaultValue);
-        SCCUAPP << "slope_up = "<<asup;
+        *asup = boost::lexical_cast<float>(attributeInfo.defaultValue);
+        SCCUAPP << "slope_up = "<<*asup;
 	} else {
         SCCUAPP << "slope_up not set we need to compute it";
-        asup = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
-        double tmp_asup = (double) asup;
-        SCCUAPP << "slope_up computed = " << asup << "[" << tmp_asup << "]";
-        setVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up", &tmp_asup, sizeof(double));
-        tmp_asup = *getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up")->getCurrentValue<double>();
-        SCCUAPP << "slope_up re-read = " << asup << "[" << tmp_asup << "]";
-        tmp_asup = *getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up")->getNextValue<double>();
-        SCCUAPP << "slope_up re-read  next= " << asup << "[" << tmp_asup << "]";
+        *asup = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
+        SCCUAPP << "slope_up computed = " << *asup;
     }
 	
 	attributeInfo.reset();
 	getAttributeRangeValueInfo("slope_down", attributeInfo);
 	if(attributeInfo.defaultValue.size()) {
-		asdown = boost::lexical_cast<float>(attributeInfo.defaultValue);
-        SCCUAPP << "slope_down = "<<asup;
+		*asdown = boost::lexical_cast<float>(attributeInfo.defaultValue);
+        SCCUAPP << "slope_down = "<<*asup;
 	} else {
         SCCUAPP << "slope_down not set we need to compute it";
-        asdown = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
-        double tmp_asdown = (double) asdown;
-        SCCUAPP << "slope_down computed = " << asdown << "[" << tmp_asdown << "]";;
-        setVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_down", &tmp_asdown, sizeof(double));
-        tmp_asdown = *getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_down")->getCurrentValue<double>();
-        SCCUAPP << "slope_down re-read = " << asdown << "[" << tmp_asdown << "]";
-        tmp_asdown = *getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_down")->getNextValue<double>();
-        SCCUAPP << "slope_up re-read  next= " << asdown << "[" << tmp_asdown << "]";
+        *asdown = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
+        SCCUAPP << "slope_down computed = " << *asdown;
     }
     
 	if(powersupply_drv->getState(&state_id, state_str, 30000)!=0){
@@ -231,9 +219,9 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 		SCCUAPP << "hardware found " << "device_hw";
     }
 
-	if( (asup > 0) && (asdown > 0)) {
+	if( (*asup > 0) && (*asdown > 0)) {
 		SCCUAPP << "set defaultl slope value";
-		if(powersupply_drv->setCurrentRampSpeed(asup, asdown) != 0) {
+		if(powersupply_drv->setCurrentRampSpeed(*asup, *asdown) != 0) {
 			throw chaos::CException(2, boost::str( boost::format("Error setting the slope in state %1%[%2%]") % state_str % state_id), std::string(__FUNCTION__));
 		}
 	} else {
