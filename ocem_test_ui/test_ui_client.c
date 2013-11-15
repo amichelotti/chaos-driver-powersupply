@@ -19,8 +19,8 @@ int main (int argc, char* argv[] )
   }
   printf("using as MDS %s and CU %s\n",mdsServer,devName);
   //create init string
-  //\nlog-on-console=true
-  sprintf(tmpInitString, "metadata-server=%s", mdsServer);
+  //
+  sprintf(tmpInitString, "metadata-server=%s\nlog-on-console=true", mdsServer);
     
   //init the toolkit
   err = initToolkit(tmpInitString);
@@ -28,7 +28,7 @@ int main (int argc, char* argv[] )
     printf("Error initToolkit %d\n", err);
     return -1;
   }
-    
+  printf("initialising %d\n",err);
   err = getNewControllerForDeviceID(devName, &devID);
   if (err != 0) {
     printf("Error getNewControllerForDeviceID %d\n", err);

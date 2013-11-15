@@ -15,9 +15,9 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 
 ADD_DEFINITIONS(-g -O2 -Wall)
-add_definitions(-DBOOST_ALL_DYN_LINK)
+add_definitions(-DBOOST_ALL_DYN_LINK -DCHAOSUIPOWERSUPPLYCWRAPPER_DEBUG)
 
-SET(PowerSupplydriver_src core/ChaosPowerSupplyInterface.cpp models/GenericPowerSupplyDD.cpp)
+SET(PowerSupplydriver_src core/ChaosPowerSupplyInterface.cpp models/GenericPowerSupplyDD.cpp core/ChaosUIPowersupplyCWrapper.cpp)
 SET(PowerSupplycu_src test/powersupply_cu.cpp test/PowerSupplyControlUnit.cpp test/SCPowerSupplyControlUnit.cpp test/CmdPSDefault.cpp test/CmdPSMode.cpp test/CmdPSReset.cpp test/CmdPSSetSlope.cpp test/CmdPSSetCurrent.cpp test/CmdSetPolarity.cpp test/AbstractPowerSupplyCommand.cpp )
 
 INCLUDE_DIRECTORIES(../../ ${PROJECT_SOURCE_DIR}/../../usr/local/include)
@@ -30,7 +30,7 @@ ADD_LIBRARY(driver_powersupply SHARED ${PowerSupplydriver_src})
 
 
 TARGET_LINK_LIBRARIES(ocem_cu pthread driver_powersupply common_powersupply common_serial common_debug chaos_cutoolkit chaos_common boost_program_options boost_system boost_thread boost_chrono boost_regex boost_log boost_log_setup boost_atomic memcached msgpack msgpack-rpc mpio)
-TARGET_LINK_LIBRARIES(driver_powersupply pthread driver_powersupply common_powersupply common_serial chaos_cutoolkit chaos_common boost_program_options boost_system boost_thread boost_chrono boost_regex boost_log boost_log_setup boost_atomic memcached msgpack msgpack-rpc mpio)
+TARGET_LINK_LIBRARIES(driver_powersupply pthread driver_powersupply common_powersupply common_serial chaos_cutoolkit chaos_uitoolkit chaos_common boost_program_options boost_system boost_thread boost_chrono boost_regex boost_log boost_log_setup boost_atomic memcached msgpack msgpack-rpc mpio)
 TARGET_LINK_LIBRARIES(test_ocem_ui_cu chaos_uitoolkit chaos_common boost_program_options boost_system boost_thread boost_chrono boost_regex boost_log boost_log_setup boost_atomic memcached msgpack msgpack-rpc mpio)
 
 INSTALL_TARGETS(/bin ocem_cu)
