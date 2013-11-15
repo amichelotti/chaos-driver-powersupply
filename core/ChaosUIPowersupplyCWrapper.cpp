@@ -35,11 +35,13 @@
 extern "C" {
 #endif
 
-  static int toolkit_initialised=0;
+
 
   int initPowerSupply(const char* mds,const char* name, unsigned int* devID){
     char tmpInitString[256];
     int err;
+    static int toolkit_initialised=0;
+
     if(toolkit_initialised==0){
       sprintf(tmpInitString, "metadata-server=%s\nlog-on-console=true", mds);
       err = initToolkit(tmpInitString);
@@ -48,14 +50,16 @@ extern "C" {
 	return -1;
       }
       toolkit_initialised = 1;
+      DPRINT("Toolkit initialised \"%s\"\n",tmpInitString);
     }
+
     err = getNewControllerForDeviceID(name, devID);
     if (err != 0) {
-      DPRINT("Error getNewControllerForDeviceID %d\n", err);
+      DPRINT("Error getNewControllerForDeviceID for CU \"%s\" devID @x%x err: %d\n", name,devID,err);
       return -2;
     }
 
-    err = setControllerTimeout((uint32_t)devID, 1000000);
+    err = setControllerTimeout((uint32_t)devID, 100000000);
     if (err != 0) {
       DPRINT("Error setting timeout %d\n", err);
       return -1;
@@ -65,14 +69,14 @@ extern "C" {
     err = initDevice(*devID);
     if (err != 0) {
       DPRINT("Error initDevice %d\n", err);
-      return -1;
+      // return -1;
     }
     sleep(1);
     DPRINT("Starting device 0x%x\n",*devID);
     err = startDevice(*devID);
     if (err != 0) {
       DPRINT("Error startDevice %d\n", err);
-      return -1;
+      return -4;
     }
 
 
