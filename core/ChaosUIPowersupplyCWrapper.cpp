@@ -27,7 +27,6 @@
 #include <chaos/ui_toolkit/ChaosUIToolkitCWrapper.h>
 #include <stdint.h>
 #ifdef CHAOSUIPOWERSUPPLYCWRAPPER_DEBUG
-#define DEBUG
 #endif
 
 #include "common/debug/debug.h"
@@ -59,7 +58,7 @@ extern "C" {
       return -2;
     }
 
-    err = setControllerTimeout((uint32_t)devID, 100000000);
+    err = setControllerTimeout((uint32_t)*devID, 100000000);
     if (err != 0) {
       DPRINT("Error setting timeout %d\n", err);
       return -1;
