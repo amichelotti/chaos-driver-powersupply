@@ -81,7 +81,7 @@ int main (int argc, char* argv[] )
 		//! [CUTOOLKIT Init]
 		
 		//! [Driver Registration]
-		MATERIALIZE_INSTANCE_AND_INSPECTOR_WITH_NS(GenericPowerSupplyDD, GenericPowerSupplyDD)
+		MATERIALIZE_INSTANCE_AND_INSPECTOR_WITH_NS(chaos::driver::powersupply, GenericPowerSupplyDD)
 		cu_driver_manager::DriverManager::getInstance()->registerDriver(GenericPowerSupplyDDInstancer, GenericPowerSupplyDDInspector);
 		//! [Driver Registration]
 		
@@ -93,10 +93,12 @@ int main (int argc, char* argv[] )
 						ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_SC_DRIVERS_PARAMETERS);
 		
 		if(rt_cu_ok) {
-			ChaosCUToolkit::getInstance()->addControlUnit(new ::driver::powersupply::PowerSupplyControlUnit(tmp_device_id, driver_params));
+		  cout<< "selected RT CU"<<endl;
+		  ChaosCUToolkit::getInstance()->addControlUnit(new ::driver::powersupply::PowerSupplyControlUnit(tmp_device_id, driver_params));
 		}
 		
 		if(sc_cu_ok) {
+		  cout<< "selected SC CU"<<endl;
 			//install all slowcontrol cu for deviceids
 			if(sc_device_ids.size() == sc_device_param.size()) {
 				for (int idx = 0; idx <
@@ -113,6 +115,9 @@ int main (int argc, char* argv[] )
 		//! [Starting the Framework]
 		if(sc_cu_ok || rt_cu_ok) {
 			ChaosCUToolkit::getInstance()->start();
+		} else {
+		  cout<<"## you must select a CU type"<<endl;
+		  return -1;
 		}
 		//! [Starting the Framework]
 	} catch (CException& e) {
