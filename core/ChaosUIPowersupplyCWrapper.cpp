@@ -27,6 +27,7 @@
 #include <chaos/ui_toolkit/ChaosUIToolkitCWrapper.h>
 #include <stdint.h>
 #ifdef CHAOSUIPOWERSUPPLYCWRAPPER_DEBUG
+#define DEBUG
 #endif
 
 #include "common/debug/debug.h"
@@ -147,16 +148,16 @@ extern "C" {
 
   int setCurrent(unsigned int devID,float curr){
     int err;
-    char stringa[256];
-    sprintf(stringa,"{\"sett_cur\":%f}",curr);
-    DPRINT("submitting command %s\n",stringa);
-    err = submitSlowControlCommand(devID,stringa,
+    char parameter[256];
+    sprintf(parameter,"{\"sett_cur\":%f}",curr);
+    DPRINT("submitting command %s\n",parameter);
+    err = submitSlowControlCommand(devID,"sett",
 				 1,
 				 50,
 				 0,
 				 0,
 				 0 ,
-				 0);
+				 parameter);
     return err;
   }
   int setPol(unsigned int devID,int pol){
@@ -164,13 +165,13 @@ extern "C" {
     char stringa[256];
     sprintf(stringa,"{\"pola_value\":%d}",pol);
     DPRINT("submitting command %s\n",stringa);
-    err = submitSlowControlCommand(devID,stringa,
+    err = submitSlowControlCommand(devID,"pola",
 				 1,
 				 50,
 				 0,
 				 0,
 				 0 ,
-				 0);
+				 stringa);
     return err;
 
   }
@@ -179,13 +180,13 @@ extern "C" {
     char stringa[256];
     sprintf(stringa,"{\"mode_type\":0}");
     DPRINT("submitting command %s\n",stringa);
-    err = submitSlowControlCommand(devID,stringa,
+    err = submitSlowControlCommand(devID,"mode",
 				 1,
 				 50,
 				 0,
 				 0,
 				 0 ,
-				 0);
+				 stringa);
     return err;
 
   }
@@ -194,13 +195,13 @@ extern "C" {
     char stringa[256];
     sprintf(stringa,"{\"mode_type\":1}");
     DPRINT("submitting command %s\n",stringa);
-    err = submitSlowControlCommand(devID,stringa,
+    err = submitSlowControlCommand(devID,"mode",
 				 1,
 				 50,
 				 0,
 				 0,
 				 0 ,
-				 0);
+				 stringa);
     return err;
 
   }
