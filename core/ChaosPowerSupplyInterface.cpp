@@ -22,7 +22,7 @@ message.resultData = (void*)&ret;\
 #define WRITE_OP_INT_TIM(op,ival,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
 idata.ivalue=ival;\
-accessor->send(&message);\
+ accessor->send(&message,100);			\
 return ret.result;
 
 #define WRITE_OP_64INT_TIM(op,ival,timeout) \
@@ -34,7 +34,7 @@ return ret.result;
 #define WRITE_OP_FLOAT_TIM(op,fval,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
 idata.fvalue0=fval;\
-accessor->send(&message);\
+ accessor->send(&message,100);			\
 return ret.result;
 
 #define WRITE_OP_2FLOAT_TIM(op,fval0,fval1,timeout) \

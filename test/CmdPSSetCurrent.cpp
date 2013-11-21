@@ -126,6 +126,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	}
 	//assign new current setpoint
 	*o_current_sp = current;
+	powersupply_drv->accessor->base_opcode_priority=100;
 	setWorkState(true);
 }
 
@@ -137,6 +138,7 @@ bool own::CmdPSSetCurrent::timeoutHandler() {
 	//move the state machine on fault
 	SCLDBG_ << "Timeout reached  with readout current " << *o_current;
 	setWorkState(false);
+	powersupply_drv->accessor->base_opcode_priority=50;
 	bool result = false;
 	if( *i_delta_setpoint && (std::abs(*o_current - *o_current_sp) < *i_delta_setpoint)) {
 		std::string error =  "Out of SP";

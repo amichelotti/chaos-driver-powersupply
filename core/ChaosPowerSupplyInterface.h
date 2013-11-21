@@ -68,12 +68,13 @@ namespace chaos {
             
             // wrapper interface
             class ChaosPowerSupplyInterface:public ::common::powersupply::AbstractPowerSupply {
-            private:
-                chaos_driver::DriverAccessor* accessor;
+            protected:
+
                 chaos_driver::DrvMsg message;
                 
             public:
                 ChaosPowerSupplyInterface(chaos_driver::DriverAccessor*_accessor):accessor(_accessor){};
+		chaos_driver::DriverAccessor* accessor;
                 
                 /**
                  @brief sets the current polarity

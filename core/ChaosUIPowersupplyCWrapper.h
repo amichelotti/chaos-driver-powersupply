@@ -41,7 +41,7 @@ extern "C" {
   int standby(unsigned int devID);
   int on(unsigned int devID);
   int getPol(unsigned int devID,int*pol);
-
+  int getLive(unsigned int devID,long long *live);
 #ifdef __cplusplus
 }
 #endif

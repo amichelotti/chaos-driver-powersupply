@@ -206,6 +206,15 @@ extern "C" {
 
   }
 
+  int getLive(unsigned int devID,long long *live) {
+    int err;
+    char* attributeValue=NULL;
+    err = fetchLiveData(devID);
+    err= getTimeStamp(devID,(uint64_t*)live);
+    DPRINT("Error fetchLiveData %d\n", err);
+    return err;
+  }
+
 
 #ifdef __cplusplus
 }
