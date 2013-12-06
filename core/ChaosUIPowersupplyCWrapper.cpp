@@ -29,8 +29,8 @@
 #ifdef CHAOSUIPOWERSUPPLYCWRAPPER_DEBUG
 #define DEBUG
 #endif
-
 #include "common/debug/debug.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
