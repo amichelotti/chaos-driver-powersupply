@@ -22,11 +22,11 @@
 		5303A93718194CDC0070356D /* ChaosPowerSupplyInterface.h in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92818190EBF0070356D /* ChaosPowerSupplyInterface.h */; };
 		5303A93818197A240070356D /* PowerSupplyControlUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A93018190F4E0070356D /* PowerSupplyControlUnit.cpp */; };
 		5303A93B1819BB010070356D /* ChaosPowerSupplyInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 5303A92818190EBF0070356D /* ChaosPowerSupplyInterface.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5303A93C1819BB4C0070356D /* GenericPowerSupplyDD.h in Headers */ = {isa = PBXBuildFile; fileRef = 5303A92C18190ED00070356D /* GenericPowerSupplyDD.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5303A93C1819BB4C0070356D /* GenericPowerSupplyDD.h in Headers */ = {isa = PBXBuildFile; fileRef = 5303A92C18190ED00070356D /* GenericPowerSupplyDD.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		5367761718339349006A7B25 /* ocem_test_ui.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5367761618339349006A7B25 /* ocem_test_ui.1 */; };
 		5367761C18339379006A7B25 /* test_ui_client.c in Sources */ = {isa = PBXBuildFile; fileRef = 5367761B18339379006A7B25 /* test_ui_client.c */; };
 		5367761F1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5367761D1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.cpp */; };
-		536776201836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 5367761E1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h */; };
+		536776201836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 5367761E1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -209,8 +209,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				536776201836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h in Headers */,
-				5303A93C1819BB4C0070356D /* GenericPowerSupplyDD.h in Headers */,
 				5303A93B1819BB010070356D /* ChaosPowerSupplyInterface.h in Headers */,
+				5303A93C1819BB4C0070356D /* GenericPowerSupplyDD.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -559,9 +559,9 @@
 					"-lchaos_uitoolkit",
 					"-lcommon_powersupply",
 				);
-				PRIVATE_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply/core";
+				PRIVATE_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply/models";
 				PRODUCT_NAME = driver_powersupply;
-				PUBLIC_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply/core";
 			};
 			name = Debug;
 		};
@@ -601,9 +601,9 @@
 					"-lchaos_uitoolkit",
 					"-lcommon_powersupply",
 				);
-				PRIVATE_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply/core";
+				PRIVATE_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply/models";
 				PRODUCT_NAME = driver_powersupply;
-				PUBLIC_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply/core";
 			};
 			name = Release;
 		};
