@@ -34,6 +34,10 @@ static const boost::regex power_supply_init_match("(\\w+):(.+)");
 // initialisation format for ocem <serial port>,<slaveid>
 static const boost::regex power_supply_ocem_init_match("([\\w\\/]+),(\\d+)");
 
+// initialisation format for simulator <serial port>,<slaveid>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<maxcurr:max voltage>
+
+static const boost::regex power_supply_simulator_init_match("([\\w\\/]+),(\\d+),(\\d+):(\\d+),(\\d+):(\\d+),(\\d+):(\\d+)");
+
 
 //GET_PLUGIN_CLASS_DEFINITION
 //we need only to define the driver because we don't are makeing a plugin
@@ -77,6 +81,22 @@ void chaos_powersupply_dd::GenericPowerSupplyDD::driverInit(const char *initPara
                 power = new ::common::powersupply::OcemE642X(dev.c_str(),atoi(slaveid.c_str()));
                 if(power==NULL){
                       throw chaos::CException(1, "Cannot allocate resources for OcemE642X", "GenericPowerSupplyDD::driverInit");
+                }
+            }
+        } else if(powerSupplyType=="SimPSupply"){
+            if(regex_match(initString, match, power_supply_simulator_init_match, boost::match_extra)){
+                std::string dev=match[1];
+                std::string slaveid=match[2];
+                std::string write_min=match[3];
+                std::string write_max=match[4];
+                std::string read_min=match[5];
+                std::string read_max=match[6];
+                std::string max_curr=match[7];
+                std::string max_vol=match[8];
+                PSLAPP<<"Allocating Simulated Power Supply device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<endl;
+                power = new ::common::powersupply::SimPSupply(dev.c_str(),atoi(slaveid.c_str()),atoi(write_min.c_str()),atoi(write_max.c_str()),atoi(read_min.c_str()),atoi(read_max.c_str()),atoi(max_curr.c_str()),atoi(max_vol.c_str()));
+                if(power==NULL){
+                    throw chaos::CException(1, "Cannot allocate resources for SimPSupply", "GenericPowerSupplyDD::driverInit");
                 }
             }
         } else {

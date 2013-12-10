@@ -50,11 +50,14 @@ namespace cu_driver_manager = chaos::cu::driver_manager;
 
 
 
-#define OPT_DEVICE_ID			"ocem_id"
+#define OPT_DEVICE_ID			"ps_id"
 #define OPT_DRIVER_PARAMETERS   "driver"
 
-#define OPT_SC_DEVICE_ID			"sc_ocem_id"
+#define OPT_SC_DEVICE_ID			"sc_ps_id"
 #define OPT_SC_DRIVERS_PARAMETERS	"sc_driver"
+// initialisation format for simulator <serial port>,<slaveid>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<maxcurr:max voltage>
+
+static const boost::regex power_supply_simulator_init_match("([\\w\\/]+),(\\d+),(\\d+):(\\d+),(\\d+):(\\d+),(\\d+):(\\d+)");
 
 int main (int argc, char* argv[] )
 {
@@ -67,7 +70,7 @@ int main (int argc, char* argv[] )
     try {
 		//! [Custom Option]
 		ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_DEVICE_ID, po::value<string>(&tmp_device_id), "Specify the id of the power supply");
-        ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_DRIVER_PARAMETERS, po::value<string>(&driver_params), "Specify the driver params <DRIVERNAME:'driver specific params' ie:OcemE642X:/dev/ttyr00,10>");
+        ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_DRIVER_PARAMETERS, po::value<string>(&driver_params), "Specify the driver params <DRIVERNAME:'driver specific params' ie:OcemE642X:/dev/ttyr00,10> or SimPSupply:<dev>,<id>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_max>,<maxcurr:max voltage>");
 		
 		ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_SC_DEVICE_ID, po::value< vector< string > >(&sc_device_ids)->multitoken(), "Specify the id's of the slow power supply slow contorl cu");
 		ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_SC_DRIVERS_PARAMETERS, po::value< vector< string > >(&sc_device_param)->multitoken(), "Specify the id's of the slow power supply slow contorl cu");

@@ -22,11 +22,21 @@
 		5303A93718194CDC0070356D /* ChaosPowerSupplyInterface.h in Sources */ = {isa = PBXBuildFile; fileRef = 5303A92818190EBF0070356D /* ChaosPowerSupplyInterface.h */; };
 		5303A93818197A240070356D /* PowerSupplyControlUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A93018190F4E0070356D /* PowerSupplyControlUnit.cpp */; };
 		5303A93B1819BB010070356D /* ChaosPowerSupplyInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 5303A92818190EBF0070356D /* ChaosPowerSupplyInterface.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5303A93C1819BB4C0070356D /* GenericPowerSupplyDD.h in Headers */ = {isa = PBXBuildFile; fileRef = 5303A92C18190ED00070356D /* GenericPowerSupplyDD.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		5303A93C1819BB4C0070356D /* GenericPowerSupplyDD.h in Headers */ = {isa = PBXBuildFile; fileRef = 5303A92C18190ED00070356D /* GenericPowerSupplyDD.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5367761718339349006A7B25 /* ocem_test_ui.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5367761618339349006A7B25 /* ocem_test_ui.1 */; };
 		5367761C18339379006A7B25 /* test_ui_client.c in Sources */ = {isa = PBXBuildFile; fileRef = 5367761B18339379006A7B25 /* test_ui_client.c */; };
 		5367761F1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5367761D1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.cpp */; };
-		536776201836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 5367761E1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		536776201836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 5367761E1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h */; };
+		53677629183E1AF9006A7B25 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53677628183E1AF9006A7B25 /* Cocoa.framework */; };
+		53677633183E1AF9006A7B25 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 53677631183E1AF9006A7B25 /* InfoPlist.strings */; };
+		5367763E183E1AFA006A7B25 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5367763D183E1AFA006A7B25 /* XCTest.framework */; };
+		5367763F183E1AFA006A7B25 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53677628183E1AF9006A7B25 /* Cocoa.framework */; };
+		53677642183E1AFA006A7B25 /* driver_powersupply_framework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53677626183E1AF9006A7B25 /* driver_powersupply_framework.framework */; };
+		53677648183E1AFA006A7B25 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 53677646183E1AFA006A7B25 /* InfoPlist.strings */; };
+		5367764A183E1AFA006A7B25 /* driver_powersupply_frameworkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 53677649183E1AFA006A7B25 /* driver_powersupply_frameworkTests.m */; };
+		53677651183E1B30006A7B25 /* ChaosUIPowersupplyCWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5367761D1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.cpp */; };
+		53677652183E1B30006A7B25 /* ChaosUIPowersupplyCWrapper.h in Sources */ = {isa = PBXBuildFile; fileRef = 5367761E1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h */; };
+		53677653183E1B70006A7B25 /* ChaosUIPowersupplyCWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 5367761E1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +46,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 3285568617F1C4AC00A64ED2;
 			remoteInfo = PowerSupplyPowerSupply;
+		};
+		53677640183E1AFA006A7B25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3285566F17F1C43D00A64ED2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 53677625183E1AF9006A7B25;
+			remoteInfo = driver_powersupply_framework;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -95,6 +112,21 @@
 		5367761B18339379006A7B25 /* test_ui_client.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test_ui_client.c; sourceTree = "<group>"; };
 		5367761D1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ChaosUIPowersupplyCWrapper.cpp; sourceTree = "<group>"; };
 		5367761E1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChaosUIPowersupplyCWrapper.h; sourceTree = "<group>"; };
+		53677626183E1AF9006A7B25 /* driver_powersupply_framework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = driver_powersupply_framework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		53677628183E1AF9006A7B25 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		5367762B183E1AF9006A7B25 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		5367762C183E1AF9006A7B25 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		5367762D183E1AF9006A7B25 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		53677630183E1AF9006A7B25 /* driver_powersupply_framework-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "driver_powersupply_framework-Info.plist"; sourceTree = "<group>"; };
+		53677632183E1AF9006A7B25 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		53677634183E1AF9006A7B25 /* driver_powersupply_framework-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "driver_powersupply_framework-Prefix.pch"; sourceTree = "<group>"; };
+		53677635183E1AF9006A7B25 /* driver_powersupply_framework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = driver_powersupply_framework.h; sourceTree = "<group>"; };
+		53677636183E1AF9006A7B25 /* driver_powersupply_framework.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = driver_powersupply_framework.m; sourceTree = "<group>"; };
+		5367763C183E1AFA006A7B25 /* driver_powersupply_frameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = driver_powersupply_frameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5367763D183E1AFA006A7B25 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		53677645183E1AFA006A7B25 /* driver_powersupply_frameworkTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "driver_powersupply_frameworkTests-Info.plist"; sourceTree = "<group>"; };
+		53677647183E1AFA006A7B25 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		53677649183E1AFA006A7B25 /* driver_powersupply_frameworkTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = driver_powersupply_frameworkTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +151,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		53677622183E1AF9006A7B25 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				53677629183E1AF9006A7B25 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		53677639183E1AF9006A7B25 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5367763F183E1AFA006A7B25 /* Cocoa.framework in Frameworks */,
+				53677642183E1AFA006A7B25 /* driver_powersupply_framework.framework in Frameworks */,
+				5367763E183E1AFA006A7B25 /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -130,6 +180,9 @@
 				5303A92A18190ED00070356D /* models */,
 				5303A92618190EBF0070356D /* core */,
 				5367761318339349006A7B25 /* ocem_test_ui */,
+				5367762E183E1AF9006A7B25 /* driver_powersupply_framework */,
+				53677643183E1AFA006A7B25 /* driver_powersupply_frameworkTests */,
+				53677627183E1AF9006A7B25 /* Frameworks */,
 				3285567817F1C43D00A64ED2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -140,6 +193,8 @@
 				3285567717F1C43D00A64ED2 /* ocem_cu */,
 				3285568717F1C4AC00A64ED2 /* libdriver_powersupply.dylib */,
 				5367761218339349006A7B25 /* ocem_test_ui */,
+				53677626183E1AF9006A7B25 /* driver_powersupply_framework.framework */,
+				5367763C183E1AFA006A7B25 /* driver_powersupply_frameworkTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -201,6 +256,64 @@
 			path = ocem_test_ui;
 			sourceTree = "<group>";
 		};
+		53677627183E1AF9006A7B25 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				53677628183E1AF9006A7B25 /* Cocoa.framework */,
+				5367763D183E1AFA006A7B25 /* XCTest.framework */,
+				5367762A183E1AF9006A7B25 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5367762A183E1AF9006A7B25 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5367762B183E1AF9006A7B25 /* Foundation.framework */,
+				5367762C183E1AF9006A7B25 /* CoreData.framework */,
+				5367762D183E1AF9006A7B25 /* AppKit.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		5367762E183E1AF9006A7B25 /* driver_powersupply_framework */ = {
+			isa = PBXGroup;
+			children = (
+				53677635183E1AF9006A7B25 /* driver_powersupply_framework.h */,
+				53677636183E1AF9006A7B25 /* driver_powersupply_framework.m */,
+				5367762F183E1AF9006A7B25 /* Supporting Files */,
+			);
+			path = driver_powersupply_framework;
+			sourceTree = "<group>";
+		};
+		5367762F183E1AF9006A7B25 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				53677630183E1AF9006A7B25 /* driver_powersupply_framework-Info.plist */,
+				53677631183E1AF9006A7B25 /* InfoPlist.strings */,
+				53677634183E1AF9006A7B25 /* driver_powersupply_framework-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		53677643183E1AFA006A7B25 /* driver_powersupply_frameworkTests */ = {
+			isa = PBXGroup;
+			children = (
+				53677649183E1AFA006A7B25 /* driver_powersupply_frameworkTests.m */,
+				53677644183E1AFA006A7B25 /* Supporting Files */,
+			);
+			path = driver_powersupply_frameworkTests;
+			sourceTree = "<group>";
+		};
+		53677644183E1AFA006A7B25 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				53677645183E1AFA006A7B25 /* driver_powersupply_frameworkTests-Info.plist */,
+				53677646183E1AFA006A7B25 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -209,17 +322,25 @@
 			buildActionMask = 2147483647;
 			files = (
 				536776201836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h in Headers */,
-				5303A93B1819BB010070356D /* ChaosPowerSupplyInterface.h in Headers */,
 				5303A93C1819BB4C0070356D /* GenericPowerSupplyDD.h in Headers */,
+				5303A93B1819BB010070356D /* ChaosPowerSupplyInterface.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		53677623183E1AF9006A7B25 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				53677653183E1B70006A7B25 /* ChaosUIPowersupplyCWrapper.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		3285567617F1C43D00A64ED2 /* ocem_cu */ = {
+		3285567617F1C43D00A64ED2 /* power_supply_cu */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3285568017F1C43D00A64ED2 /* Build configuration list for PBXNativeTarget "ocem_cu" */;
+			buildConfigurationList = 3285568017F1C43D00A64ED2 /* Build configuration list for PBXNativeTarget "power_supply_cu" */;
 			buildPhases = (
 				3285567317F1C43D00A64ED2 /* Sources */,
 				3285567417F1C43D00A64ED2 /* Frameworks */,
@@ -230,7 +351,7 @@
 			dependencies = (
 				5303A93A18197A2F0070356D /* PBXTargetDependency */,
 			);
-			name = ocem_cu;
+			name = power_supply_cu;
 			productName = Driver;
 			productReference = 3285567717F1C43D00A64ED2 /* ocem_cu */;
 			productType = "com.apple.product-type.tool";
@@ -252,9 +373,9 @@
 			productReference = 3285568717F1C4AC00A64ED2 /* libdriver_powersupply.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
-		5367761118339349006A7B25 /* ocem_test_ui */ = {
+		5367761118339349006A7B25 /* power_supply_test_ui */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5367761A18339349006A7B25 /* Build configuration list for PBXNativeTarget "ocem_test_ui" */;
+			buildConfigurationList = 5367761A18339349006A7B25 /* Build configuration list for PBXNativeTarget "power_supply_test_ui" */;
 			buildPhases = (
 				5367760E18339349006A7B25 /* Sources */,
 				5367760F18339349006A7B25 /* Frameworks */,
@@ -264,10 +385,46 @@
 			);
 			dependencies = (
 			);
-			name = ocem_test_ui;
+			name = power_supply_test_ui;
 			productName = ocem_test_ui;
 			productReference = 5367761218339349006A7B25 /* ocem_test_ui */;
 			productType = "com.apple.product-type.tool";
+		};
+		53677625183E1AF9006A7B25 /* driver_powersupply_framework */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5367764B183E1AFA006A7B25 /* Build configuration list for PBXNativeTarget "driver_powersupply_framework" */;
+			buildPhases = (
+				53677621183E1AF9006A7B25 /* Sources */,
+				53677622183E1AF9006A7B25 /* Frameworks */,
+				53677623183E1AF9006A7B25 /* Headers */,
+				53677624183E1AF9006A7B25 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = driver_powersupply_framework;
+			productName = driver_powersupply_framework;
+			productReference = 53677626183E1AF9006A7B25 /* driver_powersupply_framework.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		5367763B183E1AF9006A7B25 /* driver_powersupply_frameworkTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5367764E183E1AFA006A7B25 /* Build configuration list for PBXNativeTarget "driver_powersupply_frameworkTests" */;
+			buildPhases = (
+				53677638183E1AF9006A7B25 /* Sources */,
+				53677639183E1AF9006A7B25 /* Frameworks */,
+				5367763A183E1AF9006A7B25 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				53677641183E1AFA006A7B25 /* PBXTargetDependency */,
+			);
+			name = driver_powersupply_frameworkTests;
+			productName = driver_powersupply_frameworkTests;
+			productReference = 5367763C183E1AFA006A7B25 /* driver_powersupply_frameworkTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -277,6 +434,11 @@
 			attributes = {
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = infn;
+				TargetAttributes = {
+					5367763B183E1AF9006A7B25 = {
+						TestTargetID = 3285568617F1C4AC00A64ED2;
+					};
+				};
 			};
 			buildConfigurationList = 3285567217F1C43D00A64ED2 /* Build configuration list for PBXProject "PowerSupply" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -290,12 +452,33 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3285567617F1C43D00A64ED2 /* ocem_cu */,
+				3285567617F1C43D00A64ED2 /* power_supply_cu */,
 				3285568617F1C4AC00A64ED2 /* driver_powersupply */,
-				5367761118339349006A7B25 /* ocem_test_ui */,
+				5367761118339349006A7B25 /* power_supply_test_ui */,
+				53677625183E1AF9006A7B25 /* driver_powersupply_framework */,
+				5367763B183E1AF9006A7B25 /* driver_powersupply_frameworkTests */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		53677624183E1AF9006A7B25 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				53677633183E1AF9006A7B25 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5367763A183E1AF9006A7B25 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				53677648183E1AFA006A7B25 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		3285567317F1C43D00A64ED2 /* Sources */ = {
@@ -335,6 +518,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		53677621183E1AF9006A7B25 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				53677651183E1B30006A7B25 /* ChaosUIPowersupplyCWrapper.cpp in Sources */,
+				53677652183E1B30006A7B25 /* ChaosUIPowersupplyCWrapper.h in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		53677638183E1AF9006A7B25 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5367764A183E1AFA006A7B25 /* driver_powersupply_frameworkTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -343,7 +543,31 @@
 			target = 3285568617F1C4AC00A64ED2 /* driver_powersupply */;
 			targetProxy = 5303A93918197A2F0070356D /* PBXContainerItemProxy */;
 		};
+		53677641183E1AFA006A7B25 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 53677625183E1AF9006A7B25 /* driver_powersupply_framework */;
+			targetProxy = 53677640183E1AFA006A7B25 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		53677631183E1AF9006A7B25 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				53677632183E1AF9006A7B25 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		53677646183E1AFA006A7B25 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				53677647183E1AFA006A7B25 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		3285567E17F1C43D00A64ED2 /* Debug */ = {
@@ -559,9 +783,9 @@
 					"-lchaos_uitoolkit",
 					"-lcommon_powersupply",
 				);
-				PRIVATE_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply/models";
+				PRIVATE_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply/core";
 				PRODUCT_NAME = driver_powersupply;
-				PUBLIC_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply/core";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply";
 			};
 			name = Debug;
 		};
@@ -601,9 +825,9 @@
 					"-lchaos_uitoolkit",
 					"-lcommon_powersupply",
 				);
-				PRIVATE_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply/models";
+				PRIVATE_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply/core";
 				PRODUCT_NAME = driver_powersupply;
-				PUBLIC_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply/core";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(SRCROOT)/../../usr/local/include/driver/powersupply";
 			};
 			name = Release;
 		};
@@ -679,6 +903,138 @@
 			};
 			name = Release;
 		};
+		5367764C183E1AFA006A7B25 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "libstdc++";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = /;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "driver_powersupply_framework/driver_powersupply_framework-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "driver_powersupply_framework/driver_powersupply_framework-Info.plist";
+				INSTALL_PATH = "$(SRCROOT)/../../usr/local/lib/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				OTHER_LDFLAGS = (
+					"-lboost_chrono",
+					"-lmemcached",
+					"-lboost_system",
+					"-lboost_thread",
+					"-lboost_program_options",
+					"-lboost_regex",
+					"-lboost_filesystem",
+					"-lmpio",
+					"-lmsgpack",
+					"-lmsgpack-rpc",
+					"-lboost_log",
+					"-lboost_log_setup",
+					"-lchaos_cutoolkit",
+					"-lchaos_common",
+					"-lcommon_serial",
+					"-lcommon_debug",
+					"-lchaos_uitoolkit",
+					"-lcommon_powersupply",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Debug;
+		};
+		5367764D183E1AFA006A7B25 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "libstdc++";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = /;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "driver_powersupply_framework/driver_powersupply_framework-Prefix.pch";
+				INFOPLIST_FILE = "driver_powersupply_framework/driver_powersupply_framework-Info.plist";
+				INSTALL_PATH = "$(SRCROOT)/../../usr/local/lib/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				OTHER_LDFLAGS = (
+					"-lboost_chrono",
+					"-lmemcached",
+					"-lboost_system",
+					"-lboost_thread",
+					"-lboost_program_options",
+					"-lboost_regex",
+					"-lboost_filesystem",
+					"-lmpio",
+					"-lmsgpack",
+					"-lmsgpack-rpc",
+					"-lboost_log",
+					"-lboost_log_setup",
+					"-lchaos_cutoolkit",
+					"-lchaos_common",
+					"-lcommon_serial",
+					"-lcommon_debug",
+					"-lchaos_uitoolkit",
+					"-lcommon_powersupply",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Release;
+		};
+		5367764F183E1AFA006A7B25 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/libdriver_powersupply.dylib";
+				CLANG_CXX_LIBRARY = "libc++";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "driver_powersupply_framework/driver_powersupply_framework-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "driver_powersupply_frameworkTests/driver_powersupply_frameworkTests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		53677650183E1AFA006A7B25 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/libdriver_powersupply.dylib";
+				CLANG_CXX_LIBRARY = "libc++";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "driver_powersupply_framework/driver_powersupply_framework-Prefix.pch";
+				INFOPLIST_FILE = "driver_powersupply_frameworkTests/driver_powersupply_frameworkTests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -691,7 +1047,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3285568017F1C43D00A64ED2 /* Build configuration list for PBXNativeTarget "ocem_cu" */ = {
+		3285568017F1C43D00A64ED2 /* Build configuration list for PBXNativeTarget "power_supply_cu" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3285568117F1C43D00A64ED2 /* Debug */,
@@ -709,11 +1065,29 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5367761A18339349006A7B25 /* Build configuration list for PBXNativeTarget "ocem_test_ui" */ = {
+		5367761A18339349006A7B25 /* Build configuration list for PBXNativeTarget "power_supply_test_ui" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5367761818339349006A7B25 /* Debug */,
 				5367761918339349006A7B25 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5367764B183E1AFA006A7B25 /* Build configuration list for PBXNativeTarget "driver_powersupply_framework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5367764C183E1AFA006A7B25 /* Debug */,
+				5367764D183E1AFA006A7B25 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5367764E183E1AFA006A7B25 /* Build configuration list for PBXNativeTarget "driver_powersupply_frameworkTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5367764F183E1AFA006A7B25 /* Debug */,
+				53677650183E1AFA006A7B25 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
