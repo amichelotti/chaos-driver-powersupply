@@ -66,7 +66,7 @@ void chaos_powersupply_dd::GenericPowerSupplyDD::driverInit(const char *initPara
     //check the input parameter
 	boost::smatch match;
 	std::string inputStr = initParameter;
-	PSLAPP << "Init GenericPowerSupply driver initialisation string:\" "<<initParameter<<"\""<<endl;
+	PSLAPP << "Init GenericPowerSupply driver initialisation string:\""<<initParameter<<"\""<<endl;
     if(power){
           throw chaos::CException(1, "Already Initialised", "GenericPowerSupplyDD::driverInit");
     }
