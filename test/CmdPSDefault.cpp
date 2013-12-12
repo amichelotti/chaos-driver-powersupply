@@ -21,8 +21,8 @@
 #include <cstring>
 #include "CmdPSDefault.h"
 
-#define CMDCU_ LAPP_ << "[CmdPSDefault] - "
-#define CMDCUDBG_ LDBG_ << "[CmdPSDefault] - "
+#define CMDCU_ LAPP_ << "[CmdPSDefault-" << getDeviceID() << "] "
+#define CMDCUDBG_ LDBG_ << "[CmdPSDefault-" << getDeviceID() << "] "
 
 using namespace chaos::common::data;
 using namespace chaos::cu::control_manager::slow_command;
@@ -53,7 +53,7 @@ void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
     
         //no adiditonal setup here
-	SL_STACK_RUNNIG_STATE
+	SL_NORMAL_RUNNIG_STATE
     
     sequence_number = 0;
     last_slow_acq_time = shared_stat->lastCmdStepStart;

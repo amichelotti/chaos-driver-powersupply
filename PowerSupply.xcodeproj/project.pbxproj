@@ -338,9 +338,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		3285567617F1C43D00A64ED2 /* power_supply_cu */ = {
+		3285567617F1C43D00A64ED2 /* powersupply_cu */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3285568017F1C43D00A64ED2 /* Build configuration list for PBXNativeTarget "power_supply_cu" */;
+			buildConfigurationList = 3285568017F1C43D00A64ED2 /* Build configuration list for PBXNativeTarget "powersupply_cu" */;
 			buildPhases = (
 				3285567317F1C43D00A64ED2 /* Sources */,
 				3285567417F1C43D00A64ED2 /* Frameworks */,
@@ -351,7 +351,7 @@
 			dependencies = (
 				5303A93A18197A2F0070356D /* PBXTargetDependency */,
 			);
-			name = power_supply_cu;
+			name = powersupply_cu;
 			productName = Driver;
 			productReference = 3285567717F1C43D00A64ED2 /* power_supply_cu */;
 			productType = "com.apple.product-type.tool";
@@ -452,7 +452,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3285567617F1C43D00A64ED2 /* power_supply_cu */,
+				3285567617F1C43D00A64ED2 /* powersupply_cu */,
 				3285568617F1C4AC00A64ED2 /* driver_powersupply */,
 				5367761118339349006A7B25 /* power_supply_test_ui */,
 				53677625183E1AF9006A7B25 /* driver_powersupply_framework */,
@@ -1047,7 +1047,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3285568017F1C43D00A64ED2 /* Build configuration list for PBXNativeTarget "power_supply_cu" */ = {
+		3285568017F1C43D00A64ED2 /* Build configuration list for PBXNativeTarget "powersupply_cu" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3285568117F1C43D00A64ED2 /* Debug */,
