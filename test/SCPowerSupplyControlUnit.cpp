@@ -164,9 +164,9 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	SCCUAPP "unitInit";
     int err = 0;
 	int state_id;
-	double *asup = getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_up")->getCurrentValue<double>();
-	double *asdown = getVariableValue(IOCAttributeShareCache::SVD_INPUT, "slope_down")->getCurrentValue<double>();
-    int32_t *status_id = getVariableValue(IOCAttributeShareCache::SVD_INPUT, "status_id")->getCurrentValue<int32_t>();
+	double *asup = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, "slope_up")->getCurrentValue<double>();
+	double *asdown = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, "slope_down")->getCurrentValue<double>();
+    int32_t *status_id = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, "status_id")->getCurrentValue<int32_t>();
 	std::string state_str;
 	RangeValueInfo attributeInfo;
     RangeValueInfo current_sp_attr_info;

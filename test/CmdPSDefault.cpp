@@ -56,7 +56,7 @@ void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 	SL_NORMAL_RUNNIG_STATE
     
     sequence_number = 0;
-    last_slow_acq_time = shared_stat->lastCmdStepStart;
+    last_slow_acq_time = getSetTime();// shared_stat->lastCmdStepStart;
 }
 
     // Aquire the necessary data for the command
@@ -72,7 +72,7 @@ void CmdPSDefault::acquireHandler() {
 	uint64_t tmp_uint64 = 0;
 	CMDCU_ << "Acquiring data";
     
-    uint64_t time_diff = shared_stat->lastCmdStepStart - last_slow_acq_time;
+    uint64_t time_diff = getStartStepTime() - last_slow_acq_time;
     
     
     CDataWrapper *acquiredData = getNewDataWrapper();
@@ -82,7 +82,7 @@ void CmdPSDefault::acquireHandler() {
     }
     
     if(time_diff > 10000000 ) {
-        last_slow_acq_time = shared_stat->lastCmdStepStart;
+        last_slow_acq_time = getStartStepTime();
         
         CMDCU_ << "slow acquire staterd after us=" << time_diff;
         
