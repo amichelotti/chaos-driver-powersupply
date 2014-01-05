@@ -29,10 +29,15 @@
 #include "CmdPSSetSlope.h"
 #include "CmdPSSetCurrent.h"
 #include "CmdSetPolarity.h"
+
+using namespace chaos;
+
 using namespace chaos::common::data;
+using namespace chaos::common::batch_command;
+
 using namespace chaos::cu::control_manager::slow_command;
 using namespace chaos::cu::driver_manager::driver;
-using namespace chaos;
+
 namespace own =  ::driver::powersupply;
 
 #define SCCUAPP LAPP_ << "[SCPowerSupplyControlUnit - " << device_id << "] - "

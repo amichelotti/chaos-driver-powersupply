@@ -22,30 +22,30 @@
 #include <boost/format.hpp>
 
 using namespace driver::powersupply;
-namespace chaos_sc = chaos::cu::control_manager::slow_command;
+namespace chaos_batch = chaos::common::batch_command;
 
 void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	CMDCUDBG_ << "loading pointer for output channel";
 	int idx = 0;
 	//get pointer to the output datase variable
-	o_current = getVariableValue(chaos_sc::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<double>();
-	o_current_sp = getVariableValue(chaos_sc::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<double>();
-	o_voltage = getVariableValue(chaos_sc::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<double>();
-	o_polarity = getVariableValue(chaos_sc::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<int32_t>();
-	o_alarms = getVariableValue(chaos_sc::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<uint64_t>();
-	o_status_id = getVariableValue(chaos_sc::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<int32_t>();
-	o_status = getVariableValue(chaos_sc::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<char>();
-	o_dev_state = getVariableValue(chaos_sc::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<uint64_t>();
-	o_cmd_last_error = getVariableValue(chaos_sc::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<char>();
+	o_current = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<double>();
+	o_current_sp = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<double>();
+	o_voltage = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<double>();
+	o_polarity = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<int32_t>();
+	o_alarms = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint64_t>();
+	o_status_id = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<int32_t>();
+	o_status = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<char>();
+	o_dev_state = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint64_t>();
+	o_cmd_last_error = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<char>();
 	
 	//get pointer to the input datase variable
 	idx = 0;
-	i_slope_up = getVariableValue(chaos_sc::IOCAttributeSharedCache::SVD_INPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<double>();
-	i_slope_down = getVariableValue(chaos_sc::IOCAttributeSharedCache::SVD_INPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<double>();
-	i_command_timeout = getVariableValue(chaos_sc::IOCAttributeSharedCache::SVD_INPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
-	i_driver_timeout = getVariableValue(chaos_sc::IOCAttributeSharedCache::SVD_INPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
-	i_delta_setpoint = getVariableValue(chaos_sc::IOCAttributeSharedCache::SVD_INPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
-	i_setpoint_affinity = getVariableValue(chaos_sc::IOCAttributeSharedCache::SVD_INPUT, (chaos_sc::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
+	i_slope_up = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<double>();
+	i_slope_down = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<double>();
+	i_command_timeout = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
+	i_driver_timeout = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
+	i_delta_setpoint = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
+	i_setpoint_affinity = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
     
 	chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = driverAccessorsErogator->getAccessoInstanceByIndex(0);
 	if(power_supply_accessor != NULL) {
@@ -57,8 +57,8 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 
 // return the implemented handler
 uint8_t AbstractPowerSupplyCommand::implementedHandler() {
-	return  chaos_sc::HandlerType::HT_Set |
-			chaos_sc::HandlerType::HT_Correlation;
+	return  chaos_batch::HandlerType::HT_Set |
+			chaos_batch::HandlerType::HT_Correlation;
 }
 
 void AbstractPowerSupplyCommand::ccHandler() {

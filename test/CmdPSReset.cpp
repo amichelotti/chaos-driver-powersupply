@@ -27,8 +27,9 @@
 #define CMDCUDBG_ LDBG_ << "[CmdPSReset] - "
 
 namespace own =  driver::powersupply;
-namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
 namespace c_data = chaos::common::data;
+namespace chaos_batch = chaos::common::batch_command;
+
 
 
 // return the implemented handler
@@ -50,7 +51,7 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 		default:
 			if((*o_status_id != common::powersupply::POWER_SUPPLY_STATE_OPEN)||
 			   (*o_status_id != common::powersupply::POWER_SUPPLY_STATE_ON)) {
-				throw chaos::CException(1, boost::str( boost::format("Bas state for reset comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__));
+				throw chaos::CException(1, boost::str( boost::format("Bad state for reset comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__));
 			}
 	}
 	
@@ -59,7 +60,7 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 	CMDCUDBG_ << "Checking for timout";
 	if(*i_command_timeout) {
 		CMDCUDBG_ << "Timeout will be set to ms -> " << *i_command_timeout;
-		setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
+		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
 	}
 	
 	//send comamnd to driver
@@ -85,7 +86,7 @@ void own::CmdPSReset::ccHandler() {
 		CMDCUDBG_ << "We have reached standby state";
 		setWorkState(false);
 		//we are terminated the command
-		SL_END_RUNNIG_STATE
+		BC_END_RUNNIG_PROPERTY
 		return;
 	}
 	

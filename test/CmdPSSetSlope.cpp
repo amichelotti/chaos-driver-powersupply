@@ -23,10 +23,9 @@
 
 #include <boost/format.hpp>
 
-#define LOG_HEAD "[CmdPSSetSlope-" << getUID() << "] "
-#define SCLAPP_ LAPP_ << LOG_HEAD
-#define SCLDBG_ LDBG_ << LOG_HEAD
-#define SCLERR_ LERR_ << LOG_HEAD
+#define SCLAPP_ LAPP_ << "[CmdPSSetSlope - " << LOG_TAIL
+#define SCLDBG_ LDBG_ << "[CmdPSSetSlope - " << LOG_TAIL
+#define SCLERR_ LERR_ << "[CmdPSSetSlope - " << LOG_TAIL
 
 
 namespace own =  driver::powersupply;

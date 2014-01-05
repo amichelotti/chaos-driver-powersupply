@@ -13,8 +13,8 @@
 #define CMDCU_ LAPP_ << "[CmdPSMode] - "
 
 namespace own =  driver::powersupply;
-namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
 namespace c_data = chaos::common::data;
+namespace chaos_batch = chaos::common::batch_command;
 
 // return the implemented handler
 uint8_t own::CmdPSMode::implementedHandler() {
@@ -23,7 +23,7 @@ uint8_t own::CmdPSMode::implementedHandler() {
 
 void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	CMDCU_ << "Executing set handler";
-	SL_EXEC_RUNNIG_STATE
+	BC_EXEC_RUNNIG_PROPERTY
 	AbstractPowerSupplyCommand::setHandler(data);
 
 	//requested mode
@@ -66,7 +66,7 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	if(*i_command_timeout) {
 		CMDCU_ << "Set time out in "<< *i_command_timeout << "milliseconds";
 		//we have a timeout for command so apply it to this instance
-		setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
+		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
 	}
 	
 	//send comamnd to driver
@@ -76,7 +76,7 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 void own::CmdPSMode::ccHandler() {
 	AbstractPowerSupplyCommand::ccHandler();
 	
-	SL_EXEC_RUNNIG_STATE
+	BC_EXEC_RUNNIG_PROPERTY
 	CMDCU_ << "Check if we are gone";
 	switch(state_to_go) {
 		case 0://we need to go in stanby
@@ -84,7 +84,7 @@ void own::CmdPSMode::ccHandler() {
 				setWorkState(false);
 				//we are terminated the command
 				CMDCU_ << boost::str( boost::format("State reached %1% [%2%] we end command") % o_status % *o_status_id);
-				SL_END_RUNNIG_STATE
+				BC_END_RUNNIG_PROPERTY
 				return;
 			}
 			break;
@@ -95,7 +95,7 @@ void own::CmdPSMode::ccHandler() {
 				setWorkState(false);
 				//we are terminated the command
 				CMDCU_ << boost::str( boost::format("State reached %1% [%2%] we end command") % o_status % *o_status_id);
-				SL_END_RUNNIG_STATE
+				BC_END_RUNNIG_PROPERTY
 				return;
 			}
 			break;

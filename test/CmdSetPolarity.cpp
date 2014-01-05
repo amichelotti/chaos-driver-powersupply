@@ -23,20 +23,18 @@
 
 #include <boost/format.hpp>
 
-#define LOG_HEAD "[CmdSetPolarity-" << getUID() << "] "
-#define SCLAPP_ LAPP_ << LOG_HEAD
-#define SCLDBG_ LDBG_ << LOG_HEAD
-#define SCLERR_ LERR_ << LOG_HEAD
+#define SCLAPP_ LAPP_ << "[CmdSetPolarity -" << LOG_TAIL
+#define SCLDBG_ LDBG_ << "[CmdSetPolarity -" << LOG_TAIL
+#define SCLERR_ LERR_ << "[CmdSetPolarity -" << LOG_TAIL
 
 
 namespace own =  driver::powersupply;
-namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
 namespace c_data = chaos::common::data;
-
+namespace chaos_batch = chaos::common::batch_command;
 
     // return the implemented handler
 uint8_t own::CmdSetPolarity::implementedHandler() {
-    return	ccc_slow_command::HandlerType::HT_Set;
+    return	chaos_batch::HandlerType::HT_Set;
 }
 
 void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
@@ -74,12 +72,12 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 	SCLDBG_ << "Checking for timout";
 	if(*i_command_timeout) {
 		SCLDBG_ << "Timeout will be set to ms -> " << *i_command_timeout;
-		setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
+		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
 	}
 	
 	if((err = powersupply_drv->setPolarity(polarity)) != 0) {
           throw chaos::CException(1, boost::str( boost::format("Set current parameter not present") % o_status % *o_status_id), std::string(__FUNCTION__));
 	}
     
-    SL_END_RUNNIG_STATE
+    BC_END_RUNNIG_PROPERTY
 }

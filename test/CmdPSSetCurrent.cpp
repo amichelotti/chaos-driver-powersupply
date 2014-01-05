@@ -25,15 +25,15 @@
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 
-#define LOG_HEAD "[CmdPSSetCurrent-" << getUID() << "] "
+#define LOG_HEAD "[CmdPSSetCurrent - " << LOG_TAIL
 #define SCLAPP_ LAPP_ << LOG_HEAD
 #define SCLDBG_ LDBG_ << LOG_HEAD
 #define SCLERR_ LERR_ << LOG_HEAD
 
 
 namespace own =  driver::powersupply;
-namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
 namespace c_data = chaos::common::data;
+namespace chaos_batch = chaos::common::batch_command;
 
 
 // return the implemented handler
@@ -72,7 +72,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	SCLDBG_ << "Checking for timout";
 	if(*i_command_timeout) {
 		SCLDBG_ << "Timeout will be set to ms -> " << *i_command_timeout;
-		setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
+		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
 	}
 	
 	if(!data || !data->hasKey(CMD_PS_SET_CURRENT)) {
@@ -110,7 +110,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	uint64_t computed_timeout = (std::ceil((delta_current / slope_speed)) * 1000000);
     computed_timeout = computed_timeout * 1.2; //add 20% to the real timeout
     
-    setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
+    setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
 	SCLDBG_ << "computed_timeout is = " << computed_timeout;
 	//set current set poi into the output channel
 	if(*i_setpoint_affinity && (delta_current < *i_setpoint_affinity)) {
@@ -142,10 +142,10 @@ bool own::CmdPSSetCurrent::timeoutHandler() {
 	bool result = false;
 	if( *i_delta_setpoint && (std::abs(*o_current - *o_current_sp) < *i_delta_setpoint)) {
 		std::string error =  "Out of SP";
-		SL_FAULT_RUNNIG_STATE
+		BC_FAULT_RUNNIG_PROPERTY
 		writeErrorMessage(error);
 	}else {
-		SL_END_RUNNIG_STATE
+		BC_END_RUNNIG_PROPERTY
 	}
 	return result;
 }

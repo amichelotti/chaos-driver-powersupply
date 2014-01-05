@@ -24,10 +24,10 @@
 #define CMDCU_ LAPP_ << "[CmdPSDefault-" << getDeviceID() << "] "
 #define CMDCUDBG_ LDBG_ << "[CmdPSDefault-" << getDeviceID() << "] "
 
-using namespace chaos::common::data;
-using namespace chaos::cu::control_manager::slow_command;
 using namespace driver::powersupply;
-
+using namespace chaos::common::data;
+using namespace chaos::common::batch_command;
+using namespace chaos::cu::control_manager::slow_command;
 
 CmdPSDefault::CmdPSDefault() {
 	powersupply_drv = NULL;
@@ -53,7 +53,7 @@ void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
     
         //no adiditonal setup here
-	SL_NORMAL_RUNNIG_STATE
+	BC_NORMAL_RUNNIG_PROPERTY
     
     sequence_number = 0;
     last_slow_acq_time = getSetTime();// shared_stat->lastCmdStepStart;
