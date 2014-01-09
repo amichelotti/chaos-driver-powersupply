@@ -23,8 +23,10 @@
 
 #include <boost/format.hpp>
 
-#define CMDCU_ LAPP_ << "[CmdPSReset] - "
-#define CMDCUDBG_ LDBG_ << "[CmdPSReset] - "
+#define LOG_HEAD_CmdPSReset LOG_TAIL(CmdPSReset)
+
+#define CMDCU_ LAPP_ << LOG_HEAD_CmdPSReset
+#define CMDCUDBG_ LDBG_ << LOG_HEAD_CmdPSReset
 
 namespace own =  driver::powersupply;
 namespace c_data = chaos::common::data;

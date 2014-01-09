@@ -25,10 +25,10 @@
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 
-#define LOG_HEAD "[CmdPSSetCurrent - " << LOG_TAIL
-#define SCLAPP_ LAPP_ << LOG_HEAD
-#define SCLDBG_ LDBG_ << LOG_HEAD
-#define SCLERR_ LERR_ << LOG_HEAD
+#define LOG_HEAD_CmdPSSetCurrent LOG_TAIL(CmdPSSetCurrent)
+#define SCLAPP_ LAPP_ << LOG_HEAD_CmdPSSetCurrent
+#define SCLDBG_ LDBG_ << LOG_HEAD_CmdPSSetCurrent
+#define SCLERR_ LERR_ << LOG_HEAD_CmdPSSetCurrent
 
 
 namespace own =  driver::powersupply;
@@ -119,10 +119,10 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	
 	SCLDBG_ << "Set current to value " << current;
 	if((err = powersupply_drv->setCurrentSP(current)) != 0) {
-		throw chaos::CException(2, boost::str( boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__));
+		throw chaos::CException(2, boost::str(boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__));
 	}
 	if((err = powersupply_drv->startCurrentRamp()) != 0) {
-		throw chaos::CException(2, boost::str( boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__));
+		throw chaos::CException(2, boost::str(boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__));
 	}
 	//assign new current setpoint
 	*o_current_sp = current;

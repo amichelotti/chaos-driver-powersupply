@@ -10,7 +10,9 @@
 
 #include <boost/format.hpp>
 
-#define CMDCU_ LAPP_ << "[CmdPSMode] - "
+#define LOG_HEAD_CmdPSMode LOG_TAIL(CmdPSMode)
+
+#define CMDCU_ LAPP_ << LOG_HEAD_CmdPSMode
 
 namespace own =  driver::powersupply;
 namespace c_data = chaos::common::data;

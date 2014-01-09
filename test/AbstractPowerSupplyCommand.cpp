@@ -17,7 +17,8 @@
  *    	See the License for the specific language governing permissions and
  *    	limitations under the License.
  */
-#define CMDCUDBG_ LDBG_ << "[AbstractPowerSupplyCommand] - "
+#define LOG_HEAD_AbstractPowerSupplyCommand LOG_TAIL(AbstractPowerSupplyCommand)
+#define CMDCUDBG_ LDBG_ << LOG_HEAD_AbstractPowerSupplyCommand
 #include "AbstractPowerSupplyCommand.h"
 #include <boost/format.hpp>
 

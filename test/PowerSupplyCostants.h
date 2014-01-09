@@ -25,7 +25,7 @@
 namespace driver {
 	namespace powersupply {
 		
-        #define LOG_TAIL getDeviceID() << " - [" << getUID()<< "] - "
+        #define LOG_TAIL(n) "[" << #n << "] - " << getDeviceID() << " - [" << getUID() << "] - "
         
 		//! The alias of the default command of the type
 		const char * const CMD_PS_DEFAULT_ALIAS = "default";

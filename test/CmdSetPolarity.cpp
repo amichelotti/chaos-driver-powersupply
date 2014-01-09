@@ -23,9 +23,10 @@
 
 #include <boost/format.hpp>
 
-#define SCLAPP_ LAPP_ << "[CmdSetPolarity -" << LOG_TAIL
-#define SCLDBG_ LDBG_ << "[CmdSetPolarity -" << LOG_TAIL
-#define SCLERR_ LERR_ << "[CmdSetPolarity -" << LOG_TAIL
+#define LOG_HEAD_CmdPSSetCurrent LOG_TAIL(CmdPSSetCurrent)
+#define SCLAPP_ LAPP_ << LOG_HEAD_CmdPSSetCurrent
+#define SCLDBG_ LDBG_ << LOG_HEAD_CmdPSSetCurrent
+#define SCLERR_ LERR_ << LOG_HEAD_CmdPSSetCurrent
 
 
 namespace own =  driver::powersupply;

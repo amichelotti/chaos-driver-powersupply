@@ -23,9 +23,11 @@
 
 #include <boost/format.hpp>
 
-#define SCLAPP_ LAPP_ << "[CmdPSSetSlope - " << LOG_TAIL
-#define SCLDBG_ LDBG_ << "[CmdPSSetSlope - " << LOG_TAIL
-#define SCLERR_ LERR_ << "[CmdPSSetSlope - " << LOG_TAIL
+#define LOG_HEAD_CmdPSSetSlope LOG_TAIL(CmdPSSetSlope)
+
+#define SCLAPP_ LAPP_ << LOG_HEAD_CmdPSSetSlope
+#define SCLDBG_ LDBG_ << LOG_HEAD_CmdPSSetSlope
+#define SCLERR_ LERR_ << LOG_HEAD_CmdPSSetSlope
 
 
 namespace own =  driver::powersupply;

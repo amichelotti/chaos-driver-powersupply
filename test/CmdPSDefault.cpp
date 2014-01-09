@@ -21,8 +21,10 @@
 #include <cstring>
 #include "CmdPSDefault.h"
 
-#define CMDCU_ LAPP_ << "[CmdPSDefault-" << getDeviceID() << "] "
-#define CMDCUDBG_ LDBG_ << "[CmdPSDefault-" << getDeviceID() << "] "
+#define LOG_HEAD_CmdPSDefault LOG_TAIL(CmdPSDefault)
+
+#define CMDCU_ LAPP_ << LOG_HEAD_CmdPSDefault
+#define CMDCUDBG_ LDBG_ << LOG_HEAD_CmdPSDefault
 
 using namespace driver::powersupply;
 using namespace chaos::common::data;
