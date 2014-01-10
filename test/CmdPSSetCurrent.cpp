@@ -55,7 +55,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 		case common::powersupply::POWER_SUPPLY_STATE_ERROR:
 		case common::powersupply::POWER_SUPPLY_STATE_UKN:
 			//i need to be in operational to exec
-			throw chaos::CException(1, boost::str( boost::format("Bas state for set current comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__));
+			TROW_ERROR(1, boost::str( boost::format("Bas state for set current comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
 			break;
 			
 		case common::powersupply::POWER_SUPPLY_STATE_OPEN:
@@ -65,7 +65,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 			break;
 			
 		default:
-			throw chaos::CException(2, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__));
+			TROW_ERROR(2, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
 	}
 	
 	//set comamnd timeout for this instance
@@ -76,7 +76,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	}
 	
 	if(!data || !data->hasKey(CMD_PS_SET_CURRENT)) {
-		throw chaos::CException(1, boost::str( boost::format("Set current parameter not present") % o_status % *o_status_id), std::string(__FUNCTION__));
+		TROW_ERROR(3, boost::str( boost::format("Set current parameter not present") % o_status % *o_status_id), std::string(__FUNCTION__))
 	}
     
     current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
@@ -87,7 +87,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
         SCLDBG_ << "check mandatory default values";
         getDeviceDatabase()->getAttributeRangeValueInfo("current_sp", current_sp_attr_info);
         if(!current_sp_attr_info.maxRange.size() || !current_sp_attr_info.minRange.size()) {
-            throw chaos::CException(1, "current set point need to have max and min", __FUNCTION__);
+			TROW_ERROR(4, boost::str( boost::format("current set point need to have max and min") % o_status % *o_status_id), std::string(__FUNCTION__))
         }
         
         SCLDBG_ << "current_sp max="<<attributeInfo.maxRange;
@@ -119,10 +119,10 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	
 	SCLDBG_ << "Set current to value " << current;
 	if((err = powersupply_drv->setCurrentSP(current)) != 0) {
-		throw chaos::CException(2, boost::str(boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__));
+		TROW_ERROR(5, boost::str(boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__))
 	}
 	if((err = powersupply_drv->startCurrentRamp()) != 0) {
-		throw chaos::CException(2, boost::str(boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__));
+		TROW_ERROR(6, boost::str(boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__))
 	}
 	//assign new current setpoint
 	*o_current_sp = current;

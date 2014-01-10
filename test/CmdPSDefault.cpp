@@ -59,6 +59,7 @@ void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
     
     sequence_number = 0;
     last_slow_acq_time = getSetTime();// shared_stat->lastCmdStepStart;
+	slow_acquisition_idx = 0;
 }
 
     // Aquire the necessary data for the command
@@ -82,30 +83,33 @@ void CmdPSDefault::acquireHandler() {
     if(powersupply_drv && !powersupply_drv->getCurrentOutput(&tmp_float)){
 		*o_current = (double)tmp_float;
     }
-    
-    if(time_diff > 10000000 ) {
+	
+    if(time_diff > 2000000 ) {
+		CMDCU_ << "slow acquire staterd after us=" << time_diff;
         last_slow_acq_time = getStartStepTime();
-        
-        CMDCU_ << "slow acquire staterd after us=" << time_diff;
-        
-        if(powersupply_drv && !powersupply_drv->getVoltageOutput(&tmp_float)){
-            *o_voltage = (double)tmp_float;
-        }
-        
-        if(powersupply_drv && !powersupply_drv->getPolarity(&tmp_uint32)){
-            *o_polarity = tmp_uint32;
-        }
-        
-        
-        if(powersupply_drv && !powersupply_drv->getAlarms(&tmp_uint64)){
-            *o_alarms = tmp_uint64;
-        }
-        
-        if(powersupply_drv && !powersupply_drv->getState(&stato, desc)){
-            *o_status_id = stato;
-            std::strncpy(o_status, desc.c_str(), 256);
-        }
-        
+		switch(slow_acquisition_idx) {
+			case 0:
+				if(powersupply_drv && !powersupply_drv->getVoltageOutput(&tmp_float)){
+					*o_voltage = (double)tmp_float;
+				}
+				break;
+			case 1:
+				if(powersupply_drv && !powersupply_drv->getPolarity(&tmp_uint32)){
+					*o_polarity = tmp_uint32;
+				}
+				break;
+			case 2:
+				if(powersupply_drv && !powersupply_drv->getAlarms(&tmp_uint64)){
+					*o_alarms = tmp_uint64;
+				}
+				break;
+			case 3:
+				if(powersupply_drv && !powersupply_drv->getState(&stato, desc)){
+					*o_status_id = stato;
+					std::strncpy(o_status, desc.c_str(), 256);
+				}
+				break;
+		}
 	}
     acquiredData->addDoubleValue("current", *o_current);
     CMDCU_ << "current ->" << *o_current;

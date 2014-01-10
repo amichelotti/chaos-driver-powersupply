@@ -70,7 +70,7 @@ void own::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CE
     //install all command
     installCommand<CmdPSDefault>(CMD_PS_DEFAULT_ALIAS);
     installCommand<CmdPSMode>(CMD_PS_MODE_ALIAS);
-	installCommand<CmdPSMode>(CMD_PS_RESET_ALIAS);
+	installCommand<CmdPSReset>(CMD_PS_RESET_ALIAS);
 	installCommand<CmdPSSetSlope>(CMD_PS_SET_SLOPE_ALIAS);
 	installCommand<CmdPSSetCurrent>(CMD_PS_SET_CURRENT_ALIAS);
 	installCommand<CmdSetPolarity>(CMD_PS_SET_POLARITY_ALIAS);

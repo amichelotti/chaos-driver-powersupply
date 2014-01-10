@@ -43,10 +43,10 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 			CMDCU_ << "Request to go to stanby";
 			if((*o_status_id != common::powersupply::POWER_SUPPLY_STATE_OPEN) &&
 			   (*o_status_id != common::powersupply::POWER_SUPPLY_STATE_ON)) {
-				throw chaos::CException(2, boost::str( boost::format("Cant go to standby, current state is %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__));
+				TROW_ERROR(2, boost::str( boost::format("Cant go to standby, current state is %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
 			}
 			if(powersupply_drv->standby() != 0) {
-				throw chaos::CException(3, "Error issuing standby on powersupply", __FUNCTION__);
+				TROW_ERROR(3, "Error issuing standby on powersupply", std::string(__FUNCTION__))
 			}
 			CMDCU_ << "Can go to stanby";
 			break;
@@ -54,10 +54,10 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 		case 1://to operational
 			CMDCU_ << "Request to go to operational";
 			if((*o_status_id != common::powersupply::POWER_SUPPLY_STATE_STANDBY)) {
-				throw chaos::CException(3, boost::str( boost::format("Cant go to operational, current state is %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__));
+				TROW_ERROR(3, boost::str( boost::format("Cant go to operational, current state is %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
 			}
 			if(powersupply_drv->poweron() != 0) {
-				throw chaos::CException(3, "Error issuing poweron on powersupply", __FUNCTION__);
+				TROW_ERROR(5, "Error issuing poweron on powersupply", std::string(__FUNCTION__))
 			}
 			CMDCU_ << "Can go to operational";
 			break;
@@ -108,17 +108,13 @@ void own::CmdPSMode::ccHandler() {
 	   *o_status_id == common::powersupply::POWER_SUPPLY_STATE_ERROR ||
 	   *o_status_id == common::powersupply::POWER_SUPPLY_STATE_UKN ) {
 		setWorkState(false);
-		std::string error =  boost::str( boost::format("Bad state got = %1% - [%2%]") % *o_status_id % o_status);
-		writeErrorMessage(error);
-		throw chaos::CException(1, error.c_str(), __FUNCTION__);
+		TROW_ERROR(1, boost::str( boost::format("Bad state got = %1% - [%2%]") % *o_status_id % o_status), std::string(__FUNCTION__))
 	}
 }
 
 bool own::CmdPSMode::timeoutHandler() {
 	//move the state machine on fault
 	setWorkState(false);
-	std::string error =  "Command operation has gone on timeout";
-	writeErrorMessage(error);
-	throw chaos::CException(1, error.c_str(), __FUNCTION__);
+	TROW_ERROR(1, "Command operation has gone on timeout", std::string(__FUNCTION__))
 	return true;
 }
