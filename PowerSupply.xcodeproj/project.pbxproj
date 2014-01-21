@@ -83,7 +83,7 @@
 		32599919182A7A09001E7D99 /* PowerSupplyCostants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PowerSupplyCostants.h; sourceTree = "<group>"; };
 		3259991A182A815F001E7D99 /* CmdPSReset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CmdPSReset.cpp; sourceTree = "<group>"; };
 		3259991B182A815F001E7D99 /* CmdPSReset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdPSReset.h; sourceTree = "<group>"; };
-		3285567717F1C43D00A64ED2 /* power_supply_cu */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = power_supply_cu; sourceTree = BUILT_PRODUCTS_DIR; };
+		3285567717F1C43D00A64ED2 /* powersupply_cu */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = powersupply_cu; sourceTree = BUILT_PRODUCTS_DIR; };
 		3285568717F1C4AC00A64ED2 /* libdriver_powersupply.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libdriver_powersupply.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		3288CE9C1830CF4700476B85 /* CmdPSSetSlope.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CmdPSSetSlope.cpp; sourceTree = "<group>"; };
 		3288CE9D1830CF4700476B85 /* CmdPSSetSlope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CmdPSSetSlope.h; sourceTree = "<group>"; };
@@ -190,7 +190,7 @@
 		3285567817F1C43D00A64ED2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3285567717F1C43D00A64ED2 /* power_supply_cu */,
+				3285567717F1C43D00A64ED2 /* powersupply_cu */,
 				3285568717F1C4AC00A64ED2 /* libdriver_powersupply.dylib */,
 				5367761218339349006A7B25 /* power_supply_test_ui */,
 				53677626183E1AF9006A7B25 /* driver_powersupply_framework.framework */,
@@ -353,7 +353,7 @@
 			);
 			name = powersupply_cu;
 			productName = Driver;
-			productReference = 3285567717F1C43D00A64ED2 /* power_supply_cu */;
+			productReference = 3285567717F1C43D00A64ED2 /* powersupply_cu */;
 			productType = "com.apple.product-type.tool";
 		};
 		3285568617F1C4AC00A64ED2 /* driver_powersupply */ = {

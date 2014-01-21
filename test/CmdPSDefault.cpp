@@ -110,6 +110,8 @@ void CmdPSDefault::acquireHandler() {
 				}
 				break;
 		}
+		slow_acquisition_idx++;
+		slow_acquisition_idx = slow_acquisition_idx % 4;
 	}
     acquiredData->addDoubleValue("current", *o_current);
     CMDCU_ << "current ->" << *o_current;
