@@ -152,7 +152,7 @@ extern "C" {
     sprintf(parameter,"{\"sett_cur\":%f}",curr);
     DPRINT("submitting command %s\n",parameter);
     err = submitSlowControlCommand(devID,"sett",
-				 1,
+				 0,
 				 50,
 				 0,
 				 0,
@@ -166,7 +166,7 @@ extern "C" {
     sprintf(stringa,"{\"pola_value\":%d}",pol);
     DPRINT("submitting command %s\n",stringa);
     err = submitSlowControlCommand(devID,"pola",
-				 1,
+				 0,
 				 50,
 				 0,
 				 0,
@@ -181,7 +181,7 @@ extern "C" {
     sprintf(stringa,"{\"mode_type\":0}");
     DPRINT("submitting command %s\n",stringa);
     err = submitSlowControlCommand(devID,"mode",
-				 1,
+				 0,
 				 50,
 				 0,
 				 0,
@@ -196,7 +196,7 @@ extern "C" {
     sprintf(stringa,"{\"mode_type\":1}");
     DPRINT("submitting command %s\n",stringa);
     err = submitSlowControlCommand(devID,"mode",
-				 1,
+				 0,
 				 50,
 				 0,
 				 0,
