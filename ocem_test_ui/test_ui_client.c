@@ -21,14 +21,20 @@ int main (int argc, char* argv[] )
   if(err!=0){
     printf("cannot initialise \"%s\" on %s, err =%d\n",devName,mdsServer,err);
     return -3;
-    
   }
+
+  setPol(devID, 1);
+  on(devID);
+  setCurrent(devID, 100.0);
+  setCurrent(devID, 50.0);
+  setCurrent(devID, 15.0);
+  setCurrent(devID, 0.0);
   printf("initialisation ok\n");
-  while(1){
-    if(getCurrent(devID,&curr)==0){
-      printf("current %2.2f\r",curr);
-    }
-  }
+ // while(1){
+  //  if(getCurrent(devID,&curr)==0){
+   //   printf("current %2.2f\r",curr);
+   // }
+ // }
   return 0;
 }
 

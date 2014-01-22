@@ -104,20 +104,20 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 		slope_speed  = *i_slope_up;
 	}
 	
-	int32_t delta_current = std::abs(*o_current_sp - current);
-	SCLDBG_ << "Delta current is = " << delta_current;
+	//compute the delta for check if we are on the rigth current at the end of the job
+	*i_delta_setpoint = (5*current)/100;
+	SCLDBG_ << "Delta current is = " << *i_delta_setpoint;
 	SCLDBG_ << "Slope speed is = " << slope_speed;
-	uint64_t computed_timeout = (std::ceil((delta_current / slope_speed)) * 1000000);
+	uint64_t computed_timeout = (std::ceil((std::abs(*o_current_sp - current) / slope_speed)) * 1000000);
     computed_timeout = computed_timeout * 1.2; //add 20% to the real timeout
     
-    setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
-	SCLDBG_ << "computed_timeout is = " << computed_timeout;
 	//set current set poi into the output channel
-	if(*i_setpoint_affinity && (delta_current < *i_setpoint_affinity)) {
-		SCLDBG_ << "New current don't pass affinity check affinity_check = " << delta_current << " setpoint_affinity = "<<*i_setpoint_affinity;
+	if(*i_setpoint_affinity && (*i_delta_setpoint < *i_setpoint_affinity)) {
+		SCLDBG_ << "New current don't pass affinity check affinity_check = " << *i_delta_setpoint << " setpoint_affinity = "<<*i_setpoint_affinity;
 	}
 	
 	SCLDBG_ << "Set current to value " << current;
+	SCLDBG_ << "computed_timeout is = " << computed_timeout;
 	if((err = powersupply_drv->setCurrentSP(current)) != 0) {
 		TROW_ERROR(5, boost::str(boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__))
 	}
@@ -128,6 +128,9 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	*o_current_sp = current;
 	powersupply_drv->accessor->base_opcode_priority=100;
 	setWorkState(true);
+	//set runnign  property to exsculisve untile command has finisced
+	BC_EXEC_RUNNIG_PROPERTY
+	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
 }
 
 void own::CmdPSSetCurrent::ccHandler() {
@@ -140,7 +143,7 @@ bool own::CmdPSSetCurrent::timeoutHandler() {
 	setWorkState(false);
 	powersupply_drv->accessor->base_opcode_priority=50;
 	bool result = false;
-	if( *i_delta_setpoint && (std::abs(*o_current - *o_current_sp) < *i_delta_setpoint)) {
+	if( *i_delta_setpoint && (std::abs(*o_current - *o_current_sp) > *i_delta_setpoint)) {
 		std::string error =  "Out of SP";
 		BC_FAULT_RUNNIG_PROPERTY
 		writeErrorMessage(error);

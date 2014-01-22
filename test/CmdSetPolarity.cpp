@@ -23,7 +23,7 @@
 
 #include <boost/format.hpp>
 
-#define LOG_HEAD_CmdPSSetCurrent LOG_TAIL(CmdPSSetCurrent)
+#define LOG_HEAD_CmdPSSetCurrent LOG_TAIL(CmdSetPolarity)
 #define SCLAPP_ LAPP_ << LOG_HEAD_CmdPSSetCurrent
 #define SCLDBG_ LDBG_ << LOG_HEAD_CmdPSSetCurrent
 #define SCLERR_ LERR_ << LOG_HEAD_CmdPSSetCurrent
@@ -35,7 +35,7 @@ namespace chaos_batch = chaos::common::batch_command;
 
     // return the implemented handler
 uint8_t own::CmdSetPolarity::implementedHandler() {
-    return	chaos_batch::HandlerType::HT_Set;
+    return	AbstractPowerSupplyCommand::implementedHandler();
 }
 
 void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {

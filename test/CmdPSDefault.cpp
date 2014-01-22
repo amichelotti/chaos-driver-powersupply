@@ -48,12 +48,40 @@ uint8_t CmdPSDefault::implementedHandler() {
 
     // Start the command execution
 void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
+	string desc;
+	int stato = 0;
+	int tmp_uint32 = 0;
+	float tmp_float = 0.0F;
+	uint64_t tmp_uint64 = 0;
+	
+	AbstractPowerSupplyCommand::setHandler(data);
+	
+	setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)1000000);
+	
+	if(!powersupply_drv->getCurrentOutput(&tmp_float)){
+		*o_current = (double)tmp_float;
+    }
+	if(!powersupply_drv->getVoltageOutput(&tmp_float)){
+		*o_voltage = (double)tmp_float;
+	}
+	if(!powersupply_drv->getPolarity(&tmp_uint32)){
+		*o_polarity = tmp_uint32;
+	}
+	if(!powersupply_drv->getAlarms(&tmp_uint64)){
+		*o_alarms = tmp_uint64;
+	}
+	if(!powersupply_drv->getState(&stato, desc)){
+		*o_status_id = stato;
+		std::strncpy(o_status, desc.c_str(), 256);
+	}
+	
         //set command has stackable
 	CMDCU_ << "Change running property to SL_STACK_RUNNIG_STATE";
     
-        //call superclass set handler to setup all variable
-	AbstractPowerSupplyCommand::setHandler(data);
-    
+
+		//get the default value
+	
+	
         //no adiditonal setup here
 	BC_NORMAL_RUNNIG_PROPERTY
     
