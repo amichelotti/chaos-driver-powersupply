@@ -169,12 +169,16 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	SCCUAPP "unitInit";
     int err = 0;
 	int state_id;
+    std::string max_range;
+    std::string min_range;
+    std::string state_str;
+    RangeValueInfo current_sp_attr_info;
+    
 	double *asup = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, "slope_up")->getCurrentValue<double>();
 	double *asdown = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, "slope_down")->getCurrentValue<double>();
     int32_t *status_id = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, "status_id")->getCurrentValue<int32_t>();
-	std::string state_str;
-	RangeValueInfo attributeInfo;
-    RangeValueInfo current_sp_attr_info;
+
+    
     
 	chaos::cu::cu_driver::DriverAccessor * power_supply_accessor=AbstractControlUnit::getAccessoInstanceByIndex(0);
 	if(power_supply_accessor==NULL){
@@ -192,29 +196,29 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
        throw chaos::CException(1, "current set point need to have max and min", __FUNCTION__);
     }
     
-    SCCUAPP << "current_sp max="<<attributeInfo.maxRange;
-    SCCUAPP << "current_sp min="<<attributeInfo.minRange;
+    SCCUAPP << "current_sp max="<< (max_range = current_sp_attr_info.maxRange);
+    SCCUAPP << "current_sp min="<< (min_range = current_sp_attr_info.minRange);
     
 	// retrive the attribute description from the device database
-    attributeInfo.reset();
-	getAttributeRangeValueInfo("slope_up", attributeInfo);
-	if(attributeInfo.defaultValue.size()) {
-        *asup = boost::lexical_cast<float>(attributeInfo.defaultValue);
+    current_sp_attr_info.reset();
+	getAttributeRangeValueInfo("slope_up", current_sp_attr_info);
+	if(current_sp_attr_info.defaultValue.size()) {
+        *asup = boost::lexical_cast<float>(current_sp_attr_info.defaultValue);
         SCCUAPP << "slope_up = "<<*asup;
 	} else {
         SCCUAPP << "slope_up not set we need to compute it";
-        *asup = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
+        *asup = boost::lexical_cast<float>(max_range)/20;
         SCCUAPP << "slope_up computed = " << *asup;
     }
 	
-	attributeInfo.reset();
-	getAttributeRangeValueInfo("slope_down", attributeInfo);
-	if(attributeInfo.defaultValue.size()) {
-		*asdown = boost::lexical_cast<float>(attributeInfo.defaultValue);
+	current_sp_attr_info.reset();
+	getAttributeRangeValueInfo("slope_down", current_sp_attr_info);
+	if(current_sp_attr_info.defaultValue.size()) {
+		*asdown = boost::lexical_cast<float>(current_sp_attr_info.defaultValue);
         SCCUAPP << "slope_down = "<<*asup;
 	} else {
         SCCUAPP << "slope_down not set we need to compute it";
-        *asdown = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
+        *asdown = boost::lexical_cast<float>(max_range)/20;
         SCCUAPP << "slope_down computed = " << *asdown;
     }
     
