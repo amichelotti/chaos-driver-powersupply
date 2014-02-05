@@ -98,6 +98,9 @@ void chaos_powersupply_dd::GenericPowerSupplyDD::driverInit(const char *initPara
                 if(power==NULL){
                     throw chaos::CException(1, "Cannot allocate resources for SimPSupply", "GenericPowerSupplyDD::driverInit");
                 }
+            } else {
+                throw chaos::CException(1, "Bad parameters for SimSupply", "GenericPowerSupplyDD::driverInit");
+
             }
         } else {
               throw chaos::CException(1, "Unsupported Power Supply", "GenericPowerSupplyDD::driverInit");
