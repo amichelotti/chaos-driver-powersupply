@@ -23,8 +23,8 @@
 		5303A93818197A240070356D /* PowerSupplyControlUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A93018190F4E0070356D /* PowerSupplyControlUnit.cpp */; };
 		5303A93B1819BB010070356D /* ChaosPowerSupplyInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 5303A92818190EBF0070356D /* ChaosPowerSupplyInterface.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5303A93C1819BB4C0070356D /* GenericPowerSupplyDD.h in Headers */ = {isa = PBXBuildFile; fileRef = 5303A92C18190ED00070356D /* GenericPowerSupplyDD.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53218B0D18994189008181AE /* TestPowerSupply.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53218B0B18994189008181AE /* TestPowerSupply.cpp */; };
 		5367761718339349006A7B25 /* ocem_test_ui.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5367761618339349006A7B25 /* ocem_test_ui.1 */; };
-		5367761C18339379006A7B25 /* test_ui_client.c in Sources */ = {isa = PBXBuildFile; fileRef = 5367761B18339379006A7B25 /* test_ui_client.c */; };
 		5367761F1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5367761D1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.cpp */; };
 		536776201836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 5367761E1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h */; };
 		53677629183E1AF9006A7B25 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53677628183E1AF9006A7B25 /* Cocoa.framework */; };
@@ -37,6 +37,8 @@
 		53677651183E1B30006A7B25 /* ChaosUIPowersupplyCWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5367761D1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.cpp */; };
 		53677652183E1B30006A7B25 /* ChaosUIPowersupplyCWrapper.h in Sources */ = {isa = PBXBuildFile; fileRef = 5367761E1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h */; };
 		53677653183E1B70006A7B25 /* ChaosUIPowersupplyCWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 5367761E1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53751D07189AB31200A106E7 /* TestPowerSupply.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53218B0B18994189008181AE /* TestPowerSupply.cpp */; };
+		53751D09189AB3C600A106E7 /* test_power_supply.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53751D08189AB3C600A106E7 /* test_power_supply.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,9 +109,10 @@
 		5303A92F18190F4E0070356D /* powersupply_cu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = powersupply_cu.cpp; sourceTree = "<group>"; };
 		5303A93018190F4E0070356D /* PowerSupplyControlUnit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PowerSupplyControlUnit.cpp; sourceTree = "<group>"; };
 		5303A93118190F4E0070356D /* PowerSupplyControlUnit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PowerSupplyControlUnit.h; sourceTree = "<group>"; };
+		53218B0B18994189008181AE /* TestPowerSupply.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestPowerSupply.cpp; sourceTree = "<group>"; };
+		53218B0C18994189008181AE /* TestPowerSupply.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestPowerSupply.h; sourceTree = "<group>"; };
 		5367761218339349006A7B25 /* power_supply_test_ui */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = power_supply_test_ui; sourceTree = BUILT_PRODUCTS_DIR; };
 		5367761618339349006A7B25 /* ocem_test_ui.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = ocem_test_ui.1; sourceTree = "<group>"; };
-		5367761B18339379006A7B25 /* test_ui_client.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test_ui_client.c; sourceTree = "<group>"; };
 		5367761D1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ChaosUIPowersupplyCWrapper.cpp; sourceTree = "<group>"; };
 		5367761E1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChaosUIPowersupplyCWrapper.h; sourceTree = "<group>"; };
 		53677626183E1AF9006A7B25 /* driver_powersupply_framework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = driver_powersupply_framework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -127,6 +130,7 @@
 		53677645183E1AFA006A7B25 /* driver_powersupply_frameworkTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "driver_powersupply_frameworkTests-Info.plist"; sourceTree = "<group>"; };
 		53677647183E1AFA006A7B25 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		53677649183E1AFA006A7B25 /* driver_powersupply_frameworkTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = driver_powersupply_frameworkTests.m; sourceTree = "<group>"; };
+		53751D08189AB3C600A106E7 /* test_power_supply.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test_power_supply.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -250,7 +254,9 @@
 		5367761318339349006A7B25 /* ocem_test_ui */ = {
 			isa = PBXGroup;
 			children = (
-				5367761B18339379006A7B25 /* test_ui_client.c */,
+				53751D08189AB3C600A106E7 /* test_power_supply.cpp */,
+				53218B0B18994189008181AE /* TestPowerSupply.cpp */,
+				53218B0C18994189008181AE /* TestPowerSupply.h */,
 				5367761618339349006A7B25 /* ocem_test_ui.1 */,
 			);
 			path = ocem_test_ui;
@@ -494,6 +500,7 @@
 				3259991C182A815F001E7D99 /* CmdPSReset.cpp in Sources */,
 				5303A93218190F4E0070356D /* powersupply_cu.cpp in Sources */,
 				32B8C19E18292A82001CF714 /* CmdPSDefault.cpp in Sources */,
+				53218B0D18994189008181AE /* TestPowerSupply.cpp in Sources */,
 				32A737361833B5A8001D426E /* CmdSetPolarity.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -514,7 +521,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5367761C18339379006A7B25 /* test_ui_client.c in Sources */,
+				53751D09189AB3C600A106E7 /* test_power_supply.cpp in Sources */,
+				53751D07189AB31200A106E7 /* TestPowerSupply.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -834,16 +842,23 @@
 		5367761818339349006A7B25 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LIBRARY = "libc++";
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "libstdc++";
+				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					"CHAOS=1",
 					"DEBUG=1",
-					"$(inherited)",
+				);
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
+					"DEBUG=1",
+					"CHAOS=1",
 				);
 				HEADER_SEARCH_PATHS = (
 					../../,
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					../../usr/local/include,
+					"$(SRCROOT)/../../usr/local/include",
 				);
 				INSTALL_PATH = "$(SRCROOT)/../../usr/local/bin";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
@@ -864,6 +879,7 @@
 					"-lchaos_common",
 					"-lchaos_uitoolkit",
 					"-ldriver_powersupply",
+					"-lcommon_test",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -872,12 +888,15 @@
 		5367761918339349006A7B25 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LIBRARY = "libc++";
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "libstdc++";
+				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = /;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				HEADER_SEARCH_PATHS = (
 					../../,
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					../../usr/local/include,
+					"$(SRCROOT)/../../usr/local/include",
 				);
 				INSTALL_PATH = "$(SRCROOT)/../../usr/local/bin";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
@@ -898,6 +917,7 @@
 					"-lchaos_common",
 					"-lchaos_uitoolkit",
 					"-ldriver_powersupply",
+					"-lcommon_test",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
