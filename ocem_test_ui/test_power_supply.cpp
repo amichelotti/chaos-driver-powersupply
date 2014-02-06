@@ -10,15 +10,17 @@ namespace po = boost::program_options;
 int main (int argc, char* argv[] )
 {
   std::string mdsServer;
-    int debug;
+  int debug,loop,keep;
   std::vector<std::string> arrCU;
   std::vector<TestPowerSupply*> arrTest;
-    po::options_description desc("options");
-
+  po::options_description desc("options");
+  int ret=0;
     desc.add_options()("help","help");
     desc.add_options()("mds",po::value<std::string>(&mdsServer)->default_value(std::string("mdsserver:5000")),"mds server");
     desc.add_options()("supply,s",po::value<std::vector<std::string> > (&arrCU),"power supply ID to test");
     desc.add_options()("debug,d",po::value<int>(&debug)->default_value(0),"enable debug level");
+    desc.add_options()("loop,l",po::value<int>(&loop)->default_value(1),"number of test loop to do");
+    desc.add_options()("keep,k",po::value<int>(&loop)->default_value(1),"continue on error");
 
     
     po::variables_map vm;
@@ -38,6 +40,8 @@ int main (int argc, char* argv[] )
     }
     mdsServer = vm["mds"].as<std::string>();
     arrCU =vm["supply"].as<std::vector<std::string> >();
+    loop = vm["loop"].as<int>();
+    keep = vm["keep"].as<int>();
     std::cout<<"using MDS: "<<mdsServer<<std::endl;
     
     for(std::vector<std::string>::iterator i=arrCU.begin();i!=arrCU.end();i++){
@@ -75,13 +79,13 @@ int main (int argc, char* argv[] )
     }
     
     for(std::vector<TestPowerSupply*>::iterator i = arrTest.begin();i!=arrTest.end();i++){
-        (*i)->runTestsBackGround(1,10);
+        (*i)->runTestsBackGround(keep,loop);
     }
     
     for(std::vector<TestPowerSupply*>::iterator i = arrTest.begin();i!=arrTest.end();i++){
         std::string filename=(*i)->getCUname() + "_report.txt";
-        (*i)->report((char*)filename.c_str());
+        ret +=(*i)->report((char*)filename.c_str());
     }
-  return 0;
+  return ret;
 }
 
