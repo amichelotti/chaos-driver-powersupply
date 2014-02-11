@@ -40,6 +40,29 @@ int TestPowerSupply::onTest(){
     return -1;
 }
 
+int TestPowerSupply::initTest(){
+  int ret=CUTest<TestPowerSupply>::initTest();
+  int state;
+  if(ret==0){
+    int ret = getState(devID,&state);
+    if(ret == 0){
+      if(state&common::powersupply::POWER_SUPPLY_STATE_STANDBY){
+	DPRINT("Power supply is already in standby\n");
+	return 0;
+      }
+      else if(state&common::powersupply::POWER_SUPPLY_STATE_ON){
+	float cur=0;
+       	DPRINT("Power supply is ON, setting current 0\n");
+	ret = setCurrentTest(&cur);
+	if(ret == 0){
+	  DPRINT("Forcing standby\n");
+	  return standByTest();
+	}
+      }
+    }
+  }
+  return ret;
+}
 int TestPowerSupply::standByTest(){
     int err;
     int state=0;

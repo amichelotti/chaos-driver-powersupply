@@ -57,20 +57,21 @@ int main (int argc, char* argv[] )
         //name, pointer, function, timeout, test repetition
         p->addTest("initTest",p, &TestPowerSupply::initTest,10000,1);
         p->addTest("startTest",p, &TestPowerSupply::startTest,10000,1);
-        p->addTest("aliveTest",p, &TestPowerSupply::aliveTest,10000,10);
+	p->addTest("aliveTest",p, &TestPowerSupply::aliveTest,10000,10);
+	p->addTest("Standby",p,&TestPowerSupply::standByTest,60000,1);
+	p->addTest<int>("Polarity Pos",p,&TestPowerSupply::setPolarityTest,1,60000,1);
         p->addTest("power on",p,&TestPowerSupply::onTest,60000,1);
         //name, pointer, function with pointer, value, timeout, test repetition
-
         p->addTest<float>("Current 50",p,&TestPowerSupply::setCurrentTest,50,60000,1);
         p->addTest<float>("Current 0",p,&TestPowerSupply::setCurrentTest,0,60000,1);
-        p->addTest("Standby",p,&TestPowerSupply::standByTest,60000,1);
+	p->addTest("Standby2",p,&TestPowerSupply::standByTest,60000,1);
         p->addTest<int>("Polarity Neg",p,&TestPowerSupply::setPolarityTest,-1,60000,1);
         p->addTest<int>("Polarity Open",p,&TestPowerSupply::setPolarityTest,0,60000,1);
         p->addTest<int>("Polarity Pos",p,&TestPowerSupply::setPolarityTest,1,60000,1);
         p->addTest("poweron 2",p,&TestPowerSupply::onTest,60000,1);
         p->addTest<float>("Current 70",p,&TestPowerSupply::setCurrentTest,70,60000,1);
         p->addTest<float>("Current0 last",p,&TestPowerSupply::setCurrentTest,0,60000,1);
-        p->addTest("Standby2",p,&TestPowerSupply::standByTest,60000,1);
+        p->addTest("Standby3",p,&TestPowerSupply::standByTest,60000,1);
         
         p->addTest("stopTest",p, &TestPowerSupply::stopTest,10000,1);
         p->addTest("deinitTest",p, &TestPowerSupply::deinitTest,10000,1);
@@ -86,6 +87,9 @@ int main (int argc, char* argv[] )
         std::string filename=(*i)->getCUname() + "_report.txt";
         ret +=(*i)->report((char*)filename.c_str());
     }
-  return ret;
+    if(ret !=0){
+      LAPP_<<"Test power supply failed"<<endl;
+    }
+    return ret;
 }
 

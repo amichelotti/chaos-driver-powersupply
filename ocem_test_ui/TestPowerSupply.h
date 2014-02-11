@@ -17,11 +17,12 @@ class TestPowerSupply:public CUTest<TestPowerSupply> {
    
 public:
     TestPowerSupply(std::string cu_name,std::string mds_name,int debuglevel=0):CUTest<TestPowerSupply>(cu_name,mds_name,debuglevel){}
-    
-    int onTest(void);
-    int standByTest(void);
-    int setCurrentTest(float*val);
-    int setPolarityTest(int* pol);
+
+  int initTest();
+  int onTest(void);
+  int standByTest(void);
+  int setCurrentTest(float*val);
+  int setPolarityTest(int* pol);
     
 };
 

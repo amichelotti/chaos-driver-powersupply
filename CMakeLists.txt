@@ -15,7 +15,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 
 ADD_DEFINITIONS(-g -O2 -Wall)
-add_definitions(-DBOOST_ALL_DYN_LINK -DCHAOSUIPOWERSUPPLYCWRAPPER_DEBUG)
+add_definitions(-DBOOST_ALL_DYN_LINK -DCHAOS -DDEBUG)
 
 SET(PowerSupplydriver_src core/ChaosPowerSupplyInterface.cpp models/GenericPowerSupplyDD.cpp core/ChaosUIPowersupplyCWrapper.cpp)
 SET(PowerSupplycu_src test/powersupply_cu.cpp test/PowerSupplyControlUnit.cpp test/SCPowerSupplyControlUnit.cpp test/CmdPSDefault.cpp test/CmdPSMode.cpp test/CmdPSReset.cpp test/CmdPSSetSlope.cpp test/CmdPSSetCurrent.cpp test/CmdSetPolarity.cpp test/AbstractPowerSupplyCommand.cpp )
