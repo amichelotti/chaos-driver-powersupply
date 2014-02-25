@@ -99,6 +99,15 @@ int ChaosPowerSupplyInterface::getPolarity(int* pol,uint32_t timeo_ms){
 
 int ChaosPowerSupplyInterface::setCurrentSP(float current,uint32_t timeo_ms){
     WRITE_OP_FLOAT_TIM(OP_SET_SP, current, timeo_ms);
+}
+
+int ChaosPowerSupplyInterface::forceMaxCurrent(float max){
+    WRITE_OP_FLOAT_TIM(OP_FORCE_MAX_CURRENT, max, timeo_ms);
+}
+
+
+int ChaosPowerSupplyInterface::forceMaxVoltage(float max){
+    WRITE_OP_FLOAT_TIM(OP_FORCE_MAX_VOLTAGE, max, timeo_ms);
 
 }
 
