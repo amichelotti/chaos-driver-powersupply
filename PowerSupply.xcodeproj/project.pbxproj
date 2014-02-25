@@ -23,7 +23,6 @@
 		5303A93818197A240070356D /* PowerSupplyControlUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5303A93018190F4E0070356D /* PowerSupplyControlUnit.cpp */; };
 		5303A93B1819BB010070356D /* ChaosPowerSupplyInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 5303A92818190EBF0070356D /* ChaosPowerSupplyInterface.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5303A93C1819BB4C0070356D /* GenericPowerSupplyDD.h in Headers */ = {isa = PBXBuildFile; fileRef = 5303A92C18190ED00070356D /* GenericPowerSupplyDD.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53218B0D18994189008181AE /* TestPowerSupply.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53218B0B18994189008181AE /* TestPowerSupply.cpp */; };
 		5367761718339349006A7B25 /* ocem_test_ui.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5367761618339349006A7B25 /* ocem_test_ui.1 */; };
 		5367761F1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5367761D1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.cpp */; };
 		536776201836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 5367761E1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h */; };
@@ -500,7 +499,6 @@
 				3259991C182A815F001E7D99 /* CmdPSReset.cpp in Sources */,
 				5303A93218190F4E0070356D /* powersupply_cu.cpp in Sources */,
 				32B8C19E18292A82001CF714 /* CmdPSDefault.cpp in Sources */,
-				53218B0D18994189008181AE /* TestPowerSupply.cpp in Sources */,
 				32A737361833B5A8001D426E /* CmdSetPolarity.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -717,6 +715,7 @@
 					"-lcommon_debug",
 					"-lcommon_serial",
 					"-ldriver_powersupply",
+					"-lcommon_test",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -749,6 +748,7 @@
 					"-lcommon_debug",
 					"-lcommon_serial",
 					"-ldriver_powersupply",
+					"-lcommon_test",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
