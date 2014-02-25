@@ -102,12 +102,12 @@ int ChaosPowerSupplyInterface::setCurrentSP(float current,uint32_t timeo_ms){
 }
 
 int ChaosPowerSupplyInterface::forceMaxCurrent(float max){
-    WRITE_OP_FLOAT_TIM(OP_FORCE_MAX_CURRENT, max, timeo_ms);
+    WRITE_OP_FLOAT_TIM(OP_FORCE_MAX_CURRENT, max, 0);
 }
 
 
 int ChaosPowerSupplyInterface::forceMaxVoltage(float max){
-    WRITE_OP_FLOAT_TIM(OP_FORCE_MAX_VOLTAGE, max, timeo_ms);
+    WRITE_OP_FLOAT_TIM(OP_FORCE_MAX_VOLTAGE, max, 0);
 
 }
 

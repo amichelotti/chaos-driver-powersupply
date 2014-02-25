@@ -65,11 +65,11 @@ int main (int argc, char* argv[] )
         p->addTest<float>("Current 50",p,&TestPowerSupply::setCurrentTest,50,60000,1);
         p->addTest<float>("Current 0",p,&TestPowerSupply::setCurrentTest,0,60000,1);
 	p->addTest("Standby2",p,&TestPowerSupply::standByTest,60000,1);
-        p->addTest<int>("Polarity Neg",p,&TestPowerSupply::setPolarityTest,-1,60000,1);
-        p->addTest<int>("Polarity Open",p,&TestPowerSupply::setPolarityTest,0,60000,1);
+	//        p->addTest<int>("Polarity Neg",p,&TestPowerSupply::setPolarityTest,-1,60000,1);
+	//        p->addTest<int>("Polarity Open",p,&TestPowerSupply::setPolarityTest,0,60000,1);
         p->addTest<int>("Polarity Pos",p,&TestPowerSupply::setPolarityTest,1,60000,1);
         p->addTest("poweron 2",p,&TestPowerSupply::onTest,60000,1);
-        p->addTest<float>("Current 70",p,&TestPowerSupply::setCurrentTest,70,60000,1);
+        p->addTest<float>("Current 30",p,&TestPowerSupply::setCurrentTest,70,60000,1);
         p->addTest<float>("Current0 last",p,&TestPowerSupply::setCurrentTest,0,60000,1);
         p->addTest("Standby3",p,&TestPowerSupply::standByTest,60000,1);
         
