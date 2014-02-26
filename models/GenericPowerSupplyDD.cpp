@@ -31,8 +31,8 @@
 // initialization format is <POWERSUPPLY TYPE>:'<INITALISATION PARAMETERS>'
 static const boost::regex power_supply_init_match("(\\w+):(.+)");
 
-// initialisation format for ocem <serial port>,<slaveid>
-static const boost::regex power_supply_ocem_init_match("([\\w\\/]+),(\\d+)");
+// initialisation format for ocem <serial port>,<slaveid>,<maxcurr:maxvoltage>
+static const boost::regex power_supply_ocem_init_match("([\\w\\/]+),(\\d+),(\\d+):(\\d+)");
 
 // initialisation format for simulator <serial port>,<slaveid>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<maxcurr:max voltage>
 
@@ -77,8 +77,10 @@ void chaos_powersupply_dd::GenericPowerSupplyDD::driverInit(const char *initPara
             if(regex_match(initString, match, power_supply_ocem_init_match, boost::match_extra)){
                 std::string dev=match[1];
                 std::string slaveid=match[2];
+                std::string maxcurr=match[3];
+                std::string maxvoltage=match[3];
                 PSLAPP<<"Allocating OcemE642X device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<endl;
-                power = new ::common::powersupply::OcemE642X(dev.c_str(),atoi(slaveid.c_str()));
+                power = new ::common::powersupply::OcemE642X(dev.c_str(),atoi(slaveid.c_str()),atof(maxcurr.c_str()),atof(maxvoltage.c_str()));
                 if(power==NULL){
                       throw chaos::CException(1, "Cannot allocate resources for OcemE642X", "GenericPowerSupplyDD::driverInit");
                 }
