@@ -43,6 +43,7 @@ extern "C" {
   int on(unsigned int devID);
   int getPol(unsigned int devID,int*pol);
   int getLive(unsigned int devID,long long *live);
+  int getAlarms(unsigned int devID,long long *alrm);
 #ifdef __cplusplus
 }
 #endif

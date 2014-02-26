@@ -176,6 +176,22 @@ extern "C" {
     return err;
 
   }
+ int getAlarms(unsigned int devID,long long *alrm) {
+
+   int err;
+    char* attributeValue=NULL;
+    err = fetchValue(devID,"Alarms",&attributeValue);
+    if(err==0){
+      sscanf(attributeValue,"%lld",alrm);
+     
+      DPRINT("got alarms x%llx\n",*alrm);
+      free(attributeValue);
+      return 0;
+    }
+    DPRINT("Error fetchLiveData %d\n", err);
+    return -1;
+
+ }
   int resetAlarms(unsigned int devID){
     int err;
     char stringa[256];
