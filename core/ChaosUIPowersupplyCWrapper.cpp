@@ -160,6 +160,7 @@ extern "C" {
 				 parameter);
     return err;
   }
+
   int setPol(unsigned int devID,int pol){
     int err;
     char stringa[256];
@@ -172,6 +173,21 @@ extern "C" {
 				 0,
 				 0 ,
 				 stringa);
+    return err;
+
+  }
+  int resetAlarms(unsigned int devID){
+    int err;
+    char stringa[256];
+    //    sprintf(stringa,"{\"pola_value\":%d}",pol);
+    DPRINT("submitting command %s\n",stringa);
+    err = submitSlowControlCommand(devID,"rset",
+				 0,
+				 50,
+				 0,
+				 0,
+				 0 ,
+				 0);
     return err;
 
   }

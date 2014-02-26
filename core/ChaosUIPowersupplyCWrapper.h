@@ -38,6 +38,7 @@ extern "C" {
   int getState(unsigned int devID,int*state);
   int setCurrent(unsigned int devID,float curr);
   int setPol(unsigned int devID,int pol);
+  int resetAlarms(unsigned int devID);
   int standby(unsigned int devID);
   int on(unsigned int devID);
   int getPol(unsigned int devID,int*pol);
