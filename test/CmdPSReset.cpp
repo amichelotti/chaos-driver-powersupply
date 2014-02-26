@@ -41,7 +41,7 @@ uint8_t own::CmdPSReset::implementedHandler() {
 
 void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
-
+	/*
 	switch (*o_status_id) {
 		case common::powersupply::POWER_SUPPLY_STATE_ALARM:
 			case common::powersupply::POWER_SUPPLY_STATE_ERROR:
@@ -56,7 +56,7 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 				TROW_ERROR(1, boost::str( boost::format("Bad state for reset comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
 			}
 	}
-	
+	*/
 	
 	//set comamnd timeout for this instance
 	CMDCUDBG_ << "Checking for timout";
@@ -66,16 +66,16 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 	}
 	
 	//send comamnd to driver
-	CMDCUDBG_ << "Resetting allarm";
+	CMDCUDBG_ << "Resetting alarms";
 	if(powersupply_drv->resetAlarms(0) != 0) {
 		TROW_ERROR(2, boost::str( boost::format("Error resetting the allarms in state %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
 	}
 	
-	CMDCUDBG_ << "Go to standby";
+	/*	CMDCUDBG_ << "Go to standby";
 	if(powersupply_drv->standby() != 0) {
 		TROW_ERROR(3, boost::str( boost::format("Error set to standby in state %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
 	}
-	
+	*/
 	//set working flag
 	setWorkState(true);
 }
