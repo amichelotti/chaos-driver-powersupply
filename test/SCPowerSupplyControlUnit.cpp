@@ -107,7 +107,24 @@ void own::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CE
                           "status_id",
                           DataType::TYPE_INT32,
                           DataType::Output);
-	
+/*
+ * JAVASCRIPT INTERFACE
+ */
+        addAttributeToDataSet("on",
+                          "power supply is on",
+                          DataType::TYPE_INT32,
+                          DataType::Output);
+	addAttributeToDataSet("stby",
+                          "power supply is on standby",
+                          DataType::TYPE_INT32,
+                          DataType::Output);
+        addAttributeToDataSet("alarm",
+                          "power supply alarm",
+                          DataType::TYPE_INT32,
+                          DataType::Output);
+    
+     
+        ///
     addAttributeToDataSet("status",
                           "status",
                           DataType::TYPE_STRING,
@@ -190,17 +207,24 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	}
     
         //check mandatory default values
-    SCCUAPP << "check mandatory default values";
+   
+        /*SCCUAPP << "check mandatory default values";
 	getAttributeRangeValueInfo("current_sp", current_sp_attr_info);
-    if(!current_sp_attr_info.maxRange.size() || !current_sp_attr_info.minRange.size()) {
+    
+        
+        // REQUIRE MIN MAX SET IN THE MDS
+     if(!current_sp_attr_info.maxRange.size() || !current_sp_attr_info.minRange.size()) {
        throw chaos::CException(1, "current set point need to have max and min", __FUNCTION__);
     }
+      */
     
     SCCUAPP << "current_sp max="<< (max_range = current_sp_attr_info.maxRange);
     SCCUAPP << "current_sp min="<< (min_range = current_sp_attr_info.minRange);
     
 	// retrive the attribute description from the device database
-    current_sp_attr_info.reset();
+        /*
+         * current_sp_attr_info.reset();
+    
 	getAttributeRangeValueInfo("slope_up", current_sp_attr_info);
 	if(current_sp_attr_info.defaultValue.size()) {
         *asup = boost::lexical_cast<float>(current_sp_attr_info.defaultValue);
@@ -221,7 +245,7 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
         *asdown = boost::lexical_cast<float>(max_range)/20;
         SCCUAPP << "slope_down computed = " << *asdown;
     }
-    
+    */
 	if(powersupply_drv->getState(&state_id, state_str, 30000)!=0){
 		throw  chaos::CException(1, "Error getting the state of the powersupply, possibily off", __FUNCTION__);
     }
@@ -231,6 +255,7 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 		SCCUAPP << "hardware found " << "device_hw";
     }
 
+      /*
 	if( (*asup > 0) && (*asdown > 0)) {
 		SCCUAPP << "set defaultl slope value";
 		if((err = powersupply_drv->setCurrentRampSpeed(*asup, *asdown) )!= 0) {
@@ -239,7 +264,8 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	} else {
 		throw chaos::CException(2, "No default slope value found", std::string(__FUNCTION__));
 
-	}
+	*/
+        
 	
 }
 

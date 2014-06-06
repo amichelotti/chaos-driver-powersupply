@@ -81,6 +81,7 @@ int main (int argc, char* argv[] )
     
     for(std::vector<TestPowerSupply*>::iterator i = arrTest.begin();i!=arrTest.end();i++){
         (*i)->runTestsBackGround(keep,loop);
+        sleep(1);
     }
     
     for(std::vector<TestPowerSupply*>::iterator i = arrTest.begin();i!=arrTest.end();i++){

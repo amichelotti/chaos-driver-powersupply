@@ -20,6 +20,7 @@
 
 #include <cstring>
 #include "CmdPSDefault.h"
+#include <driver/powersupply/core/ChaosPowerSupplyInterface.h>
 
 #define LOG_HEAD_CmdPSDefault LOG_TAIL(CmdPSDefault)
 
@@ -154,7 +155,16 @@ void CmdPSDefault::acquireHandler() {
     acquiredData->addInt32Value("status_id", *o_status_id );
     CMDCU_ << "status_id -> " << *o_status_id;
     acquiredData->addStringValue("status", o_status);
-    CMDCU_ << "status -> " << o_status;
+    /*
+     * Javascript Interface
+     */
+    acquiredData->addInt32Value("on", (*o_status_id & common::powersupply::POWER_SUPPLY_STATE_ON) ? 1:0);
+    acquiredData->addInt32Value("stby", (*o_status_id & common::powersupply::POWER_SUPPLY_STATE_STANDBY)?1:0);
+    acquiredData->addInt32Value("alarm", (*o_alarms!=0)?1:0);
+   
+     CMDCU_ << "stby =>"<<((*o_status_id & common::powersupply::POWER_SUPPLY_STATE_STANDBY)?1:0);
+ 
+    CMDCU_ << "status. -> " << o_status;
         //set the current device state and last error
 	acquiredData->addInt64Value("dev_state", *o_dev_state);
     CMDCU_ << "dev_state -> " << *o_dev_state;
