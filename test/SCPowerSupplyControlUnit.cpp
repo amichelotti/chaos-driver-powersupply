@@ -261,7 +261,7 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 		}
 	} else {
 		throw chaos::CException(2, "No default slope value found", std::string(__FUNCTION__));
-	
+    }
 }
 
 // Abstract method for the start of the control unit
