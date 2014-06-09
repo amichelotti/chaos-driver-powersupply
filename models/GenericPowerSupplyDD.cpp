@@ -80,7 +80,7 @@ void chaos_powersupply_dd::GenericPowerSupplyDD::driverInit(const char *initPara
                 std::string maxcurr=match[3];
                 std::string maxvoltage=match[3];
                 PSLAPP<<"Allocating OcemE642X device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<endl;
-                power = new ::common::powersupply::OcemE642X(dev.c_str(),atoi(slaveid.c_str()),atof(maxcurr.c_str()),atof(maxvoltage.c_str()));
+                power = new ::common::powersupply::OcemE642X(dev.c_str(),atoi(slaveid.c_str()),(float)atof(maxcurr.c_str()),(float)atof(maxvoltage.c_str()));
                 if(power==NULL){
                       throw chaos::CException(1, "Cannot allocate resources for OcemE642X", "GenericPowerSupplyDD::driverInit");
                 }
