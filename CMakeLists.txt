@@ -29,9 +29,12 @@ ADD_LIBRARY(driver_powersupply SHARED ${PowerSupplydriver_src})
 # set_target_properties(ocem_cu PROPERTIES PREFIX "" SUFFIX ".extension")
 
 
-TARGET_LINK_LIBRARIES(powersupply_cu pthread driver_powersupply common_powersupply common_serial common_debug chaos_cutoolkit chaos_common boost_program_options boost_system boost_thread boost_chrono boost_regex boost_log boost_log_setup boost_atomic memcached)
-TARGET_LINK_LIBRARIES(driver_powersupply pthread common_powersupply common_serial common_debug chaos_cutoolkit chaos_uitoolkit chaos_common boost_program_options boost_system boost_thread boost_chrono boost_regex boost_log boost_log_setup boost_atomic memcached)
-TARGET_LINK_LIBRARIES(test_powersupply_ui common_test chaos_uitoolkit driver_powersupply chaos_common common_debug boost_program_options boost_system boost_thread boost_chrono boost_regex boost_log boost_log_setup boost_atomic memcached)
+SET(FrameworkLib $ENV{CHAOS_LINK_LIBRARY})
+separate_arguments(FrameworkLib)
+
+TARGET_LINK_LIBRARIES(powersupply_cu pthread driver_powersupply common_powersupply common_serial common_debug chaos_cutoolkit chaos_common ${FrameworkLib})
+TARGET_LINK_LIBRARIES(driver_powersupply pthread common_powersupply common_serial common_debug chaos_cutoolkit chaos_uitoolkit chaos_common ${FrameworkLib})
+TARGET_LINK_LIBRARIES(test_powersupply_ui common_test chaos_uitoolkit driver_powersupply chaos_common common_debug ${FrameworkLib})
 
 INSTALL_TARGETS(/bin powersupply_cu)
 INSTALL_TARGETS(/bin test_powersupply_ui)
