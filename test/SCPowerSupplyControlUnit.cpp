@@ -40,12 +40,20 @@ using namespace chaos::cu::driver_manager::driver;
 
 namespace own =  ::driver::powersupply;
 
-#define SCCUAPP LAPP_ << "[SCPowerSupplyControlUnit - " << device_id << "] - "
+#define SCCUAPP LAPP_ << "[SCPowerSupplyControlUnit - " << getCUID() << "] - "
+
+PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(own::SCPowerSupplyControlUnit)
 
 /*
  Construct a new CU with an identifier
  */
-own::SCPowerSupplyControlUnit::SCPowerSupplyControlUnit(string _device_id, string _params):device_id(_device_id), params(_params),  powersupply_drv(NULL) {
+own::SCPowerSupplyControlUnit::SCPowerSupplyControlUnit(const string& _control_unit_id,
+														const string& _control_unit_param,
+														const ControlUnitDriverList& _control_unit_drivers):
+//call base constructor
+chaos::cu::control_manager::SCAbstractControlUnit(_control_unit_id,
+												  _control_unit_param,
+												  _control_unit_drivers){
 	
 }
 
@@ -61,12 +69,6 @@ own::SCPowerSupplyControlUnit::~SCPowerSupplyControlUnit() {
  Return the default configuration
  */
 void own::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CException) {
-    //set the base information
-    //RangeValueInfo rangeInfoTemp;
-    
-    //add managed device di
-    setDeviceID(device_id);
-    
     //install all command
     installCommand<CmdPSDefault>(CMD_PS_DEFAULT_ALIAS);
     installCommand<CmdPSMode>(CMD_PS_MODE_ALIAS);
@@ -176,11 +178,6 @@ void own::SCPowerSupplyControlUnit::defineSharedVariable() {
 	
 }
 
-void own::SCPowerSupplyControlUnit::unitDefineDriver(std::vector<DrvRequestInfo>& neededDriver) {
-	DrvRequestInfo drv1 = {"GenericPowerSupplyDD", "1.0.0", params.c_str() };
-	neededDriver.push_back(drv1);
-}
-
 // Abstract method for the initialization of the control unit
 void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	SCCUAPP "unitInit";
@@ -197,7 +194,7 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 
     
     
-	chaos::cu::cu_driver::DriverAccessor * power_supply_accessor=AbstractControlUnit::getAccessoInstanceByIndex(0);
+	chaos::cu::driver_manager::driver::DriverAccessor * power_supply_accessor=AbstractControlUnit::getAccessoInstanceByIndex(0);
 	if(power_supply_accessor==NULL){
         throw chaos::CException(1, "Cannot retrieve the requested driver", __FUNCTION__);
     }

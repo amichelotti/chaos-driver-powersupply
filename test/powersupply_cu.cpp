@@ -19,7 +19,6 @@
  */
 
 #include "driver/powersupply/models/GenericPowerSupplyDD.h"
-#include "PowerSupplyControlUnit.h"
 #include "SCPowerSupplyControlUnit.h"
 
 #include <chaos/common/chaos_constants.h>
@@ -69,9 +68,7 @@ int main (int argc, char* argv[] )
 	vector< string > sc_device_param;
     try {
 		//! [Custom Option]
-		ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_DEVICE_ID, po::value<string>(&tmp_device_id), "Specify the id of the power supply");
-        ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_DRIVER_PARAMETERS, po::value<string>(&driver_params), "Specify the driver params <DRIVERNAME:'driver specific params' ie:OcemE642X:/dev/ttyr00,10> or SimPSupply:<dev>,<id>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_max>,<maxcurr:max voltage>");
-		
+		ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_DRIVER_PARAMETERS, po::value<string>(&driver_params), "Specify the driver params <DRIVERNAME:'driver specific params' ie:OcemE642X:/dev/ttyr00,10> or SimPSupply:<dev>,<id>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_max>,<maxcurr:max voltage>");
 		ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_SC_DEVICE_ID, po::value< vector< string > >(&sc_device_ids)->multitoken(), "Specify the id's of the slow power supply slow contorl cu");
 		ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_SC_DRIVERS_PARAMETERS, po::value< vector< string > >(&sc_device_param)->multitoken(), "Specify the id's of the slow power supply slow contorl cu");
 		
@@ -86,19 +83,16 @@ int main (int argc, char* argv[] )
 		//! [Driver Registration]
 		MATERIALIZE_INSTANCE_AND_INSPECTOR_WITH_NS(chaos::driver::powersupply, GenericPowerSupplyDD)
 		cu_driver_manager::DriverManager::getInstance()->registerDriver(GenericPowerSupplyDDInstancer, GenericPowerSupplyDDInspector);
+		
+		chaos::cu::driver_manager::driver::DrvRequestInfo drv1 = {"GenericPowerSupplyDD", "1.0.0", driver_params.c_str() };
+		chaos::cu::control_manager::AbstractControlUnit::ControlUnitDriverList driver_list; driver_list.push_back(drv1);
+		ChaosCUToolkit::getInstance()->registerControlUnit< ::driver::powersupply::SCPowerSupplyControlUnit >();
 		//! [Driver Registration]
 		
-		//! [Adding the CustomControlUnit]
-		bool rt_cu_ok = ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_DEVICE_ID) &&
-						ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_DRIVER_PARAMETERS);
-		
+		//! [Adding the CustomControlUnit
 		bool sc_cu_ok = ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_SC_DEVICE_ID) &&
 						ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_SC_DRIVERS_PARAMETERS);
 		
-		if(rt_cu_ok) {
-		  cout<< "selected RT CU"<<endl;
-		  ChaosCUToolkit::getInstance()->addControlUnit(new ::driver::powersupply::PowerSupplyControlUnit(tmp_device_id, driver_params));
-		}
 		
 		if(sc_cu_ok) {
 		  cout<< "selected SC CU"<<endl;
@@ -107,7 +101,7 @@ int main (int argc, char* argv[] )
 				for (int idx = 0; idx <
 					 sc_device_ids.size();
 					 idx++) {
-					ChaosCUToolkit::getInstance()->addControlUnit(new ::driver::powersupply::SCPowerSupplyControlUnit(sc_device_ids[idx], sc_device_param[idx]));
+					ChaosCUToolkit::getInstance()->addControlUnit(new ::driver::powersupply::SCPowerSupplyControlUnit(sc_device_ids[idx], sc_device_param[idx], driver_list));
 				}
 			} else {
 				throw CException(3, "sc device ids and sc parameter need to have same number of values", __FUNCTION__);
@@ -116,7 +110,7 @@ int main (int argc, char* argv[] )
 		//! [Adding the CustomControlUnit]
 		
 		//! [Starting the Framework]
-		if(sc_cu_ok || rt_cu_ok) {
+		if(sc_cu_ok) {
 			ChaosCUToolkit::getInstance()->start();
 		} else {
 		  cout<<"## you must select a CU type"<<endl;

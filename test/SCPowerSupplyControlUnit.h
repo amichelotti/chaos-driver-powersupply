@@ -31,10 +31,10 @@ using namespace boost::msm::front;
 namespace driver {
 	namespace powersupply {
 		
-		class SCPowerSupplyControlUnit : public chaos::cu::SCAbstractControlUnit {
+		class SCPowerSupplyControlUnit : public chaos::cu::control_manager::SCAbstractControlUnit {
+			PUBLISHABLE_CONTROL_UNIT_INTERFACE(SCPowerSupplyControlUnit)
+
 			// init paramter
-			string device_id;
-			string params;
 			string device_hw;
 			
             chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
@@ -46,8 +46,7 @@ namespace driver {
 			void unitDefineActionAndDataset()throw(chaos::CException);
 			
 			void defineSharedVariable();
-			
-			void unitDefineDriver(std::vector<chaos::cu::cu_driver::DrvRequestInfo>& neededDriver);
+
 			/*(Optional)
 			 Initialize the Control Unit and all driver, with received param from MetadataServer
 			 */
@@ -69,7 +68,9 @@ namespace driver {
 			/*
 			 Construct a new CU with an identifier
 			 */
-			SCPowerSupplyControlUnit(string _device_id, string _params);
+			SCPowerSupplyControlUnit(const string& _control_unit_id,
+									 const string& _control_unit_param,
+									 const ControlUnitDriverList& _control_unit_drivers);
 			
 			/*
 			 Base destructor
