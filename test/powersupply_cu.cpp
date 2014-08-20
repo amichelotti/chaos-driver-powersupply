@@ -93,7 +93,7 @@ int main (int argc, char* argv[] )
 		bool sc_cu_ok = ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_SC_DEVICE_ID) &&
 						ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_SC_DRIVERS_PARAMETERS);
 		
-		
+		if(!ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption("unit_server_enable")){
 		if(sc_cu_ok) {
 		  cout<< "selected SC CU"<<endl;
 			//install all slowcontrol cu for deviceids
@@ -116,6 +116,10 @@ int main (int argc, char* argv[] )
 		  cout<<"## you must select a CU type"<<endl;
 		  return -1;
 		}
+        } else {
+            ChaosCUToolkit::getInstance()->start();
+
+        }
 		//! [Starting the Framework]
 	} catch (CException& e) {
 		cerr<<"Exception:"<<endl;

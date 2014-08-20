@@ -1,51 +1,39 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
-#include <boost/program_options.hpp>
+#include <chaos/common/chaos_constants.h>
+
+#include <chaos/ui_toolkit/ChaosUIToolkit.h>
 
 #include "TestPowerSupply.h"
 
-namespace po = boost::program_options;
 
 int main (int argc, char* argv[] )
 {
-  std::string mdsServer;
   int debug,loop,keep;
   std::vector<std::string> arrCU;
   std::vector<TestPowerSupply*> arrTest;
-  po::options_description desc("options");
   int ret=0;
-    desc.add_options()("help","help");
-    desc.add_options()("mds",po::value<std::string>(&mdsServer)->default_value(std::string("mdsserver:5000")),"mds server");
-    desc.add_options()("supply,s",po::value<std::vector<std::string> > (&arrCU),"power supply ID to test");
-    desc.add_options()("debug,d",po::value<int>(&debug)->default_value(0),"enable debug level");
-    desc.add_options()("loop,l",po::value<int>(&loop)->default_value(1),"number of test loop to do");
-    desc.add_options()("keep,k",po::value<int>(&loop)->default_value(1),"continue on error");
 
+    chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->addOption("supply,s",po::value<std::vector<std::string> > (&arrCU),"power supply ID to test");
     
-    po::variables_map vm;
-    po::store(po::parse_command_line(argc, argv, desc),vm);
-    
-    if(vm.count("help")){
-        std::cout<<desc<<std::endl;
-        return 0;
-    }
-    if(vm.count("mds")==0){
-        std::cout<<"## you must specify a valid metadataserver --mds <server:5000>"<<std::endl;
-        return -2;
-    }
-    if(vm.count("supply")==0){
+  
+    chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->addOption("loop,l",po::value<int>(&loop)->default_value(1),"number of test loop to do");
+    chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->addOption("keep,k",po::value<int>(&keep)->default_value(1),"continue on error");
+
+    chaos::ui::ChaosUIToolkit::getInstance()->init(argc, argv);
+
+    if(chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption("supply")==0){
         std::cout<<"## you must specify a valid CU"<<std::endl;
         return -3;
     }
-    mdsServer = vm["mds"].as<std::string>();
-    arrCU =vm["supply"].as<std::vector<std::string> >();
-    loop = vm["loop"].as<int>();
-    keep = vm["keep"].as<int>();
-    std::cout<<"using MDS: "<<mdsServer<<std::endl;
+    arrCU=chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<std::vector<std::string> > ("supply");
+    loop = chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<int> ("loop");
+    keep = chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<int> ("keep");
+    std::cout<<"using MDS: "<<chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<std::string>("metadata-server")<<std::endl;
     
     for(std::vector<std::string>::iterator i=arrCU.begin();i!=arrCU.end();i++){
-        TestPowerSupply*p =new TestPowerSupply(*i,mdsServer,vm["debug"].as<int>());
+        TestPowerSupply*p =new TestPowerSupply(*i);
         if(p==NULL){
             std::cout<<"## cannot allocate resources for testing: "<<*i<<std::endl;
             return -4;

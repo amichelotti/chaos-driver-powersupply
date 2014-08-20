@@ -16,7 +16,7 @@ class TestPowerSupply:public CUTest<TestPowerSupply> {
 
    
 public:
-    TestPowerSupply(std::string cu_name,std::string mds_name,int debuglevel=0):CUTest<TestPowerSupply>(cu_name,mds_name,debuglevel){}
+    TestPowerSupply(std::string cu_name):CUTest<TestPowerSupply>(cu_name){}
 
   int initTest();
   int onTest(void);

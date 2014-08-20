@@ -685,11 +685,13 @@
 		3285568117F1C43D00A64ED2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../usr/local/bin";
 				DSTROOT = /;
 				INSTALL_PATH = "$(SRCROOT)/../../usr/local/bin";
+				LD_RUNPATH_SEARCH_PATHS = "$(SRCDIR)";
 				OTHER_LDFLAGS = (
 					"-lboost_chrono",
 					"-lmemcached",
@@ -715,11 +717,13 @@
 		3285568217F1C43D00A64ED2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../usr/local/bin";
 				DSTROOT = /;
 				INSTALL_PATH = "$(SRCROOT)/../../usr/local/bin";
+				LD_RUNPATH_SEARCH_PATHS = "$(SRCDIR)";
 				OTHER_LDFLAGS = (
 					"-lboost_chrono",
 					"-lmemcached",
