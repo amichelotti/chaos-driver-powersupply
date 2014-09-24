@@ -84,6 +84,9 @@ void chaos_powersupply_dd::GenericPowerSupplyDD::driverInit(const char *initPara
                 if(power==NULL){
                       throw chaos::CException(1, "Cannot allocate resources for OcemE642X", "GenericPowerSupplyDD::driverInit");
                 }
+            } else {
+                 throw chaos::CException(1, "Bad parameters for OcemE642X <serial port>,<slaveid>,<maxcurr:maxvoltage>", "GenericPowerSupplyDD::driverInit");
+
             }
         } else if(powerSupplyType=="SimPSupply"){
             if(regex_match(initString, match, power_supply_simulator_init_match, boost::match_extra)){
@@ -101,7 +104,7 @@ void chaos_powersupply_dd::GenericPowerSupplyDD::driverInit(const char *initPara
                     throw chaos::CException(1, "Cannot allocate resources for SimPSupply", "GenericPowerSupplyDD::driverInit");
                 }
             } else {
-                throw chaos::CException(1, "Bad parameters for SimSupply", "GenericPowerSupplyDD::driverInit");
+                throw chaos::CException(1, "Bad parameters for SimSupply <serial port>,<slaveid>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<maxcurr:max voltage>", "GenericPowerSupplyDD::driverInit");
 
             }
         } else {
@@ -202,12 +205,16 @@ cu_driver::MsgManagmentResultType::MsgManagmentResult chaos_powersupply_dd::Gene
             std::string ver;
             out->result = power->getSWVersion(ver,in->timeout);
             LDBG_<<"Got HW Version:\""<<ver<<"\" timeout:"<<in->timeout<<endl;
+            strncpy(out->str,ver.c_str(),MAX_STR_SIZE);;
+
             break;
         }
         case OP_GET_HWVERSION:{
             std::string ver;
             out->result = power->getHWVersion(ver,in->timeout);
             LDBG_<<"Got SW Version:\""<<ver<<"\" timeout:"<<in->timeout<<endl;
+            strncpy(out->str,ver.c_str(),MAX_STR_SIZE);;
+
             break;
         }
         case OP_GET_CURRENT_SENSIBILITY:

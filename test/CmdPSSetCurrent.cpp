@@ -109,7 +109,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	SCLDBG_ << "Delta current is = " << *i_delta_setpoint;
 	SCLDBG_ << "Slope speed is = " << slope_speed;
 	uint64_t computed_timeout = (std::ceil((std::abs(*o_current_sp - current) / slope_speed)) * 1000000);
-    computed_timeout = computed_timeout * 1.2; //add 20% to the real timeout
+        computed_timeout = computed_timeout * 1.2; //add 20% to the real timeout
     
 	//set current set poi into the output channel
 	if(*i_setpoint_affinity && (*i_delta_setpoint < *i_setpoint_affinity)) {
@@ -130,7 +130,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	setWorkState(true);
 	//set runnign  property to exsculisve untile command has finisced
 	BC_EXEC_RUNNIG_PROPERTY
-	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (computed_timeout==0)?std::numeric_limits<int>::max():computed_timeout);
+	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, /*(computed_timeout==0)?std::numeric_limits<int>::max():*/computed_timeout);
 }
 
 void own::CmdPSSetCurrent::ccHandler() {

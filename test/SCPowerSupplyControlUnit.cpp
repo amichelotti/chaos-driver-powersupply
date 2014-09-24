@@ -227,7 +227,7 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
         SCCUAPP << "slope_up = "<<*asup;
 	} else {
         SCCUAPP << "slope_up not set we need to compute it";
-        *asup = boost::lexical_cast<float>(max_range)/20;
+        *asup = boost::lexical_cast<float>(max_range)/20.0;
         SCCUAPP << "slope_up computed = " << *asup;
     }
 	
@@ -238,7 +238,7 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
         SCCUAPP << "slope_down = "<<*asup;
 	} else {
         SCCUAPP << "slope_down not set we need to compute it";
-        *asdown = boost::lexical_cast<float>(max_range)/20;
+        *asdown = boost::lexical_cast<float>(max_range)/20.0;
         SCCUAPP << "slope_down computed = " << *asdown;
     }
     
@@ -248,13 +248,15 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	*status_id = state_id;
     
     if(powersupply_drv->getHWVersion(device_hw,1000)==0){
-		SCCUAPP << "hardware found " << "device_hw";
+		SCCUAPP << "hardware found: \"" << device_hw<<"\"";
     }
 
 	if( (*asup > 0) && (*asdown > 0)) {
-		SCCUAPP << "set defaultl slope value";
+		SCCUAPP << "set default slope value up:"<<*asup<<" down:"<<*asdown;
 		if((err = powersupply_drv->setCurrentRampSpeed(*asup, *asdown) )!= 0) {
-			throw chaos::CException(2, boost::str( boost::format("Error %1 setting the slope in state %2%[%3%]") % err % state_str % state_id), std::string(__FUNCTION__));
+                     throw chaos::CException(1, "Error setting slope ", __FUNCTION__); 
+                     //TODO: check the  boost::bad_format_string: format-string is ill-formed
+			//throw chaos::CException(2, boost::str( boost::format("Error %1 setting the slope in state %2%[%3%]") % err % state_str % state_id), std::string(__FUNCTION__));
 		}
 	} else {
 		throw chaos::CException(2, "No default slope value found", std::string(__FUNCTION__));
