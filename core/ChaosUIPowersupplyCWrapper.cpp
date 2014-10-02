@@ -180,7 +180,7 @@ extern "C" {
 
    int err;
     char* attributeValue=NULL;
-    err = fetchValue(devID,"Alarms",&attributeValue);
+    err = fetchValue(devID,"alarms",&attributeValue);
     if(err==0){
       sscanf(attributeValue,"%lld",alrm);
      
