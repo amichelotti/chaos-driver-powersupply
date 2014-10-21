@@ -82,20 +82,6 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
     SCLDBG_ << "compute timeout for set current = " << current;
     
-    if(!*i_slope_up || !*i_slope_down) {
-            //we need to compute it
-        SCLDBG_ << "check mandatory default values";
-        getDeviceDatabase()->getAttributeRangeValueInfo("current_sp", current_sp_attr_info);
-        if(!current_sp_attr_info.maxRange.size() || !current_sp_attr_info.minRange.size()) {
-			TROW_ERROR(4, boost::str( boost::format("current set point need to have max and min") % o_status % *o_status_id), std::string(__FUNCTION__))
-        }
-        
-        SCLDBG_ << "current_sp max="<<attributeInfo.maxRange;
-        SCLDBG_ << "current_sp min="<<attributeInfo.minRange;
-        *i_slope_up = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;
-        *i_slope_down = boost::lexical_cast<float>(current_sp_attr_info.maxRange)/20;;
-    }
-    
 	if(*o_current_sp > current) {
 		SCLDBG_ << "The new current is lower then actual = " << *o_current_sp << "[new "<<current<<"]";
 		slope_speed  = *i_slope_down;
@@ -105,7 +91,6 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	}
 	
 	//compute the delta for check if we are on the rigth current at the end of the job
-	*i_delta_setpoint = (5*current)/100;
 	SCLDBG_ << "Delta current is = " << *i_delta_setpoint;
 	SCLDBG_ << "Slope speed is = " << slope_speed;
 	uint64_t computed_timeout = (std::ceil((std::abs(*o_current_sp - current) / slope_speed)) * 1000000);

@@ -45,14 +45,16 @@ namespace driver {
 			double		*o_voltage;
 			double		*o_current_sp;
 			double		*o_current;
-			
+			int32_t		*o_on;
+			int32_t		*o_stby;
+			int32_t		*o_alarm;
 			//input variable
-			double		*i_slope_up;
-			double		*i_slope_down;
-			uint32_t	*i_command_timeout;
-			uint32_t	*i_driver_timeout;
-			uint32_t	*i_delta_setpoint;
-			uint32_t	*i_setpoint_affinity;
+			const double	*i_slope_up;
+			const double	*i_slope_down;
+			const uint32_t	*i_command_timeout;
+			const uint32_t	*i_driver_timeout;
+			const uint32_t	*i_delta_setpoint;
+			const uint32_t	*i_setpoint_affinity;
 			//reference of the chaos bastraction ofpowersupply driver
 			chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
 			

@@ -29,24 +29,28 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	CMDCUDBG_ << "loading pointer for output channel";
 	int idx = 0;
 	//get pointer to the output datase variable
-	o_current = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<double>();
-	o_current_sp = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<double>();
-	o_voltage = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<double>();
-	o_polarity = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<int32_t>();
-	o_alarms = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint64_t>();
-	o_status_id = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<int32_t>();
-	o_status = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<char>();
-	o_dev_state = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint64_t>();
-	o_cmd_last_error = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<char>();
+	
+	o_current = getAttributeCache()->getRWPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "current");
+	o_current_sp = getAttributeCache()->getRWPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "current_sp");
+	o_voltage = getAttributeCache()->getRWPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "voltage");
+	o_polarity = getAttributeCache()->getRWPtr<int32_t>(AttributeValueSharedCache::SVD_OUTPUT, "voltage");
+	o_alarms = getAttributeCache()->getRWPtr<uint64_t>(AttributeValueSharedCache::SVD_OUTPUT, "alarms");
+	o_status_id = getAttributeCache()->getRWPtr<int32_t>(AttributeValueSharedCache::SVD_OUTPUT, "status_id");
+	o_status = getAttributeCache()->getRWPtr<char>(AttributeValueSharedCache::SVD_OUTPUT, "status");
+	o_dev_state = getAttributeCache()->getRWPtr<uint64_t>(AttributeValueSharedCache::SVD_OUTPUT, "dev_state");
+	o_cmd_last_error = getAttributeCache()->getRWPtr<char>(AttributeValueSharedCache::SVD_OUTPUT, "cmd_last_error");
+	o_on = getAttributeCache()->getRWPtr<int32_t>(AttributeValueSharedCache::SVD_OUTPUT, "on");
+	o_stby = getAttributeCache()->getRWPtr<int32_t>(AttributeValueSharedCache::SVD_OUTPUT, "stby");
+	o_alarm = getAttributeCache()->getRWPtr<int32_t>(AttributeValueSharedCache::SVD_OUTPUT, "alarm");
 	
 	//get pointer to the input datase variable
 	idx = 0;
-	i_slope_up = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<double>();
-	i_slope_down = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<double>();
-	i_command_timeout = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
-	i_driver_timeout = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
-	i_delta_setpoint = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
-	i_setpoint_affinity = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
+	i_slope_up = getAttributeCache()->getROPtr<double>(AttributeValueSharedCache::SVD_INPUT, "slope_up");
+	i_slope_down = getAttributeCache()->getROPtr<double>(AttributeValueSharedCache::SVD_INPUT, "slope_down");
+	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(AttributeValueSharedCache::SVD_INPUT, "command_timeout");
+	i_driver_timeout = getAttributeCache()->getROPtr<uint32_t>(AttributeValueSharedCache::SVD_INPUT, "driver_timeout");
+	i_delta_setpoint = getAttributeCache()->getROPtr<uint32_t>(AttributeValueSharedCache::SVD_INPUT, "delta_setpoint");
+	i_setpoint_affinity = getAttributeCache()->getROPtr<uint32_t>(AttributeValueSharedCache::SVD_INPUT, "setpoint_affinity");
     
 	chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = driverAccessorsErogator->getAccessoInstanceByIndex(0);
 	if(power_supply_accessor != NULL) {
