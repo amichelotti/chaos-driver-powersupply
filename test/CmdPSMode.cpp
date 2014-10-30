@@ -41,9 +41,11 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 		case 0://to standby
 			//i need to be in operational to exec
 			CMDCU_ << "Request to go to stanby";
-			if((*o_status_id != common::powersupply::POWER_SUPPLY_STATE_OPEN) &&
+			if(*o_status_id &  common::powersupply::POWER_SUPPLY_STATE_STANDBY){
+			  CMDCU_ << "Already in standby";
+			} else if((*o_status_id != common::powersupply::POWER_SUPPLY_STATE_OPEN) &&
 			   (*o_status_id != common::powersupply::POWER_SUPPLY_STATE_ON)) {
-				TROW_ERROR(2, boost::str( boost::format("Cant go to standby, current state is %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+				TROW_ERROR(2, boost::str( boost::format("Can't go to standby, current state is %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
 			}
 			if(powersupply_drv->standby() != 0) {
 				TROW_ERROR(3, "Error issuing standby on powersupply", std::string(__FUNCTION__))
