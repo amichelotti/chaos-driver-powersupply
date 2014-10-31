@@ -41,22 +41,7 @@ uint8_t own::CmdPSReset::implementedHandler() {
 
 void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
-	/*
-	switch (*o_status_id) {
-		case common::powersupply::POWER_SUPPLY_STATE_ALARM:
-			case common::powersupply::POWER_SUPPLY_STATE_ERROR:
-			case common::powersupply::POWER_SUPPLY_STATE_UKN:
-			//i need to be in operational to exec
-			CMDCUDBG_ << "We can start the reset command";
-			break;
-			
-		default:
-			if((*o_status_id != common::powersupply::POWER_SUPPLY_STATE_OPEN)||
-			   (*o_status_id != common::powersupply::POWER_SUPPLY_STATE_ON)) {
-				TROW_ERROR(1, boost::str( boost::format("Bad state for reset comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
-			}
-	}
-	*/
+	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(AttributeValueSharedCache::SVD_INPUT, "command_timeout");
 	
 	//set comamnd timeout for this instance
 	CMDCUDBG_ << "Checking for timout";

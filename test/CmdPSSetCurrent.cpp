@@ -46,7 +46,15 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     chaos::common::data::RangeValueInfo attributeInfo;
 	AbstractPowerSupplyCommand::setHandler(data);
 	int err = 0;
-
+	o_current = getAttributeCache()->getROPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "current");
+	o_current_sp = getAttributeCache()->getRWPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "current_sp");
+	
+	i_slope_up = getAttributeCache()->getROPtr<double>(AttributeValueSharedCache::SVD_INPUT, "slope_up");
+	i_slope_down = getAttributeCache()->getROPtr<double>(AttributeValueSharedCache::SVD_INPUT, "slope_down");
+	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(AttributeValueSharedCache::SVD_INPUT, "command_timeout");
+	i_delta_setpoint = getAttributeCache()->getROPtr<uint32_t>(AttributeValueSharedCache::SVD_INPUT, "delta_setpoint");
+	i_setpoint_affinity = getAttributeCache()->getROPtr<uint32_t>(AttributeValueSharedCache::SVD_INPUT, "setpoint_affinity");
+	
 	float current = 0.f;
 	float slope_speed = 0.f;
 	
@@ -55,7 +63,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 		case common::powersupply::POWER_SUPPLY_STATE_ERROR:
 		case common::powersupply::POWER_SUPPLY_STATE_UKN:
 			//i need to be in operational to exec
-			TROW_ERROR(1, boost::str( boost::format("Bas state for set current comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+			TROW_ERROR(1, boost::str( boost::format("Bad state for set current comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
 			break;
 			
 		case common::powersupply::POWER_SUPPLY_STATE_OPEN:
@@ -93,8 +101,8 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	//compute the delta for check if we are on the rigth current at the end of the job
 	SCLDBG_ << "Delta current is = " << *i_delta_setpoint;
 	SCLDBG_ << "Slope speed is = " << slope_speed;
-	uint64_t computed_timeout = (std::ceil((std::abs(*o_current_sp - current) / slope_speed)) * 1000000);
-        computed_timeout = computed_timeout * 1.2; //add 20% to the real timeout
+	uint64_t computed_timeout = (std::ceil((std::abs(*o_current_sp - current) / slope_speed)) * 1000);
+	computed_timeout = computed_timeout * 1.2; //add 20% to the real timeout
     
 	//set current set poi into the output channel
 	if(*i_setpoint_affinity && (*i_delta_setpoint < *i_setpoint_affinity)) {
@@ -131,7 +139,6 @@ bool own::CmdPSSetCurrent::timeoutHandler() {
 	if( *i_delta_setpoint && (std::abs(*o_current - *o_current_sp) > *i_delta_setpoint)) {
 		std::string error =  "Out of SP";
 		BC_FAULT_RUNNIG_PROPERTY
-		writeErrorMessage(error);
 	}else {
 		BC_END_RUNNIG_PROPERTY
 	}

@@ -27,6 +27,7 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	CMDCU_ << "Executing set handler";
 	BC_EXEC_RUNNIG_PROPERTY
 	AbstractPowerSupplyCommand::setHandler(data);
+	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(AttributeValueSharedCache::SVD_INPUT, "command_timeout");
 
 	//requested mode
 	if(!data->hasKey(CMD_PS_MODE_TYPE)) {

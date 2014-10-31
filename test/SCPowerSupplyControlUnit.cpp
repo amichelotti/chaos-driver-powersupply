@@ -119,11 +119,7 @@ void own::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CE
 						  "Bit field device state",
 						  DataType::TYPE_INT64,
 						  DataType::Output);
-	
-	addAttributeToDataSet("cmd_last_error",
-						  "Last Erroro occurred",
-						  DataType::TYPE_STRING,
-						  DataType::Output,256);
+
 	/*
 	 * JAVASCRIPT INTERFACE
 	 */

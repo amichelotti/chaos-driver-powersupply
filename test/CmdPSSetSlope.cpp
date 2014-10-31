@@ -45,6 +45,9 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 	float asup = 0.f;
 	float asdown = 0.f;
 	
+	i_slope_up = getAttributeCache()->getROPtr<double>(AttributeValueSharedCache::SVD_INPUT, "slope_up");
+	i_slope_down = getAttributeCache()->getROPtr<double>(AttributeValueSharedCache::SVD_INPUT, "slope_down");
+	
 	switch (*o_status_id) {
 		case common::powersupply::POWER_SUPPLY_STATE_ALARM:
 		case common::powersupply::POWER_SUPPLY_STATE_ERROR:

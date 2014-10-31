@@ -25,8 +25,7 @@
 namespace driver {
 	namespace powersupply {
 		
-		#define TROW_ERROR(n,m,d) writeErrorMessage(m); \
-		throw chaos::CException(n, o_cmd_last_error, d);
+		#define TROW_ERROR(n,m,d) throw chaos::CException(n, m, d);
 		
         #define LOG_TAIL(n) "[" << #n << "] - " << getDeviceID() << " - [" << getUID() << "] - "
         
