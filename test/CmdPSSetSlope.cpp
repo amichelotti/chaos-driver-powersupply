@@ -45,6 +45,9 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 	float asup = 0.f;
 	float asdown = 0.f;
 	
+	i_slope_up = getAttributeCache()->getROPtr<double>(AttributeValueSharedCache::SVD_INPUT, "slope_up");
+	i_slope_down = getAttributeCache()->getROPtr<double>(AttributeValueSharedCache::SVD_INPUT, "slope_down");
+	
 	switch (*o_status_id) {
 		case common::powersupply::POWER_SUPPLY_STATE_ALARM:
 		case common::powersupply::POWER_SUPPLY_STATE_ERROR:
@@ -72,23 +75,9 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 //	}
 	
 	
-	if(data &&
-	   data->hasKey(CMD_PS_SET_SLOPE_UP) &&
-	   data->hasKey(CMD_PS_SET_SLOPE_DOWN)) {
-		//use parameter value
-		*i_slope_up = asup = static_cast<float>(data->getDoubleValue(CMD_PS_SET_SLOPE_UP));
-		*i_slope_down = asdown = static_cast<float>(data->getDoubleValue(CMD_PS_SET_SLOPE_DOWN));
-		SCLDBG_ << "Set the slope with passed parameter";
-	} else {
-		//the default value are used
-		SCLDBG_ << "Set the slope with default parameter";
-		asup = static_cast<float>(*i_slope_up);
-		asdown = static_cast<float>(*i_slope_down);
-	}
-	
 	if((asup > 0) && (asdown > 0)) {
-		SCLDBG_ << " set slope with asup=" << asup << " asdown=" << asdown;
-		if(powersupply_drv->setCurrentRampSpeed(asup, asdown) != 0) {
+		SCLDBG_ << " set slope with asup=" << *i_slope_up << " asdown=" << *i_slope_down ;
+		if(powersupply_drv->setCurrentRampSpeed(*i_slope_up, *i_slope_down ) != 0) {
 			TROW_ERROR(2, boost::str( boost::format("Error setting the slope %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
 		}
 	}

@@ -59,6 +59,17 @@ void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 	
 	setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)1000000);
 	
+	//get channel pointer
+	o_current = getAttributeCache()->getRWPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "current");
+	o_current_sp = getAttributeCache()->getRWPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "current_sp");
+	o_voltage = getAttributeCache()->getRWPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "voltage");
+	o_polarity = getAttributeCache()->getRWPtr<int32_t>(AttributeValueSharedCache::SVD_OUTPUT, "polarity");
+	o_alarms = getAttributeCache()->getRWPtr<uint64_t>(AttributeValueSharedCache::SVD_OUTPUT, "alarms");
+	o_dev_state = getAttributeCache()->getRWPtr<uint64_t>(AttributeValueSharedCache::SVD_OUTPUT, "dev_state");
+	o_on = getAttributeCache()->getRWPtr<int32_t>(AttributeValueSharedCache::SVD_OUTPUT, "on");
+	o_stby = getAttributeCache()->getRWPtr<int32_t>(AttributeValueSharedCache::SVD_OUTPUT, "stby");
+	o_alarm = getAttributeCache()->getRWPtr<int32_t>(AttributeValueSharedCache::SVD_OUTPUT, "alarm");
+	
 	if(!powersupply_drv->getCurrentOutput(&tmp_float)){
 		*o_current = (double)tmp_float;
     }
@@ -73,7 +84,8 @@ void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 	}
 	if(!powersupply_drv->getState(&stato, desc)){
 		*o_status_id = stato;
-		std::strncpy(o_status, desc.c_str(), 256);
+		//update the value and dimension of status channel
+		getAttributeCache()->setOutputAttributeValue("status", (void*)desc.c_str(), (uint32_t)desc.size());
 	}
 	
         //set command has stackable
@@ -103,17 +115,17 @@ void CmdPSDefault::acquireHandler() {
 	int tmp_uint32 = 0;
 	uint64_t tmp_uint64 = 0;
 	CMDCU_ << "Acquiring data";
-    
+	
+	boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getLockOnCustomAttributeCache();
+	r_lock->lock();
+	
     uint64_t time_diff = getStartStepTime() - last_slow_acq_time;
-    
-    
-    CDataWrapper *acquiredData = getNewDataWrapper();
 	
     if(powersupply_drv && !powersupply_drv->getCurrentOutput(&tmp_float)){
 		*o_current = (double)tmp_float;
     }
 	
-    if(time_diff > 2000000 ) {
+    if(time_diff > 1000) {
 		CMDCU_ << "slow acquire staterd after us=" << time_diff;
         last_slow_acq_time = getStartStepTime();
 		switch(slow_acquisition_idx) {
@@ -135,43 +147,36 @@ void CmdPSDefault::acquireHandler() {
 			case 3:
 				if(powersupply_drv && !powersupply_drv->getState(&stato, desc)){
 					*o_status_id = stato;
-					std::strncpy(o_status, desc.c_str(), 256);
+					//update the value and dimension of status channel
+					getAttributeCache()->setOutputAttributeValue("status", (void*)desc.c_str(), (uint32_t)desc.size());
+					//the new pointer need to be got (set new size can reallocate the pointer)
+					o_status = getAttributeCache()->getRWPtr<char>(AttributeValueSharedCache::SVD_OUTPUT, "status");
 				}
 				break;
 		}
 		slow_acquisition_idx++;
 		slow_acquisition_idx = slow_acquisition_idx % 4;
 	}
-    acquiredData->addDoubleValue("current", *o_current);
     CMDCU_ << "current ->" << *o_current;
-	acquiredData->addDoubleValue("current_sp", *o_current_sp);
     CMDCU_ << "current_sp ->" << *o_current_sp;
-    acquiredData->addDoubleValue("voltage", *o_voltage);
     CMDCU_ << "voltage ->" << *o_voltage;
-    acquiredData->addInt32Value("polarity", *o_polarity);
     CMDCU_ << "polarity ->" << *o_polarity;
-    acquiredData->addInt64Value("alarms", *o_alarms);
     CMDCU_ << "alarms ->" << *o_alarms;
-    acquiredData->addInt32Value("status_id", *o_status_id );
     CMDCU_ << "status_id -> " << *o_status_id;
-    acquiredData->addStringValue("status", o_status);
-    /*
-     * Javascript Interface
-     */
-    acquiredData->addInt32Value("on", (*o_status_id & common::powersupply::POWER_SUPPLY_STATE_ON) ? 1:0);
-    acquiredData->addInt32Value("stby", (*o_status_id & common::powersupply::POWER_SUPPLY_STATE_STANDBY)?1:0);
-    acquiredData->addInt32Value("alarm", (*o_alarms!=0)?1:0);
+	
+	/*
+	 * Javascript Interface
+	 */
+	*o_on = (*o_status_id & common::powersupply::POWER_SUPPLY_STATE_ON) ? 1:0;
+	*o_stby = (*o_status_id & common::powersupply::POWER_SUPPLY_STATE_STANDBY)?1:0;
+	*o_alarm = (*o_alarms!=0)?1:0;
+
    
-     CMDCU_ << "stby =>"<<((*o_status_id & common::powersupply::POWER_SUPPLY_STATE_STANDBY)?1:0);
- 
+	CMDCU_ << "stby =>"<<((*o_status_id & common::powersupply::POWER_SUPPLY_STATE_STANDBY)?1:0);
     CMDCU_ << "status. -> " << o_status;
-        //set the current device state and last error
-	acquiredData->addInt64Value("dev_state", *o_dev_state);
     CMDCU_ << "dev_state -> " << *o_dev_state;
-	acquiredData->addStringValue("cmd_last_error", o_cmd_last_error);
-    CMDCU_ << "cmd_last_error -> " << o_cmd_last_error;
-	acquiredData->addInt64Value("seq", sequence_number++);
     CMDCU_ << "sequence_number -> " << sequence_number;
-        //push data on central cache
-	pushDataSet(acquiredData);
+	
+	//force output dataset as changed
+	getAttributeCache()->setOutputDomainAsChanged();
 }

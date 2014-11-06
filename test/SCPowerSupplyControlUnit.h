@@ -44,9 +44,9 @@ namespace driver {
 			 Define the Control Unit Dataset and Actions
 			 */
 			void unitDefineActionAndDataset()throw(chaos::CException);
-			
-			void defineSharedVariable();
 
+			void unitDefineCustomAttribute();
+			
 			/*(Optional)
 			 Initialize the Control Unit and all driver, with received param from MetadataServer
 			 */

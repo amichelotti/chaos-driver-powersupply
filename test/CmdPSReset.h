@@ -28,9 +28,10 @@ namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
 
 namespace driver {
 	namespace powersupply {
-		
+
 		//! Command for change the mode of the powersupply
 		class CmdPSReset : public AbstractPowerSupplyCommand {
+			const uint32_t	*i_command_timeout;
 		protected:
 			//implemented handler
 			uint8_t implementedHandler();

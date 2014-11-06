@@ -27,33 +27,16 @@ namespace chaos_batch = chaos::common::batch_command;
 
 void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	CMDCUDBG_ << "loading pointer for output channel";
-	int idx = 0;
-	//get pointer to the output datase variable
-	o_current = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<double>();
-	o_current_sp = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<double>();
-	o_voltage = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<double>();
-	o_polarity = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<int32_t>();
-	o_alarms = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint64_t>();
-	o_status_id = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<int32_t>();
-	o_status = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<char>();
-	o_dev_state = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint64_t>();
-	o_cmd_last_error = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_OUTPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<char>();
 	
-	//get pointer to the input datase variable
-	idx = 0;
-	i_slope_up = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<double>();
-	i_slope_down = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<double>();
-	i_command_timeout = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
-	i_driver_timeout = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
-	i_delta_setpoint = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
-	i_setpoint_affinity = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (chaos_batch::VariableIndexType)idx++)->getCurrentValue<uint32_t>();
-    
+	o_status_id = getAttributeCache()->getRWPtr<int32_t>(AttributeValueSharedCache::SVD_OUTPUT, "status_id");
+	o_status = getAttributeCache()->getRWPtr<char>(AttributeValueSharedCache::SVD_OUTPUT, "status");
+
+	
+	//get pointer to the output datase variable
 	chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = driverAccessorsErogator->getAccessoInstanceByIndex(0);
 	if(power_supply_accessor != NULL) {
 		powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
 	}
-	//clean the last error
-	writeErrorMessage("");
 }
 
 // return the implemented handler
@@ -71,10 +54,10 @@ bool AbstractPowerSupplyCommand::checkState(common::powersupply::PowerSupplyStat
 	int err = 0;
 	int state_id = 0;
 	std::string state_str;
-	if((err=powersupply_drv->getState(&state_id, state_str, *i_driver_timeout?*i_driver_timeout:10000)) != 0) {
+	int32_t i_driver_timeout = getAttributeCache()->getValue<int32_t>(AttributeValueSharedCache::SVD_INPUT, "driver_timeout");
+	if((err=powersupply_drv->getState(&state_id, state_str, i_driver_timeout?i_driver_timeout:10000)) != 0) {
 		setWorkState(false);
 		std::string error =  boost::str( boost::format("Error getting the powersupply state = %1% ") % err);
-		writeErrorMessage(error);
 		throw chaos::CException(1, error.c_str(), __FUNCTION__);
 	}
 	return state_id == state_to_check;
@@ -84,23 +67,17 @@ void AbstractPowerSupplyCommand::getState(int& current_state, std::string& curre
 	CHAOS_ASSERT(powersupply_drv)
 	int err = 0;
 	std::string state_str;
-	if((err=powersupply_drv->getState(&current_state, state_str, *i_driver_timeout?*i_driver_timeout:10000)) != 0) {
+	int32_t i_driver_timeout = getAttributeCache()->getValue<int32_t>(AttributeValueSharedCache::SVD_INPUT, "driver_timeout");
+	if((err=powersupply_drv->getState(&current_state, state_str, i_driver_timeout?i_driver_timeout:10000)) != 0) {
 		setWorkState(false);
 		std::string error =  boost::str( boost::format("Error getting the powersupply state = %1% ") % err);
-		writeErrorMessage(error);
 		throw chaos::CException(1, error.c_str(), __FUNCTION__);
 	}
 
 }
 
-void AbstractPowerSupplyCommand::writeErrorMessage(string error_message) {
-	writeErrorMessage(error_message.c_str());
-}
-
-void AbstractPowerSupplyCommand::writeErrorMessage(const char * error_message) {
-	std::strncpy(o_cmd_last_error, error_message, 256);
-}
-
 void AbstractPowerSupplyCommand::setWorkState(bool working_flag) {
+	int64_t *o_dev_state = getAttributeCache()->getRWPtr<int64_t>(AttributeValueSharedCache::SVD_OUTPUT, "dev_state");
 	*o_dev_state = working_flag;
+	//getAttributeCache()->setOutputAttributeValue("cmd_last_error", &working_flag, (uint32_t)strlen(error_message));
 }

@@ -42,7 +42,8 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
 	int err = 0;
     
-    
+	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(AttributeValueSharedCache::SVD_INPUT, "command_timeout");
+	
     if(!data || !data->hasKey(CMD_PS_SET_POLARITY_VALUE) ) {
 		TROW_ERROR(1, "Type of polarity not passed", std::string(__FUNCTION__))
     }

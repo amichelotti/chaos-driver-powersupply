@@ -31,6 +31,9 @@ namespace driver {
 		
 		//! Command for change the mode of the powersupply
 		class CmdPSSetSlope : public AbstractPowerSupplyCommand {
+
+			const double	*i_slope_up;
+			const double	*i_slope_down;
 		protected:
 			//implemented handler
 			uint8_t implementedHandler();

@@ -34,6 +34,16 @@ namespace driver {
 			uint64_t		sequence_number;
             uint64_t		last_slow_acq_time;
 			unsigned int	slow_acquisition_idx;
+			
+			uint64_t	*o_dev_state;
+			uint64_t	*o_alarms;
+			int32_t		*o_polarity;
+			double		*o_voltage;
+			double		*o_current_sp;
+			double		*o_current;
+			int32_t		*o_on;
+			int32_t		*o_stby;
+			int32_t		*o_alarm;
 		protected:
 			// return the implemented handler
 			uint8_t implementedHandler();

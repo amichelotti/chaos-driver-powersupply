@@ -35,24 +35,9 @@ namespace driver {
 		
 		class AbstractPowerSupplyCommand : public ccc_slow_command::SlowCommand {
 		protected:
-			//output variable
-			char		*o_cmd_last_error;
-			uint64_t	*o_dev_state;
 			char		*o_status;
 			int32_t		*o_status_id;
-			uint64_t	*o_alarms;
-			int32_t		*o_polarity;
-			double		*o_voltage;
-			double		*o_current_sp;
-			double		*o_current;
 			
-			//input variable
-			double		*i_slope_up;
-			double		*i_slope_down;
-			uint32_t	*i_command_timeout;
-			uint32_t	*i_driver_timeout;
-			uint32_t	*i_delta_setpoint;
-			uint32_t	*i_setpoint_affinity;
 			//reference of the chaos bastraction ofpowersupply driver
 			chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
 			
@@ -66,9 +51,6 @@ namespace driver {
 			
 			bool checkState(common::powersupply::PowerSupplyStates state_to_check);
 			void getState(int& current_state, std::string& current_state_str);
-			
-			void writeErrorMessage(string error_message);
-			void writeErrorMessage(const char * error_message);
 			
 			void setWorkState(bool working);
 		};

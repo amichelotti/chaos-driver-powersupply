@@ -69,198 +69,180 @@ own::SCPowerSupplyControlUnit::~SCPowerSupplyControlUnit() {
  Return the default configuration
  */
 void own::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CException) {
-    //install all command
-    installCommand<CmdPSDefault>(CMD_PS_DEFAULT_ALIAS);
-    installCommand<CmdPSMode>(CMD_PS_MODE_ALIAS);
+	//install all command
+	installCommand<CmdPSDefault>(CMD_PS_DEFAULT_ALIAS);
+	installCommand<CmdPSMode>(CMD_PS_MODE_ALIAS);
 	installCommand<CmdPSReset>(CMD_PS_RESET_ALIAS);
 	installCommand<CmdPSSetSlope>(CMD_PS_SET_SLOPE_ALIAS);
 	installCommand<CmdPSSetCurrent>(CMD_PS_SET_CURRENT_ALIAS);
 	installCommand<CmdSetPolarity>(CMD_PS_SET_POLARITY_ALIAS);
-    //set it has default
+	//set it has default
 	setDefaultCommand(CMD_PS_DEFAULT_ALIAS);
-    
-    //setup the dataset
-	addAttributeToDataSet("current",
-                          "current",
-                          DataType::TYPE_DOUBLE,
-                          DataType::Output);
-    
-    addAttributeToDataSet("current_sp",
-                          "current Set Point",
-                          DataType::TYPE_DOUBLE,
-                          DataType::Output);
-    
-    addAttributeToDataSet("voltage",
-                          "voltage",
-                          DataType::TYPE_DOUBLE,
-                          DataType::Output);
-    
-    addAttributeToDataSet("polarity",
-                          "polarity",
-                          DataType::TYPE_INT32,
-                          DataType::Output);
 	
-    addAttributeToDataSet("alarms",
-                          "Alarms",
-                          DataType::TYPE_INT64,
-                          DataType::Output);
+	//setup the dataset
+	addAttributeToDataSet("current",
+						  "current",
+						  DataType::TYPE_DOUBLE,
+						  DataType::Output);
+	
+	addAttributeToDataSet("current_sp",
+						  "current Set Point",
+						  DataType::TYPE_DOUBLE,
+						  DataType::Output);
+	
+	addAttributeToDataSet("voltage",
+						  "voltage",
+						  DataType::TYPE_DOUBLE,
+						  DataType::Output);
+	
+	addAttributeToDataSet("polarity",
+						  "polarity",
+						  DataType::TYPE_INT32,
+						  DataType::Output);
+	
+	addAttributeToDataSet("alarms",
+						  "Alarms",
+						  DataType::TYPE_INT64,
+						  DataType::Output);
 	
 	addAttributeToDataSet("status_id",
-                          "status_id",
-                          DataType::TYPE_INT32,
-                          DataType::Output);
-
-    addAttributeToDataSet("status",
-                          "status",
-                          DataType::TYPE_STRING,
-                          DataType::Output,256);
+						  "status_id",
+						  DataType::TYPE_INT32,
+						  DataType::Output);
+	
+	addAttributeToDataSet("status",
+						  "status",
+						  DataType::TYPE_STRING,
+						  DataType::Output,256);
 	
 	addAttributeToDataSet("dev_state",
-                          "Bit field device state",
-                          DataType::TYPE_INT64,
-                          DataType::Output);
-	
-	addAttributeToDataSet("cmd_last_error",
-                          "Last Erroro occurred",
-                          DataType::TYPE_STRING,
-                          DataType::Output,256);
+						  "Bit field device state",
+						  DataType::TYPE_INT64,
+						  DataType::Output);
+
 	/*
-     * JAVASCRIPT INTERFACE
-     */
-    addAttributeToDataSet("on",
-                          "power supply is on",
-                          DataType::TYPE_INT32,
-                          DataType::Output);
+	 * JAVASCRIPT INTERFACE
+	 */
+	addAttributeToDataSet("on",
+						  "power supply is on",
+						  DataType::TYPE_INT32,
+						  DataType::Output);
 	addAttributeToDataSet("stby",
-                          "power supply is on standby",
-                          DataType::TYPE_INT32,
-                          DataType::Output);
-    addAttributeToDataSet("alarm",
-                          "power supply alarm",
-                          DataType::TYPE_INT32,
-                          DataType::Output);
-    
-    
-    ///
+						  "power supply is on standby",
+						  DataType::TYPE_INT32,
+						  DataType::Output);
+	addAttributeToDataSet("alarm",
+						  "power supply alarm",
+						  DataType::TYPE_INT32,
+						  DataType::Output);
+	
+	
+	///
 	addAttributeToDataSet("slope_up",
-                          "The gain of the noise of the wave",
-                          DataType::TYPE_DOUBLE,
-                          DataType::Input);
+						  "The gain of the noise of the wave",
+						  DataType::TYPE_DOUBLE,
+						  DataType::Input);
 	
 	addAttributeToDataSet("slope_down",
-                          "The gain of the noise of the wave",
-                          DataType::TYPE_DOUBLE,
-                          DataType::Input);
+						  "The gain of the noise of the wave",
+						  DataType::TYPE_DOUBLE,
+						  DataType::Input);
 	
 	addAttributeToDataSet("driver_timeout",
-                          "Driver timeout in milliseconds",
-                          DataType::TYPE_INT32,
-                          DataType::Input);
+						  "Driver timeout in milliseconds",
+						  DataType::TYPE_INT32,
+						  DataType::Input);
 	
 	addAttributeToDataSet("command_timeout",
-                          "General command timeout in microseconds",
-                          DataType::TYPE_INT32,
-                          DataType::Input);
+						  "General command timeout in microseconds",
+						  DataType::TYPE_INT32,
+						  DataType::Input);
 	
 	addAttributeToDataSet("delta_setpoint",
-                          "Delta of the setpoint",
-                          DataType::TYPE_INT32,
-                          DataType::Input);
+						  "Delta of the setpoint",
+						  DataType::TYPE_INT32,
+						  DataType::Input);
 	
 	addAttributeToDataSet("setpoint_affinity",
-                          "Delta of the setpoint",
-                          DataType::TYPE_INT32,
-                          DataType::Input);
+						  "Delta of the setpoint",
+						  DataType::TYPE_INT32,
+						  DataType::Input);
 	//define the custom share, across slow command, variable
 }
 
-void own::SCPowerSupplyControlUnit::defineSharedVariable() {
+void own::SCPowerSupplyControlUnit::unitDefineCustomAttribute() {
 	
 }
 
 // Abstract method for the initialization of the control unit
 void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	SCCUAPP "unitInit";
-    int err = 0;
+	int err = 0;
 	int state_id;
-    std::string max_range;
-    std::string min_range;
-    std::string state_str;
-    RangeValueInfo current_sp_attr_info;
-    
-	double *asup = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, "slope_up")->getCurrentValue<double>();
-	double *asdown = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, "slope_down")->getCurrentValue<double>();
-    int32_t *status_id = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, "status_id")->getCurrentValue<int32_t>();
-
-    
-    
+	std::string max_range;
+	std::string min_range;
+	std::string state_str;
+	RangeValueInfo current_sp_attr_info;
+	
+	const double *asup = getAttributeCache()->getROPtr<double>(AttributeValueSharedCache::SVD_INPUT, "slope_up");
+	const double *asdown = getAttributeCache()->getROPtr<double>(AttributeValueSharedCache::SVD_INPUT, "slope_down");
+	int32_t *status_id = getAttributeCache()->getRWPtr<int32_t>(AttributeValueSharedCache::SVD_OUTPUT, "status_id");
+	
+	
+	
 	chaos::cu::driver_manager::driver::DriverAccessor * power_supply_accessor=AbstractControlUnit::getAccessoInstanceByIndex(0);
 	if(power_supply_accessor==NULL){
-        throw chaos::CException(1, "Cannot retrieve the requested driver", __FUNCTION__);
-    }
+		throw chaos::CException(-1, "Cannot retrieve the requested driver", __FUNCTION__);
+	}
 	powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
 	if(powersupply_drv==NULL){
-		throw chaos::CException(1, "Cannot allocate driver resources", __FUNCTION__);
+		throw chaos::CException(-2, "Cannot allocate driver resources", __FUNCTION__);
 	}
-    
-        //check mandatory default values
-    /*
-     */
-    SCCUAPP << "check mandatory default values";
-	getAttributeRangeValueInfo("current_sp", current_sp_attr_info);
-        
-        // REQUIRE MIN MAX SET IN THE MDS
-    if(!current_sp_attr_info.maxRange.size() || !current_sp_attr_info.minRange.size()) {
-       throw chaos::CException(1, "current set point need to have max and min", __FUNCTION__);
-    }
-    
-    SCCUAPP << "current_sp max="<< (max_range = current_sp_attr_info.maxRange);
-    SCCUAPP << "current_sp min="<< (min_range = current_sp_attr_info.minRange);
-    
-	// retrive the attribute description from the device database
-    /*
-    * current_sp_attr_info.reset();
-    */
-	getAttributeRangeValueInfo("slope_up", current_sp_attr_info);
-	if(current_sp_attr_info.defaultValue.size()) {
-        *asup = boost::lexical_cast<float>(current_sp_attr_info.defaultValue);
-        SCCUAPP << "slope_up = "<<*asup;
-	} else {
-        SCCUAPP << "slope_up not set we need to compute it";
-        *asup = boost::lexical_cast<float>(max_range)/20.0;
-        SCCUAPP << "slope_up computed = " << *asup;
-    }
 	
-	current_sp_attr_info.reset();
-	getAttributeRangeValueInfo("slope_down", current_sp_attr_info);
-	if(current_sp_attr_info.defaultValue.size()) {
-		*asdown = boost::lexical_cast<float>(current_sp_attr_info.defaultValue);
-        SCCUAPP << "slope_down = "<<*asup;
-	} else {
-        SCCUAPP << "slope_down not set we need to compute it";
-        *asdown = boost::lexical_cast<float>(max_range)/20.0;
-        SCCUAPP << "slope_down computed = " << *asdown;
-    }
-    
+	//check mandatory default values
+	/*
+	 */
+	SCCUAPP << "check mandatory default values";
+	getAttributeRangeValueInfo("current_sp", current_sp_attr_info);
+	
+	// REQUIRE MIN MAX SET IN THE MDS
+	if(!current_sp_attr_info.maxRange.size() || !current_sp_attr_info.minRange.size()) {
+		throw chaos::CException(-3, "current set point need to have max and min", __FUNCTION__);
+	}
+	
+	SCCUAPP << "current_sp max="<< (max_range = current_sp_attr_info.maxRange);
+	SCCUAPP << "current_sp min="<< (min_range = current_sp_attr_info.minRange);
+	
+	// retrive the attribute description from the device database
+	/*
+	 * current_sp_attr_info.reset();
+	 */
+	if(*asup <= 0) {
+		throw chaos::CException(-4, "No slop up speed set", __FUNCTION__);
+	}
+	if(*asdown <= 0) {
+		throw chaos::CException(-5, "No slop down speed set", __FUNCTION__);
+	}
+	
+	
 	if(powersupply_drv->getState(&state_id, state_str, 30000)!=0) {
-		throw  chaos::CException(1, "Error getting the state of the powersupply, possibily off", __FUNCTION__);
-    }
+		throw  chaos::CException(-6, "Error getting the state of the powersupply, possibily off", __FUNCTION__);
+	}
 	*status_id = state_id;
-    
-    if(powersupply_drv->getHWVersion(device_hw,1000)==0){
+	//notify change on status_id cached attribute
+	getAttributeCache()->setOutputDomainAsChanged();
+	
+	if(powersupply_drv->getHWVersion(device_hw,1000)==0){
 		SCCUAPP << "hardware found: \"" << device_hw<<"\"";
-    }
-
-	if( (*asup > 0) && (*asdown > 0)) {
-		SCCUAPP << "set default slope value up:"<<*asup<<" down:"<<*asdown;
-		if((err = powersupply_drv->setCurrentRampSpeed(*asup, *asdown) )!= 0) {
-                     throw chaos::CException(1, "Error setting slope ", __FUNCTION__); 
-                     //TODO: check the  boost::bad_format_string: format-string is ill-formed
-			//throw chaos::CException(2, boost::str( boost::format("Error %1 setting the slope in state %2%[%3%]") % err % state_str % state_id), std::string(__FUNCTION__));
-		}
-	} else {
-		throw chaos::CException(2, "No default slope value found", std::string(__FUNCTION__));
-    }
+	}
+	
+	
+	SCCUAPP << "set default slope value up:"<<*asup<<" down:"<<*asdown;
+	if((err = powersupply_drv->setCurrentRampSpeed(*asup, *asdown) )!= 0) {
+		throw chaos::CException(-7, "Error setting slope ", __FUNCTION__);
+		//TODO: check the  boost::bad_format_string: format-string is ill-formed
+		//throw chaos::CException(2, boost::str( boost::format("Error %1 setting the slope in state %2%[%3%]") % err % state_str % state_id), std::string(__FUNCTION__));
+	}
 }
 
 // Abstract method for the start of the control unit
