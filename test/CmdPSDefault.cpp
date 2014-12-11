@@ -18,7 +18,7 @@
  *    	limitations under the License.
  */
 
-#include <cstring>
+#include <string.h>
 #include "CmdPSDefault.h"
 #include <driver/powersupply/core/ChaosPowerSupplyInterface.h>
 
@@ -148,9 +148,11 @@ void CmdPSDefault::acquireHandler() {
 				if(powersupply_drv && !powersupply_drv->getState(&stato, desc)){
 					*o_status_id = stato;
 					//update the value and dimension of status channel
-					getAttributeCache()->setOutputAttributeValue("status", (void*)desc.c_str(), (uint32_t)desc.size());
+					//getAttributeCache()->setOutputAttributeValue("status", (void*)desc.c_str(), (uint32_t)desc.size());
 					//the new pointer need to be got (set new size can reallocate the pointer)
 					o_status = getAttributeCache()->getRWPtr<char>(AttributeValueSharedCache::SVD_OUTPUT, "status");
+					//copy up to 255 and put the termination character
+					strlcpy(o_status, desc.c_str(), 256);
 				}
 				break;
 		}
