@@ -60,15 +60,15 @@ void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 	setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)1000000);
 	
 	//get channel pointer
-	o_current = getAttributeCache()->getRWPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "current");
-	o_current_sp = getAttributeCache()->getRWPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "current_sp");
-	o_voltage = getAttributeCache()->getRWPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "voltage");
-	o_polarity = getAttributeCache()->getRWPtr<int32_t>(AttributeValueSharedCache::SVD_OUTPUT, "polarity");
-	o_alarms = getAttributeCache()->getRWPtr<uint64_t>(AttributeValueSharedCache::SVD_OUTPUT, "alarms");
-	o_dev_state = getAttributeCache()->getRWPtr<uint64_t>(AttributeValueSharedCache::SVD_OUTPUT, "dev_state");
-	o_on = getAttributeCache()->getRWPtr<int32_t>(AttributeValueSharedCache::SVD_OUTPUT, "on");
-	o_stby = getAttributeCache()->getRWPtr<int32_t>(AttributeValueSharedCache::SVD_OUTPUT, "stby");
-	o_alarm = getAttributeCache()->getRWPtr<int32_t>(AttributeValueSharedCache::SVD_OUTPUT, "alarm");
+	o_current = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current");
+	o_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current_sp");
+	o_voltage = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "voltage");
+	o_polarity = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
+	o_alarms = getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "alarms");
+	o_dev_state = getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "dev_state");
+	o_on = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "on");
+	o_stby = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "stby");
+	o_alarm = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "alarm");
 	
 	if(!powersupply_drv->getCurrentOutput(&tmp_float)){
 		*o_current = (double)tmp_float;
@@ -150,7 +150,7 @@ void CmdPSDefault::acquireHandler() {
 					//update the value and dimension of status channel
 					//getAttributeCache()->setOutputAttributeValue("status", (void*)desc.c_str(), (uint32_t)desc.size());
 					//the new pointer need to be got (set new size can reallocate the pointer)
-					o_status = getAttributeCache()->getRWPtr<char>(AttributeValueSharedCache::SVD_OUTPUT, "status");
+					o_status = getAttributeCache()->getRWPtr<char>(DOMAIN_OUTPUT, "status");
 					//copy up to 255 and put the termination character
 					strlcpy(o_status, desc.c_str(), 256);
 				}

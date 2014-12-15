@@ -46,14 +46,14 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     chaos::common::data::RangeValueInfo attributeInfo;
 	AbstractPowerSupplyCommand::setHandler(data);
 	int err = 0;
-	o_current = getAttributeCache()->getROPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "current");
-	o_current_sp = getAttributeCache()->getRWPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "current_sp");
+	o_current = getAttributeCache()->getROPtr<double>(DOMAIN_OUTPUT, "current");
+	o_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current_sp");
 	
-	i_slope_up = getAttributeCache()->getROPtr<double>(AttributeValueSharedCache::SVD_INPUT, "slope_up");
-	i_slope_down = getAttributeCache()->getROPtr<double>(AttributeValueSharedCache::SVD_INPUT, "slope_down");
-	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(AttributeValueSharedCache::SVD_INPUT, "command_timeout");
-	i_delta_setpoint = getAttributeCache()->getROPtr<uint32_t>(AttributeValueSharedCache::SVD_INPUT, "delta_setpoint");
-	i_setpoint_affinity = getAttributeCache()->getROPtr<uint32_t>(AttributeValueSharedCache::SVD_INPUT, "setpoint_affinity");
+	i_slope_up = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_up");
+	i_slope_down = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_down");
+	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "command_timeout");
+	i_delta_setpoint = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "delta_setpoint");
+	i_setpoint_affinity = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "setpoint_affinity");
 	
 	float current = 0.f;
 	float slope_speed = 0.f;

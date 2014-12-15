@@ -41,7 +41,7 @@ uint8_t own::CmdPSReset::implementedHandler() {
 
 void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
-	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(AttributeValueSharedCache::SVD_INPUT, "command_timeout");
+	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "command_timeout");
 	
 	//set comamnd timeout for this instance
 	CMDCUDBG_ << "Checking for timout";

@@ -184,9 +184,9 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	std::string state_str;
 	RangeValueInfo current_sp_attr_info;
 	
-	const double *asup = getAttributeCache()->getROPtr<double>(AttributeValueSharedCache::SVD_INPUT, "slope_up");
-	const double *asdown = getAttributeCache()->getROPtr<double>(AttributeValueSharedCache::SVD_INPUT, "slope_down");
-	int32_t *status_id = getAttributeCache()->getRWPtr<int32_t>(AttributeValueSharedCache::SVD_OUTPUT, "status_id");
+	const double *asup = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_up");
+	const double *asdown = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_down");
+	int32_t *status_id = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "status_id");
 	
 	
 	
