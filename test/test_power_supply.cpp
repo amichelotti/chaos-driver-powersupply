@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <chaos/common/chaos_constants.h>
+
+#include <chaos/ui_toolkit/ChaosUIToolkit.h>
+
+#include "TestPowerSupply.h"
+
+
+int main (int argc, char* argv[] )
+{
+  int debug,loop,keep;
+  std::vector<std::string> arrCU;
+  std::vector<TestPowerSupply*> arrTest;
+  int ret=0;
+
+    chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->addOption("supply,s",po::value<std::vector<std::string> > (&arrCU),"power supply ID to test");
+    
+  
+    chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->addOption("loop,l",po::value<int>(&loop)->default_value(1),"number of test loop to do");
+    chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->addOption("keep,k",po::value<int>(&keep)->default_value(1),"continue on error");
+
+    chaos::ui::ChaosUIToolkit::getInstance()->init(argc, argv);
+
+    if(chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption("supply")==0){
+        std::cout<<"## you must specify a valid CU"<<std::endl;
+        return -3;
+    }
+    arrCU=chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<std::vector<std::string> > ("supply");
+    loop = chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<int> ("loop");
+    keep = chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<int> ("keep");
+    std::cout<<"using MDS: "<<chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<std::string>("metadata-server")<<std::endl;
+    
+    for(std::vector<std::string>::iterator i=arrCU.begin();i!=arrCU.end();i++){
+        TestPowerSupply*p =new TestPowerSupply(*i);
+        if(p==NULL){
+            std::cout<<"## cannot allocate resources for testing: "<<*i<<std::endl;
+            return -4;
+        }
+        if(p->init()!=0){
+            std::cout<<"## cannot initialize device: "<<*i<<std::endl;
+            return -5;
+        }
+        //name, pointer, function, timeout, test repetition
+        p->addTest("initTest",p, &TestPowerSupply::initTest,10000,1);
+        p->addTest("startTest",p, &TestPowerSupply::startTest,10000,1);
+	p->addTest("aliveTest",p, &TestPowerSupply::aliveTest,10000,10);
+	p->addTest("Standby",p,&TestPowerSupply::standByTest,60000,1);
+	p->addTest<int>("Polarity Pos",p,&TestPowerSupply::setPolarityTest,1,60000,1);
+        p->addTest("power on",p,&TestPowerSupply::onTest,60000,1);
+        //name, pointer, function with pointer, value, timeout, test repetition
+        p->addTest<float>("Current 50",p,&TestPowerSupply::setCurrentTest,50,60000,1);
+        p->addTest<float>("Current 0",p,&TestPowerSupply::setCurrentTest,0,60000,1);
+	p->addTest("Standby2",p,&TestPowerSupply::standByTest,60000,1);
+	//        p->addTest<int>("Polarity Neg",p,&TestPowerSupply::setPolarityTest,-1,60000,1);
+	//        p->addTest<int>("Polarity Open",p,&TestPowerSupply::setPolarityTest,0,60000,1);
+        p->addTest<int>("Polarity Pos",p,&TestPowerSupply::setPolarityTest,1,60000,1);
+        p->addTest("poweron 2",p,&TestPowerSupply::onTest,60000,1);
+        p->addTest<float>("Current 30",p,&TestPowerSupply::setCurrentTest,70,60000,1);
+        p->addTest<float>("Current0 last",p,&TestPowerSupply::setCurrentTest,0,60000,1);
+        p->addTest("Standby3",p,&TestPowerSupply::standByTest,60000,1);
+        
+        p->addTest("stopTest",p, &TestPowerSupply::stopTest,10000,1);
+        p->addTest("deinitTest",p, &TestPowerSupply::deinitTest,10000,1);
+
+        arrTest.push_back(p);
+    }
+    
+    for(std::vector<TestPowerSupply*>::iterator i = arrTest.begin();i!=arrTest.end();i++){
+        (*i)->runTestsBackGround(keep,loop);
+        sleep(1);
+    }
+    
+    for(std::vector<TestPowerSupply*>::iterator i = arrTest.begin();i!=arrTest.end();i++){
+        std::string filename=(*i)->getCUname() + "_report.txt";
+        ret +=(*i)->report((char*)filename.c_str());
+    }
+    if(ret !=0){
+      LAPP_<<"Test power supply failed"<<endl;
+    }
+    return ret;
+}
+
