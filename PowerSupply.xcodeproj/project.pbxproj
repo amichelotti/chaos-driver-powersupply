@@ -242,7 +242,7 @@
 				32B8C1A618294409001CF714 /* PowerSupplyStateMachine.h */,
 				32599919182A7A09001E7D99 /* PowerSupplyCostants.h */,
 			);
-			path = test;
+			path = source;
 			sourceTree = "<group>";
 		};
 		5367761318339349006A7B25 /* ocem_test_ui */ = {

@@ -152,7 +152,7 @@ void CmdPSDefault::acquireHandler() {
 					//the new pointer need to be got (set new size can reallocate the pointer)
 					o_status = getAttributeCache()->getRWPtr<char>(DOMAIN_OUTPUT, "status");
 					//copy up to 255 and put the termination character
-					strlcpy(o_status, desc.c_str(), 256);
+					strncpy(o_status, desc.c_str(), 256);
 				}
 				break;
 		}

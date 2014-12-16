@@ -14,11 +14,11 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 
-ADD_DEFINITIONS(-g -O2 -Wall)
+ADD_DEFINITIONS(-g -O2)
 add_definitions(-DBOOST_ALL_DYN_LINK -DCHAOS -DDEBUG)
 
 SET(PowerSupplydriver_src core/ChaosPowerSupplyInterface.cpp models/GenericPowerSupplyDD.cpp core/ChaosUIPowersupplyCWrapper.cpp)
-SET(PowerSupplycu_src test/powersupply_cu.cpp test/SCPowerSupplyControlUnit.cpp test/CmdPSDefault.cpp test/CmdPSMode.cpp test/CmdPSReset.cpp test/CmdPSSetSlope.cpp test/CmdPSSetCurrent.cpp test/CmdSetPolarity.cpp test/AbstractPowerSupplyCommand.cpp )
+SET(PowerSupplycu_src source/powersupply_cu.cpp source/SCPowerSupplyControlUnit.cpp source/CmdPSDefault.cpp source/CmdPSMode.cpp source/CmdPSReset.cpp source/CmdPSSetSlope.cpp source/CmdPSSetCurrent.cpp source/CmdSetPolarity.cpp source/AbstractPowerSupplyCommand.cpp )
 
 INCLUDE_DIRECTORIES(../../ ${PROJECT_SOURCE_DIR}/../../usr/local/include)
 LINK_DIRECTORIES(${PROJECT_SOURCE_DIR}/../../chaosframework/usr/local/lib)

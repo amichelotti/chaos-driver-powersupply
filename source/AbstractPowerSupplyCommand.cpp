@@ -25,6 +25,15 @@
 using namespace driver::powersupply;
 namespace chaos_batch = chaos::common::batch_command;
 
+AbstractPowerSupplyCommand::AbstractPowerSupplyCommand() {
+  powersupply_drv = NULL;
+}
+AbstractPowerSupplyCommand::~AbstractPowerSupplyCommand() {
+  if(powersupply_drv)
+    delete (powersupply_drv);
+  powersupply_drv = NULL;
+}
+
 void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	CMDCUDBG_ << "loading pointer for output channel";
 	
@@ -35,7 +44,9 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	//get pointer to the output datase variable
 	chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = driverAccessorsErogator->getAccessoInstanceByIndex(0);
 	if(power_supply_accessor != NULL) {
-		powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
+	  if(powersupply_drv == NULL){
+	    powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
+	  }
 	}
 }
 

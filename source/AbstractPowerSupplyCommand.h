@@ -34,6 +34,10 @@ namespace driver {
 	namespace powersupply {
 		
 		class AbstractPowerSupplyCommand : public ccc_slow_command::SlowCommand {
+
+		public:
+		  AbstractPowerSupplyCommand();
+		  ~AbstractPowerSupplyCommand();
 		protected:
 			char		*o_status;
 			int32_t		*o_status_id;
