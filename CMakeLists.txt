@@ -24,7 +24,7 @@ INCLUDE_DIRECTORIES(../../ ${PROJECT_SOURCE_DIR}/../../usr/local/include)
 LINK_DIRECTORIES(${PROJECT_SOURCE_DIR}/../../chaosframework/usr/local/lib)
 
 ADD_EXECUTABLE(powersupply_cu ${PowerSupplycu_src})
-ADD_EXECUTABLE(power_supply_test_ui ocem_test_ui/test_power_supply.cpp ocem_test_ui/TestPowerSupply.cpp)
+ADD_EXECUTABLE(powersupply_test test/test_power_supply.cpp test/TestPowerSupply.cpp)
 ADD_LIBRARY(driver_powersupply SHARED ${PowerSupplydriver_src})
 # set_target_properties(ocem_cu PROPERTIES PREFIX "" SUFFIX ".extension")
 
@@ -34,10 +34,10 @@ separate_arguments(FrameworkLib)
 
 TARGET_LINK_LIBRARIES(powersupply_cu pthread driver_powersupply common_powersupply common_serial common_debug chaos_cutoolkit chaos_common ${FrameworkLib})
 TARGET_LINK_LIBRARIES(driver_powersupply pthread common_powersupply common_serial common_debug chaos_cutoolkit chaos_uitoolkit chaos_common ${FrameworkLib})
-TARGET_LINK_LIBRARIES(power_supply_test_ui common_test chaos_uitoolkit driver_powersupply chaos_common common_debug ${FrameworkLib})
+TARGET_LINK_LIBRARIES(powersupply_test common_test chaos_uitoolkit driver_powersupply chaos_common common_debug ${FrameworkLib})
 
 INSTALL_TARGETS(/bin powersupply_cu)
-INSTALL_TARGETS(/bin power_supply_test_ui)
+INSTALL_TARGETS(/bin powersupply_test)
 INSTALL_TARGETS(/lib driver_powersupply)
 FILE(GLOB core_src core/*.h)
 FILE(GLOB models_src models/*.h)

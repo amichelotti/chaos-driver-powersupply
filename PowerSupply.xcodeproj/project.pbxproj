@@ -107,7 +107,7 @@
 		5303A92F18190F4E0070356D /* powersupply_cu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = powersupply_cu.cpp; sourceTree = "<group>"; };
 		53218B0B18994189008181AE /* TestPowerSupply.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestPowerSupply.cpp; sourceTree = "<group>"; };
 		53218B0C18994189008181AE /* TestPowerSupply.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestPowerSupply.h; sourceTree = "<group>"; };
-		5367761218339349006A7B25 /* power_supply_test_ui */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = power_supply_test_ui; sourceTree = BUILT_PRODUCTS_DIR; };
+		5367761218339349006A7B25 /* powersupply_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = powersupply_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		5367761618339349006A7B25 /* ocem_test_ui.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = ocem_test_ui.1; sourceTree = "<group>"; };
 		5367761D1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ChaosUIPowersupplyCWrapper.cpp; sourceTree = "<group>"; };
 		5367761E1836830D006A7B25 /* ChaosUIPowersupplyCWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChaosUIPowersupplyCWrapper.h; sourceTree = "<group>"; };
@@ -192,7 +192,7 @@
 			children = (
 				3285567717F1C43D00A64ED2 /* powersupply_cu */,
 				3285568717F1C4AC00A64ED2 /* libdriver_powersupply.dylib */,
-				5367761218339349006A7B25 /* power_supply_test_ui */,
+				5367761218339349006A7B25 /* powersupply_test */,
 				53677626183E1AF9006A7B25 /* driver_powersupply_framework.framework */,
 				5367763C183E1AFA006A7B25 /* driver_powersupply_frameworkTests.xctest */,
 			);
@@ -253,7 +253,7 @@
 				53218B0C18994189008181AE /* TestPowerSupply.h */,
 				5367761618339349006A7B25 /* ocem_test_ui.1 */,
 			);
-			path = ocem_test_ui;
+			path = test;
 			sourceTree = "<group>";
 		};
 		53677627183E1AF9006A7B25 /* Frameworks */ = {
@@ -373,9 +373,9 @@
 			productReference = 3285568717F1C4AC00A64ED2 /* libdriver_powersupply.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
-		5367761118339349006A7B25 /* power_supply_test_ui */ = {
+		5367761118339349006A7B25 /* powersupply_test */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5367761A18339349006A7B25 /* Build configuration list for PBXNativeTarget "power_supply_test_ui" */;
+			buildConfigurationList = 5367761A18339349006A7B25 /* Build configuration list for PBXNativeTarget "powersupply_test" */;
 			buildPhases = (
 				5367760E18339349006A7B25 /* Sources */,
 				5367760F18339349006A7B25 /* Frameworks */,
@@ -385,9 +385,9 @@
 			);
 			dependencies = (
 			);
-			name = power_supply_test_ui;
+			name = powersupply_test;
 			productName = ocem_test_ui;
-			productReference = 5367761218339349006A7B25 /* power_supply_test_ui */;
+			productReference = 5367761218339349006A7B25 /* powersupply_test */;
 			productType = "com.apple.product-type.tool";
 		};
 		53677625183E1AF9006A7B25 /* driver_powersupply_framework */ = {
@@ -454,7 +454,7 @@
 			targets = (
 				3285567617F1C43D00A64ED2 /* powersupply_cu */,
 				3285568617F1C4AC00A64ED2 /* driver_powersupply */,
-				5367761118339349006A7B25 /* power_supply_test_ui */,
+				5367761118339349006A7B25 /* powersupply_test */,
 				53677625183E1AF9006A7B25 /* driver_powersupply_framework */,
 				5367763B183E1AF9006A7B25 /* driver_powersupply_frameworkTests */,
 			);
@@ -1065,7 +1065,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5367761A18339349006A7B25 /* Build configuration list for PBXNativeTarget "power_supply_test_ui" */ = {
+		5367761A18339349006A7B25 /* Build configuration list for PBXNativeTarget "powersupply_test" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5367761818339349006A7B25 /* Debug */,
