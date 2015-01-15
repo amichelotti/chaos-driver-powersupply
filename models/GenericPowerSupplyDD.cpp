@@ -66,7 +66,7 @@ void chaos_powersupply_dd::GenericPowerSupplyDD::driverInit(const char *initPara
     //check the input parameter
 	boost::smatch match;
 	std::string inputStr = initParameter;
-	PSLAPP << "Init GenericPowerSupply driver initialisation string:\""<<initParameter<<"\""<<endl;
+	PSLAPP << "Init GenericPowerSupply driver initialisation string:\""<<initParameter<<"\""<<std::endl;
     if(power){
           throw chaos::CException(1, "Already Initialised", "GenericPowerSupplyDD::driverInit");
     }
@@ -79,7 +79,7 @@ void chaos_powersupply_dd::GenericPowerSupplyDD::driverInit(const char *initPara
                 std::string slaveid=match[2];
                 std::string maxcurr=match[3];
                 std::string maxvoltage=match[3];
-                PSLAPP<<"Allocating OcemE642X device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<endl;
+                PSLAPP<<"Allocating OcemE642X device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<std::endl;
                 power = new ::common::powersupply::OcemE642X(dev.c_str(),atoi(slaveid.c_str()),(float)atof(maxcurr.c_str()),(float)atof(maxvoltage.c_str()));
                 if(power==NULL){
                       throw chaos::CException(1, "Cannot allocate resources for OcemE642X", "GenericPowerSupplyDD::driverInit");
@@ -98,7 +98,7 @@ void chaos_powersupply_dd::GenericPowerSupplyDD::driverInit(const char *initPara
                 std::string read_max=match[6];
                 std::string max_curr=match[7];
                 std::string max_vol=match[8];
-                PSLAPP<<"Allocating Simulated Power Supply device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<endl;
+                PSLAPP<<"Allocating Simulated Power Supply device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<std::endl;
                 power = new ::common::powersupply::SimPSupply(dev.c_str(),atoi(slaveid.c_str()),atoi(write_min.c_str()),atoi(write_max.c_str()),atoi(read_min.c_str()),atoi(read_max.c_str()),atoi(max_curr.c_str()),atoi(max_vol.c_str()));
                 if(power==NULL){
                     throw chaos::CException(1, "Cannot allocate resources for SimPSupply", "GenericPowerSupplyDD::driverInit");
@@ -116,7 +116,7 @@ void chaos_powersupply_dd::GenericPowerSupplyDD::driverInit(const char *initPara
     }
     std::string ver;
     power->getSWVersion(ver,0);
-    PSLAPP<<"Initialising PowerSupply Driver \""<<ver<<"\""<<endl;
+    PSLAPP<<"Initialising PowerSupply Driver \""<<ver<<"\""<<std::endl;
 
     if(power->init()!=0){
         throw chaos::CException(1, "Initialisation of power supply failed", "GenericPowerSupplyDD::driverInit");
@@ -142,69 +142,69 @@ cu_driver::MsgManagmentResultType::MsgManagmentResult chaos_powersupply_dd::Gene
     switch(cmd->opcode){
             
         case OP_SET_POLARITY:
-            LDBG_<< "Set Polarity to:"<<in->ivalue<<" timeo:"<<in->timeout<<endl;
+            LDBG_<< "Set Polarity to:"<<in->ivalue<<" timeo:"<<in->timeout<<std::endl;
             out->result= power->setPolarity(in->ivalue,in->timeout);
             
             break;
         case OP_GET_POLARITY:
             out->result = power->getPolarity(&out->ivalue,in->timeout);
-            LDBG_<< "Got Polarity "<<out->ivalue<<endl;
+            LDBG_<< "Got Polarity "<<out->ivalue<<std::endl;
             break;
         case OP_SET_SP:
-            LDBG_<< "Set Current SP to:"<<in->fvalue0<<" timeo:"<<in->timeout<<endl;
+            LDBG_<< "Set Current SP to:"<<in->fvalue0<<" timeo:"<<in->timeout<<std::endl;
             out->result = power->setCurrentSP(in->fvalue0,in->timeout);
             break;
         case OP_GET_SP: // get current set point
             out->result = power->getCurrentSP(&out->fvalue0,in->timeout);
-            LDBG_<< "Got Current SP "<<out->fvalue0<<endl;
+            LDBG_<< "Got Current SP "<<out->fvalue0<<std::endl;
             break;
         case OP_START_RAMP: // start ramp
-            LDBG_<< "Start Ramp timeo:"<<in->timeout<<endl;
+            LDBG_<< "Start Ramp timeo:"<<in->timeout<<std::endl;
             out->result = power->startCurrentRamp(in->timeout);
             break;
         case OP_GET_VOLTAGE_OUTPUT:
             out->result = power->getVoltageOutput(&out->fvalue0,in->timeout);
-            LDBG_<< "Got Voltage "<<out->fvalue0<<endl;
+            LDBG_<< "Got Voltage "<<out->fvalue0<<std::endl;
             break;
         case OP_GET_CURRENT_OUTPUT:
             out->result = power->getCurrentOutput(&out->fvalue0,in->timeout);
-            LDBG_<< "Got Current "<<out->fvalue0<<endl;
+            LDBG_<< "Got Current "<<out->fvalue0<<std::endl;
             break;
         case OP_SET_CURRENT_RAMP_SPEED:
-            LDBG_<<"Setting current ramp speed min:"<<in->fvalue0<<" max:"<<in->fvalue1<<" timeout:"<<in->timeout<<endl;
+            LDBG_<<"Setting current ramp speed min:"<<in->fvalue0<<" max:"<<in->fvalue1<<" timeout:"<<in->timeout<<std::endl;
             out->result = power->setCurrentRampSpeed(in->fvalue0,in->fvalue1,in->timeout);
             break;
         case OP_RESET_ALARMS:
-            LDBG_<<"Reset alarms to:"<<in->alarm_mask<<" timeout:"<<in->timeout<<endl;
+            LDBG_<<"Reset alarms to:"<<in->alarm_mask<<" timeout:"<<in->timeout<<std::endl;
             out->result = power->resetAlarms(in->alarm_mask,in->timeout);
             break;
         case OP_GET_ALARMS:
             out->result = power->getAlarms(&out->alarm_mask,in->timeout);
-            LDBG_<<"Got alarms to:"<<out->alarm_mask<<" timeout:"<<in->timeout<<endl;
+            LDBG_<<"Got alarms to:"<<out->alarm_mask<<" timeout:"<<in->timeout<<std::endl;
             break;
         case OP_SHUTDOWN:
-            LDBG_<<"Shutting down"<<" timeout:"<<in->timeout<<endl;
+            LDBG_<<"Shutting down"<<" timeout:"<<in->timeout<<std::endl;
             out->result = power->shutdown(in->timeout);
             break;
         case OP_STANDBY:
-            LDBG_<<"Standby "<<" timeout:"<<in->timeout<<endl;
+            LDBG_<<"Standby "<<" timeout:"<<in->timeout<<std::endl;
             out->result = power->standby(in->timeout);
             break;
         case OP_POWERON:
-            LDBG_<<"Poweron "<<" timeout:"<<in->timeout<<endl;
+            LDBG_<<"Poweron "<<" timeout:"<<in->timeout<<std::endl;
             out->result = power->poweron(in->timeout);
             break;
         case OP_GET_STATE:{
             std::string desc;
             out->result = power->getState(&out->ivalue,desc,in->timeout);
             strncpy(out->str,desc.c_str(),MAX_STR_SIZE);
-            LDBG_<<"Got State: "<<out->ivalue<<" \""<<desc<<"\" timeout:"<<in->timeout<<endl;
+            LDBG_<<"Got State: "<<out->ivalue<<" \""<<desc<<"\" timeout:"<<in->timeout<<std::endl;
             break;
         }
         case OP_GET_SWVERSION:{
             std::string ver;
             out->result = power->getSWVersion(ver,in->timeout);
-            LDBG_<<"Got HW Version:\""<<ver<<"\" timeout:"<<in->timeout<<endl;
+            LDBG_<<"Got HW Version:\""<<ver<<"\" timeout:"<<in->timeout<<std::endl;
             strncpy(out->str,ver.c_str(),MAX_STR_SIZE);;
 
             break;
@@ -212,32 +212,32 @@ cu_driver::MsgManagmentResultType::MsgManagmentResult chaos_powersupply_dd::Gene
         case OP_GET_HWVERSION:{
             std::string ver;
             out->result = power->getHWVersion(ver,in->timeout);
-            LDBG_<<"Got SW Version:\""<<ver<<"\" timeout:"<<in->timeout<<endl;
+            LDBG_<<"Got SW Version:\""<<ver<<"\" timeout:"<<in->timeout<<std::endl;
             strncpy(out->str,ver.c_str(),MAX_STR_SIZE);;
 
             break;
         }
         case OP_GET_CURRENT_SENSIBILITY:
             out->result = power->getCurrentSensibility(&out->fvalue0);
-            LDBG_<<"Got Current sensibility: \""<<out->fvalue0<<"\""<<endl;
+            LDBG_<<"Got Current sensibility: \""<<out->fvalue0<<"\""<<std::endl;
             break;
         case OP_GET_VOLTAGE_SENSIBILITY:
             out->result = power->getVoltageSensibility(&out->fvalue0);
-            LDBG_<<"Got Voltage sensibility: \""<<out->fvalue0<<"\""<<endl;
+            LDBG_<<"Got Voltage sensibility: \""<<out->fvalue0<<"\""<<std::endl;
             break;
         
         case OP_GET_MAXMIN_CURRENT:
             out->result = power->getMaxMinCurrent(&out->fvalue0,&out->fvalue1);
-            LDBG_<<"Got Max "<<out->fvalue0<<" Min "<< out->fvalue1<<" current"<<endl;
+            LDBG_<<"Got Max "<<out->fvalue0<<" Min "<< out->fvalue1<<" current"<<std::endl;
 
             break;
         case OP_GET_MAXMIN_VOLTAGE:
             out->result = power->getMaxMinVoltage(&out->fvalue0,&out->fvalue1);
-            LDBG_<<"Got Max "<<out->fvalue0<<" Min "<< out->fvalue1<<" voltage"<<endl;
+            LDBG_<<"Got Max "<<out->fvalue0<<" Min "<< out->fvalue1<<" voltage"<<std::endl;
             break;
         case OP_GET_ALARM_DESC:
             out->result = power->getAlarmDesc(&out->alarm_mask);
-            LDBG_<<"Got Alarm maxk "<<out->alarm_mask<<endl;
+            LDBG_<<"Got Alarm maxk "<<out->alarm_mask<<std::endl;
 
             break;
 
