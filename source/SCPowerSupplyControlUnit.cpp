@@ -38,16 +38,16 @@ using namespace chaos::common::batch_command;
 using namespace chaos::cu::control_manager::slow_command;
 using namespace chaos::cu::driver_manager::driver;
 
-namespace own =  ::driver::powersupply;
+
 
 #define SCCUAPP LAPP_ << "[SCPowerSupplyControlUnit - " << getCUID() << "] - "
 
-PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(own::SCPowerSupplyControlUnit)
+PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(::driver::powersupply::SCPowerSupplyControlUnit)
 
 /*
  Construct a new CU with an identifier
  */
-own::SCPowerSupplyControlUnit::SCPowerSupplyControlUnit(const string& _control_unit_id,
+::driver::powersupply::SCPowerSupplyControlUnit::SCPowerSupplyControlUnit(const string& _control_unit_id,
 														const string& _control_unit_param,
 														const ControlUnitDriverList& _control_unit_drivers):
 //call base constructor
@@ -60,7 +60,7 @@ chaos::cu::control_manager::SCAbstractControlUnit(_control_unit_id,
 /*
  Base destructor
  */
-own::SCPowerSupplyControlUnit::~SCPowerSupplyControlUnit() {
+::driver::powersupply::SCPowerSupplyControlUnit::~SCPowerSupplyControlUnit() {
 	
 }
 
@@ -68,7 +68,7 @@ own::SCPowerSupplyControlUnit::~SCPowerSupplyControlUnit() {
 /*
  Return the default configuration
  */
-void own::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CException) {
+void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CException) {
 	//install all command
 	installCommand<CmdPSDefault>(CMD_PS_DEFAULT_ALIAS);
 	installCommand<CmdPSMode>(CMD_PS_MODE_ALIAS);
@@ -170,12 +170,12 @@ void own::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CE
 	//define the custom share, across slow command, variable
 }
 
-void own::SCPowerSupplyControlUnit::unitDefineCustomAttribute() {
+void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineCustomAttribute() {
 	
 }
 
 // Abstract method for the initialization of the control unit
-void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
+void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 	SCCUAPP "unitInit";
 	int err = 0;
 	int state_id;
@@ -246,16 +246,16 @@ void own::SCPowerSupplyControlUnit::unitInit() throw(CException) {
 }
 
 // Abstract method for the start of the control unit
-void own::SCPowerSupplyControlUnit::unitStart() throw(CException) {
+void ::driver::powersupply::SCPowerSupplyControlUnit::unitStart() throw(CException) {
 	
 }
 
 // Abstract method for the stop of the control unit
-void own::SCPowerSupplyControlUnit::unitStop() throw(CException) {
+void ::driver::powersupply::SCPowerSupplyControlUnit::unitStop() throw(CException) {
 	
 }
 
 // Abstract method for the deinit of the control unit
-void own::SCPowerSupplyControlUnit::unitDeinit() throw(CException) {
+void ::driver::powersupply::SCPowerSupplyControlUnit::unitDeinit() throw(CException) {
 	
 }

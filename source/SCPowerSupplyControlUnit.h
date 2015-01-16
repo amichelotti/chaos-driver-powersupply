@@ -24,10 +24,6 @@
 #include <driver/powersupply/core/ChaosPowerSupplyInterface.h>
 
 
-using namespace boost::msm::front::euml;
-using namespace boost::msm::front;
-//namespace mpl = boost::mpl;
-
 namespace driver {
 	namespace powersupply {
 		
@@ -35,9 +31,9 @@ namespace driver {
 			PUBLISHABLE_CONTROL_UNIT_INTERFACE(SCPowerSupplyControlUnit)
 
 			// init paramter
-			string device_hw;
+			  std::string device_hw;
 			
-            chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
+			chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
 
 		protected:
 			/*
@@ -68,8 +64,8 @@ namespace driver {
 			/*
 			 Construct a new CU with an identifier
 			 */
-			SCPowerSupplyControlUnit(const string& _control_unit_id,
-									 const string& _control_unit_param,
+			SCPowerSupplyControlUnit(const std::string& _control_unit_id,
+									 const std::string& _control_unit_param,
 									 const ControlUnitDriverList& _control_unit_drivers);
 			
 			/*
