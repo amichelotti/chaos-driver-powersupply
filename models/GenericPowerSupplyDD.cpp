@@ -41,13 +41,13 @@ static const boost::regex power_supply_simulator_init_match("([\\w\\/]+),(\\d+),
 
 //GET_PLUGIN_CLASS_DEFINITION
 //we need only to define the driver because we don't are makeing a plugin
-OPEN_CU_DRIVER_PLUGIN_CLASS_DEFINITION(GenericPowerSupplyDD, 1.0.0, chaos_powersupply_dd::GenericPowerSupplyDD)
-REGISTER_CU_DRIVER_PLUGIN_CLASS_INIT_ATTRIBUTE(driver::powersupply::GenericPowerSupplyDD, http_address/dnsname:port)
+OPEN_CU_DRIVER_PLUGIN_CLASS_DEFINITION(GenericPowerSupplyDD, 1.0.0, chaos::driver::powersupply::GenericPowerSupplyDD)
+REGISTER_CU_DRIVER_PLUGIN_CLASS_INIT_ATTRIBUTE(chaos::driver::powersupply::GenericPowerSupplyDD, http_address/dnsname:port)
 CLOSE_CU_DRIVER_PLUGIN_CLASS_DEFINITION
 
 //register the two plugin
 OPEN_REGISTER_PLUGIN
-REGISTER_PLUGIN(driver::powersupply::GenericPowerSupplyDD)
+REGISTER_PLUGIN(chaos::driver::powersupply::GenericPowerSupplyDD)
 CLOSE_REGISTER_PLUGIN
 
 

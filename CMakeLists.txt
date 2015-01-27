@@ -27,8 +27,6 @@ ENDIF()
 
 
 
-
-
 INSTALL_TARGETS(/bin powersupply_cu)
 INSTALL_TARGETS(/bin powersupply_test)
 INSTALL_TARGETS(/lib chaos_driver_powersupply)
