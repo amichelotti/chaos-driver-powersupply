@@ -19,7 +19,7 @@ int main (int argc, char* argv[] )
     
   
     chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->addOption("loop,l",po::value<int>(&loop)->default_value(1),"number of test loop to do");
-    chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->addOption("keep,k",po::value<int>(&keep)->default_value(1),"continue on error");
+    chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->addOption("keep,k",po::value<int>(&keep)->default_value(0),"continue on error");
 
     chaos::ui::ChaosUIToolkit::getInstance()->init(argc, argv);
 
@@ -43,26 +43,26 @@ int main (int argc, char* argv[] )
             return -5;
         }
         //name, pointer, function, timeout, test repetition
-        p->addTest("initTest",p, &TestPowerSupply::initTest,10000,1);
-        p->addTest("startTest",p, &TestPowerSupply::startTest,10000,1);
-	p->addTest("aliveTest",p, &TestPowerSupply::aliveTest,10000,10);
-	p->addTest("Standby",p,&TestPowerSupply::standByTest,60000,1);
-	p->addTest<int>("Polarity Pos",p,&TestPowerSupply::setPolarityTest,1,60000,1);
-        p->addTest("power on",p,&TestPowerSupply::onTest,60000,1);
+        p->addTest("initTest",p, &TestPowerSupply::initTest,30000,1);
+        p->addTest("startTest",p, &TestPowerSupply::startTest,30000,1);
+	p->addTest("aliveTest",p, &TestPowerSupply::aliveTest,30000,10);
+	p->addTest("Standby",p,&TestPowerSupply::standByTest,300000,1);
+	p->addTest<int>("Polarity Pos",p,&TestPowerSupply::setPolarityTest,1,300000,1);
+        p->addTest("power on",p,&TestPowerSupply::onTest,300000,1);
         //name, pointer, function with pointer, value, timeout, test repetition
-        p->addTest<float>("Current 50",p,&TestPowerSupply::setCurrentTest,50,60000,1);
-        p->addTest<float>("Current 0",p,&TestPowerSupply::setCurrentTest,0,60000,1);
-	p->addTest("Standby2",p,&TestPowerSupply::standByTest,60000,1);
+        p->addTest<float>("Current 50",p,&TestPowerSupply::setCurrentTest,50,300000,1);
+        p->addTest<float>("Current 0",p,&TestPowerSupply::setCurrentTest,0,300000,1);
+	p->addTest("Standby2",p,&TestPowerSupply::standByTest,300000,1);
 	//        p->addTest<int>("Polarity Neg",p,&TestPowerSupply::setPolarityTest,-1,60000,1);
 	//        p->addTest<int>("Polarity Open",p,&TestPowerSupply::setPolarityTest,0,60000,1);
         p->addTest<int>("Polarity Pos",p,&TestPowerSupply::setPolarityTest,1,60000,1);
-        p->addTest("poweron 2",p,&TestPowerSupply::onTest,60000,1);
-        p->addTest<float>("Current 30",p,&TestPowerSupply::setCurrentTest,70,60000,1);
-        p->addTest<float>("Current0 last",p,&TestPowerSupply::setCurrentTest,0,60000,1);
-        p->addTest("Standby3",p,&TestPowerSupply::standByTest,60000,1);
+        p->addTest("poweron 2",p,&TestPowerSupply::onTest,300000,1);
+        p->addTest<float>("Current 30",p,&TestPowerSupply::setCurrentTest,70,300000,1);
+        p->addTest<float>("Current0 last",p,&TestPowerSupply::setCurrentTest,0,300000,1);
+        p->addTest("Standby3",p,&TestPowerSupply::standByTest,300000,1);
         
-        p->addTest("stopTest",p, &TestPowerSupply::stopTest,10000,1);
-        p->addTest("deinitTest",p, &TestPowerSupply::deinitTest,10000,1);
+        p->addTest("stopTest",p, &TestPowerSupply::stopTest,100000,1);
+        p->addTest("deinitTest",p, &TestPowerSupply::deinitTest,100000,1);
 
         arrTest.push_back(p);
     }
@@ -77,7 +77,9 @@ int main (int argc, char* argv[] )
         ret +=(*i)->report((char*)filename.c_str());
     }
     if(ret !=0){
-      LAPP_<<"Test power supply failed"<<endl;
+      LAPP_<<"Test powersupply FAILED"<<endl;
+    } else {
+      LAPP_<<"Test powersupply OK"<<endl;
     }
     return ret;
 }
