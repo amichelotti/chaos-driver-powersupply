@@ -30,7 +30,7 @@ namespace driver {
 	namespace powersupply {
 
 		//! Command for change the mode of the powersupply
-		class CmdPSReset : public AbstractPowerSupplyCommand {
+		DEFINE_BATCH_COMMAND_CLASS(CmdPSReset,AbstractPowerSupplyCommand) {
 			const uint32_t	*i_command_timeout;
 		protected:
 			//implemented handler

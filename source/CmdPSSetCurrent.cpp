@@ -35,6 +35,11 @@ namespace own =  driver::powersupply;
 namespace c_data = chaos::common::data;
 namespace chaos_batch = chaos::common::batch_command;
 
+BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdPSSetCurrent,CMD_PS_SET_SLOPE_ALIAS,
+                                                          "Set current (A) to the given value",
+                                                          "72882f3e-35da-11e5-985f-334fcd6dff22")
+BATCH_COMMAND_ADD_DOUBLE_PARAM(CMD_PS_SET_CURRENT, "current in A",chaos::common::batch_command::BatchCommandAndParameterDescriptionkey::BC_PARAMETER_FLAG_MANDATORY)
+BATCH_COMMAND_CLOSE_DESCRIPTION()
 
 // return the implemented handler
 uint8_t own::CmdPSSetCurrent::implementedHandler() {

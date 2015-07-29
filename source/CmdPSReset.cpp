@@ -32,7 +32,10 @@ namespace own =  driver::powersupply;
 namespace c_data = chaos::common::data;
 namespace chaos_batch = chaos::common::batch_command;
 
-
+BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdPSReset,CMD_PS_RESET_ALIAS,
+                                                          "Reset alarms",
+                                                          "2d4c97a2-35da-11e5-b01c-57447c7fdd89")
+BATCH_COMMAND_CLOSE_DESCRIPTION()
 
 // return the implemented handler
 uint8_t own::CmdPSReset::implementedHandler() {

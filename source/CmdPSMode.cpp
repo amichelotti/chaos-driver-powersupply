@@ -18,6 +18,12 @@ namespace own =  driver::powersupply;
 namespace c_data = chaos::common::data;
 namespace chaos_batch = chaos::common::batch_command;
 
+//using  namespace driver::powersupply;
+BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdPSMode,CMD_PS_MODE_ALIAS,
+                                                          "Set powersupply mode (on,standby)",
+                                                          "34c5dc7e-35ca-11e5-a7ed-971f57b4b945")
+BATCH_COMMAND_ADD_INT32_PARAM(CMD_PS_MODE_TYPE, "0:standby, 1:on",chaos::common::batch_command::BatchCommandAndParameterDescriptionkey::BC_PARAMETER_FLAG_MANDATORY)
+BATCH_COMMAND_CLOSE_DESCRIPTION()
 // return the implemented handler
 uint8_t own::CmdPSMode::implementedHandler() {
     return	AbstractPowerSupplyCommand::implementedHandler();

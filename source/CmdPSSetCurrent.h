@@ -31,7 +31,7 @@ namespace driver {
 	namespace powersupply {
 		
 		//! Command for change the mode of the powersupply
-		class CmdPSSetCurrent : public AbstractPowerSupplyCommand {
+		DEFINE_BATCH_COMMAND_CLASS(CmdPSSetCurrent,AbstractPowerSupplyCommand) {
 			float asup;
 			float asdown;
 			double	*o_current_sp;

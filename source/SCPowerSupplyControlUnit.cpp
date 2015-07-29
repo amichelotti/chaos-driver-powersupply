@@ -70,14 +70,12 @@ chaos::cu::control_manager::SCAbstractControlUnit(_control_unit_id,
  */
 void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CException) {
 	//install all command
-	installCommand<CmdPSDefault>(CMD_PS_DEFAULT_ALIAS);
-	installCommand<CmdPSMode>(CMD_PS_MODE_ALIAS);
-	installCommand<CmdPSReset>(CMD_PS_RESET_ALIAS);
-	installCommand<CmdPSSetSlope>(CMD_PS_SET_SLOPE_ALIAS);
-	installCommand<CmdPSSetCurrent>(CMD_PS_SET_CURRENT_ALIAS);
-	installCommand<CmdSetPolarity>(CMD_PS_SET_POLARITY_ALIAS);
-	//set it has default
-	setDefaultCommand(CMD_PS_DEFAULT_ALIAS);
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSDefault),true);
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSMode));
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSReset));
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSSetSlope));
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSSetCurrent));
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdSetPolarity));
 	
 	//setup the dataset
 	addAttributeToDataSet("current",

@@ -32,6 +32,12 @@
 namespace own =  driver::powersupply;
 namespace c_data = chaos::common::data;
 namespace chaos_batch = chaos::common::batch_command;
+BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdSetPolarity,CMD_PS_SET_POLARITY_ALIAS,
+                                                          "Set the polarity ",
+                                                          "adf2973c-35dd-11e5-855a-734defc0b6db")
+BATCH_COMMAND_ADD_INT32_PARAM(CMD_PS_SET_POLARITY_VALUE, "Set the polarity >0 to switch positive, <0 to switch negative, 0 open", chaos::common::batch_command::BatchCommandAndParameterDescriptionkey::BC_PARAMETER_FLAG_MANDATORY)
+
+BATCH_COMMAND_CLOSE_DESCRIPTION()
 
     // return the implemented handler
 uint8_t own::CmdSetPolarity::implementedHandler() {
