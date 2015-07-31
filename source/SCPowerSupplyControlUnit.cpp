@@ -136,6 +136,11 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 	
 	
 	///
+        addAttributeToDataSet("max_current",
+						  "The maximum current applicable",
+						  DataType::TYPE_DOUBLE,
+						  DataType::Input);
+	
 	addAttributeToDataSet("slope_up",
 						  "The gain of the noise of the wave",
 						  DataType::TYPE_DOUBLE,
@@ -180,7 +185,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw(CExceptio
 	std::string max_range;
 	std::string min_range;
 	std::string state_str;
-	RangeValueInfo current_sp_attr_info;
+	RangeValueInfo attr_info;
 	
 	const double *asup = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_up");
 	const double *asdown = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_down");
@@ -201,15 +206,14 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw(CExceptio
 	/*
 	 */
 	SCCUAPP << "check mandatory default values";
-	getAttributeRangeValueInfo("current_sp", current_sp_attr_info);
+	getAttributeRangeValueInfo("max_current", attr_info);
 	
 	// REQUIRE MIN MAX SET IN THE MDS
-	if(!current_sp_attr_info.maxRange.size() || !current_sp_attr_info.minRange.size()) {
-		throw chaos::CException(-3, "current set point need to have max and min", __FUNCTION__);
-	}
+	if(attr_info.maxRange.size() ) {
+            SCCUAPP << "max_current max="<< (max_range = attr_info.maxRange);
 	
-	SCCUAPP << "current_sp max="<< (max_range = current_sp_attr_info.maxRange);
-	SCCUAPP << "current_sp min="<< (min_range = current_sp_attr_info.minRange);
+        }
+	
 	
 	// retrive the attribute description from the device database
 	/*

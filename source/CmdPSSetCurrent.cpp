@@ -50,6 +50,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     chaos::common::data::RangeValueInfo current_sp_attr_info;
     chaos::common::data::RangeValueInfo attributeInfo;
 	AbstractPowerSupplyCommand::setHandler(data);
+        const double*max_current;
 	int err = 0;
 	o_current = getAttributeCache()->getROPtr<double>(DOMAIN_OUTPUT, "current");
 	o_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current_sp");
@@ -59,7 +60,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "command_timeout");
 	i_delta_setpoint = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "delta_setpoint");
 	i_setpoint_affinity = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "setpoint_affinity");
-	
+	max_current =  getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "max_current");
 	float current = 0.f;
 	float slope_speed = 0.f;
 	
@@ -93,6 +94,10 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	}
     
     current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
+    if(max_current && (current>*max_current)){
+        TROW_ERROR(10, boost::str( boost::format("current %1 > max current %2 %1%[%2%]") % current % max_current), std::string(__FUNCTION__))
+
+    }
     SCLDBG_ << "compute timeout for set current = " << current;
     
 	if(*o_current_sp > current) {
