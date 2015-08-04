@@ -24,6 +24,7 @@
 #include <cmath>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
+#include <sstream>
 
 #define LOG_HEAD_CmdPSSetCurrent LOG_TAIL(CmdPSSetCurrent)
 #define SCLAPP_ LAPP_ << LOG_HEAD_CmdPSSetCurrent
@@ -95,8 +96,9 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     
     current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
     if(max_current && (current>*max_current)){
-        CHAOS_EXCEPTION(10, boost::str( boost::format("current %1 > max current %2 %1%[%2%]") % current % max_current));
-
+        std::stringstream ss;
+        ss<<"current:"<<current<<" > "<<max_current;
+        CHAOS_EXCEPTION(10,boost::str( boost::format("current %1% gretear the maximum  state %2%") % current % *max_current));
     }
     SCLDBG_ << "compute timeout for set current = " << current;
     
