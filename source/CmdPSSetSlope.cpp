@@ -1,6 +1,6 @@
 /*
  *	CmdPSSetSlope.cpp
- *	!CHOAS
+ *	!CHAOS
  *	Created by Claudio Bisegni.
  *
  *    	Copyright 2013 INFN, National Institute of Nuclear Physics
@@ -34,8 +34,8 @@ namespace own =  driver::powersupply;
 namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
 namespace c_data = chaos::common::data;
 
-BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdPSSetSlope,CMD_PS_SET_CURRENT,
-                                                          "Set current (A) to the given value",
+BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdPSSetSlope,CMD_PS_SET_SLOPE,
+                                                          "Set rising/falling current slope to a given values (A/s)",
                                                           "c217148e-35da-11e5-8324-333c5188d65a")
 BATCH_COMMAND_ADD_DOUBLE_PARAM(CMD_PS_SET_SLOPE_UP, "Rising slope in A/s (optional), it will be used the slope_up INPUT", chaos::common::batch_command::BatchCommandAndParameterDescriptionkey::BC_PARAMETER_FLAG_OPTIONAL)
 BATCH_COMMAND_ADD_DOUBLE_PARAM(CMD_PS_SET_SLOPE_DOWN, "Falling slope in A/s (optional)", chaos::common::batch_command::BatchCommandAndParameterDescriptionkey::BC_PARAMETER_FLAG_OPTIONAL)
