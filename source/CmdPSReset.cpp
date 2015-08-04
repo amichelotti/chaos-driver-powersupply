@@ -56,12 +56,12 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 	//send comamnd to driver
 	CMDCUDBG_ << "Resetting alarms";
 	if(powersupply_drv->resetAlarms(0) != 0) {
-		TROW_ERROR(2, boost::str( boost::format("Error resetting the allarms in state %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+		CHAOS_EXCEPTION(2, boost::str( boost::format("Error resetting the allarms in state %1%[%2%]") % o_status % *o_status_id));
 	}
 	
 	/*	CMDCUDBG_ << "Go to standby";
 	if(powersupply_drv->standby() != 0) {
-		TROW_ERROR(3, boost::str( boost::format("Error set to standby in state %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+		CHAOS_EXCEPTION(3, boost::str( boost::format("Error set to standby in state %1%[%2%]") % o_status % *o_status_id));
 	}
 	*/
 	//set working flag
@@ -84,12 +84,12 @@ void own::CmdPSReset::ccHandler() {
 	   *o_status_id == common::powersupply::POWER_SUPPLY_STATE_ERROR ||
 	   *o_status_id == common::powersupply::POWER_SUPPLY_STATE_UKN ) {
 		setWorkState(false);
-		TROW_ERROR(1, boost::str( boost::format("Bad state got = %1% - [%2%]") % o_status_id % o_status), std::string(__FUNCTION__))
+		CHAOS_EXCEPTION(1, boost::str( boost::format("Bad state got = %1% - [%2%]") % o_status_id % o_status));
 	}
 }
 
 bool own::CmdPSReset::timeoutHandler() {
 	setWorkState(false);
-	TROW_ERROR(1, "Comamdn operation has gone on timeout", std::string(__FUNCTION__))
+	CHAOS_EXCEPTION(1, "Command operation has gone on timeout");
 	return true;
 }

@@ -68,7 +68,7 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 		case common::powersupply::POWER_SUPPLY_STATE_ERROR:
 		case common::powersupply::POWER_SUPPLY_STATE_UKN:
 			//i need to be in operational to exec
-			TROW_ERROR(1, boost::str( boost::format("Bas state for set slope comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+			CHAOS_EXCEPTION(1, boost::str( boost::format("Bas state for set slope comamnd %1%[%2%]") % o_status % *o_status_id));
 			break;
 			
 		case common::powersupply::POWER_SUPPLY_STATE_OPEN:
@@ -78,7 +78,7 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 			break;
 			
 		default:
-			TROW_ERROR(1, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+			CHAOS_EXCEPTION(1, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id));
 	}
 	
 	
@@ -93,7 +93,7 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 	if((asup > 0) && (asdown > 0)) {
 		SCLDBG_ << " set slope with asup=" << asup << " asdown=" << asdown ;
 		if(powersupply_drv->setCurrentRampSpeed(asup, asdown ) != 0) {
-			TROW_ERROR(2, boost::str( boost::format("Error setting the slope %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+			CHAOS_EXCEPTION(2, boost::str( boost::format("Error setting the slope %1%[%2%]") % o_status % *o_status_id));
 		}
 	}
 	

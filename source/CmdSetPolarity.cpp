@@ -51,7 +51,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "command_timeout");
 	
     if(!data || !data->hasKey(CMD_PS_SET_POLARITY_VALUE) ) {
-		TROW_ERROR(1, "Type of polarity not passed", std::string(__FUNCTION__))
+		CHAOS_EXCEPTION(1, "Type of polarity not passed");
     }
 	
     int32_t polarity = data->getInt32Value(CMD_PS_SET_POLARITY_VALUE);
@@ -64,7 +64,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
         case common::powersupply::POWER_SUPPLY_STATE_OPEN:
 		case common::powersupply::POWER_SUPPLY_STATE_ON:
                 //i need to be in operational to exec
-			TROW_ERROR(2, boost::str( boost::format("Bad state for set polarity comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+			CHAOS_EXCEPTION(2, boost::str( boost::format("Bad state for set polarity comamnd %1%[%2%]") % o_status % *o_status_id));
 			break;
 			
 
@@ -73,7 +73,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 			break;
 			
 		default:
-			TROW_ERROR(3, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+			CHAOS_EXCEPTION(3, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id));
 	}
 	
         //set comamnd timeout for this instance
@@ -84,7 +84,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 	}
 	
 	if((err = powersupply_drv->setPolarity(polarity)) != 0) {
-		TROW_ERROR(5, boost::str( boost::format("Set current parameter not present") % o_status % *o_status_id), std::string(__FUNCTION__))
+		CHAOS_EXCEPTION(5, boost::str( boost::format("Set current parameter not present") % o_status % *o_status_id));
 	}
     
     BC_END_RUNNIG_PROPERTY

@@ -69,7 +69,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 		case common::powersupply::POWER_SUPPLY_STATE_ERROR:
 		case common::powersupply::POWER_SUPPLY_STATE_UKN:
 			//i need to be in operational to exec
-			TROW_ERROR(1, boost::str( boost::format("Bad state for set current comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+			CHAOS_EXCEPTION(1, boost::str( boost::format("Bad state for set current comamnd %1%[%2%]") % o_status % *o_status_id));
 			break;
 			
 		case common::powersupply::POWER_SUPPLY_STATE_OPEN:
@@ -79,7 +79,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 			break;
 			
 		default:
-			TROW_ERROR(2, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+			CHAOS_EXCEPTION(2, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id));
 	}
 	
 	//set comamnd timeout for this instance
@@ -90,12 +90,12 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	}
 	
 	if(!data || !data->hasKey(CMD_PS_SET_CURRENT)) {
-		TROW_ERROR(3, boost::str( boost::format("Set current parameter not present") % o_status % *o_status_id), std::string(__FUNCTION__))
+		CHAOS_EXCEPTION(3, boost::str( boost::format("Set current parameter not present") % o_status % *o_status_id));
 	}
     
     current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
     if(max_current && (current>*max_current)){
-        TROW_ERROR(10, boost::str( boost::format("current %1 > max current %2 %1%[%2%]") % current % max_current), std::string(__FUNCTION__))
+        CHAOS_EXCEPTION(10, boost::str( boost::format("current %1 > max current %2 %1%[%2%]") % current % max_current));
 
     }
     SCLDBG_ << "compute timeout for set current = " << current;
@@ -122,10 +122,10 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	SCLDBG_ << "Set current to value " << current;
 	SCLDBG_ << "computed_timeout is = " << computed_timeout;
 	if((err = powersupply_drv->setCurrentSP(current)) != 0) {
-		TROW_ERROR(5, boost::str(boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__))
+		CHAOS_EXCEPTION(5, boost::str(boost::format("Error %1% setting current to %2%") % err % current));
 	}
 	if((err = powersupply_drv->startCurrentRamp()) != 0) {
-		TROW_ERROR(6, boost::str(boost::format("Error %1% setting current to %2%") % err % current), std::string(__FUNCTION__))
+		CHAOS_EXCEPTION(6, boost::str(boost::format("Error %1% setting current to %2%") % err % current));
 	}
 	//assign new current setpoint
 	*o_current_sp = current;
