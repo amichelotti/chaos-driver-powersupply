@@ -1,6 +1,6 @@
 /*
  *	SCPowerSupplyControlUnit
- *	!CHOAS
+ *	!CHAOS
  *	Created by Claudio Bisegni.
  *
  *    	Copyright 2013 INFN, National Institute of Nuclear Physics
