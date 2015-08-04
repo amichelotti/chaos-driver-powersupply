@@ -98,7 +98,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     if(max_current && (current>*max_current)){
         std::stringstream ss;
         ss<<"current:"<<current<<" > "<<max_current;
-        CHAOS_EXCEPTION(10,boost::str( boost::format("current %1% gretear the maximum  state %2%") % current % *max_current));
+        CHAOS_EXCEPTION(10,boost::str( boost::format("current %1% gretear the maximum \"max_current\":%2%") % current % *max_current));
     }
     SCLDBG_ << "compute timeout for set current = " << current;
     
