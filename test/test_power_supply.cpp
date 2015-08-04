@@ -31,7 +31,7 @@ int main (int argc, char* argv[] )
     loop = chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<int> ("loop");
     keep = chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<int> ("keep");
     std::cout<<"using MDS: "<<chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<std::string>("metadata-server")<<std::endl;
-    
+    try{
     for(std::vector<std::string>::iterator i=arrCU.begin();i!=arrCU.end();i++){
         TestPowerSupply*p =new TestPowerSupply(*i);
         if(p==NULL){
@@ -80,6 +80,10 @@ int main (int argc, char* argv[] )
       LAPP_<<"Test powersupply FAILED"<<endl;
     } else {
       LAPP_<<"Test powersupply OK"<<endl;
+    }
+    } catch(chaos::CException e){
+        LERR_<<"Exception:" << e.what();
+        return e.errorCode;
     }
     return ret;
 }

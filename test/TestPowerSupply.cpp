@@ -13,17 +13,16 @@
 #undef CHAOSFramework_UIToolkitCWrapper_h
 #include "driver/powersupply/core/ChaosUIPowersupplyCWrapper.h"
 
-namespace po = boost::posix_time;
 int TestPowerSupply::onTest(){
     int err;
     int state=0;
-    po::ptime start= po::microsec_clock::local_time();
+    boost::posix_time::ptime start= boost::posix_time::microsec_clock::local_time();
     err = on(devID);
     
     if(err!=0){
         return err;
     }
-    while(((state&common::powersupply::POWER_SUPPLY_STATE_ON) ==0) && ((po::microsec_clock::local_time()-start).total_milliseconds() < test_timeo)){
+    while(((state&common::powersupply::POWER_SUPPLY_STATE_ON) ==0) && ((boost::posix_time::microsec_clock::local_time()-start).total_milliseconds() < test_timeo)){
         getState(devID, &state);
     }
     if((state&common::powersupply::POWER_SUPPLY_STATE_ON) ==common::powersupply::POWER_SUPPLY_STATE_ON){
@@ -31,11 +30,11 @@ int TestPowerSupply::onTest(){
         return 0;
     }
     
-    if(((po::microsec_clock::local_time()-start).total_milliseconds()) >= test_timeo){
-        DERR("Timeout setting poweron FAIL state x%x,time elapsed %lld ms\n",state,(po::microsec_clock::local_time()-start).total_milliseconds());
+    if(((boost::posix_time::microsec_clock::local_time()-start).total_milliseconds()) >= test_timeo){
+        DERR("Timeout setting poweron FAIL state x%x,time elapsed %lld ms\n",state,(boost::posix_time::microsec_clock::local_time()-start).total_milliseconds());
         return -100;
     }
-    DERR("setting poweron FAIL state x%x,time elapsed %lld ms\n",state,(po::microsec_clock::local_time()-start).total_milliseconds());
+    DERR("setting poweron FAIL state x%x,time elapsed %lld ms\n",state,(boost::posix_time::microsec_clock::local_time()-start).total_milliseconds());
  
     return -1;
 }
@@ -66,7 +65,7 @@ int TestPowerSupply::initTest(){
 int TestPowerSupply::standByTest(){
     int err;
     int state=0;
-    po::ptime start= po::microsec_clock::local_time();
+    boost::posix_time::ptime start= boost::posix_time::microsec_clock::local_time();
     err = standby(devID);
     DPRINT("setting standby");
     if(err!=0){
@@ -74,7 +73,7 @@ int TestPowerSupply::standByTest(){
 
         return err;
     }
-    while(((state&common::powersupply::POWER_SUPPLY_STATE_STANDBY) ==0) && ((po::microsec_clock::local_time()-start).total_milliseconds() < test_timeo)){
+    while(((state&common::powersupply::POWER_SUPPLY_STATE_STANDBY) ==0) && ((boost::posix_time::microsec_clock::local_time()-start).total_milliseconds() < test_timeo)){
         getState(devID, &state);
     }
     if((state&common::powersupply::POWER_SUPPLY_STATE_STANDBY) ==common::powersupply::POWER_SUPPLY_STATE_STANDBY){
@@ -82,11 +81,11 @@ int TestPowerSupply::standByTest(){
 
         return 0;
     }
-    if(((po::microsec_clock::local_time()-start).total_milliseconds()) >= test_timeo){
-        DERR("Timeout setting standby FAIL state x%x,time elapsed %lld ms\n",state,(po::microsec_clock::local_time()-start).total_milliseconds());
+    if(((boost::posix_time::microsec_clock::local_time()-start).total_milliseconds()) >= test_timeo){
+        DERR("Timeout setting standby FAIL state x%x,time elapsed %lld ms\n",state,(boost::posix_time::microsec_clock::local_time()-start).total_milliseconds());
         return -100;
     }
-    DERR("setting standby FAIL state x%x,time elapsed %lld ms\n",state,(po::microsec_clock::local_time()-start).total_milliseconds());
+    DERR("setting standby FAIL state x%x,time elapsed %lld ms\n",state,(boost::posix_time::microsec_clock::local_time()-start).total_milliseconds());
 
     return -1;
 }
@@ -101,20 +100,20 @@ int TestPowerSupply::setCurrentTest(float*val){
 
         return err;
     }
-    po::ptime start= po::microsec_clock::local_time();
+    boost::posix_time::ptime start=boost::posix_time::microsec_clock::local_time();
     do{
         getCurrent(devID, &readout);
-    } while((fabs(readout-*val)>1.0) && (((po::microsec_clock::local_time()-start).total_milliseconds()) < test_timeo));
+    } while((fabs(readout-*val)>1.0) && (((boost::posix_time::microsec_clock::local_time()-start).total_milliseconds()) < test_timeo));
     if(fabs(readout-*val)<=1.0){
         DPRINT("read current OK %f\n",readout);
 
         return 0;
     }
-    if(((po::microsec_clock::local_time()-start).total_milliseconds()) >= test_timeo){
-        DERR("Timeout Setting current to %f read %f, time elapsed %lld ms\n",*val,readout,(po::microsec_clock::local_time()-start).total_milliseconds());
+    if((boost::posix_time::microsec_clock::local_time()-start).total_milliseconds() >= test_timeo){
+        DERR("Timeout Setting current to %f read %f, time elapsed %lld ms\n",*val,readout,(boost::posix_time::microsec_clock::local_time()-start).total_milliseconds());
         return -100;
     }
-    DERR("Setting current to %f read %f, time elapsed %lld ms\n",*val,readout,(po::microsec_clock::local_time()-start).total_milliseconds());
+    DERR("Setting current to %f read %f, time elapsed %lld ms\n",*val,readout,(boost::posix_time::microsec_clock::local_time()-start).total_milliseconds());
     return -1;
 }
 
@@ -125,21 +124,21 @@ int TestPowerSupply::setPolarityTest(int *pol){
     if(err!=0){
         return err;
     }
-    po::ptime start= po::microsec_clock::local_time();
+    boost::posix_time::ptime start= boost::posix_time::microsec_clock::local_time();
     do{
         getPol(devID, &readpol);
-    } while((*pol!=readpol) && (((po::microsec_clock::local_time()-start).total_milliseconds()) < test_timeo));
+    } while((*pol!=readpol) && (((boost::posix_time::microsec_clock::local_time()-start).total_milliseconds()) < test_timeo));
     if(*pol==readpol){
         DPRINT("read polarity ok \n");
         return 0;
     }
     
     
-    if(((po::microsec_clock::local_time()-start).total_milliseconds()) >= test_timeo){
-        DERR("Timeout Polarity set %d, polarity read %d, time elapsed %lld\n",*pol,readpol,(po::microsec_clock::local_time()-start).total_milliseconds());
+    if(((boost::posix_time::microsec_clock::local_time()-start).total_milliseconds()) >= test_timeo){
+        DERR("Timeout Polarity set %d, polarity read %d, time elapsed %lld\n",*pol,readpol,(boost::posix_time::microsec_clock::local_time()-start).total_milliseconds());
         return -100;
     }
-    DERR("Polarity set %d, polarity read %d, time elapsed %lld\n",*pol,readpol,(po::microsec_clock::local_time()-start).total_milliseconds());
+    DERR("Polarity set %d, polarity read %d, time elapsed %lld\n",*pol,readpol,(boost::posix_time::microsec_clock::local_time()-start).total_milliseconds());
     return -1;
     
 }
