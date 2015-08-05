@@ -24,22 +24,22 @@ int main (int argc, char* argv[] )
     chaos::ui::ChaosUIToolkit::getInstance()->init(argc, argv);
 
     if(chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption("supply")==0){
-        std::cout<<"## you must specify a valid CU"<<std::endl;
+        LERR_<<"## you must specify a valid CU";
         return -3;
     }
     arrCU=chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<std::vector<std::string> > ("supply");
     loop = chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<int> ("loop");
     keep = chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<int> ("keep");
-    std::cout<<"using MDS: "<<chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<std::string>("metadata-server")<<std::endl;
+    LAPP_<<"using MDS: "<<chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<std::string>("metadata-server");
     try{
     for(std::vector<std::string>::iterator i=arrCU.begin();i!=arrCU.end();i++){
         TestPowerSupply*p =new TestPowerSupply(*i);
         if(p==NULL){
-            std::cout<<"## cannot allocate resources for testing: "<<*i<<std::endl;
+            LERR_<<"## cannot allocate resources for testing: "<<*i<<std::endl;
             return -4;
         }
         if(p->init()!=0){
-            std::cout<<"## cannot initialize device: "<<*i<<std::endl;
+            LERR_<<"## cannot initialize device: "<<*i<<std::endl;
             return -5;
         }
         //name, pointer, function, timeout, test repetition
@@ -77,9 +77,9 @@ int main (int argc, char* argv[] )
         ret +=(*i)->report((char*)filename.c_str());
     }
     if(ret !=0){
-      LAPP_<<"Test powersupply FAILED"<<endl;
+      LAPP_<<"Test powersupply FAILED";
     } else {
-      LAPP_<<"Test powersupply OK"<<endl;
+      LAPP_<<"Test powersupply OK";
     }
     } catch(chaos::CException e){
         LERR_<<"Exception:" << e.what();
