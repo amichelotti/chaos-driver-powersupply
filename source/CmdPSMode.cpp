@@ -18,6 +18,12 @@ namespace own =  driver::powersupply;
 namespace c_data = chaos::common::data;
 namespace chaos_batch = chaos::common::batch_command;
 
+//using  namespace driver::powersupply;
+BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdPSMode,CMD_PS_MODE_ALIAS,
+                                                          "Set powersupply mode (on,standby)",
+                                                          "34c5dc7e-35ca-11e5-a7ed-971f57b4b945")
+BATCH_COMMAND_ADD_INT32_PARAM(CMD_PS_MODE_TYPE, "0:standby, 1:on",chaos::common::batch_command::BatchCommandAndParameterDescriptionkey::BC_PARAMETER_FLAG_MANDATORY)
+BATCH_COMMAND_CLOSE_DESCRIPTION()
 // return the implemented handler
 uint8_t own::CmdPSMode::implementedHandler() {
     return	AbstractPowerSupplyCommand::implementedHandler();
@@ -46,10 +52,10 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 			  CMDCU_ << "Already in standby";
 			} else if((*o_status_id != common::powersupply::POWER_SUPPLY_STATE_OPEN) &&
 			   (*o_status_id != common::powersupply::POWER_SUPPLY_STATE_ON)) {
-				TROW_ERROR(2, boost::str( boost::format("Can't go to standby, current state is %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+				CHAOS_EXCEPTION(2, boost::str( boost::format("Can't go to standby, current state is %1%[%2%]") % o_status % *o_status_id));
 			}
 			if(powersupply_drv->standby() != 0) {
-				TROW_ERROR(3, "Error issuing standby on powersupply", std::string(__FUNCTION__))
+				CHAOS_EXCEPTION(3, "Error issuing standby on powersupply");
 			}
 			CMDCU_ << "Can go to stanby";
 			break;
@@ -57,10 +63,10 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 		case 1://to operational
 			CMDCU_ << "Request to go to operational";
 			if((*o_status_id != common::powersupply::POWER_SUPPLY_STATE_STANDBY)) {
-				TROW_ERROR(3, boost::str( boost::format("Cant go to operational, current state is %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+				CHAOS_EXCEPTION(3, boost::str( boost::format("Cant go to operational, current state is %1%[%2%]") % o_status % *o_status_id));
 			}
 			if(powersupply_drv->poweron() != 0) {
-				TROW_ERROR(5, "Error issuing poweron on powersupply", std::string(__FUNCTION__))
+				CHAOS_EXCEPTION(5, "Error issuing poweron on powersupply");
 			}
 			CMDCU_ << "Can go to operational";
 			break;
@@ -111,13 +117,13 @@ void own::CmdPSMode::ccHandler() {
 	   *o_status_id == common::powersupply::POWER_SUPPLY_STATE_ERROR ||
 	   *o_status_id == common::powersupply::POWER_SUPPLY_STATE_UKN ) {
 		setWorkState(false);
-		TROW_ERROR(1, boost::str( boost::format("Bad state got = %1% - [%2%]") % *o_status_id % o_status), std::string(__FUNCTION__))
+		CHAOS_EXCEPTION(1, boost::str( boost::format("Bad state got = %1% - [%2%]") % *o_status_id % o_status));
 	}
 }
 
 bool own::CmdPSMode::timeoutHandler() {
 	//move the state machine on fault
 	setWorkState(false);
-	TROW_ERROR(1, "Command operation has gone on timeout", std::string(__FUNCTION__))
+	CHAOS_EXCEPTION(1, "Command operation has gone on timeout");
 	return true;
 }

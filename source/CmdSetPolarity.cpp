@@ -1,6 +1,6 @@
 /*
  *	CmdSetPolarity.cpp
- *	!CHOAS
+ *	!CHAOS
  *	Created by Claudio Bisegni.
  *
  *    	Copyright 2013 INFN, National Institute of Nuclear Physics
@@ -32,6 +32,12 @@
 namespace own =  driver::powersupply;
 namespace c_data = chaos::common::data;
 namespace chaos_batch = chaos::common::batch_command;
+BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdSetPolarity,CMD_PS_SET_POLARITY_ALIAS,
+                                                          "Set the polarity ",
+                                                          "adf2973c-35dd-11e5-855a-734defc0b6db")
+BATCH_COMMAND_ADD_INT32_PARAM(CMD_PS_SET_POLARITY_VALUE, "Set the polarity >0 to switch positive, <0 to switch negative, 0 open", chaos::common::batch_command::BatchCommandAndParameterDescriptionkey::BC_PARAMETER_FLAG_MANDATORY)
+
+BATCH_COMMAND_CLOSE_DESCRIPTION()
 
     // return the implemented handler
 uint8_t own::CmdSetPolarity::implementedHandler() {
@@ -45,7 +51,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "command_timeout");
 	
     if(!data || !data->hasKey(CMD_PS_SET_POLARITY_VALUE) ) {
-		TROW_ERROR(1, "Type of polarity not passed", std::string(__FUNCTION__))
+		CHAOS_EXCEPTION(1, "Type of polarity not passed");
     }
 	
     int32_t polarity = data->getInt32Value(CMD_PS_SET_POLARITY_VALUE);
@@ -58,7 +64,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
         case common::powersupply::POWER_SUPPLY_STATE_OPEN:
 		case common::powersupply::POWER_SUPPLY_STATE_ON:
                 //i need to be in operational to exec
-			TROW_ERROR(2, boost::str( boost::format("Bad state for set polarity comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+			CHAOS_EXCEPTION(2, boost::str( boost::format("Bad state for set polarity comamnd %1%[%2%]") % o_status % *o_status_id));
 			break;
 			
 
@@ -67,7 +73,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 			break;
 			
 		default:
-			TROW_ERROR(3, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+			CHAOS_EXCEPTION(3, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id));
 	}
 	
         //set comamnd timeout for this instance
@@ -78,7 +84,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 	}
 	
 	if((err = powersupply_drv->setPolarity(polarity)) != 0) {
-		TROW_ERROR(5, boost::str( boost::format("Set current parameter not present") % o_status % *o_status_id), std::string(__FUNCTION__))
+		CHAOS_EXCEPTION(5, boost::str( boost::format("Set current parameter not present") % o_status % *o_status_id));
 	}
     
     BC_END_RUNNIG_PROPERTY

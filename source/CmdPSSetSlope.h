@@ -30,7 +30,7 @@ namespace driver {
 	namespace powersupply {
 		
 		//! Command for change the mode of the powersupply
-		class CmdPSSetSlope : public AbstractPowerSupplyCommand {
+		DEFINE_BATCH_COMMAND_CLASS( CmdPSSetSlope , AbstractPowerSupplyCommand) {
 
 			const double	*i_slope_up;
 			const double	*i_slope_down;

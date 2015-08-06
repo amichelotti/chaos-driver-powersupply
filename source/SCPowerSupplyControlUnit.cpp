@@ -1,6 +1,6 @@
 /*
  *	SCPowerSupplyControlUnit
- *	!CHOAS
+ *	!CHAOS
  *	Created by Claudio Bisegni.
  *
  *    	Copyright 2013 INFN, National Institute of Nuclear Physics
@@ -70,14 +70,12 @@ chaos::cu::control_manager::SCAbstractControlUnit(_control_unit_id,
  */
 void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw(chaos::CException) {
 	//install all command
-	installCommand<CmdPSDefault>(CMD_PS_DEFAULT_ALIAS);
-	installCommand<CmdPSMode>(CMD_PS_MODE_ALIAS);
-	installCommand<CmdPSReset>(CMD_PS_RESET_ALIAS);
-	installCommand<CmdPSSetSlope>(CMD_PS_SET_SLOPE_ALIAS);
-	installCommand<CmdPSSetCurrent>(CMD_PS_SET_CURRENT_ALIAS);
-	installCommand<CmdSetPolarity>(CMD_PS_SET_POLARITY_ALIAS);
-	//set it has default
-	setDefaultCommand(CMD_PS_DEFAULT_ALIAS);
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSDefault),true);
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSMode));
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSReset));
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSSetSlope));
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSSetCurrent));
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdSetPolarity));
 	
 	//setup the dataset
 	addAttributeToDataSet("current",
@@ -138,6 +136,11 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 	
 	
 	///
+        addAttributeToDataSet("max_current",
+						  "The maximum current applicable",
+						  DataType::TYPE_DOUBLE,
+						  DataType::Input);
+	
 	addAttributeToDataSet("slope_up",
 						  "The gain of the noise of the wave",
 						  DataType::TYPE_DOUBLE,
@@ -182,7 +185,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw(CExceptio
 	std::string max_range;
 	std::string min_range;
 	std::string state_str;
-	RangeValueInfo current_sp_attr_info;
+	RangeValueInfo attr_info;
 	
 	const double *asup = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_up");
 	const double *asdown = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_down");
@@ -203,15 +206,14 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw(CExceptio
 	/*
 	 */
 	SCCUAPP << "check mandatory default values";
-	getAttributeRangeValueInfo("current_sp", current_sp_attr_info);
+	getAttributeRangeValueInfo("max_current", attr_info);
 	
 	// REQUIRE MIN MAX SET IN THE MDS
-	if(!current_sp_attr_info.maxRange.size() || !current_sp_attr_info.minRange.size()) {
-		throw chaos::CException(-3, "current set point need to have max and min", __FUNCTION__);
-	}
+	if(attr_info.maxRange.size() ) {
+            SCCUAPP << "max_current max="<< (max_range = attr_info.maxRange);
 	
-	SCCUAPP << "current_sp max="<< (max_range = current_sp_attr_info.maxRange);
-	SCCUAPP << "current_sp min="<< (min_range = current_sp_attr_info.minRange);
+        }
+	
 	
 	// retrive the attribute description from the device database
 	/*

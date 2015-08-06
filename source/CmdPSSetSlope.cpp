@@ -1,6 +1,6 @@
 /*
  *	CmdPSSetSlope.cpp
- *	!CHOAS
+ *	!CHAOS
  *	Created by Claudio Bisegni.
  *
  *    	Copyright 2013 INFN, National Institute of Nuclear Physics
@@ -34,6 +34,14 @@ namespace own =  driver::powersupply;
 namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
 namespace c_data = chaos::common::data;
 
+BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdPSSetSlope,CMD_PS_SET_SLOPE_ALIAS,
+                                                          "Set rising/falling current slope to a given values (A/s)",
+                                                          "c217148e-35da-11e5-8324-333c5188d65a")
+BATCH_COMMAND_ADD_DOUBLE_PARAM(CMD_PS_SET_SLOPE_UP, "Rising slope in A/s (optional), it will be used the slope_up INPUT", chaos::common::batch_command::BatchCommandAndParameterDescriptionkey::BC_PARAMETER_FLAG_OPTIONAL)
+BATCH_COMMAND_ADD_DOUBLE_PARAM(CMD_PS_SET_SLOPE_DOWN, "Falling slope in A/s (optional)", chaos::common::batch_command::BatchCommandAndParameterDescriptionkey::BC_PARAMETER_FLAG_OPTIONAL)
+
+BATCH_COMMAND_CLOSE_DESCRIPTION()
+
 
 // return the implemented handler
 uint8_t own::CmdPSSetSlope::implementedHandler() {
@@ -44,44 +52,51 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
 	float asup = 0.f;
 	float asdown = 0.f;
-	
-	i_slope_up = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_up");
-	i_slope_down = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_down");
-	
+	if(data->hasKey(CMD_PS_SET_SLOPE_UP)){
+            asup = data->getDoubleValue(CMD_PS_SET_SLOPE_UP);
+        } else {
+            asup = *getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_up");
+        }
+        if(data->hasKey(CMD_PS_SET_SLOPE_DOWN)){
+            asdown = data->getDoubleValue(CMD_PS_SET_SLOPE_DOWN);
+        } else {
+            asdown = *getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_down");
+        }
+
 	switch (*o_status_id) {
 		case common::powersupply::POWER_SUPPLY_STATE_ALARM:
 		case common::powersupply::POWER_SUPPLY_STATE_ERROR:
 		case common::powersupply::POWER_SUPPLY_STATE_UKN:
 			//i need to be in operational to exec
-			TROW_ERROR(1, boost::str( boost::format("Bas state for set slope comamnd %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+			CHAOS_EXCEPTION(1, boost::str( boost::format("Bas state for set slope comamnd %1%[%2%]") % o_status % *o_status_id));
 			break;
-			
+
 		case common::powersupply::POWER_SUPPLY_STATE_OPEN:
 		case common::powersupply::POWER_SUPPLY_STATE_ON:
 		case common::powersupply::POWER_SUPPLY_STATE_STANDBY:
 			SCLDBG_ << "We can start the set slope command";
 			break;
-			
+
 		default:
-			TROW_ERROR(1, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+			CHAOS_EXCEPTION(1, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id));
 	}
-	
-	
+
+
 	//set comamnd timeout for this instance
 //	SCLDBG_ << "Checking for timout";
 //	if(*i_command_timeout) {
 //		SCLDBG_ << "Timeout will be set to ms -> " << *i_command_timeout;
 //		setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
 //	}
-	
-	
+
+
 	if((asup > 0) && (asdown > 0)) {
-		SCLDBG_ << " set slope with asup=" << *i_slope_up << " asdown=" << *i_slope_down ;
-		if(powersupply_drv->setCurrentRampSpeed(*i_slope_up, *i_slope_down ) != 0) {
-			TROW_ERROR(2, boost::str( boost::format("Error setting the slope %1%[%2%]") % o_status % *o_status_id), std::string(__FUNCTION__))
+		SCLDBG_ << " set slope with asup=" << asup << " asdown=" << asdown ;
+		if(powersupply_drv->setCurrentRampSpeed(asup, asdown ) != 0) {
+			CHAOS_EXCEPTION(2, boost::str( boost::format("Error setting the slope %1%[%2%]") % o_status % *o_status_id));
 		}
 	}
-	
+
 }
 
 void own::CmdPSSetSlope::ccHandler() {

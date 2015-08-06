@@ -30,7 +30,7 @@ namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
 namespace driver {
 	namespace powersupply {
 		
-		class CmdPSDefault : public AbstractPowerSupplyCommand {
+		DEFINE_BATCH_COMMAND_CLASS(CmdPSDefault,AbstractPowerSupplyCommand) {
 			uint64_t		sequence_number;
             uint64_t		last_slow_acq_time;
 			unsigned int	slow_acquisition_idx;
