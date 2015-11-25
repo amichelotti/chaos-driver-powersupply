@@ -1,5 +1,5 @@
 /*
- *	GenericPowerSupply
+ *      Ocem Device Driver
  *	!CHAOS
  *	Created by Andrea Michelotti
  *
@@ -17,16 +17,17 @@
  *    	See the License for the specific language governing permissions and
  *    	limitations under the License.
  */
-#ifndef __driver_GenericPowerSupplyDD_h__
-#define __driver_GenericPowerSupplyDD_h__
+#ifndef __driver_OcemDD_h__
+#define __driver_OcemDD_h__
 
 
 // include your class/functions headers here
 
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
-#include "common/powersupply/powersupply.h"
-//this need to be out the nasmespace
-DEFINE_CU_DRIVER_DEFINITION_PROTOTYPE(GenericPowerSupplyDD)
+
+#include <driver/powersupply/core/ChaosPowerSupplyDD.h>
+//this need to be out the namespace
+DEFINE_CU_DRIVER_DEFINITION_PROTOTYPE(OcemDD)
 namespace cu_driver = chaos::cu::driver_manager::driver;
 
 namespace chaos {
@@ -36,17 +37,13 @@ namespace chaos {
             /*
              driver definition
              */
-            class GenericPowerSupplyDD: ADD_CU_DRIVER_PLUGIN_SUPERCLASS{
+            class OcemDD: public ChaosPowerSupplyDD{
                 
                 void driverInit(const char *initParameter) throw(chaos::CException);
-                void driverDeinit() throw(chaos::CException);
                 
-                ::common::powersupply::AbstractPowerSupply* power;
             public:
-                GenericPowerSupplyDD();
-                ~GenericPowerSupplyDD();
-                //! Execute a command
-                cu_driver::MsgManagmentResultType::MsgManagmentResult execOpcode(cu_driver::DrvMsgPtr cmd);
+                OcemDD();
+                ~OcemDD();
             };
         }
     }
