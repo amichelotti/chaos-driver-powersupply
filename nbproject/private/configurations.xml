@@ -4,34 +4,6 @@
     <df root="." name="0">
       <df name="build">
       </df>
-      <df name="CMakeFiles">
-        <df name="3.2.2">
-          <df name="CompilerIdC">
-            <in>CMakeCCompilerId.c</in>
-          </df>
-          <df name="CompilerIdCXX">
-            <in>CMakeCXXCompilerId.cpp</in>
-          </df>
-        </df>
-        <df name="chaos_driver_powersupply.dir">
-          <df name="core">
-          </df>
-        </df>
-        <df name="CMakeTmp">
-        </df>
-        <df name="powersupply_cu.dir">
-          <df name="test">
-          </df>
-        </df>
-        <df name="powersupply_test.dir">
-          <df name="test">
-          </df>
-        </df>
-        <df name="Progress">
-        </df>
-        <in>feature_tests.c</in>
-        <in>feature_tests.cxx</in>
-      </df>
       <df name="conf">
       </df>
       <df name="core">
@@ -71,21 +43,11 @@
         </df>
       </df>
       <df name="models">
-        <df name="CMakeFiles">
-        </df>
         <df name="Ocem">
-          <df name="CMakeFiles">
-            <df name="chaos_driver_powersupply_ocem_dd.dir">
-            </df>
-          </df>
           <in>OcemDD.cpp</in>
           <in>OcemDD.h</in>
         </df>
         <df name="PowerSim">
-          <df name="CMakeFiles">
-            <df name="chaos_driver_powersupply_sim_dd.dir">
-            </df>
-          </df>
           <in>PowerSimDD.cpp</in>
           <in>PowerSimDD.h</in>
         </df>
