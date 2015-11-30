@@ -1365,7 +1365,7 @@
               <logicalFolder name="CommandManager"
                              displayName="CommandManager"
                              projectFiles="true">
-                <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/CommandManager/CommandManager.h</itemPath>
+                <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/command_manager/CommandManager.h</itemPath>
               </logicalFolder>
               <logicalFolder name="ControlManager"
                              displayName="ControlManager"
@@ -1373,17 +1373,17 @@
                 <logicalFolder name="slow_command"
                                displayName="slow_command"
                                projectFiles="true">
-                  <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/ControlManager/slow_command/SlowCommand.h</itemPath>
-                  <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/ControlManager/slow_command/SlowCommandExecutor.h</itemPath>
+                  <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/control_manager/slow_command/SlowCommand.h</itemPath>
+                  <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/control_manager/slow_command/SlowCommandExecutor.h</itemPath>
                 </logicalFolder>
-                <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/ControlManager/AbstractControlUnit.h</itemPath>
-                <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/ControlManager/AttributeSharedCacheWrapper.h</itemPath>
-                <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/ControlManager/ControlManager.h</itemPath>
-                <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/ControlManager/SCAbstractControlUnit.h</itemPath>
-                <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/ControlManager/WorkUnitManagement.h</itemPath>
+                <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/control_manager/AbstractControlUnit.h</itemPath>
+                <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/control_manager/AttributeSharedCacheWrapper.h</itemPath>
+                <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/control_manager/ControlManager.h</itemPath>
+                <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/control_manager/SCAbstractControlUnit.h</itemPath>
+                <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/control_manager/WorkUnitManagement.h</itemPath>
               </logicalFolder>
               <logicalFolder name="DataManager" displayName="DataManager" projectFiles="true">
-                <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/DataManager/KeyDataStorage.h</itemPath>
+                <itemPath>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/data_manager/KeyDataStorage.h</itemPath>
               </logicalFolder>
               <logicalFolder name="driver_manager"
                              displayName="driver_manager"
@@ -1950,9 +1950,9 @@
             <logicalFolder name="CommandManager"
                            displayName="CommandManager"
                            projectFiles="true">
-              <itemPath>../../chaosframework/chaos/cu_toolkit/CommandManager/CommandManager.cpp</itemPath>
-              <itemPath>../../chaosframework/chaos/cu_toolkit/CommandManager/CommandManager.h</itemPath>
-              <itemPath>../../chaosframework/chaos/cu_toolkit/CommandManager/CommandManagerDefaultAdapters.h</itemPath>
+              <itemPath>../../chaosframework/chaos/cu_toolkit/command_manager/CommandManager.cpp</itemPath>
+              <itemPath>../../chaosframework/chaos/cu_toolkit/command_manager/CommandManager.h</itemPath>
+              <itemPath>../../chaosframework/chaos/cu_toolkit/command_manager/CommandManagerDefaultAdapters.h</itemPath>
             </logicalFolder>
             <logicalFolder name="ControlManager"
                            displayName="ControlManager"
@@ -1961,30 +1961,30 @@
                              displayName="slow_command"
                              projectFiles="true">
                 <logicalFolder name="command" displayName="command" projectFiles="true">
-                  <itemPath>../../chaosframework/chaos/cu_toolkit/ControlManager/slow_command/command/SCWaitCommand.cpp</itemPath>
-                  <itemPath>../../chaosframework/chaos/cu_toolkit/ControlManager/slow_command/command/SCWaitCommand.h</itemPath>
+                  <itemPath>../../chaosframework/chaos/cu_toolkit/control_manager/slow_command/command/SCWaitCommand.cpp</itemPath>
+                  <itemPath>../../chaosframework/chaos/cu_toolkit/control_manager/slow_command/command/SCWaitCommand.h</itemPath>
                 </logicalFolder>
-                <itemPath>../../chaosframework/chaos/cu_toolkit/ControlManager/slow_command/SlowCommand.cpp</itemPath>
-                <itemPath>../../chaosframework/chaos/cu_toolkit/ControlManager/slow_command/SlowCommand.h</itemPath>
-                <itemPath>../../chaosframework/chaos/cu_toolkit/ControlManager/slow_command/SlowCommandExecutor.cpp</itemPath>
-                <itemPath>../../chaosframework/chaos/cu_toolkit/ControlManager/slow_command/SlowCommandExecutor.h</itemPath>
+                <itemPath>../../chaosframework/chaos/cu_toolkit/control_manager/slow_command/SlowCommand.cpp</itemPath>
+                <itemPath>../../chaosframework/chaos/cu_toolkit/control_manager/slow_command/SlowCommand.h</itemPath>
+                <itemPath>../../chaosframework/chaos/cu_toolkit/control_manager/slow_command/SlowCommandExecutor.cpp</itemPath>
+                <itemPath>../../chaosframework/chaos/cu_toolkit/control_manager/slow_command/SlowCommandExecutor.h</itemPath>
               </logicalFolder>
-              <itemPath>../../chaosframework/chaos/cu_toolkit/ControlManager/AbstractControlUnit.cpp</itemPath>
-              <itemPath>../../chaosframework/chaos/cu_toolkit/ControlManager/AbstractControlUnit.h</itemPath>
-              <itemPath>../../chaosframework/chaos/cu_toolkit/ControlManager/AttributeSharedCacheWrapper.cpp</itemPath>
-              <itemPath>../../chaosframework/chaos/cu_toolkit/ControlManager/AttributeSharedCacheWrapper.h</itemPath>
-              <itemPath>../../chaosframework/chaos/cu_toolkit/ControlManager/ControlManager.cpp</itemPath>
-              <itemPath>../../chaosframework/chaos/cu_toolkit/ControlManager/ControlManager.h</itemPath>
-              <itemPath>../../chaosframework/chaos/cu_toolkit/ControlManager/SCAbstractControlUnit.cpp</itemPath>
-              <itemPath>../../chaosframework/chaos/cu_toolkit/ControlManager/SCAbstractControlUnit.h</itemPath>
-              <itemPath>../../chaosframework/chaos/cu_toolkit/ControlManager/WorkUnitManagement.cpp</itemPath>
-              <itemPath>../../chaosframework/chaos/cu_toolkit/ControlManager/WorkUnitManagement.h</itemPath>
+              <itemPath>../../chaosframework/chaos/cu_toolkit/control_manager/AbstractControlUnit.cpp</itemPath>
+              <itemPath>../../chaosframework/chaos/cu_toolkit/control_manager/AbstractControlUnit.h</itemPath>
+              <itemPath>../../chaosframework/chaos/cu_toolkit/control_manager/AttributeSharedCacheWrapper.cpp</itemPath>
+              <itemPath>../../chaosframework/chaos/cu_toolkit/control_manager/AttributeSharedCacheWrapper.h</itemPath>
+              <itemPath>../../chaosframework/chaos/cu_toolkit/control_manager/ControlManager.cpp</itemPath>
+              <itemPath>../../chaosframework/chaos/cu_toolkit/control_manager/ControlManager.h</itemPath>
+              <itemPath>../../chaosframework/chaos/cu_toolkit/control_manager/SCAbstractControlUnit.cpp</itemPath>
+              <itemPath>../../chaosframework/chaos/cu_toolkit/control_manager/SCAbstractControlUnit.h</itemPath>
+              <itemPath>../../chaosframework/chaos/cu_toolkit/control_manager/WorkUnitManagement.cpp</itemPath>
+              <itemPath>../../chaosframework/chaos/cu_toolkit/control_manager/WorkUnitManagement.h</itemPath>
             </logicalFolder>
             <logicalFolder name="DataManager" displayName="DataManager" projectFiles="true">
-              <itemPath>../../chaosframework/chaos/cu_toolkit/DataManager/DataManager.cpp</itemPath>
-              <itemPath>../../chaosframework/chaos/cu_toolkit/DataManager/DataManager.h</itemPath>
-              <itemPath>../../chaosframework/chaos/cu_toolkit/DataManager/KeyDataStorage.cpp</itemPath>
-              <itemPath>../../chaosframework/chaos/cu_toolkit/DataManager/KeyDataStorage.h</itemPath>
+              <itemPath>../../chaosframework/chaos/cu_toolkit/data_manager/DataManager.cpp</itemPath>
+              <itemPath>../../chaosframework/chaos/cu_toolkit/data_manager/DataManager.h</itemPath>
+              <itemPath>../../chaosframework/chaos/cu_toolkit/data_manager/KeyDataStorage.cpp</itemPath>
+              <itemPath>../../chaosframework/chaos/cu_toolkit/data_manager/KeyDataStorage.h</itemPath>
             </logicalFolder>
             <logicalFolder name="driver_manager"
                            displayName="driver_manager"
@@ -13355,12 +13355,12 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="../../chaosframework/chaos/cu_toolkit/CommandManager/CommandManager.cpp"
+      <item path="../../chaosframework/chaos/cu_toolkit/command_manager/CommandManager.cpp"
             ex="false"
             tool="1"
             flavor2="4">
       </item>
-      <item path="../../chaosframework/chaos/cu_toolkit/ControlManager/AbstractControlUnit.cpp"
+      <item path="../../chaosframework/chaos/cu_toolkit/control_manager/AbstractControlUnit.cpp"
             ex="false"
             tool="1"
             flavor2="4">
@@ -13526,7 +13526,7 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="../../chaosframework/chaos/cu_toolkit/ControlManager/AttributeSharedCacheWrapper.cpp"
+      <item path="../../chaosframework/chaos/cu_toolkit/control_manager/AttributeSharedCacheWrapper.cpp"
             ex="false"
             tool="1"
             flavor2="4">
@@ -13623,7 +13623,7 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="../../chaosframework/chaos/cu_toolkit/ControlManager/ControlManager.cpp"
+      <item path="../../chaosframework/chaos/cu_toolkit/control_manager/ControlManager.cpp"
             ex="false"
             tool="1"
             flavor2="4">
@@ -13799,7 +13799,7 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="../../chaosframework/chaos/cu_toolkit/ControlManager/SCAbstractControlUnit.cpp"
+      <item path="../../chaosframework/chaos/cu_toolkit/control_manager/SCAbstractControlUnit.cpp"
             ex="false"
             tool="1"
             flavor2="4">
@@ -13930,8 +13930,8 @@
             <pElem>../../chaosframework/chaos/common/action</pElem>
             <pElem>../../chaosframework/chaos/common/data/entity_db</pElem>
             <pElem>../../chaosframework/chaos/common/data/entity</pElem>
-            <pElem>../../chaosframework/chaos/cu_toolkit/ControlManager/slow_command</pElem>
-            <pElem>../../chaosframework/chaos/cu_toolkit/ControlManager/slow_command/command</pElem>
+            <pElem>../../chaosframework/chaos/cu_toolkit/control_manager/slow_command</pElem>
+            <pElem>../../chaosframework/chaos/cu_toolkit/control_manager/slow_command/command</pElem>
             <pElem>../../chaosframework/chaos/cu_toolkit/DataManager</pElem>
             <pElem>../../chaosframework/chaos/cu_toolkit/driver_manager/driver</pElem>
             <pElem>../../chaosframework/chaos/cu_toolkit/driver_manager</pElem>
@@ -13943,7 +13943,7 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="../../chaosframework/chaos/cu_toolkit/ControlManager/WorkUnitManagement.cpp"
+      <item path="../../chaosframework/chaos/cu_toolkit/control_manager/WorkUnitManagement.cpp"
             ex="false"
             tool="1"
             flavor2="4">
@@ -14118,13 +14118,13 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="../../chaosframework/chaos/cu_toolkit/ControlManager/slow_command/SlowCommand.cpp"
+      <item path="../../chaosframework/chaos/cu_toolkit/control_manager/slow_command/SlowCommand.cpp"
             ex="false"
             tool="1"
             flavor2="4">
         <ccTool>
           <incDir>
-            <pElem>../../chaosframework/chaos/cu_toolkit/ControlManager/slow_command</pElem>
+            <pElem>../../chaosframework/chaos/cu_toolkit/control_manager/slow_command</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/msm/front/euml</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/system</pElem>
@@ -14245,7 +14245,7 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="../../chaosframework/chaos/cu_toolkit/ControlManager/slow_command/SlowCommandExecutor.cpp"
+      <item path="../../chaosframework/chaos/cu_toolkit/control_manager/slow_command/SlowCommandExecutor.cpp"
             ex="false"
             tool="1"
             flavor2="4">
@@ -14267,7 +14267,7 @@
             <pElem>../../chaosframework/chaos/common/utility</pElem>
             <pElem>/usr/include/c++/4.8</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/date_time/gregorian</pElem>
-            <pElem>../../chaosframework/chaos/cu_toolkit/ControlManager/slow_command</pElem>
+            <pElem>../../chaosframework/chaos/cu_toolkit/control_manager/slow_command</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/log/utility/type_dispatch</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/date_time</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/thread</pElem>
@@ -14383,12 +14383,12 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="../../chaosframework/chaos/cu_toolkit/ControlManager/slow_command/command/SCWaitCommand.cpp"
+      <item path="../../chaosframework/chaos/cu_toolkit/control_manager/slow_command/command/SCWaitCommand.cpp"
             ex="false"
             tool="1"
             flavor2="4">
       </item>
-      <item path="../../chaosframework/chaos/cu_toolkit/DataManager/DataManager.cpp"
+      <item path="../../chaosframework/chaos/cu_toolkit/data_manager/DataManager.cpp"
             ex="false"
             tool="1"
             flavor2="4">
@@ -14533,7 +14533,7 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="../../chaosframework/chaos/cu_toolkit/DataManager/KeyDataStorage.cpp"
+      <item path="../../chaosframework/chaos/cu_toolkit/data_manager/KeyDataStorage.cpp"
             ex="false"
             tool="1"
             flavor2="4">
@@ -16605,7 +16605,7 @@
           </incDir>
         </ccTool>
       </folder>
-      <folder path="chaos_bundle/chaosframework/chaos/cu_toolkit/ControlManager/slow_command">
+      <folder path="chaos_bundle/chaosframework/chaos/cu_toolkit/control_manager/slow_command">
         <ccTool>
           <incDir>
             <pElem>../../chaos-x86_64-static-release/include/boost/exception</pElem>
@@ -16613,7 +16613,7 @@
           </incDir>
         </ccTool>
       </folder>
-      <folder path="chaos_bundle/chaosframework/chaos/cu_toolkit/ControlManager/slow_command/command">
+      <folder path="chaos_bundle/chaosframework/chaos/cu_toolkit/control_manager/slow_command/command">
         <ccTool>
           <incDir>
             <pElem>../../chaos-x86_64-static-release/include/boost/utility</pElem>
@@ -16622,8 +16622,8 @@
             <pElem>../../chaos-x86_64-static-release/include/boost/log/utility</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/log/sources</pElem>
             <pElem>../../chaosframework/chaos/common/exception</pElem>
-            <pElem>../../chaosframework/chaos/cu_toolkit/ControlManager/slow_command</pElem>
-            <pElem>../../chaosframework/chaos/cu_toolkit/ControlManager/slow_command/command</pElem>
+            <pElem>../../chaosframework/chaos/cu_toolkit/control_manager/slow_command</pElem>
+            <pElem>../../chaosframework/chaos/cu_toolkit/control_manager/slow_command/command</pElem>
             <pElem>../../chaosframework/chaos/common/utility</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/msm/front/euml</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost</pElem>
@@ -17292,7 +17292,7 @@
             <pElem>../../chaos-x86_64-static-release/include/boost/log/utility</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/log/sources</pElem>
             <pElem>../../common/powersupply/core</pElem>
-            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/ControlManager/slow_command</pElem>
+            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/control_manager/slow_command</pElem>
             <pElem>source</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/optional</pElem>
             <pElem>/usr/include/c++/4.8</pElem>
@@ -17423,7 +17423,7 @@
             <pElem>../../chaos-x86_64-static-release/include/boost/smart_ptr</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/log/utility</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/log/sources</pElem>
-            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/ControlManager/slow_command</pElem>
+            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/control_manager/slow_command</pElem>
             <pElem>../../chaos-x86_64-static-release/include/chaos/common/utility</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/msm/front/euml</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost</pElem>
@@ -17556,7 +17556,7 @@
             <pElem>../../chaos-x86_64-static-release/include/boost/smart_ptr</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/log/utility</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/log/sources</pElem>
-            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/ControlManager/slow_command</pElem>
+            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/control_manager/slow_command</pElem>
             <pElem>../../chaos-x86_64-static-release/include/chaos/common/utility</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/optional</pElem>
             <pElem>/usr/include/c++/4.8</pElem>
@@ -17688,7 +17688,7 @@
             <pElem>../../chaos-x86_64-static-release/include/boost/smart_ptr</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/log/utility</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/log/sources</pElem>
-            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/ControlManager/slow_command</pElem>
+            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/control_manager/slow_command</pElem>
             <pElem>../../chaos-x86_64-static-release/include/chaos/common/utility</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/optional</pElem>
             <pElem>/usr/include/c++/4.8</pElem>
@@ -17820,7 +17820,7 @@
             <pElem>../../chaos-x86_64-static-release/include/boost/smart_ptr</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/log/utility</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/log/sources</pElem>
-            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/ControlManager/slow_command</pElem>
+            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/control_manager/slow_command</pElem>
             <pElem>../../chaos-x86_64-static-release/include/chaos/common/utility</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/optional</pElem>
             <pElem>/usr/include/c++/4.8</pElem>
@@ -17952,7 +17952,7 @@
             <pElem>../../chaos-x86_64-static-release/include/boost/smart_ptr</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/log/utility</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/log/sources</pElem>
-            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/ControlManager/slow_command</pElem>
+            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/control_manager/slow_command</pElem>
             <pElem>source</pElem>
             <pElem>../../chaos-x86_64-static-release/include/chaos/common/utility</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/optional</pElem>
@@ -18084,7 +18084,7 @@
             <pElem>../../chaos-x86_64-static-release/include/boost/smart_ptr</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/log/utility</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/log/sources</pElem>
-            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/ControlManager/slow_command</pElem>
+            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/control_manager/slow_command</pElem>
             <pElem>../../chaos-x86_64-static-release/include/chaos/common/utility</pElem>
             <pElem>../../chaos-x86_64-static-release/include/boost/optional</pElem>
             <pElem>/usr/include/c++/4.8</pElem>
@@ -18335,7 +18335,7 @@
             <pElem>../../chaos-x86_64-static-release/include/chaos/common/action</pElem>
             <pElem>../../chaos-x86_64-static-release/include/chaos/common/data/entity_db</pElem>
             <pElem>../../chaos-x86_64-static-release/include/chaos/common/data/entity</pElem>
-            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/ControlManager/slow_command</pElem>
+            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/control_manager/slow_command</pElem>
             <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/DataManager</pElem>
             <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/driver_manager/driver</pElem>
             <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/driver_manager</pElem>
@@ -18409,7 +18409,7 @@
             <pElem>../../chaos-x86_64-static-release/include/chaos/common/message</pElem>
             <pElem>../../chaos-x86_64-static-release/include/chaos/common/log</pElem>
             <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/driver_manager</pElem>
-            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/ControlManager/slow_command</pElem>
+            <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/control_manager/slow_command</pElem>
             <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/DataManager</pElem>
             <pElem>../../chaos-x86_64-static-release/include/chaos/cu_toolkit/CommandManager</pElem>
             <pElem>../../chaos-x86_64-static-release/include/chaos/common/action</pElem>

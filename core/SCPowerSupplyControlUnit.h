@@ -20,7 +20,7 @@
 #ifndef __PowerSupply__SCPowerSupplyControlUnit__
 #define __PowerSupply__SCPowerSupplyControlUnit__
 
-#include <chaos/cu_toolkit/ControlManager/SCAbstractControlUnit.h>
+#include <chaos/cu_toolkit/control_manager/SCAbstractControlUnit.h>
 #include <driver/powersupply/core/ChaosPowerSupplyInterface.h>
 
 
