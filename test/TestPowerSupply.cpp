@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 infn. All rights reserved.
 //
 #include "TestPowerSupply.h"
-#include <common/debug/debug.h>
+#include <common/debug/core/debug.h>
 #define TEST_TIMEOUT_MS 20*1000
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <common/powersupply/core/AbstractPowerSupply.h>
