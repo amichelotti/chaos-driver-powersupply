@@ -16,19 +16,16 @@ ADD_EXECUTABLE(powersupply_test test/test_power_supply.cpp test/TestPowerSupply.
 IF(BUILD_FORCE_STATIC)
 ADD_LIBRARY(${PROJECT_NAME} STATIC ${core_src})
 SET(CMAKE_EXE_LINKER_FLAGS "-static -Wl,--whole-archive -lchaos_common -Wl,--no-whole-archive")
-TARGET_LINK_LIBRARIES(powersupply_cu ${DRIVERS_LIB} ${PROJECT_NAME} common_serial common_debug common_modbus modbus chaos_cutoolkit chaos_uitoolkit ${FrameworkLib})
-TARGET_LINK_LIBRARIES(powersupply_test ${DRIVERS_LIB} ${PROJECT_NAME} common_test chaos_uitoolkit common_debug common_modbus modbus ${FrameworkLib})
 ELSE()
 ADD_LIBRARY(${PROJECT_NAME}  SHARED ${core_src})
-TARGET_LINK_LIBRARIES(powersupply_cu ${DRIVERS_LIB} ${PROJECT_NAME} common_serial common_debug chaos_cutoolkit chaos_common ${FrameworkLib})
-TARGET_LINK_LIBRARIES(powersupply_test ${DRIVERS_LIB} ${PROJECT_NAME} common_test chaos_uitoolkit chaos_common common_debug ${FrameworkLib})
-# TARGET_LINK_LIBRARIES(chaos_driver_powersupply ${DRIVERS_LIB} common_serial common_debug chaos_cutoolkit chaos_uitoolkit chaos_common ${FrameworkLib})
 ENDIF()
 
+TARGET_LINK_LIBRARIES(powersupply_cu ${DRIVERS_LIB} ${PROJECT_NAME} common_serial chaos_cutoolkit chaos_common common_debug common_modbus modbus chaos_cutoolkit chaos_uitoolkit ${FrameworkLib})
+TARGET_LINK_LIBRARIES(powersupply_test ${DRIVERS_LIB} ${PROJECT_NAME} common_test chaos_uitoolkit chaos_cutoolkit chaos_common common_debug common_modbus modbus ${FrameworkLib})
 
 
 INSTALL_TARGETS(/bin powersupply_cu)
 INSTALL_TARGETS(/bin powersupply_test)
-INSTALL_TARGETS(/lib chaos_driver_powersupply)
+INSTALL_TARGETS(/lib ${PROJECT_NAME})
 
 
