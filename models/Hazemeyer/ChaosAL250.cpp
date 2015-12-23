@@ -76,15 +76,15 @@ void chaos::driver::powersupply::C_AL250::driverInit(const char *initParameter) 
                 }
             
             } else {
-                 throw chaos::CException(1, "Bad parameters for OcemE642X <serial port>,<slaveid>,<maxcurr:maxvoltage>", "OcemDD::driverInit");
+                 throw chaos::CException(1, "Bad parameters for C_AL250 <serial port>,<slaveid>,<maxcurr:maxvoltage>", "OcemDD::driverInit");
 
             }
         } else {
-            throw chaos::CException(1, "Unsupported driver", "OcemDD::driverInit");
+            throw chaos::CException(1, "Unsupported driver", "C_AL250::driverInit");
         
         }
     } else {
-            throw chaos::CException(1, "Malformed initialisation string", "OcemDD::driverInit");
+            throw chaos::CException(1, "Malformed initialisation string", "C_AL250::driverInit");
     
     }
     
@@ -93,8 +93,9 @@ void chaos::driver::powersupply::C_AL250::driverInit(const char *initParameter) 
     PSLAPP<<"Initialising PowerSupply Driver \""<<ver<<"\""<<std::endl;
 
     if(power->init()!=0){
-        throw chaos::CException(1, "Initialisation of power supply failed", "OcemDD::driverInit");
+        throw chaos::CException(1, "Initialisation of power supply failed", "C_AL250::driverInit");
     }
+    PSDBG<<"Init done";
 
     
 }

@@ -5,12 +5,13 @@
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
             <name>powersupply</name>
             <c-extensions>c</c-extensions>
-            <cpp-extensions>cc,cpp</cpp-extensions>
-            <header-extensions>h,hpp,ipp</header-extensions>
+            <cpp-extensions>cpp</cpp-extensions>
+            <header-extensions>h</header-extensions>
             <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects/>
             <sourceRootList>
                 <sourceRootElem>.</sourceRootElem>
+                <sourceRootElem>../../common/debug/core</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
