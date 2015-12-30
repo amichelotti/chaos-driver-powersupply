@@ -1,5 +1,5 @@
 /*
- *	Generic Power Supply
+ *	Power supply base for DD
  *	!CHAOS
  *	Created by Andrea Michelotti
  *
@@ -17,116 +17,30 @@
  *    	See the License for the specific language governing permissions and
  *    	limitations under the License.
  */
-#include "GenericPowerSupplyDD.h"
+#include "ChaosPowerSupplyDD.h"
 
 #include <string>
 #include <boost/regex.hpp>
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
 #include "driver/powersupply/core/ChaosPowerSupplyInterface.h"
 
-#define PSLAPP		LAPP_ << "[GenericPowerSupply] "
-#define PSDBG		LDBG_ << "[GenericPowerSupply] "
-#define PSERR		LERR_ << "[GenericPowerSupply] "
+#define PSLAPP		LAPP_ << "[ChaosPowerSupplyDD] "
+#define PSDBG		LDBG_ << "[ChaosPowerSupplyDD] "
+#define PSERR		LERR_ << "[ChaosPowerSupplyDD] "
 
-// initialization format is <POWERSUPPLY TYPE>:'<INITALISATION PARAMETERS>'
-static const boost::regex power_supply_init_match("(\\w+):(.+)");
-
-// initialisation format for ocem <serial port>,<slaveid>,<maxcurr:maxvoltage>
-static const boost::regex power_supply_ocem_init_match("([\\w\\/]+),(\\d+),(\\d+):(\\d+)");
-
-// initialisation format for simulator <serial port>,<slaveid>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<maxcurr:max voltage>
-
-static const boost::regex power_supply_simulator_init_match("([\\w\\/]+),(\\d+),(\\d+):(\\d+),(\\d+):(\\d+),(\\d+):(\\d+)");
-
-
-//GET_PLUGIN_CLASS_DEFINITION
-//we need only to define the driver because we don't are makeing a plugin
-OPEN_CU_DRIVER_PLUGIN_CLASS_DEFINITION(GenericPowerSupplyDD, 1.0.0, chaos::driver::powersupply::GenericPowerSupplyDD)
-REGISTER_CU_DRIVER_PLUGIN_CLASS_INIT_ATTRIBUTE(chaos::driver::powersupply::GenericPowerSupplyDD, http_address/dnsname:port)
-CLOSE_CU_DRIVER_PLUGIN_CLASS_DEFINITION
-
-//register the two plugin
-OPEN_REGISTER_PLUGIN
-REGISTER_PLUGIN(chaos::driver::powersupply::GenericPowerSupplyDD)
-CLOSE_REGISTER_PLUGIN
-
-
+using namespace chaos::driver::powersupply;
 //default constructor definition
-DEFAULT_CU_DRIVER_PLUGIN_CONSTRUCTOR_WITH_NS(chaos_powersupply_dd, GenericPowerSupplyDD) {
+DEFAULT_CU_DRIVER_PLUGIN_CONSTRUCTOR_WITH_NS(chaos::driver::powersupply, ChaosPowerSupplyDD) {
     power = NULL;
 	
 }
 
 //default descrutcor
-chaos_powersupply_dd::GenericPowerSupplyDD::~GenericPowerSupplyDD() {
+ChaosPowerSupplyDD::~ChaosPowerSupplyDD() {
 	
 }
 
-void chaos_powersupply_dd::GenericPowerSupplyDD::driverInit(const char *initParameter) throw(chaos::CException) {
-    //check the input parameter
-	boost::smatch match;
-	std::string inputStr = initParameter;
-	PSLAPP << "Init GenericPowerSupply driver initialisation string:\""<<initParameter<<"\""<<std::endl;
-    if(power){
-          throw chaos::CException(1, "Already Initialised", "GenericPowerSupplyDD::driverInit");
-    }
-    if(regex_match(inputStr, match, power_supply_init_match, boost::match_extra)){
-        std::string powerSupplyType=match[1];
-        std::string initString=match[2];
-        if(powerSupplyType=="OcemE642X"){
-            if(regex_match(initString, match, power_supply_ocem_init_match, boost::match_extra)){
-                std::string dev=match[1];
-                std::string slaveid=match[2];
-                std::string maxcurr=match[3];
-                std::string maxvoltage=match[3];
-                PSLAPP<<"Allocating OcemE642X device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<std::endl;
-                power = new ::common::powersupply::OcemE642X(dev.c_str(),atoi(slaveid.c_str()),(float)atof(maxcurr.c_str()),(float)atof(maxvoltage.c_str()));
-                if(power==NULL){
-                      throw chaos::CException(1, "Cannot allocate resources for OcemE642X", "GenericPowerSupplyDD::driverInit");
-                }
-            } else {
-                 throw chaos::CException(1, "Bad parameters for OcemE642X <serial port>,<slaveid>,<maxcurr:maxvoltage>", "GenericPowerSupplyDD::driverInit");
-
-            }
-        } else if(powerSupplyType=="SimPSupply"){
-            if(regex_match(initString, match, power_supply_simulator_init_match, boost::match_extra)){
-                std::string dev=match[1];
-                std::string slaveid=match[2];
-                std::string write_min=match[3];
-                std::string write_max=match[4];
-                std::string read_min=match[5];
-                std::string read_max=match[6];
-                std::string max_curr=match[7];
-                std::string max_vol=match[8];
-                PSLAPP<<"Allocating Simulated Power Supply device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<std::endl;
-                power = new ::common::powersupply::SimPSupply(dev.c_str(),atoi(slaveid.c_str()),atoi(write_min.c_str()),atoi(write_max.c_str()),atoi(read_min.c_str()),atoi(read_max.c_str()),atoi(max_curr.c_str()),atoi(max_vol.c_str()));
-                if(power==NULL){
-                    throw chaos::CException(1, "Cannot allocate resources for SimPSupply", "GenericPowerSupplyDD::driverInit");
-                }
-            } else {
-                throw chaos::CException(1, "Bad parameters for SimSupply <serial port>,<slaveid>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<maxcurr:max voltage>", "GenericPowerSupplyDD::driverInit");
-
-            }
-        } else {
-              throw chaos::CException(1, "Unsupported Power Supply", "GenericPowerSupplyDD::driverInit");
-        }
-    } else {
-        throw chaos::CException(1, "Malformed initialisation string", "GenericPowerSupplyDD::driverInit");
-
-    }
-    std::string ver;
-    power->getSWVersion(ver,0);
-    PSLAPP<<"Initialising PowerSupply Driver \""<<ver<<"\""<<std::endl;
-
-    if(power->init()!=0){
-        throw chaos::CException(1, "Initialisation of power supply failed", "GenericPowerSupplyDD::driverInit");
-    }
-
-    
-}
-
-void chaos_powersupply_dd::GenericPowerSupplyDD::driverDeinit() throw(chaos::CException) {
-	PSLAPP << "Deinit GenericPowerSupply driver";
+void ChaosPowerSupplyDD::driverDeinit() throw(chaos::CException) {
     if(power){
         delete power;
     }
@@ -134,10 +48,10 @@ void chaos_powersupply_dd::GenericPowerSupplyDD::driverDeinit() throw(chaos::CEx
 }
 
 
-cu_driver::MsgManagmentResultType::MsgManagmentResult chaos_powersupply_dd::GenericPowerSupplyDD::execOpcode(cu_driver::DrvMsgPtr cmd){
+cu_driver::MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyDD::execOpcode(cu_driver::DrvMsgPtr cmd){
     cu_driver::MsgManagmentResultType::MsgManagmentResult result = cu_driver::MsgManagmentResultType::MMR_EXECUTED;
-    chaos_powersupply_dd::powersupply_iparams_t *in = (chaos_powersupply_dd::powersupply_iparams_t *)cmd->inputData;
-    chaos_powersupply_dd::powersupply_oparams_t *out = (chaos_powersupply_dd::powersupply_oparams_t *)cmd->resultData;
+    powersupply_iparams_t *in = (powersupply_iparams_t *)cmd->inputData;
+    powersupply_oparams_t *out = (powersupply_oparams_t *)cmd->resultData;
 
     switch(cmd->opcode){
             

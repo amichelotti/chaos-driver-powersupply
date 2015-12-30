@@ -240,7 +240,8 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw(CExceptio
 	
 	
 	SCCUAPP << "set default slope value up:"<<*asup<<" down:"<<*asdown;
-	if((err = powersupply_drv->setCurrentRampSpeed(*asup, *asdown) )!= 0) {
+        err = powersupply_drv->setCurrentRampSpeed(*asup, *asdown);
+	if( (err!= chaos::ErrorCode::EC_NO_ERROR)  && (err!=chaos::ErrorCode::EC_NODE_OPERATION_NOT_SUPPORTED) ) {
 		throw chaos::CException(-7, "Error setting slope ", __FUNCTION__);
 		//TODO: check the  boost::bad_format_string: format-string is ill-formed
 		//throw chaos::CException(2, boost::str( boost::format("Error %1 setting the slope in state %2%[%3%]") % err % state_str % state_id), std::string(__FUNCTION__));

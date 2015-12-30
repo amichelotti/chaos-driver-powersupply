@@ -92,7 +92,8 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 
 	if((asup > 0) && (asdown > 0)) {
 		SCLDBG_ << " set slope with asup=" << asup << " asdown=" << asdown ;
-		if(powersupply_drv->setCurrentRampSpeed(asup, asdown ) != 0) {
+                int err=powersupply_drv->setCurrentRampSpeed(asup, asdown );
+		if( (err!= chaos::ErrorCode::EC_NO_ERROR)  && (err!=chaos::ErrorCode::EC_NODE_OPERATION_NOT_SUPPORTED) ){
 			CHAOS_EXCEPTION(2, boost::str( boost::format("Error setting the slope %1%[%2%]") % o_status % *o_status_id));
 		}
 	}
