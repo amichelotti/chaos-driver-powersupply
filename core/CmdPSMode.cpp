@@ -26,7 +26,7 @@ BATCH_COMMAND_ADD_INT32_PARAM(CMD_PS_MODE_TYPE, "0:standby, 1:on",chaos::common:
 BATCH_COMMAND_CLOSE_DESCRIPTION()
 // return the implemented handler
 uint8_t own::CmdPSMode::implementedHandler() {
-    return	AbstractPowerSupplyCommand::implementedHandler();
+    return	AbstractPowerSupplyCommand::implementedHandler()|chaos_batch::HandlerType::HT_Acquisition;
 }
 
 void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
@@ -82,6 +82,18 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	
 	//send comamnd to driver
 	setWorkState(true);
+}
+
+void own::CmdPSMode::acquireHandler() {
+	std::string state_description;
+	int state = 0;
+	//!get the only state because thsi command work only on it
+	if(powersupply_drv && !powersupply_drv->getState(&state, state_description)){
+		*o_status_id = state;
+		//copy up to 255 and put the termination character
+		strncpy(o_status, state_description.c_str(), 256);
+	}
+
 }
 
 void own::CmdPSMode::ccHandler() {

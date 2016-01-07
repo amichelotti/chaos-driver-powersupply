@@ -34,6 +34,7 @@ namespace driver {
 		DEFINE_BATCH_COMMAND_CLASS( CmdSetPolarity , AbstractPowerSupplyCommand) {
 			float asup;
 			float asdown;
+			int32_t *o_polarity;
 			const uint32_t	*i_command_timeout;
 		protected:
                 //implemented handler

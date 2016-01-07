@@ -44,6 +44,7 @@ namespace driver {
 			int32_t		*o_on;
 			int32_t		*o_stby;
 			int32_t		*o_alarm;
+
 		protected:
 			// return the implemented handler
 			uint8_t implementedHandler();

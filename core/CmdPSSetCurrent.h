@@ -35,19 +35,26 @@ namespace driver {
 			float asup;
 			float asdown;
 			double	*o_current_sp;
-			const double	*o_current;
+			double	*o_current;
+			double	*o_voltage;
 			const double	*i_slope_up;
 			const double	*i_slope_down;
 			const uint32_t	*i_command_timeout;
 			const uint32_t	*i_delta_setpoint;
 			const uint32_t	*i_setpoint_affinity;
+
+			//is the delta to the setpoint that notify the end of command
+			double affinity_set_delta;
 		protected:
 			//implemented handler
 			uint8_t implementedHandler();
 			
 			// Set handler
 			void setHandler(c_data::CDataWrapper *data);
-			
+
+			//custom acquire method
+			void acquireHandler();
+
 			//Correlation and commit phase
 			void ccHandler();
 			

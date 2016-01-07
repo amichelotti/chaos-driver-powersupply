@@ -47,13 +47,14 @@ uint8_t own::CmdSetPolarity::implementedHandler() {
 void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
 	int err = 0;
-    
+
+    o_polarity = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
 	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "command_timeout");
 	
     if(!data || !data->hasKey(CMD_PS_SET_POLARITY_VALUE) ) {
 		CHAOS_EXCEPTION(1, "Type of polarity not passed");
     }
-	
+	int32_t polarity_readout = 0;
     int32_t polarity = data->getInt32Value(CMD_PS_SET_POLARITY_VALUE);
     SCLAPP_ << "Set polarity called with value " << polarity;
     
@@ -84,8 +85,13 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 	}
 	
 	if((err = powersupply_drv->setPolarity(polarity)) != 0) {
-		CHAOS_EXCEPTION(5, boost::str( boost::format("Set current parameter not present") % o_status % *o_status_id));
+		CHAOS_EXCEPTION(5, boost::str( boost::format("Error setting the polarity on driver with code %1%") % err));
 	}
-    
+
+    //read the polarity
+    if((err = powersupply_drv->getPolarity(&polarity_readout)) != 0){
+        CHAOS_EXCEPTION(6, boost::str( boost::format("Error getting the polarity from driver with code %1%") % err));
+	}
+    *o_polarity = polarity_readout;
     BC_END_RUNNIG_PROPERTY
 }

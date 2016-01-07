@@ -39,7 +39,10 @@ namespace driver {
 			
 			// Set handler
 			void setHandler(c_data::CDataWrapper *data);
-			
+
+			//custom acquire method
+			void acquireHandler();
+
 			//Correlation and commit phase
 			void ccHandler();
 			

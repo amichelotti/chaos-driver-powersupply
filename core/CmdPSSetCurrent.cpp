@@ -43,8 +43,8 @@ BATCH_COMMAND_ADD_DOUBLE_PARAM(CMD_PS_SET_CURRENT, "current in A",chaos::common:
 BATCH_COMMAND_CLOSE_DESCRIPTION()
 
 // return the implemented handler
-uint8_t own::CmdPSSetCurrent::implementedHandler() {
-    return	AbstractPowerSupplyCommand::implementedHandler();
+uint8_t own::CmdPSSetCurrent::implementedHandler(){
+    return	AbstractPowerSupplyCommand::implementedHandler()|chaos_batch::HandlerType::HT_Acquisition;
 }
 
 void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
@@ -53,9 +53,10 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
         const double*max_current;
 	int err = 0;
-	o_current = getAttributeCache()->getROPtr<double>(DOMAIN_OUTPUT, "current");
+	o_current = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current");
 	o_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current_sp");
-	
+	o_voltage = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "voltage");
+
 	i_slope_up = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_up");
 	i_slope_down = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_down");
 	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "command_timeout");
@@ -110,17 +111,29 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 		slope_speed  = *i_slope_up;
 	}
 	
-	//compute the delta for check if we are on the rigth current at the end of the job
+	//compute the delta for check if we are on the right current at the end of the job
 	SCLDBG_ << "Delta current is = " << *i_delta_setpoint;
+	double delta_setting = std::abs(*o_current_sp - current);
+	SCLDBG_ << "Delta setting is = " << delta_setting;
 	SCLDBG_ << "Slope speed is = " << slope_speed;
-	uint64_t computed_timeout = (std::ceil((std::abs(*o_current_sp - current) / slope_speed)) * 1000);
-	computed_timeout = computed_timeout * 1.2; //add 20% to the real timeout
+	uint64_t computed_timeout = uint64_t(std::ceil((delta_setting / slope_speed)) * 1000);
+	computed_timeout = (uint64_t)(double(computed_timeout) * 1.10); //add 5% to the real timeout
     
 	//set current set poi into the output channel
-	if(*i_setpoint_affinity && (*i_delta_setpoint < *i_setpoint_affinity)) {
-		SCLDBG_ << "New current don't pass affinity check affinity_check = " << *i_delta_setpoint << " setpoint_affinity = "<<*i_setpoint_affinity;
+	if(*i_delta_setpoint && (delta_setting < *i_delta_setpoint)) {
+		SCLDBG_ << "New current don't pass delta check of = " << *i_delta_setpoint << " setpoint point = "<<current <<" current set" << *o_current_sp;
+		BC_END_RUNNIG_PROPERTY
+		return;
 	}
-	
+
+	if(*i_setpoint_affinity) {
+		affinity_set_delta = *i_setpoint_affinity;
+	} else {
+		affinity_set_delta = 2;
+	}
+	affinity_set_delta = ((double)(affinity_set_delta * current) / 100);
+	SCLDBG_ << "The setpoint affinity value is of +-" << affinity_set_delta << " of ampere";
+
 	SCLDBG_ << "Set current to value " << current;
 	SCLDBG_ << "computed_timeout is = " << computed_timeout;
 	if((err = powersupply_drv->setCurrentSP(current)) != 0) {
@@ -138,8 +151,30 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, /*(computed_timeout==0)?std::numeric_limits<int>::max():*/computed_timeout);
 }
 
+void own::CmdPSSetCurrent::acquireHandler() {
+	float tmp_float;
+	//acquire the current readout
+	if(!powersupply_drv->getCurrentOutput(&tmp_float)){
+		*o_current = (double)tmp_float;
+	}
+	//acquire the voltage readout
+	if(!powersupply_drv->getVoltageOutput(&tmp_float)){
+		*o_voltage = (double)tmp_float;
+	}
+
+	//force output dataset as changed
+	getAttributeCache()->setOutputDomainAsChanged();
+}
+
 void own::CmdPSSetCurrent::ccHandler() {
-	AbstractPowerSupplyCommand::ccHandler();
+	//check if we are int the delta of the setpoit to end the command
+	double delta_current_reached = std::abs(*o_current_sp - *o_current);
+	SCLDBG_ << "Readout: "<< *o_current <<" SetPoint: "<< *o_current_sp <<" Delta to reach: " << delta_current_reached;
+	if(delta_current_reached <= affinity_set_delta) {
+		//the command is endedn because we have reached the affinitut delta set
+		SCLDBG_ << "Set point reached with - delta: "<< delta_current_reached <<" sp: "<< *o_current_sp <<" affinity check " << affinity_set_delta << " ampere and we now end command";
+		BC_END_RUNNIG_PROPERTY
+	}
 }
 
 bool own::CmdPSSetCurrent::timeoutHandler() {

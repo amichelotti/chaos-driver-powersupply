@@ -97,7 +97,7 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 			CHAOS_EXCEPTION(2, boost::str( boost::format("Error setting the slope %1%[%2%]") % o_status % *o_status_id));
 		}
 	}
-
+	BC_END_RUNNIG_PROPERTY
 }
 
 void own::CmdPSSetSlope::ccHandler() {

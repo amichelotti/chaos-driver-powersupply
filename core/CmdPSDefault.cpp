@@ -61,8 +61,6 @@ void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 	
 	AbstractPowerSupplyCommand::setHandler(data);
 	
-	setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)1000000);
-	
 	//get channel pointer
 	o_current = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current");
 	o_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current_sp");
@@ -134,22 +132,22 @@ void CmdPSDefault::acquireHandler() {
         last_slow_acq_time = getStartStepTime();
 		switch(slow_acquisition_idx) {
 			case 0:
-				if(powersupply_drv && !powersupply_drv->getVoltageOutput(&tmp_float)){
+				if(!powersupply_drv->getVoltageOutput(&tmp_float)){
 					*o_voltage = (double)tmp_float;
 				}
 				break;
 			case 1:
-				if(powersupply_drv && !powersupply_drv->getPolarity(&tmp_uint32)){
+				if(!powersupply_drv->getPolarity(&tmp_uint32)){
 					*o_polarity = tmp_uint32;
 				}
 				break;
 			case 2:
-				if(powersupply_drv && !powersupply_drv->getAlarms(&tmp_uint64)){
+				if(!powersupply_drv->getAlarms(&tmp_uint64)){
 					*o_alarms = tmp_uint64;
 				}
 				break;
 			case 3:
-				if(powersupply_drv && !powersupply_drv->getState(&stato, desc)){
+				if(!powersupply_drv->getState(&stato, desc)){
 					*o_status_id = stato;
 					//update the value and dimension of status channel
 					//getAttributeCache()->setOutputAttributeValue("status", (void*)desc.c_str(), (uint32_t)desc.size());

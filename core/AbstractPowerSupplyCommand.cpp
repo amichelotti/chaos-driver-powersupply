@@ -36,7 +36,10 @@ AbstractPowerSupplyCommand::~AbstractPowerSupplyCommand() {
 
 void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	CMDCUDBG_ << "loading pointer for output channel";
-	
+
+    //set the default scheduling to one seconds
+	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)1000000);
+
 	o_status_id = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "status_id");
 	o_status = getAttributeCache()->getRWPtr<char>(DOMAIN_OUTPUT, "status");
 
