@@ -23,7 +23,7 @@
 #include <chaos/cu_toolkit/control_manager/SCAbstractControlUnit.h>
 #include <driver/powersupply/core/ChaosPowerSupplyInterface.h>
 
-
+using namespace chaos;
 namespace driver {
 	namespace powersupply {
 		
@@ -59,7 +59,8 @@ namespace driver {
 			 The Control Unit will be deinitialized and disposed
 			 */
 			void unitDeinit() throw(chaos::CException);
-			
+
+			bool unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException);
 		public:
 			/*
 			 Construct a new CU with an identifier

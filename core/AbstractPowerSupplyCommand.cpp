@@ -63,20 +63,6 @@ void AbstractPowerSupplyCommand::ccHandler() {
 	
 }
 
-bool AbstractPowerSupplyCommand::checkState(common::powersupply::PowerSupplyStates state_to_check) {
-	CHAOS_ASSERT(powersupply_drv)
-	int err = 0;
-	int state_id = 0;
-	std::string state_str;
-	int32_t i_driver_timeout = getAttributeCache()->getValue<int32_t>(DOMAIN_INPUT, "driver_timeout");
-	if((err=powersupply_drv->getState(&state_id, state_str, i_driver_timeout?i_driver_timeout:10000)) != 0) {
-		setWorkState(false);
-		std::string error =  boost::str( boost::format("Error getting the powersupply state = %1% ") % err);
-		throw chaos::CException(1, error.c_str(), __FUNCTION__);
-	}
-	return state_id == state_to_check;
-}
-
 void AbstractPowerSupplyCommand::getState(int& current_state, std::string& current_state_str) {
 	CHAOS_ASSERT(powersupply_drv)
 	int err = 0;

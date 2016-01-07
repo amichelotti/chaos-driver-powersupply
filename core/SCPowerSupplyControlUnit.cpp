@@ -54,14 +54,16 @@ PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(::driver::powersupply::SCPowerSupplyCont
 chaos::cu::control_manager::SCAbstractControlUnit(_control_unit_id,
 												  _control_unit_param,
 												  _control_unit_drivers){
-	
+    powersupply_drv = NULL;
 }
 
 /*
  Base destructor
  */
 ::driver::powersupply::SCPowerSupplyControlUnit::~SCPowerSupplyControlUnit() {
-	
+	if(powersupply_drv){
+		delete(powersupply_drv);
+	}
 }
 
 
@@ -261,4 +263,61 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitStop() throw(CExceptio
 // Abstract method for the deinit of the control unit
 void ::driver::powersupply::SCPowerSupplyControlUnit::unitDeinit() throw(CException) {
 	
+}
+
+//! restore the control unit to snapshot
+bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(chaos::CException) {
+	SCCUAPP << "Check if restore cache has the needed data";
+	//check if in the restore cache we have all information we need
+	if(!snapshot_cache->getSharedDomain(DOMAIN_OUTPUT).hasAttribute("status_id")) return false;
+	if(!snapshot_cache->getSharedDomain(DOMAIN_OUTPUT).hasAttribute("polarity")) return false;
+	if(!snapshot_cache->getSharedDomain(DOMAIN_OUTPUT).hasAttribute("current_sp")) return false;
+
+	SCCUAPP << "Start the restore of the powersupply";
+
+	//get actual state
+	double *now_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current_sp");
+	int32_t *now_status_id = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "status_id");
+	int32_t *now_polarity = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
+
+	int32_t restore_polarity = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "polarity")->getValuePtr<int32_t>();
+
+	if(*now_polarity != restore_polarity) {
+		//we need to change the polarity
+		SCCUAPP << "Change the polarity from:" << *now_polarity << " to:" << restore_polarity;
+
+		//put in standby
+		SCCUAPP << "Put powersupply in standby";
+		powersupply_drv->standby();
+
+		//set the polarity
+		SCCUAPP << "Apply new polarity";
+		powersupply_drv->setPolarity(*now_status_id = restore_polarity);
+	}
+
+	int32_t restore_status_id = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "status_id")->getValuePtr<int32_t>();
+	if(*now_status_id != restore_status_id) {
+		SCCUAPP << "Change the status from:" << *now_status_id << " to:" << restore_status_id;
+		//we need to change the sate
+		switch ((*now_status_id = restore_status_id)) {
+			case 0x2:
+				SCCUAPP << "Put powersupply in on state to restore his status";
+				powersupply_drv->poweron();
+				break;
+			case 0x8:
+				//set the powersupply on stand-by
+				SCCUAPP << "Put powersupply in standby state to restore his status";
+				powersupply_drv->standby();
+				break;
+
+			default:
+				return false;
+				break;
+		}
+	}
+
+	double restore_current_sp = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "current_sp")->getValuePtr<double>();
+	powersupply_drv->setCurrentSP(*now_current_sp = restore_current_sp);
+	powersupply_drv->startCurrentRamp();
+	return true;
 }

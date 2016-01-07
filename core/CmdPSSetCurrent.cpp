@@ -129,9 +129,9 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	if(*i_setpoint_affinity) {
 		affinity_set_delta = *i_setpoint_affinity;
 	} else {
-		affinity_set_delta = 2;
+		affinity_set_delta = 1;
 	}
-	affinity_set_delta = ((double)(affinity_set_delta * current) / 100);
+	affinity_set_delta = ((double)(affinity_set_delta * (*max_current)) / 100);
 	SCLDBG_ << "The setpoint affinity value is of +-" << affinity_set_delta << " of ampere";
 
 	SCLDBG_ << "Set current to value " << current;

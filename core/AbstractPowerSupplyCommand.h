@@ -52,8 +52,7 @@ namespace driver {
 			
 			// set the data fr the command
 			void setHandler(c_data::CDataWrapper *data);
-			
-			bool checkState(common::powersupply::PowerSupplyStates state_to_check);
+
 			void getState(int& current_state, std::string& current_state_str);
 			
 			void setWorkState(bool working);
