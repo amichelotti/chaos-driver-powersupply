@@ -21,8 +21,9 @@
 #ifndef __PowerSupply__CmdSetCurrent__
 #define __PowerSupply__CmdSetCurrent__
 
-
 #include "AbstractPowerSupplyCommand.h"
+
+#include <bitset>
 
 namespace c_data = chaos::common::data;
 namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
@@ -45,6 +46,7 @@ namespace driver {
 
 			//is the delta to the setpoint that notify the end of command
 			double affinity_set_delta;
+            bool slow_acquisition_index;
 		protected:
 			//implemented handler
 			uint8_t implementedHandler();

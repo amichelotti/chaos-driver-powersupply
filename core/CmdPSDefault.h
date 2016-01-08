@@ -36,7 +36,6 @@ namespace driver {
 			unsigned int	slow_acquisition_idx;
 			
 			uint64_t	*o_dev_state;
-			uint64_t	*o_alarms;
 			int32_t		*o_polarity;
 			double		*o_voltage;
 			double		*o_current_sp;

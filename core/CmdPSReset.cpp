@@ -23,10 +23,9 @@
 
 #include <boost/format.hpp>
 
-#define LOG_HEAD_CmdPSReset LOG_TAIL(CmdPSReset)
-
-#define CMDCU_ LAPP_ << LOG_HEAD_CmdPSReset
-#define CMDCUDBG_ LDBG_ << LOG_HEAD_CmdPSReset
+#define CMDCU_ INFO_LOG(CmdPSReset)
+#define CMDCUDBG_ DBG_LOG(CmdPSReset)
+#define CMDCUERR_ ERR_LOG(CmdPSReset)
 
 namespace own =  driver::powersupply;
 namespace c_data = chaos::common::data;
@@ -56,14 +55,9 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 	//send comamnd to driver
 	CMDCUDBG_ << "Resetting alarms";
 	if(powersupply_drv->resetAlarms(0) != 0) {
-		CHAOS_EXCEPTION(2, boost::str( boost::format("Error resetting the allarms in state %1%[%2%]") % o_status % *o_status_id));
+		LOG_AND_TROW(CMDCUERR_, 1, boost::str( boost::format("Error resetting the allarms in state %1%[%2%]") % o_status % *o_status_id));
 	}
-	
-	/*	CMDCUDBG_ << "Go to standby";
-	if(powersupply_drv->standby() != 0) {
-		CHAOS_EXCEPTION(3, boost::str( boost::format("Error set to standby in state %1%[%2%]") % o_status % *o_status_id));
-	}
-	*/
+
 	//set working flag
 	setWorkState(true);
 }
@@ -83,8 +77,9 @@ void own::CmdPSReset::ccHandler() {
 	if(*o_status_id == common::powersupply::POWER_SUPPLY_STATE_ALARM ||
 	   *o_status_id == common::powersupply::POWER_SUPPLY_STATE_ERROR ||
 	   *o_status_id == common::powersupply::POWER_SUPPLY_STATE_UKN ) {
+		CMDCUERR_ << boost::str( boost::format("Bad state got = %1% - [%2%]") % o_status_id % o_status);
 		setWorkState(false);
-		CHAOS_EXCEPTION(1, boost::str( boost::format("Bad state got = %1% - [%2%]") % o_status_id % o_status));
+		BC_END_RUNNIG_PROPERTY
 	}
 }
 

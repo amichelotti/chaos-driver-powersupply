@@ -52,7 +52,9 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "command_timeout");
 	
     if(!data || !data->hasKey(CMD_PS_SET_POLARITY_VALUE) ) {
-		CHAOS_EXCEPTION(1, "Type of polarity not passed");
+		SCLERR_ << "Type of polarity not passed";
+		BC_END_RUNNIG_PROPERTY;
+		return;
     }
 	int32_t polarity_readout = 0;
     int32_t polarity = data->getInt32Value(CMD_PS_SET_POLARITY_VALUE);
@@ -65,8 +67,9 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
         case common::powersupply::POWER_SUPPLY_STATE_OPEN:
 		case common::powersupply::POWER_SUPPLY_STATE_ON:
                 //i need to be in operational to exec
-			CHAOS_EXCEPTION(2, boost::str( boost::format("Bad state for set polarity comamnd %1%[%2%]") % o_status % *o_status_id));
-			break;
+			SCLERR_ << boost::str( boost::format("Bad state for set polarity comamnd %1%[%2%]") % o_status % *o_status_id);
+			BC_END_RUNNIG_PROPERTY;
+			return;
 			
 
 		case common::powersupply::POWER_SUPPLY_STATE_STANDBY:
@@ -74,23 +77,18 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 			break;
 			
 		default:
-			CHAOS_EXCEPTION(3, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id));
+			SCLERR_ << boost::str(boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id);
+			BC_END_RUNNIG_PROPERTY;
+			return;
 	}
-	
-        //set comamnd timeout for this instance
-	SCLDBG_ << "Checking for timout";
-	if(*i_command_timeout) {
-		SCLDBG_ << "Timeout will be set to ms -> " << *i_command_timeout;
-		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
-	}
-	
+
 	if((err = powersupply_drv->setPolarity(polarity)) != 0) {
-		CHAOS_EXCEPTION(5, boost::str( boost::format("Error setting the polarity on driver with code %1%") % err));
+		LOG_AND_TROW(SCLERR_, 1, boost::str( boost::format("Error setting the polarity on driver with code %1%") % err));
 	}
 
     //read the polarity
     if((err = powersupply_drv->getPolarity(&polarity_readout)) != 0){
-        CHAOS_EXCEPTION(6, boost::str( boost::format("Error getting the polarity from driver with code %1%") % err));
+        LOG_AND_TROW(SCLERR_, 2, boost::str( boost::format("Error getting the polarity from driver with code %1%") % err));
 	}
     *o_polarity = polarity_readout;
     BC_END_RUNNIG_PROPERTY

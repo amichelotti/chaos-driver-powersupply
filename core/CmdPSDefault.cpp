@@ -24,8 +24,9 @@
 
 #define LOG_HEAD_CmdPSDefault LOG_TAIL(CmdPSDefault)
 
-#define CMDCU_ LAPP_ << LOG_HEAD_CmdPSDefault
-#define CMDCUDBG_ LDBG_ << LOG_HEAD_CmdPSDefault
+#define CMDCU_ INFO_LOG(CmdPSDefault)
+#define CMDCUDBG_ DBG_LOG(CmdPSDefault)
+#define CMDCUERR_ ERR_LOG(CmdPSDefault)
 
 using namespace driver::powersupply;
 using namespace chaos::common::data;
@@ -53,11 +54,6 @@ uint8_t CmdPSDefault::implementedHandler() {
 
     // Start the command execution
 void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
-	string desc;
-	int stato = 0;
-	int tmp_uint32 = 0;
-	float tmp_float = 0.0F;
-	uint64_t tmp_uint64 = 0;
 	
 	AbstractPowerSupplyCommand::setHandler(data);
 	
@@ -66,42 +62,13 @@ void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 	o_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current_sp");
 	o_voltage = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "voltage");
 	o_polarity = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
-	o_alarms = getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "alarms");
 	o_dev_state = getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "dev_state");
 	o_on = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "on");
 	o_stby = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "stby");
 	o_alarm = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "alarm");
-	
-	if(!powersupply_drv->getCurrentOutput(&tmp_float)){
-		*o_current = (double)tmp_float;
-    }
-	if(!powersupply_drv->getVoltageOutput(&tmp_float)){
-		*o_voltage = (double)tmp_float;
-	}
-	if(!powersupply_drv->getPolarity(&tmp_uint32)){
-		*o_polarity = tmp_uint32;
-	}
-	if(!powersupply_drv->getAlarms(&tmp_uint64)){
-		*o_alarms = tmp_uint64;
-	}
-	if(!powersupply_drv->getState(&stato, desc)){
-		*o_status_id = stato;
-		//update the value and dimension of status channel
-		getAttributeCache()->setOutputAttributeValue("status", (void*)desc.c_str(), (uint32_t)desc.size());
-	}
-	
-        //set command has stackable
-	CMDCU_ << "Change running property to SL_STACK_RUNNIG_STATE";
-    
 
-		//get the default value
-	
-	
-        //no adiditonal setup here
 	BC_NORMAL_RUNNIG_PROPERTY
-    
     sequence_number = 0;
-    last_slow_acq_time = getSetTime();// shared_stat->lastCmdStepStart;
 	slow_acquisition_idx = 0;
 }
 
@@ -112,6 +79,7 @@ void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
  */
 void CmdPSDefault::acquireHandler() {
 	string desc;
+	int err = 0;
 	int stato = 0;
 	float tmp_float = 0.0F;
 	int tmp_uint32 = 0;
@@ -121,46 +89,50 @@ void CmdPSDefault::acquireHandler() {
 	boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getLockOnCustomAttributeCache();
 	r_lock->lock();
 	
-    uint64_t time_diff = getStartStepTime() - last_slow_acq_time;
-	
-    if(powersupply_drv && !powersupply_drv->getCurrentOutput(&tmp_float)){
+    if((err = powersupply_drv->getCurrentOutput(&tmp_float))==0){
 		*o_current = (double)tmp_float;
-    }
-	
-    if(time_diff > 1000) {
-		CMDCU_ << "slow acquire staterd after us=" << time_diff;
-        last_slow_acq_time = getStartStepTime();
-		switch(slow_acquisition_idx) {
-			case 0:
-				if(!powersupply_drv->getVoltageOutput(&tmp_float)){
-					*o_voltage = (double)tmp_float;
-				}
-				break;
-			case 1:
-				if(!powersupply_drv->getPolarity(&tmp_uint32)){
-					*o_polarity = tmp_uint32;
-				}
-				break;
-			case 2:
-				if(!powersupply_drv->getAlarms(&tmp_uint64)){
-					*o_alarms = tmp_uint64;
-				}
-				break;
-			case 3:
-				if(!powersupply_drv->getState(&stato, desc)){
-					*o_status_id = stato;
-					//update the value and dimension of status channel
-					//getAttributeCache()->setOutputAttributeValue("status", (void*)desc.c_str(), (uint32_t)desc.size());
-					//the new pointer need to be got (set new size can reallocate the pointer)
-					o_status = getAttributeCache()->getRWPtr<char>(DOMAIN_OUTPUT, "status");
-					//copy up to 255 and put the termination character
-					strncpy(o_status, desc.c_str(), 256);
-				}
-				break;
-		}
-		slow_acquisition_idx++;
-		slow_acquisition_idx = slow_acquisition_idx % 4;
+    } else {
+		LOG_AND_TROW(CMDCUERR_, 1, boost::str( boost::format("Error calling driver on get current readout with code %1%") % err));
 	}
+
+	switch(slow_acquisition_idx) {
+		case 0:
+			if((err = powersupply_drv->getVoltageOutput(&tmp_float)) == 0){
+				*o_voltage = (double)tmp_float;
+			} else {
+				LOG_AND_TROW(CMDCUERR_, 2, boost::str( boost::format("Error calling driver on get voltage readout with code %1%") % err));
+			}
+			break;
+		case 1:
+			if((err = powersupply_drv->getPolarity(&tmp_uint32)) == 0){
+				*o_polarity = tmp_uint32;
+			} else {
+				LOG_AND_TROW(CMDCUERR_, 3, boost::str( boost::format("Error calling driver on get polarity readout with code %1%") % err));
+			}
+			break;
+		case 2:
+			if((err = powersupply_drv->getAlarms(&tmp_uint64)) == 0){
+				*o_alarms = tmp_uint64;
+			} else {
+				LOG_AND_TROW(CMDCUERR_, 4, boost::str( boost::format("Error calling driver on get alarms readout with code %1%") % err));
+			}
+			break;
+		case 3:
+			if((err = powersupply_drv->getState(&stato, desc)) == 0){
+				*o_status_id = stato;
+				//update the value and dimension of status channel
+				//getAttributeCache()->setOutputAttributeValue("status", (void*)desc.c_str(), (uint32_t)desc.size());
+				//the new pointer need to be got (set new size can reallocate the pointer)
+				o_status = getAttributeCache()->getRWPtr<char>(DOMAIN_OUTPUT, "status");
+				//copy up to 255 and put the termination character
+				strncpy(o_status, desc.c_str(), 256);
+			} else {
+				LOG_AND_TROW(CMDCUERR_, 5, boost::str( boost::format("Error calling driver on get state readout with code %1%") % err));
+			}
+			break;
+	}
+	slow_acquisition_idx++;
+	slow_acquisition_idx = slow_acquisition_idx % 4;
     CMDCU_ << "current ->" << *o_current;
     CMDCU_ << "current_sp ->" << *o_current_sp;
     CMDCU_ << "voltage ->" << *o_voltage;

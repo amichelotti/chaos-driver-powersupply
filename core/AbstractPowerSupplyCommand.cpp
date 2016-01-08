@@ -17,8 +17,11 @@
  *    	See the License for the specific language governing permissions and
  *    	limitations under the License.
  */
-#define LOG_HEAD_AbstractPowerSupplyCommand LOG_TAIL(AbstractPowerSupplyCommand)
-#define CMDCUDBG_ LDBG_ << LOG_HEAD_AbstractPowerSupplyCommand
+
+#define CMDCUINFO_ INFO_LOG(AbstractPowerSupplyCommand)
+#define CMDCUDBG_ DBG_LOG(AbstractPowerSupplyCommand)
+#define CMDCUERR_ ERR_LOG(AbstractPowerSupplyCommand)
+
 #include "AbstractPowerSupplyCommand.h"
 #include <boost/format.hpp>
 
@@ -42,7 +45,7 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 
 	o_status_id = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "status_id");
 	o_status = getAttributeCache()->getRWPtr<char>(DOMAIN_OUTPUT, "status");
-
+    o_alarms = getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "alarms");
 	
 	//get pointer to the output datase variable
 	chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = driverAccessorsErogator->getAccessoInstanceByIndex(0);
@@ -70,8 +73,7 @@ void AbstractPowerSupplyCommand::getState(int& current_state, std::string& curre
 	int32_t i_driver_timeout = getAttributeCache()->getValue<int32_t>(DOMAIN_INPUT, "driver_timeout");
 	if((err=powersupply_drv->getState(&current_state, state_str, i_driver_timeout?i_driver_timeout:10000)) != 0) {
 		setWorkState(false);
-		std::string error =  boost::str( boost::format("Error getting the powersupply state = %1% ") % err);
-		throw chaos::CException(1, error.c_str(), __FUNCTION__);
+		CMDCUERR_ << boost::str( boost::format("Error getting the powersupply state = %1% ") % err);
 	}
 
 }
@@ -79,5 +81,4 @@ void AbstractPowerSupplyCommand::getState(int& current_state, std::string& curre
 void AbstractPowerSupplyCommand::setWorkState(bool working_flag) {
 	int64_t *o_dev_state = getAttributeCache()->getRWPtr<int64_t>(DOMAIN_OUTPUT, "dev_state");
 	*o_dev_state = working_flag;
-	//getAttributeCache()->setOutputAttributeValue("cmd_last_error", &working_flag, (uint32_t)strlen(error_message));
 }

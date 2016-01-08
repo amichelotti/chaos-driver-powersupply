@@ -71,8 +71,9 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 		case common::powersupply::POWER_SUPPLY_STATE_ERROR:
 		case common::powersupply::POWER_SUPPLY_STATE_UKN:
 			//i need to be in operational to exec
-			CHAOS_EXCEPTION(1, boost::str( boost::format("Bad state for set current comamnd %1%[%2%]") % o_status % *o_status_id));
-			break;
+			SCLERR_ << boost::str( boost::format("Bad state for set current comamnd %1%[%2%]") % o_status % *o_status_id);
+			BC_EXEC_RUNNIG_PROPERTY
+			return;
 			
 		case common::powersupply::POWER_SUPPLY_STATE_OPEN:
 		case common::powersupply::POWER_SUPPLY_STATE_ON:
@@ -81,7 +82,9 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 			break;
 			
 		default:
-			CHAOS_EXCEPTION(2, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id));
+			SCLERR_ << boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id);
+			BC_EXEC_RUNNIG_PROPERTY
+			return;
 	}
 	
 	//set comamnd timeout for this instance
@@ -92,15 +95,20 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	}
 	
 	if(!data || !data->hasKey(CMD_PS_SET_CURRENT)) {
-		CHAOS_EXCEPTION(3, boost::str( boost::format("Set current parameter not present") % o_status % *o_status_id));
+		SCLERR_ << boost::str( boost::format("Set current parameter not present") % o_status % *o_status_id);
+		BC_EXEC_RUNNIG_PROPERTY
+		return;
 	}
     
     current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
     if(max_current && (current>*max_current)){
         std::stringstream ss;
         ss<<"current:"<<current<<" > "<<max_current;
-        CHAOS_EXCEPTION(10,boost::str( boost::format("current %1% gretear the maximum \"max_current\":%2%") % current % *max_current));
+		SCLERR_ << boost::str( boost::format("current %1% gretear the maximum \"max_current\":%2%") % current % *max_current);
+		BC_EXEC_RUNNIG_PROPERTY
+		return;
     }
+
     SCLDBG_ << "compute timeout for set current = " << current;
     
 	if(*o_current_sp > current) {
@@ -121,7 +129,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     
 	//set current set poi into the output channel
 	if(*i_delta_setpoint && (delta_setting < *i_delta_setpoint)) {
-		SCLDBG_ << "New current don't pass delta check of = " << *i_delta_setpoint << " setpoint point = "<<current <<" current set" << *o_current_sp;
+		SCLERR_ << "New current don't pass delta check of = " << *i_delta_setpoint << " setpoint point = "<<current <<" current set" << *o_current_sp;
 		BC_END_RUNNIG_PROPERTY
 		return;
 	}
@@ -129,39 +137,53 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	if(*i_setpoint_affinity) {
 		affinity_set_delta = *i_setpoint_affinity;
 	} else {
-		affinity_set_delta = 1;
+		affinity_set_delta = 3;
 	}
-	affinity_set_delta = ((double)(affinity_set_delta * (*max_current)) / 100);
 	SCLDBG_ << "The setpoint affinity value is of +-" << affinity_set_delta << " of ampere";
 
 	SCLDBG_ << "Set current to value " << current;
 	SCLDBG_ << "computed_timeout is = " << computed_timeout;
 	if((err = powersupply_drv->setCurrentSP(current)) != 0) {
-		CHAOS_EXCEPTION(5, boost::str(boost::format("Error %1% setting current to %2%") % err % current));
+		LOG_AND_TROW(SCLERR_, 1, boost::str(boost::format("Error %1% setting current") % err));
 	}
 	if((err = powersupply_drv->startCurrentRamp()) != 0) {
-		CHAOS_EXCEPTION(6, boost::str(boost::format("Error %1% setting current to %2%") % err % current));
+		LOG_AND_TROW(SCLERR_, 2, boost::str(boost::format("Error %1% setting current") % err));
 	}
 	//assign new current setpoint
+	slow_acquisition_index = false;
 	*o_current_sp = current;
 	powersupply_drv->accessor->base_opcode_priority=100;
 	setWorkState(true);
 	//set runnign  property to exsculisve untile command has finisced
+	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
 	BC_EXEC_RUNNIG_PROPERTY
-	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, /*(computed_timeout==0)?std::numeric_limits<int>::max():*/computed_timeout);
+
 }
 
 void own::CmdPSSetCurrent::acquireHandler() {
+	int err = 0;
 	float tmp_float;
 	//acquire the current readout
-	if(!powersupply_drv->getCurrentOutput(&tmp_float)){
+	SCLDBG_ << "fetch current readout";
+	if((err = powersupply_drv->getCurrentOutput(&tmp_float))) {
+		LOG_AND_TROW(SCLERR_, 1, boost::str(boost::format("Error fetching current readout withcode %1%") % err));
+	}else{
 		*o_current = (double)tmp_float;
 	}
-	//acquire the voltage readout
-	if(!powersupply_drv->getVoltageOutput(&tmp_float)){
-		*o_voltage = (double)tmp_float;
+	if((slow_acquisition_index = !slow_acquisition_index)) {
+	    SCLDBG_ << "fetch voltage readout";
+	    //acquire the voltage readout
+        if((err = powersupply_drv->getVoltageOutput(&tmp_float))) {
+			LOG_AND_TROW(SCLERR_, 2, boost::str(boost::format("Error fetching voltage readout withcode %1%") % err));
+        }else{
+            *o_voltage = (double)tmp_float;
+        }
+	} else {
+	    SCLDBG_ << "fetch alarms readout";
+		if((err = powersupply_drv->getAlarms(o_alarms))){
+			LOG_AND_TROW(SCLERR_, 2, boost::str(boost::format("Error fetching alarms readout withcode %1%") % err));
+		}
 	}
-
 	//force output dataset as changed
 	getAttributeCache()->setOutputDomainAsChanged();
 }
@@ -174,6 +196,12 @@ void own::CmdPSSetCurrent::ccHandler() {
 		//the command is endedn because we have reached the affinitut delta set
 		SCLDBG_ << "Set point reached with - delta: "<< delta_current_reached <<" sp: "<< *o_current_sp <<" affinity check " << affinity_set_delta << " ampere and we now end command";
 		BC_END_RUNNIG_PROPERTY
+		setWorkState(false);
+	}
+	if(*o_alarms) {
+		SCLERR_ << "We got alarms on powersupply so we end the command";
+		BC_END_RUNNIG_PROPERTY
+		setWorkState(false);
 	}
 }
 

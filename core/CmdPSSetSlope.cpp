@@ -50,6 +50,7 @@ uint8_t own::CmdPSSetSlope::implementedHandler() {
 
 void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
+	int err = 0;
 	float asup = 0.f;
 	float asdown = 0.f;
 	if(data->hasKey(CMD_PS_SET_SLOPE_UP)){
@@ -68,33 +69,24 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 		case common::powersupply::POWER_SUPPLY_STATE_ERROR:
 		case common::powersupply::POWER_SUPPLY_STATE_UKN:
 			//i need to be in operational to exec
-			CHAOS_EXCEPTION(1, boost::str( boost::format("Bas state for set slope comamnd %1%[%2%]") % o_status % *o_status_id));
+			SCLERR_ << boost::str( boost::format("Bas state for set slope comamnd %1%[%2%]") % o_status % *o_status_id);
 			break;
 
 		case common::powersupply::POWER_SUPPLY_STATE_OPEN:
 		case common::powersupply::POWER_SUPPLY_STATE_ON:
 		case common::powersupply::POWER_SUPPLY_STATE_STANDBY:
-			SCLDBG_ << "We can start the set slope command";
+			SCLAPP_ << "We can start the set slope command";
 			break;
 
 		default:
-			CHAOS_EXCEPTION(1, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id));
+			SCLERR_ << boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id);
 	}
-
-
-	//set comamnd timeout for this instance
-//	SCLDBG_ << "Checking for timout";
-//	if(*i_command_timeout) {
-//		SCLDBG_ << "Timeout will be set to ms -> " << *i_command_timeout;
-//		setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
-//	}
 
 
 	if((asup > 0) && (asdown > 0)) {
 		SCLDBG_ << " set slope with asup=" << asup << " asdown=" << asdown ;
-                int err=powersupply_drv->setCurrentRampSpeed(asup, asdown );
-		if( (err!= chaos::ErrorCode::EC_NO_ERROR)  && (err!=chaos::ErrorCode::EC_NODE_OPERATION_NOT_SUPPORTED) ){
-			CHAOS_EXCEPTION(2, boost::str( boost::format("Error setting the slope %1%[%2%]") % o_status % *o_status_id));
+		if((err = powersupply_drv->setCurrentRampSpeed(asup, asdown ))){
+			LOG_AND_TROW(SCLERR_, 1, boost::str( boost::format("Error setting the slope %1%[%2%] with error %3%") % o_status % *o_status_id % err));
 		}
 	}
 	BC_END_RUNNIG_PROPERTY

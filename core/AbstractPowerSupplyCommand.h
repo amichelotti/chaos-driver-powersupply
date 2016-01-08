@@ -41,13 +41,13 @@ namespace driver {
 		protected:
 			char		*o_status;
 			int32_t		*o_status_id;
-			
+			uint64_t	*o_alarms;
 			//reference of the chaos bastraction ofpowersupply driver
 			chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
 			
 			//implemented handler
 			uint8_t implementedHandler();
-			
+
 			void ccHandler();
 			
 			// set the data fr the command
