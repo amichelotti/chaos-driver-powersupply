@@ -40,7 +40,9 @@ using namespace chaos::cu::driver_manager::driver;
 
 
 
-#define SCCUAPP LAPP_ << "[SCPowerSupplyControlUnit - " << getCUID() << "] - "
+#define SCCUAPP INFO_LOG(SCPowerSupplyControlUnit)
+#define SCCUDBG DBG_LOG(SCPowerSupplyControlUnit)
+#define SCCUERR ERR_LOG(SCPowerSupplyControlUnit)
 
 PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(::driver::powersupply::SCPowerSupplyControlUnit)
 
@@ -195,7 +197,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw(CExceptio
 	
 	
 	
-	chaos::cu::driver_manager::driver::DriverAccessor * power_supply_accessor=AbstractControlUnit::getAccessoInstanceByIndex(0);
+	chaos::cu::driver_manager::driver::DriverAccessor * power_supply_accessor = getAccessoInstanceByIndex(0);
 	if(power_supply_accessor==NULL){
 		throw chaos::CException(-1, "Cannot retrieve the requested driver", __FUNCTION__);
 	}
@@ -213,8 +215,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw(CExceptio
 	// REQUIRE MIN MAX SET IN THE MDS
 	if(attr_info.maxRange.size() ) {
             SCCUAPP << "max_current max="<< (max_range = attr_info.maxRange);
-	
-        }
+	}
 	
 	
 	// retrive the attribute description from the device database
@@ -275,12 +276,22 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 
 	SCCUAPP << "Start the restore of the powersupply";
 
+	bool cmd_result = true;
 	//get actual state
 	double *now_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current_sp");
 	int32_t *now_status_id = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "status_id");
 	int32_t *now_polarity = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
 
-	int32_t restore_polarity = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "polarity")->getValuePtr<int32_t>();
+	//chec the restore polarity
+	int32_t restore_polarity = 0;
+	if(snapshot_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute(CMD_PS_SET_POLARITY_ALIAS)) {
+		//we use last command sent for polarity
+		auto_ptr<CDataWrapper> polarity_cmd_pack(snapshot_cache->getAttributeValue(DOMAIN_INPUT, CMD_PS_SET_POLARITY_ALIAS)->getValueAsCDatawrapperPtr(true));
+		restore_polarity = polarity_cmd_pack->getInt32Value(CMD_PS_SET_POLARITY_VALUE);
+	} else {
+		restore_polarity = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "polarity")->getValuePtr<int32_t>();
+	}
+
 
 	if(*now_polarity != restore_polarity) {
 		//we need to change the polarity
@@ -288,11 +299,21 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 
 		//put in standby
 		SCCUAPP << "Put powersupply in standby";
-		powersupply_drv->standby();
+		if(setCurrent(0.0)) {
+			if(powerStandby()) {
+				SCCUAPP << "Powersupply is gone in standby";
+			} else {
+				LOG_AND_TROW(SCCUERR, 2, "Power supply is not gone in standby");
+			}
+		} else {
+			LOG_AND_TROW(SCCUERR, 1, "Power supply is not gone to 0 ampere");
+		}
 
 		//set the polarity
 		SCCUAPP << "Apply new polarity";
-		powersupply_drv->setPolarity(*now_status_id = restore_polarity);
+		if(!setPolarity(restore_polarity)) {
+			LOG_AND_TROW_FORMATTED(SCCUERR, 3, "Power supply is not gone to restore polarity %1%", %restore_polarity);
+		}
 	}
 
 	int32_t restore_status_id = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "status_id")->getValuePtr<int32_t>();
@@ -302,12 +323,22 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 		switch ((*now_status_id = restore_status_id)) {
 			case 0x2:
 				SCCUAPP << "Put powersupply in on state to restore his status";
-				powersupply_drv->poweron();
+				if(!powerON()) {
+					LOG_AND_TROW(SCCUERR, 4, "Power supply is not gone to restore 'power on' state");
+				}
 				break;
 			case 0x8:
 				//set the powersupply on stand-by
 				SCCUAPP << "Put powersupply in standby state to restore his status";
-				powersupply_drv->standby();
+				if(setCurrent(0.0)) {
+					if(powerStandby()) {
+						SCCUAPP << "Powersupply is gone in standby";
+					} else {
+						LOG_AND_TROW(SCCUERR, 5, "Power supply is not gone in standby");
+					}
+				} else {
+					LOG_AND_TROW(SCCUERR, 6, "Power supply is not gone to 0 ampere");
+				}
 				break;
 
 			default:
@@ -317,7 +348,143 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	}
 
 	double restore_current_sp = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "current_sp")->getValuePtr<double>();
-	powersupply_drv->setCurrentSP(*now_current_sp = restore_current_sp);
-	powersupply_drv->startCurrentRamp();
+	if(!setCurrent(restore_current_sp)) {
+		LOG_AND_TROW_FORMATTED(SCCUERR, 6, "Power supply is not gone to restore 'current setpoint %1%' state", %restore_current_sp);
+	}
 	return true;
+}
+//-----------utility methdo for the restore operation---------
+bool ::driver::powersupply::SCPowerSupplyControlUnit::powerON(bool sync) {
+	uint64_t cmd_id;
+	bool result = true;
+	std::auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
+	cmd_pack->addInt32Value(CMD_PS_MODE_TYPE, 1);
+	//send command
+	submitBatchCommand(CMD_PS_MODE_ALIAS,
+					  cmd_pack.release(),
+					   cmd_id,
+					   0,
+					   50,
+					   SubmissionRuleType::SUBMIT_AND_Stack);
+	if(sync) {
+		//! whait for the current command id to finisch
+		result = whaitOnCommandID(cmd_id);
+	}
+	return result;
+}
+bool ::driver::powersupply::SCPowerSupplyControlUnit::powerStandby(bool sync) {
+	uint64_t cmd_id;
+	bool result = true;
+	std::auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
+	cmd_pack->addInt32Value(CMD_PS_MODE_TYPE, 0);
+	//send command
+	submitBatchCommand(CMD_PS_MODE_ALIAS,
+					   cmd_pack.release(),
+					   cmd_id,
+					   0,
+					   50,
+					   SubmissionRuleType::SUBMIT_AND_Stack);
+	if(sync) {
+		//! whait for the current command id to finisch
+		result = whaitOnCommandID(cmd_id);
+	}
+	return result;
+}
+
+bool ::driver::powersupply::SCPowerSupplyControlUnit::setPolarity(int polarity,
+																  bool sync) {
+	uint64_t cmd_id;
+	bool result = true;
+	std::auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
+	cmd_pack->addInt32Value(CMD_PS_SET_POLARITY_VALUE, polarity);
+	//send command
+	submitBatchCommand(CMD_PS_SET_POLARITY_ALIAS,
+					   cmd_pack.release(),
+					   cmd_id,
+					   0,
+					   50,
+					   SubmissionRuleType::SUBMIT_AND_Stack);
+	if(sync) {
+		//! whait for the current command id to finisch
+		result = whaitOnCommandID(cmd_id);
+	}
+	return result;
+}
+
+bool ::driver::powersupply::SCPowerSupplyControlUnit::setCurrent(double current_set_point,
+																 bool sync) {
+	uint64_t cmd_id;
+	bool result = true;
+	std::auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
+	cmd_pack->addDoubleValue(CMD_PS_SET_CURRENT, current_set_point);
+	//send command
+	submitBatchCommand(CMD_PS_SET_CURRENT_ALIAS,
+					   cmd_pack.release(),
+					   cmd_id,
+					   0,
+					   50,
+					   SubmissionRuleType::SUBMIT_AND_Stack);
+	if(sync) {
+		//! whait for the current command id to finisch
+		result = whaitOnCommandID(cmd_id);
+	}
+	return result;
+}
+
+bool ::driver::powersupply::SCPowerSupplyControlUnit::setRampSpeed(double sup,
+																   double sdown,
+																   bool sync) {
+	uint64_t cmd_id;
+	bool result = true;
+	std::auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
+	cmd_pack->addDoubleValue(CMD_PS_SET_SLOPE_UP, sup);
+	cmd_pack->addDoubleValue(CMD_PS_SET_SLOPE_DOWN, sdown);
+	//send command
+	submitBatchCommand(CMD_PS_SET_SLOPE_ALIAS,
+					   cmd_pack.release(),
+					   cmd_id,
+					   0,
+					   50,
+					   SubmissionRuleType::SUBMIT_AND_Stack);
+	if (sync) {
+		//! whait for the current command id to finisch
+		result = whaitOnCommandID(cmd_id);
+	}
+	return result;
+}
+
+bool ::driver::powersupply::SCPowerSupplyControlUnit::whaitOnCommandID(uint64_t cmd_id) {
+	std::auto_ptr<CommandState> cmd_state;
+	do{
+		cmd_state = getStateForCommandID(cmd_id);
+		if(!cmd_state.get()) break;
+
+		switch (cmd_state->last_event) {
+			case BatchCommandEventType::EVT_QUEUED:
+				SCCUAPP << cmd_id << " -> QUEUED";
+				break;
+			case BatchCommandEventType::EVT_RUNNING:
+				SCCUAPP << cmd_id << " -> RUNNING";
+				break;
+			case BatchCommandEventType::EVT_WAITING:
+				SCCUAPP << cmd_id << " -> WAITING";
+				break;
+			case BatchCommandEventType::EVT_PAUSED:
+				SCCUAPP << cmd_id << " -> PAUSED";
+				break;
+			case BatchCommandEventType::EVT_KILLED:
+				SCCUAPP << cmd_id << " -> KILLED";
+				break;
+			case BatchCommandEventType::EVT_COMPLETED:
+				SCCUAPP << cmd_id << " -> COMPLETED";
+				break;
+			case BatchCommandEventType::EVT_FAULT:
+				SCCUAPP << cmd_id << " -> FALUT";
+				break;
+		}
+	}while(cmd_state->last_event != BatchCommandEventType::EVT_COMPLETED &&
+			cmd_state->last_event != BatchCommandEventType::EVT_FAULT &&
+			cmd_state->last_event != BatchCommandEventType::EVT_KILLED);
+	return (cmd_state.get() &&
+			cmd_state->last_event == BatchCommandEventType::EVT_COMPLETED);
 }

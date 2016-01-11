@@ -35,6 +35,7 @@ namespace driver {
 			
 			chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
 
+			bool whaitOnCommandID(uint64_t command_id);
 		protected:
 			/*
 			 Define the Control Unit Dataset and Actions
@@ -60,7 +61,15 @@ namespace driver {
 			 */
 			void unitDeinit() throw(chaos::CException);
 
+            //!restore method for powersupply
 			bool unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException);
+
+			//-----------utility methdo for the restore operation---------
+			bool powerON(bool sync = true);
+			bool powerStandby(bool sync = true);
+			bool setPolarity(int polarity, bool sync = true);
+			bool setCurrent(double current_set_point, bool sync = true);
+			bool setRampSpeed(double sup, double sdown, bool sync = true);
 		public:
 			/*
 			 Construct a new CU with an identifier

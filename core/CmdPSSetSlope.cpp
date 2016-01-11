@@ -55,14 +55,14 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 	float asdown = 0.f;
 	if(data->hasKey(CMD_PS_SET_SLOPE_UP)){
             asup = data->getDoubleValue(CMD_PS_SET_SLOPE_UP);
-        } else {
-            asup = *getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_up");
-        }
-        if(data->hasKey(CMD_PS_SET_SLOPE_DOWN)){
-            asdown = data->getDoubleValue(CMD_PS_SET_SLOPE_DOWN);
-        } else {
-            asdown = *getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_down");
-        }
+    } else {
+        asup = *getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_up");
+    }
+    if(data->hasKey(CMD_PS_SET_SLOPE_DOWN)){
+        asdown = data->getDoubleValue(CMD_PS_SET_SLOPE_DOWN);
+    } else {
+        asdown = *getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_down");
+    }
 
 	switch (*o_status_id) {
 		case common::powersupply::POWER_SUPPLY_STATE_ALARM:
