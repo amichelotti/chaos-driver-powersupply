@@ -166,7 +166,7 @@ void own::CmdPSSetCurrent::acquireHandler() {
 	//acquire the current readout
 	SCLDBG_ << "fetch current readout";
 	if((err = powersupply_drv->getCurrentOutput(&tmp_float))) {
-		LOG_AND_TROW(SCLERR_, 1, boost::str(boost::format("Error fetching current readout withcode %1%") % err));
+		LOG_AND_TROW(SCLERR_, 1, boost::str(boost::format("Error fetching current readout with code %1%") % err));
 	}else{
 		*o_current = (double)tmp_float;
 	}
@@ -174,14 +174,14 @@ void own::CmdPSSetCurrent::acquireHandler() {
 	    SCLDBG_ << "fetch voltage readout";
 	    //acquire the voltage readout
         if((err = powersupply_drv->getVoltageOutput(&tmp_float))) {
-			LOG_AND_TROW(SCLERR_, 2, boost::str(boost::format("Error fetching voltage readout withcode %1%") % err));
+			LOG_AND_TROW(SCLERR_, 2, boost::str(boost::format("Error fetching voltage readout with code %1%") % err));
         }else{
             *o_voltage = (double)tmp_float;
         }
 	} else {
 	    SCLDBG_ << "fetch alarms readout";
 		if((err = powersupply_drv->getAlarms(o_alarms))){
-			LOG_AND_TROW(SCLERR_, 2, boost::str(boost::format("Error fetching alarms readout withcode %1%") % err));
+			LOG_AND_TROW(SCLERR_, 2, boost::str(boost::format("Error fetching alarms readout with code %1%") % err));
 		}
 	}
 	//force output dataset as changed
