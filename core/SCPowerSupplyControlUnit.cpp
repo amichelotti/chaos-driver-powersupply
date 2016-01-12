@@ -283,15 +283,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	int32_t *now_polarity = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
 
 	//chec the restore polarity
-	int32_t restore_polarity = 0;
-	if(snapshot_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute(CMD_PS_SET_POLARITY_ALIAS)) {
-		//we use last command sent for polarity
-		auto_ptr<CDataWrapper> polarity_cmd_pack(snapshot_cache->getAttributeValue(DOMAIN_INPUT, CMD_PS_SET_POLARITY_ALIAS)->getValueAsCDatawrapperPtr(true));
-		restore_polarity = polarity_cmd_pack->getInt32Value(CMD_PS_SET_POLARITY_VALUE);
-	} else {
-		restore_polarity = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "polarity")->getValuePtr<int32_t>();
-	}
-
+	int32_t restore_polarity = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "polarity")->getValuePtr<int32_t>();
 
 	if(*now_polarity != restore_polarity) {
 		//we need to change the polarity
@@ -482,6 +474,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::whaitOnCommandID(uint64_t 
 				SCCUAPP << cmd_id << " -> FALUT";
 				break;
 		}
+		//whait some times
 		usleep(500000);
 	}while(cmd_state->last_event != BatchCommandEventType::EVT_COMPLETED &&
 			cmd_state->last_event != BatchCommandEventType::EVT_FAULT &&
