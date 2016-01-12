@@ -320,7 +320,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	if(*now_status_id != restore_status_id) {
 		SCCUAPP << "Change the status from:" << *now_status_id << " to:" << restore_status_id;
 		//we need to change the sate
-		switch ((*now_status_id = restore_status_id)) {
+		switch (restore_status_id) {
 			case 0x2:
 				SCCUAPP << "Put powersupply in on state to restore his status";
 				if(!powerON()) {
@@ -482,6 +482,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::whaitOnCommandID(uint64_t 
 				SCCUAPP << cmd_id << " -> FALUT";
 				break;
 		}
+		usleep(500000);
 	}while(cmd_state->last_event != BatchCommandEventType::EVT_COMPLETED &&
 			cmd_state->last_event != BatchCommandEventType::EVT_FAULT &&
 			cmd_state->last_event != BatchCommandEventType::EVT_KILLED);
