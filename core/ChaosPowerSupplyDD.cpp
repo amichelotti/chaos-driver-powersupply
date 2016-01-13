@@ -68,6 +68,25 @@ cu_driver::MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyDD::execOp
             LDBG_<< "Set Current SP to:"<<in->fvalue0<<" timeo:"<<in->timeout<<std::endl;
             out->result = power->setCurrentSP(in->fvalue0,in->timeout);
             break;
+            
+        case OP_FORCE_MAX_CURRENT:
+            LDBG_<< "Force max current"<<in->fvalue0<<std::endl;
+            out->result = power->forceMaxCurrent(in->fvalue0);
+            break;
+        case OP_FORCE_MAX_VOLTAGE:
+            LDBG_<< "Force max voltage"<<in->fvalue0<<std::endl;
+            out->result = power->forceMaxVoltage(in->fvalue0);
+            break;
+       case OP_SET_CURRENT_SENSIBILITY:
+            LDBG_<< "Set current Sensibility"<<in->fvalue0<<std::endl;
+            out->result = power->setCurrentSensibility(in->fvalue0);
+            break;
+        case OP_SET_VOLTAGE_SENSIBILITY:
+            LDBG_<< "Set voltage sensibility"<<in->fvalue0<<std::endl;
+            out->result = power->setVoltageSensibility(in->fvalue0);
+            break;
+       
+            
         case OP_GET_SP: // get current set point
             out->result = power->getCurrentSP(&out->fvalue0,in->timeout);
             LDBG_<< "Got Current SP "<<out->fvalue0<<std::endl;

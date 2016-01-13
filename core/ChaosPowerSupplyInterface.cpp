@@ -111,6 +111,16 @@ int ChaosPowerSupplyInterface::forceMaxVoltage(float max){
 
 }
 
+int ChaosPowerSupplyInterface::setCurrentSensibility(float max){
+    WRITE_OP_FLOAT_TIM(OP_SET_CURRENT_SENSIBILITY, max, 0);
+
+}
+int ChaosPowerSupplyInterface::setVoltageSensibility(float max){
+    WRITE_OP_FLOAT_TIM(OP_SET_VOLTAGE_SENSIBILITY, max, 0);
+
+}
+
+
 int ChaosPowerSupplyInterface::getCurrentSP(float* current,uint32_t timeo_ms){
     READ_OP_FLOAT_TIM(OP_GET_SP, current, timeo_ms);
 }

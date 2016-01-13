@@ -42,6 +42,8 @@ namespace chaos {
                 OP_GET_HWVERSION,
                 OP_GET_CURRENT_SENSIBILITY,
                 OP_GET_VOLTAGE_SENSIBILITY,
+                OP_SET_CURRENT_SENSIBILITY,
+                OP_SET_VOLTAGE_SENSIBILITY,
                 OP_GET_MAXMIN_CURRENT,
                 OP_GET_MAXMIN_VOLTAGE,
                 OP_GET_ALARM_DESC,
@@ -222,6 +224,20 @@ namespace chaos {
                  @return 0 if success or an error code
                  */
                 int getVoltageSensibility(float *sens);
+                   /**
+             @brief set the current sensibility of the power supply
+             @param sens sensibility in ampere
+             @return 0 if success or an error code
+             
+             */
+             int setCurrentSensibility(float sens);
+            
+            /**
+             @brief set the voltage sensibility of the power supply
+             @param sens sensibility in volt
+             @return 0 if success or an error code
+             */
+             int setVoltageSensibility(float sens);
                 /**
                  @brief returns the max min current of the power suppy
                  @param max returns the max current that the power supply can output
