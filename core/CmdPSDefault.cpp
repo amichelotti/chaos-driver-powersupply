@@ -95,44 +95,36 @@ void CmdPSDefault::acquireHandler() {
 		LOG_AND_TROW(CMDCUERR_, 1, boost::str( boost::format("Error calling driver on get current readout with code %1%") % err));
 	}
 
-	switch(slow_acquisition_idx) {
-		case 0:
-			if((err = powersupply_drv->getVoltageOutput(&tmp_float)) == 0){
-				*o_voltage = (double)tmp_float;
-			} else {
-				LOG_AND_TROW(CMDCUERR_, 2, boost::str( boost::format("Error calling driver on get voltage readout with code %1%") % err));
-			}
-			break;
-		case 1:
-			if((err = powersupply_drv->getPolarity(&tmp_uint32)) == 0){
-				*o_polarity = tmp_uint32;
-			} else {
-				LOG_AND_TROW(CMDCUERR_, 3, boost::str( boost::format("Error calling driver on get polarity readout with code %1%") % err));
-			}
-			break;
-		case 2:
-			if((err = powersupply_drv->getAlarms(&tmp_uint64)) == 0){
-				*o_alarms = tmp_uint64;
-			} else {
-				LOG_AND_TROW(CMDCUERR_, 4, boost::str( boost::format("Error calling driver on get alarms readout with code %1%") % err));
-			}
-			break;
-		case 3:
-			if((err = powersupply_drv->getState(&stato, desc)) == 0){
-				*o_status_id = stato;
-				//update the value and dimension of status channel
-				//getAttributeCache()->setOutputAttributeValue("status", (void*)desc.c_str(), (uint32_t)desc.size());
-				//the new pointer need to be got (set new size can reallocate the pointer)
-				o_status = getAttributeCache()->getRWPtr<char>(DOMAIN_OUTPUT, "status");
-				//copy up to 255 and put the termination character
-				strncpy(o_status, desc.c_str(), 256);
-			} else {
-				LOG_AND_TROW(CMDCUERR_, 5, boost::str( boost::format("Error calling driver on get state readout with code %1%") % err));
-			}
-			break;
+	if((err = powersupply_drv->getVoltageOutput(&tmp_float)) == 0){
+		*o_voltage = (double)tmp_float;
+	} else {
+		LOG_AND_TROW(CMDCUERR_, 2, boost::str( boost::format("Error calling driver on get voltage readout with code %1%") % err));
 	}
-	slow_acquisition_idx++;
-	slow_acquisition_idx = slow_acquisition_idx % 4;
+
+	if((err = powersupply_drv->getPolarity(&tmp_uint32)) == 0){
+		*o_polarity = tmp_uint32;
+	} else {
+		LOG_AND_TROW(CMDCUERR_, 3, boost::str( boost::format("Error calling driver on get polarity readout with code %1%") % err));
+	}
+
+	if((err = powersupply_drv->getAlarms(&tmp_uint64)) == 0){
+		*o_alarms = tmp_uint64;
+	} else {
+		LOG_AND_TROW(CMDCUERR_, 4, boost::str( boost::format("Error calling driver on get alarms readout with code %1%") % err));
+	}
+
+	if((err = powersupply_drv->getState(&stato, desc)) == 0){
+		*o_status_id = stato;
+		//update the value and dimension of status channel
+		//getAttributeCache()->setOutputAttributeValue("status", (void*)desc.c_str(), (uint32_t)desc.size());
+		//the new pointer need to be got (set new size can reallocate the pointer)
+		o_status = getAttributeCache()->getRWPtr<char>(DOMAIN_OUTPUT, "status");
+		//copy up to 255 and put the termination character
+		strncpy(o_status, desc.c_str(), 256);
+	} else {
+		LOG_AND_TROW(CMDCUERR_, 5, boost::str( boost::format("Error calling driver on get state readout with code %1%") % err));
+	}
+
     CMDCU_ << "current ->" << *o_current;
     CMDCU_ << "current_sp ->" << *o_current_sp;
     CMDCU_ << "voltage ->" << *o_voltage;
