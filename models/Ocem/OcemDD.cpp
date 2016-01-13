@@ -56,6 +56,7 @@ void chaos::driver::powersupply::OcemDD::driverInit(const char *initParameter) t
     //check the input parameter
 	boost::smatch match;
 	std::string inputStr = initParameter;
+        std::string slaveid;
 	PSLAPP << "Init  driver initialisation string:\""<<initParameter<<"\""<<std::endl;
     if(power){
           throw chaos::CException(1, "Already Initialised", "OcemDD::driverInit");
@@ -66,7 +67,7 @@ void chaos::driver::powersupply::OcemDD::driverInit(const char *initParameter) t
         if(powerSupplyType=="OcemE642X"){
             if(regex_match(initString, match, power_supply_ocem_init_match, boost::match_extra)){
                 std::string dev=match[1];
-                std::string slaveid=match[2];
+                slaveid=match[2];
                 std::string maxcurr=match[3];
                 std::string maxvoltage=match[3];
                 PSLAPP<<"Allocating OcemE642X device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<std::endl;
@@ -93,7 +94,7 @@ void chaos::driver::powersupply::OcemDD::driverInit(const char *initParameter) t
     PSLAPP<<"Initialising PowerSupply Driver \""<<ver<<"\""<<std::endl;
 
     if(power->init()!=0){
-        throw chaos::CException(1, "Initialisation of power supply failed", "OcemDD::driverInit");
+        throw chaos::CException(1, "Initialisation of power supply \""+inputStr+"\" slaveid "+slaveid+" failed", "OcemDD::driverInit");
     }
 
     
