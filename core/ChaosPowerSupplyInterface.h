@@ -48,7 +48,7 @@ namespace chaos {
                 OP_GET_MAXMIN_VOLTAGE,
                 OP_GET_ALARM_DESC,
                 OP_FORCE_MAX_CURRENT,
-                OP_FORCE_MAX_VOLTAGE
+                OP_FORCE_MAX_VOLTAGE,
             } ChaosPowerSupplyOpcode;
             
             typedef struct {

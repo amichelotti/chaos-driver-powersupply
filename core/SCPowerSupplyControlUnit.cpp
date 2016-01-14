@@ -206,6 +206,10 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw(CExceptio
 		throw chaos::CException(-2, "Cannot allocate driver resources", __FUNCTION__);
 	}
 	
+        if(powersupply_drv->init()!=0){
+            throw chaos::CException(-3, "Cannot initialize powersupply "+ control_unit_instance, __FUNCTION__);
+
+        }
 	//check mandatory default values
 	/*
 	 */
