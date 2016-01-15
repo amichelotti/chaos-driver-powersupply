@@ -97,8 +97,8 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	
 	//send comamnd to driver
 	setWorkState(true);
-
-	BC_EXEC_RUNNIG_PROPERTY
+        // do not check for accomplishement
+	BC_END_RUNNIG_PROPERTY;
 }
 
 void own::CmdPSMode::acquireHandler() {
@@ -123,7 +123,7 @@ void own::CmdPSMode::acquireHandler() {
 
 void own::CmdPSMode::ccHandler() {
 	AbstractPowerSupplyCommand::ccHandler();
-
+#if 0
 	CMDCUINFO << "Check if we are gone";
 	switch(state_to_go) {
 		case 0://we need to go in stanby
@@ -154,6 +154,7 @@ void own::CmdPSMode::ccHandler() {
 		setWorkState(false);
 		CMDCUERR << boost::str( boost::format("Bad state got = %1% - [%2%]") % *o_status_id % o_status);
 	}
+#endif
 }
 
 bool own::CmdPSMode::timeoutHandler() {
