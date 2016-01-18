@@ -124,7 +124,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	double delta_setting = std::abs(*o_current_sp - current);
 	SCLDBG_ << "Delta setting is = " << delta_setting;
 	SCLDBG_ << "Slope speed is = " << slope_speed;
-	uint64_t computed_timeout = uint64_t(std::ceil((delta_setting / slope_speed)) * 1000);
+	uint64_t computed_timeout = uint64_t(((delta_setting / slope_speed) * 1000)) * 1.05;
 	SCLDBG_ << "Calculated timout is = " << computed_timeout;
 	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
 	//set current set poi into the output channel
@@ -190,8 +190,9 @@ void own::CmdPSSetCurrent::ccHandler() {
 	double delta_current_reached = std::abs(*o_current_sp - *o_current);
 	SCLDBG_ << "Readout: "<< *o_current <<" SetPoint: "<< *o_current_sp <<" Delta to reach: " << delta_current_reached;
 	if(delta_current_reached <= affinity_set_delta) {
+		uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 		//the command is endedn because we have reached the affinitut delta set
-		SCLDBG_ << "Set point reached with - delta: "<< delta_current_reached <<" sp: "<< *o_current_sp <<" affinity check " << affinity_set_delta << " ampere and we now end command";
+		SCLDBG_ << "[metric ]Set point reached with - delta: "<< delta_current_reached <<" sp: "<< *o_current_sp <<" affinity check " << affinity_set_delta << " ampere in " << elapsed_msec << " milliseconds";
 		BC_END_RUNNIG_PROPERTY
 		setWorkState(false);
 	}
@@ -203,13 +204,13 @@ void own::CmdPSSetCurrent::ccHandler() {
 }
 
 bool own::CmdPSSetCurrent::timeoutHandler() {
+	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	//move the state machine on fault
-	SCLDBG_ << "Timeout reached  with readout current " << *o_current;
+	SCLDBG_ << "[metric] Timeout reached  with readout current " << *o_current << " in " << elapsed_msec << " milliseconds";
 	setWorkState(false);
 	powersupply_drv->accessor->base_opcode_priority=50;
 	bool result = false;
 	if( *i_delta_setpoint && (std::abs(*o_current - *o_current_sp) > *i_delta_setpoint)) {
-		std::string error =  "Out of SP";
 		BC_FAULT_RUNNIG_PROPERTY
 	}else {
 		BC_END_RUNNIG_PROPERTY

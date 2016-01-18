@@ -93,12 +93,17 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 		CMDCUINFO << "Set time out in "<< *i_command_timeout << "milliseconds";
 		//we have a timeout for command so apply it to this instance
 		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
+	} else {
+		CMDCUINFO << "Set time out in 5000 milliseconds";
+		//we have a timeout for command so apply it to this instance
+		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)5000);
 	}
 	
 	//send comamnd to driver
 	setWorkState(true);
-        // do not check for accomplishement
-	BC_END_RUNNIG_PROPERTY;
+
+	//run in esclusive mode
+	BC_EXEC_RUNNIG_PROPERTY;
 }
 
 void own::CmdPSMode::acquireHandler() {
@@ -123,14 +128,14 @@ void own::CmdPSMode::acquireHandler() {
 
 void own::CmdPSMode::ccHandler() {
 	AbstractPowerSupplyCommand::ccHandler();
-#if 0
+	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	CMDCUINFO << "Check if we are gone";
 	switch(state_to_go) {
 		case 0://we need to go in stanby
 			if(*o_status_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
 				setWorkState(false);
-				//we are terminated the command
-				CMDCUINFO << boost::str( boost::format("State reached %1% [%2%] we end command") % o_status % *o_status_id);
+				//we are terminated the comman
+				CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] we end command in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
 				BC_END_RUNNIG_PROPERTY
 				return;
 			}
@@ -140,21 +145,25 @@ void own::CmdPSMode::ccHandler() {
 			if(*o_status_id == common::powersupply::POWER_SUPPLY_STATE_ON) {
 				setWorkState(false);
 				//we are terminated the command
-				CMDCUINFO << boost::str( boost::format("State reached %1% [%2%] we end command") % o_status % *o_status_id);
+				CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] we end command in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
 				BC_END_RUNNIG_PROPERTY
 				return;
 			}
 			break;
 	}
 	
-	
 	if(*o_status_id == common::powersupply::POWER_SUPPLY_STATE_ALARM ||
 	   *o_status_id == common::powersupply::POWER_SUPPLY_STATE_ERROR ||
 	   *o_status_id == common::powersupply::POWER_SUPPLY_STATE_UKN) {
+		BC_END_RUNNIG_PROPERTY
 		setWorkState(false);
-		CMDCUERR << boost::str( boost::format("Bad state got = %1% - [%2%]") % *o_status_id % o_status);
+		CMDCUERR << boost::str(boost::format("[metric] Bad state got = %1% - [%2%] in %3% milliseconds") % *o_status_id % o_status % elapsed_msec);
 	}
-#endif
+	if(*o_alarms) {
+		BC_END_RUNNIG_PROPERTY
+		setWorkState(false);
+		CMDCUERR << boost::str(boost::format("[metric] Got alarm code %1% in %3% milliseconds") % *o_alarms % elapsed_msec);
+	}
 }
 
 bool own::CmdPSMode::timeoutHandler() {

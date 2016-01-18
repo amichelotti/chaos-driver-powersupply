@@ -52,8 +52,8 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
 	} else {
 		//set five second of timeout
-		CMDCUDBG_ << "Timeout will be set to ms -> 5000000";
-		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)5000000);
+		CMDCUDBG_ << "Timeout will be set to ms -> 5000";
+		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)5000);
 	}
 	
 	//send comamnd to driver
@@ -69,10 +69,10 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 
 void own::CmdPSReset::ccHandler() {
 	AbstractPowerSupplyCommand::ccHandler();
-
-	CMDCUDBG_ << "Reset command correlation";
+	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	if(*o_alarms == 0) {
 		CMDCUDBG_ << "We have reset the alarms";
+		CMDCUDBG_ << boost::str(boost::format("[metric] We have reset the alarms in %1% milliseconds") % elapsed_msec);
 		setWorkState(false);
 		//we are terminated the command
 		BC_END_RUNNIG_PROPERTY
