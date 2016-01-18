@@ -124,9 +124,9 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	double delta_setting = std::abs(*o_current_sp - current);
 	SCLDBG_ << "Delta setting is = " << delta_setting;
 	SCLDBG_ << "Slope speed is = " << slope_speed;
-	uint64_t computed_timeout = uint64_t(std::ceil((delta_setting / slope_speed)) * 1000);
-	computed_timeout = (uint64_t)(double(computed_timeout) * 1.10); //add 5% to the real timeout
-    
+	uint64_t computed_timeout = uint64_t(std::ceil((delta_setting / slope_speed)) * 1000 * 1000);
+	SCLDBG_ << "Calculated timout is = " << computed_timeout;
+	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
 	//set current set poi into the output channel
 	if(*i_delta_setpoint && (delta_setting < *i_delta_setpoint)) {
 		SCLERR_ << "New current don't pass delta check of = " << *i_delta_setpoint << " setpoint point = "<<current <<" current set" << *o_current_sp;
@@ -142,7 +142,6 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	SCLDBG_ << "The setpoint affinity value is of +-" << affinity_set_delta << " of ampere";
 
 	SCLDBG_ << "Set current to value " << current;
-	SCLDBG_ << "computed_timeout is = " << computed_timeout;
 	if((err = powersupply_drv->setCurrentSP(current)) != 0) {
 		LOG_AND_TROW(SCLERR_, 1, boost::str(boost::format("Error %1% setting current") % err));
 	}
@@ -154,8 +153,6 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	*o_current_sp = current;
 	powersupply_drv->accessor->base_opcode_priority=100;
 	setWorkState(true);
-	//set runnign  property to exsculisve untile command has finisced
-	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
 	BC_EXEC_RUNNIG_PROPERTY
 
 }
