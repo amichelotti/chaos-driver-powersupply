@@ -82,5 +82,5 @@ void own::CmdPSReset::ccHandler() {
 bool own::CmdPSReset::timeoutHandler() {
 	setWorkState(false);
 	CMDCUERR_ << ("We have reached timout on reset alarms");
-	return true;
+	return false;
 }

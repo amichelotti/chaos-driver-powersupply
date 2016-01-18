@@ -97,5 +97,5 @@ void own::CmdPSSetSlope::ccHandler() {
 }
 
 bool own::CmdPSSetSlope::timeoutHandler() {
-	return true;
+	return false;
 }

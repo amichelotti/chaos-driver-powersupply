@@ -169,5 +169,5 @@ void own::CmdPSMode::ccHandler() {
 bool own::CmdPSMode::timeoutHandler() {
 	//move the state machine on fault
 	setWorkState(false);
-	return true;
+	return false;
 }

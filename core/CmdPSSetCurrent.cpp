@@ -209,11 +209,5 @@ bool own::CmdPSSetCurrent::timeoutHandler() {
 	SCLDBG_ << "[metric] Timeout reached  with readout current " << *o_current << " in " << elapsed_msec << " milliseconds";
 	setWorkState(false);
 	powersupply_drv->accessor->base_opcode_priority=50;
-	bool result = false;
-	if( *i_delta_setpoint && (std::abs(*o_current - *o_current_sp) > *i_delta_setpoint)) {
-		BC_FAULT_RUNNIG_PROPERTY
-	}else {
-		BC_END_RUNNIG_PROPERTY
-	}
-	return result;
+	return false;
 }

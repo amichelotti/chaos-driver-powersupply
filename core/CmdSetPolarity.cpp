@@ -128,4 +128,5 @@ bool own::CmdSetPolarity::timeoutHandler() {
 	setWorkState(false);
 	SCLDBG_ << boost::str(boost::format("[metric] Timeout reached in with set-point %1% and readout %2% in %3% milliseconds") % polarity_set_point % *o_polarity % elapsed_msec);
 	BC_END_RUNNIG_PROPERTY
+	return false;
 }
