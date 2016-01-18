@@ -77,7 +77,7 @@ void chaos::driver::powersupply::PowerSimDD::driverInit(const char *initParamete
                 std::string max_curr=match[7];
                 std::string max_vol=match[8];
                 std::string force_err=match[9];
-                PSLAPP<<"Allocating Simulated Power Supply device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<std::endl;
+                PSLAPP<<"Allocating Simulated Power Supply device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\" FORCING ERRORS:"<<force_err<<std::endl;
                 power = new ::common::powersupply::SimPSupply(dev.c_str(),atoi(slaveid.c_str()),atoi(write_min.c_str()),atoi(write_max.c_str()),atoi(read_min.c_str()),atoi(read_max.c_str()),atoi(max_curr.c_str()),atoi(max_vol.c_str()),SIMPSUPPLY_UPDATE_DELAY,atoi(force_err.c_str()));
                 if(power==NULL){
                     throw chaos::CException(1, "Cannot allocate resources for SimPSupply", "PowerSimDD::driverInit");
