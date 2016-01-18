@@ -12,7 +12,7 @@ ADD_LIBRARY(${PROJECT_NAME} STATIC ${src})
 ELSE()
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${src})
 ENDIF()
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_powersupply_simulator)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_powersupply_simulator common_powersupply common_debug)
 
 INSTALL_TARGETS(/lib ${PROJECT_NAME})
 
