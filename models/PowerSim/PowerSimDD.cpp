@@ -27,9 +27,9 @@
 // initialization format is <POWERSUPPLY TYPE>:'<INITALISATION PARAMETERS>'
 static const boost::regex power_supply_init_match("(\\w+):(.+)");
 
-// initialisation format for simulator <serial port>,<slaveid>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<maxcurr:max voltage>
+// initialisation format for simulator <serial port>,<slaveid>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<maxcurr:max voltage>,<force errors secs=0 [no error]>
 
-static const boost::regex power_supply_simulator_init_match("([\\w\\/]+),(\\d+),(\\d+):(\\d+),(\\d+):(\\d+),(\\d+):(\\d+)");
+static const boost::regex power_supply_simulator_init_match("([\\w\\/]+),(\\d+),(\\d+):(\\d+),(\\d+):(\\d+),(\\d+):(\\d+),(\\d+)");
 
 
 //GET_PLUGIN_CLASS_DEFINITION
@@ -76,8 +76,9 @@ void chaos::driver::powersupply::PowerSimDD::driverInit(const char *initParamete
                 std::string read_max=match[6];
                 std::string max_curr=match[7];
                 std::string max_vol=match[8];
+                std::string force_err=match[9];
                 PSLAPP<<"Allocating Simulated Power Supply device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<std::endl;
-                power = new ::common::powersupply::SimPSupply(dev.c_str(),atoi(slaveid.c_str()),atoi(write_min.c_str()),atoi(write_max.c_str()),atoi(read_min.c_str()),atoi(read_max.c_str()),atoi(max_curr.c_str()),atoi(max_vol.c_str()));
+                power = new ::common::powersupply::SimPSupply(dev.c_str(),atoi(slaveid.c_str()),atoi(write_min.c_str()),atoi(write_max.c_str()),atoi(read_min.c_str()),atoi(read_max.c_str()),atoi(max_curr.c_str()),atoi(max_vol.c_str()),SIMPSUPPLY_UPDATE_DELAY,atoi(force_err.c_str()));
                 if(power==NULL){
                     throw chaos::CException(1, "Cannot allocate resources for SimPSupply", "PowerSimDD::driverInit");
                 }
