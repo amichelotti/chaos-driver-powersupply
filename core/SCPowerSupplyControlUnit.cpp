@@ -279,6 +279,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	if(!snapshot_cache->getSharedDomain(DOMAIN_OUTPUT).hasAttribute("current_sp")) return false;
 
 	SCCUAPP << "Start the restore of the powersupply";
+	uint64_t start_restore_time = chaos::common::utility::TimingUtil::getTimeStamp();
 
 	bool cmd_result = true;
 	//get actual state
@@ -347,6 +348,8 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	if(!setCurrent(restore_current_sp)) {
 		LOG_AND_TROW_FORMATTED(SCCUERR, 6, "Power supply is not gone to restore 'current setpoint %1%' state", %restore_current_sp);
 	}
+	uint64_t restore_duration_in_ms = chaos::common::utility::TimingUtil::getTimeStamp() - start_restore_time;
+	SCCUDBG << "[metric] Restore end in " << restore_duration_in_ms << " milliseconds";
 	return true;
 }
 //-----------utility methdo for the restore operation---------
