@@ -124,7 +124,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	double delta_setting = std::abs(*o_current_sp - current);
 	SCLDBG_ << "Delta setting is = " << delta_setting;
 	SCLDBG_ << "Slope speed is = " << slope_speed;
-	uint64_t computed_timeout = uint64_t(((delta_setting / slope_speed) * 1000)) * 1.05;
+	uint64_t computed_timeout = uint64_t(((delta_setting / slope_speed) * 1000)) + 10000;
 	SCLDBG_ << "Calculated timout is = " << computed_timeout;
 	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
 	//set current set poi into the output channel
@@ -214,7 +214,7 @@ bool own::CmdPSSetCurrent::timeoutHandler() {
 		SCLDBG_ << "[metric] Timeout reached  with readout current " << *o_current << " in " << elapsed_msec << " milliseconds";
 		//the command is endedn because we have reached the affinitut delta set
 		BC_END_RUNNIG_PROPERTY;
-	}else{
+	}else {
 		BC_FAULT_RUNNIG_PROPERTY;
 	}
 	return false;
