@@ -94,8 +94,10 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 
 void own::CmdPSSetSlope::ccHandler() {
 	AbstractPowerSupplyCommand::ccHandler();
+	BC_END_RUNNIG_PROPERTY;
 }
 
 bool own::CmdPSSetSlope::timeoutHandler() {
+	BC_END_RUNNIG_PROPERTY;
 	return false;
 }

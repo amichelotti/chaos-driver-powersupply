@@ -64,23 +64,30 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 
 	//set working flag
 	setWorkState(true);
-	BC_EXEC_RUNNIG_PROPERTY
+	BC_EXEC_RUNNIG_PROPERTY;
 }
 
 void own::CmdPSReset::ccHandler() {
 	AbstractPowerSupplyCommand::ccHandler();
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	if(*o_alarms == 0) {
-		CMDCUDBG_ << "We have reset the alarms";
 		CMDCUDBG_ << boost::str(boost::format("[metric] We have reset the alarms in %1% milliseconds") % elapsed_msec);
 		setWorkState(false);
 		//we are terminated the command
-		BC_END_RUNNIG_PROPERTY
+		BC_END_RUNNIG_PROPERTY;
 	}
 }
 
 bool own::CmdPSReset::timeoutHandler() {
 	setWorkState(false);
+	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	CMDCUERR_ << ("We have reached timout on reset alarms");
+	if(*o_alarms == 0) {
+		CMDCUDBG_ << boost::str(boost::format("[metric] We have reset the alarms on timeout in %1% milliseconds") % elapsed_msec);
+		//we are terminated the command
+		BC_END_RUNNIG_PROPERTY;
+	} else {
+		BC_FAULT_RUNNIG_PROPERTY;
+	}
 	return false;
 }

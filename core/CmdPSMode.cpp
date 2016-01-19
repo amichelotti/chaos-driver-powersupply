@@ -108,8 +108,8 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 
 void own::CmdPSMode::acquireHandler() {
 	int err = 0;
-	std::string state_description;
 	int state = 0;
+	std::string state_description;
 	//!get the only state because thsi command work only on it
 	if((err = powersupply_drv->getState(&state, state_description))){
 		LOG_AND_TROW(CMDCUERR, 1, boost::str( boost::format("Error calling driver for get state from powersupply") % err));
@@ -168,6 +168,28 @@ void own::CmdPSMode::ccHandler() {
 
 bool own::CmdPSMode::timeoutHandler() {
 	//move the state machine on fault
+	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	setWorkState(false);
+	switch(state_to_go) {
+		case 0://we need to go in stanby
+			if(*o_status_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
+				//we are terminated the comman
+				CMDCUINFO << boost::str(boost::format("[metric] State reached on timeout %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
+				BC_END_RUNNIG_PROPERTY
+			}
+		break;
+
+		case 1://we need to go on operational
+			if(*o_status_id == common::powersupply::POWER_SUPPLY_STATE_ON) {
+				//we are terminated the command
+				CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
+				BC_END_RUNNIG_PROPERTY
+			}
+		break;
+
+		default:
+			BC_FAULT_RUNNIG_PROPERTY;
+		break;
+	}
 	return false;
 }

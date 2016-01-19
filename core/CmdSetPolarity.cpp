@@ -126,7 +126,12 @@ void own::CmdSetPolarity::ccHandler() {
 bool own::CmdSetPolarity::timeoutHandler() {
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	setWorkState(false);
-	SCLDBG_ << boost::str(boost::format("[metric] Timeout reached in with set-point %1% and readout %2% in %3% milliseconds") % polarity_set_point % *o_polarity % elapsed_msec);
-	BC_END_RUNNIG_PROPERTY
+	if(polarity_set_point == *o_polarity){
+		//set the operation flag on
+		SCLDBG_ << boost::str(boost::format("[metric] Timeout reached in with set-point %1% and readout %2% in %3% milliseconds") % polarity_set_point % *o_polarity % elapsed_msec);
+		BC_END_RUNNIG_PROPERTY
+	}else{
+		BC_FAULT_RUNNIG_PROPERTY
+	}
 	return false;
 }

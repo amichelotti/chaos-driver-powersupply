@@ -153,7 +153,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	*o_current_sp = current;
 	powersupply_drv->accessor->base_opcode_priority=100;
 	setWorkState(true);
-	BC_EXEC_RUNNIG_PROPERTY
+	BC_EXEC_RUNNIG_PROPERTY;
 
 }
 
@@ -193,21 +193,29 @@ void own::CmdPSSetCurrent::ccHandler() {
 		uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 		//the command is endedn because we have reached the affinitut delta set
 		SCLDBG_ << "[metric ]Set point reached with - delta: "<< delta_current_reached <<" sp: "<< *o_current_sp <<" affinity check " << affinity_set_delta << " ampere in " << elapsed_msec << " milliseconds";
-		BC_END_RUNNIG_PROPERTY
+		BC_END_RUNNIG_PROPERTY;
 		setWorkState(false);
 	}
 	if(*o_alarms) {
 		SCLERR_ << "We got alarms on powersupply so we end the command";
-		BC_END_RUNNIG_PROPERTY
+		BC_END_RUNNIG_PROPERTY;
 		setWorkState(false);
 	}
 }
 
 bool own::CmdPSSetCurrent::timeoutHandler() {
+	double delta_current_reached = std::abs(*o_current_sp - *o_current);
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	//move the state machine on fault
-	SCLDBG_ << "[metric] Timeout reached  with readout current " << *o_current << " in " << elapsed_msec << " milliseconds";
 	setWorkState(false);
 	powersupply_drv->accessor->base_opcode_priority=50;
+	if(delta_current_reached <= affinity_set_delta) {
+		uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
+		SCLDBG_ << "[metric] Timeout reached  with readout current " << *o_current << " in " << elapsed_msec << " milliseconds";
+		//the command is endedn because we have reached the affinitut delta set
+		BC_END_RUNNIG_PROPERTY;
+	}else{
+		BC_FAULT_RUNNIG_PROPERTY;
+	}
 	return false;
 }
