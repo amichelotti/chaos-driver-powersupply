@@ -33,6 +33,7 @@ using namespace chaos::common::data;
 using namespace chaos::common::batch_command;
 using namespace chaos::cu::control_manager::slow_command;
 
+
 BATCH_COMMAND_OPEN_DESCRIPTION(driver::powersupply::,CmdPSDefault,
                                                           "Default method",
                                                           "4403148a-35df-11e5-b1f7-7f8214ad6212")
@@ -56,7 +57,10 @@ uint8_t CmdPSDefault::implementedHandler() {
 void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 	
 	AbstractPowerSupplyCommand::setHandler(data);
-	
+
+	//set the default scheduling to one seconds
+	setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)1000000);
+
 	//get channel pointer
 	o_current = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current");
 	o_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current_sp");
