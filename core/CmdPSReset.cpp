@@ -87,6 +87,7 @@ bool own::CmdPSReset::timeoutHandler() {
 		//we are terminated the command
 		BC_END_RUNNIG_PROPERTY;
 	} else {
+		CMDCUERR_ << boost::str(boost::format("[metric] We DON'T HAVE reset the alarms on timeout in %1% milliseconds") % elapsed_msec);
 		BC_FAULT_RUNNIG_PROPERTY;
 	}
 	return false;

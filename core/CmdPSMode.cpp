@@ -177,6 +177,7 @@ bool own::CmdPSMode::timeoutHandler() {
 				CMDCUINFO << boost::str(boost::format("[metric] State reached on timeout %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
 				BC_END_RUNNIG_PROPERTY;
 			}else{
+			    CMDCUERR << boost::str(boost::format("[metric] State NOT REACHED %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
 				BC_FAULT_RUNNIG_PROPERTY;
 			}
 
@@ -188,11 +189,13 @@ bool own::CmdPSMode::timeoutHandler() {
 				CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
 				BC_END_RUNNIG_PROPERTY;
 			}else{
+			    CMDCUERR << boost::str(boost::format("[metric] State NOT REACHED %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
 				BC_FAULT_RUNNIG_PROPERTY;
 			}
 		break;
 
 		default:
+		    CMDCUERR << boost::str(boost::format("[metric] State NOT REACHED %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
 			BC_FAULT_RUNNIG_PROPERTY;
 		break;
 	}

@@ -271,8 +271,8 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDeinit() throw(CExcept
 }
 
 //! restore the control unit to snapshot
-#define RESTORE_LAPP SCCUAPP << "[" <<getCUInstance() << "]"
-#define RESTORE_LERR SCCUERR << "[" <<getCUInstance() << "]"
+#define RESTORE_LAPP SCCUAPP << "[RESTORE-" <<getCUID() << "] "
+#define RESTORE_LERR SCCUERR << "[RESTORE-" <<getCUID() << "] "
 bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache *const snapshot_cache) throw(chaos::CException) {
   RESTORE_LAPP << "Check if restore cache has the needed data";
   //check if in the restore cache we have all information we need
@@ -297,9 +297,10 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
       RESTORE_LAPP << "Change the polarity from:" << *now_polarity << " to:" << restore_polarity;
 
       //put in standby
-      RESTORE_LAPP << "Put powersupply in standby";
+      RESTORE_LAPP << "Put powersupply at setpoint 0";
       if (setCurrent(0.0)) {
         usleep(100000);
+        RESTORE_LAPP << "Start the restore of the powersupply";
         if (powerStandby()) {
           usleep(100000);
           RESTORE_LAPP << "Powersupply is gone in standby";
@@ -351,6 +352,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 
     double restore_current_sp = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "current_sp")->getValuePtr<double>();
     usleep(100000);
+    RESTORE_LAPP << "Apply new setpoint " << restore_current_sp;
     if (!setCurrent(restore_current_sp)) {
       LOG_AND_TROW_FORMATTED(RESTORE_LERR,
                              6,
@@ -358,10 +360,10 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
                              %restore_current_sp);
     }
     uint64_t restore_duration_in_ms = chaos::common::utility::TimingUtil::getTimeStamp() - start_restore_time;
-    RESTORE_LAPP << "[metric] Restore end in " << restore_duration_in_ms << " milliseconds";
+    RESTORE_LAPP << "[metric] Restore successfully achieved in " << restore_duration_in_ms << " milliseconds";
   } catch (CException &ex) {
     uint64_t restore_duration_in_ms = chaos::common::utility::TimingUtil::getTimeStamp() - start_restore_time;
-    RESTORE_LAPP << "[metric] Restore faulted in " << restore_duration_in_ms << " milliseconds";
+    RESTORE_LAPP << "[metric] Restore has fault in " << restore_duration_in_ms << " milliseconds";
     throw ex;
   }
   return true;
