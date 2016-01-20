@@ -175,15 +175,20 @@ bool own::CmdPSMode::timeoutHandler() {
 			if(*o_status_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
 				//we are terminated the comman
 				CMDCUINFO << boost::str(boost::format("[metric] State reached on timeout %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-				BC_END_RUNNIG_PROPERTY
+				BC_END_RUNNIG_PROPERTY;
+			}else{
+				BC_FAULT_RUNNIG_PROPERTY;
 			}
+
 		break;
 
 		case 1://we need to go on operational
 			if(*o_status_id == common::powersupply::POWER_SUPPLY_STATE_ON) {
 				//we are terminated the command
 				CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-				BC_END_RUNNIG_PROPERTY
+				BC_END_RUNNIG_PROPERTY;
+			}else{
+				BC_FAULT_RUNNIG_PROPERTY;
 			}
 		break;
 
