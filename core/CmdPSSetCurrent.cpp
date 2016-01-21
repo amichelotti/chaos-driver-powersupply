@@ -101,7 +101,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	}
     
     current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
-    if(max_current && (current>*max_current)){
+    if(*max_current && (current>*max_current)){
         std::stringstream ss;
         ss<<"current:"<<current<<" > "<<max_current;
 		SCLERR_ << boost::str( boost::format("current %1% gretear the maximum \"max_current\":%2%") % current % *max_current);
