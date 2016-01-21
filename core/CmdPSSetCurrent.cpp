@@ -88,11 +88,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	}
 	
 	//set comamnd timeout for this instance
-	SCLDBG_ << "Checking for timout";
-	if(*i_command_timeout) {
-		SCLDBG_ << "Timeout will be set to ms -> " << *i_command_timeout;
-		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
-	}
+	SCLDBG_ << "Checking for timeout";
 	
 	if(!data || !data->hasKey(CMD_PS_SET_CURRENT)) {
 		SCLERR_ << boost::str( boost::format("Set current parameter not present") % o_status % *o_status_id);
@@ -109,8 +105,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 		return;
     }
 
-    SCLDBG_ << "compute timeout for set current = " << current;
-    
+    SCLDBG_ << "compute timeout for set current = " << current;s
 	if(*o_current_sp > current) {
 		SCLDBG_ << "The new current is lower then actual = " << *o_current_sp << "[new "<<current<<"]";
 		slope_speed  = *i_slope_down;

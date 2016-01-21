@@ -53,8 +53,8 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 		case 0://to standby
 			//i need to be in operational to exec
 			CMDCUINFO << "Request to go to stanby";
-			if(*o_status_id &  common::powersupply::POWER_SUPPLY_STATE_STANDBY){
-				CMDCUINFO << "Already in standby";
+			if(*o_status_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY){
+				CMDCUINFO << "Already in standby";s
 				BC_END_RUNNIG_PROPERTY
 			} else if((*o_status_id != common::powersupply::POWER_SUPPLY_STATE_OPEN) &&
 			   (*o_status_id != common::powersupply::POWER_SUPPLY_STATE_ON)) {
