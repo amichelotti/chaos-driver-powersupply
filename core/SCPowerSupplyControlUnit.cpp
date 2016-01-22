@@ -121,7 +121,13 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
                         "Bit field device state",
                         DataType::TYPE_INT64,
                         DataType::Output);
-
+  
+/*
+  addCustomAttribute("calibration",
+                        sizeof(common::powersupply::calibdata_t),
+                        DataType::TYPE_BYTEARRAY,
+                        DataType::Output);
+*/
   /*
    * JAVASCRIPT INTERFACE
    */
@@ -291,8 +297,17 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 
     //chec the restore polarity
     int32_t restore_polarity = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "polarity")->getValuePtr<int32_t>();
+    double restore_current_sp = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "current_sp")->getValuePtr<double>();
+    //handle bipolar
+    int is_bipolar=0;
+    if((restore_current_sp<0) || (*now_current_sp)<0 ){
+        is_bipolar=1;
+        RESTORE_LAPP << "IS bipolar!!";
 
-    if (*now_polarity != restore_polarity) {
+    }
+    ///
+
+    if ((*now_polarity != restore_polarity)&&(is_bipolar==0)) {
       //we need to change the polarity
       RESTORE_LAPP << "Change the polarity from:" << *now_polarity << " to:" << restore_polarity;
 
@@ -350,7 +365,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
       }
     }
 
-    double restore_current_sp = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "current_sp")->getValuePtr<double>();
+
     usleep(100000);
     RESTORE_LAPP << "Apply new setpoint " << restore_current_sp;
     if (!setCurrent(restore_current_sp)) {

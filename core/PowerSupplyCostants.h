@@ -56,6 +56,12 @@ namespace driver {
 		const char * const CMD_PS_SET_POLARITY_ALIAS = "pola";
             //! the type of polarity
 		const char * const CMD_PS_SET_POLARITY_VALUE = "pola_value";
+                
+                const char * const CMD_PS_CALIBRATE = "calibrate";
+                const char * const CMD_PS_CALIBRATE_FROM = "from";
+                const char * const CMD_PS_CALIBRATE_TO = "to";
+                const char * const CMD_PS_CALIBRATE_STEPS = "steps";
+
 	}
 }
 #endif

@@ -7,6 +7,7 @@
         <in>ChaosPowerSupplyDD.cpp</in>
         <in>ChaosPowerSupplyInterface.cpp</in>
         <in>ChaosUIPowersupplyCWrapper.cpp</in>
+        <in>CmdPSCalibration.cpp</in>
         <in>CmdPSDefault.cpp</in>
         <in>CmdPSMode.cpp</in>
         <in>CmdPSReset.cpp</in>
@@ -56,6 +57,8 @@
       <flagsDictionary>
         <element flagsID="0" commonFlags="-fPIC -fPIC -fPIC -O3 -O2"/>
         <element flagsID="1" commonFlags="-fPIC -fPIC -fPIC -O3 -fPIC -O2"/>
+        <element flagsID="2"
+                 commonFlags="-fPIC -fPIC -fPIC -fPIC -fPIC -fPIC -fPIC -fPIC -O3 -fPIC -O2"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -65,13 +68,19 @@
           <buildCommand>${MAKE} -f Makefile install</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath></executablePath>
-          <cTool>
+          <ccTool>
             <incDir>
-              <pElem>../../chaosframework/chaos/common/data/entity_db/sqlite_impl</pElem>
-              <pElem>/usr/lib/gcc/x86_64-linux-gnu/4.8/include</pElem>
-              <pElem>../../chaosframework/bin/bin_common</pElem>
+              <pElem>.</pElem>
+              <pElem>../..</pElem>
+              <pElem>..</pElem>
+              <pElem>../../chaos-x86_64-dynamic-release/include</pElem>
             </incDir>
-          </cTool>
+            <preprocessorList>
+              <Elem>CHAOS</Elem>
+              <Elem>DEBUG</Elem>
+              <Elem>NDEBUG</Elem>
+            </preprocessorList>
+          </ccTool>
         </makeTool>
       </makefileType>
       <item path="core/AbstractPowerSupplyCommand.cpp"
@@ -82,18 +91,22 @@
         </ccTool>
       </item>
       <item path="core/ChaosPowerSupplyDD.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
         </ccTool>
       </item>
       <item path="core/ChaosPowerSupplyInterface.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
         </ccTool>
       </item>
       <item path="core/ChaosUIPowersupplyCWrapper.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
+        </ccTool>
+      </item>
+      <item path="core/CmdPSCalibration.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="2">
         </ccTool>
       </item>
       <item path="core/CmdPSDefault.cpp" ex="false" tool="1" flavor2="4">
@@ -109,7 +122,7 @@
         </ccTool>
       </item>
       <item path="core/CmdPSSetCurrent.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
         </ccTool>
       </item>
       <item path="core/CmdPSSetSlope.cpp" ex="false" tool="1" flavor2="4">
@@ -121,37 +134,13 @@
         </ccTool>
       </item>
       <item path="core/SCPowerSupplyControlUnit.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
         </ccTool>
       </item>
       <folder path="0/core">
         <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-            <pElem>../..</pElem>
-            <pElem>..</pElem>
-            <pElem>../../chaos-x86_64-dynamic-release/include</pElem>
-          </incDir>
           <preprocessorList>
-            <Elem>CHAOS</Elem>
-            <Elem>DEBUG</Elem>
-            <Elem>NDEBUG</Elem>
             <Elem>chaos_driver_powersupply_EXPORTS</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
-      <folder path="0/models">
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-            <pElem>../..</pElem>
-            <pElem>..</pElem>
-            <pElem>../../chaos-x86_64-dynamic-release/include</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>CHAOS</Elem>
-            <Elem>DEBUG</Elem>
-            <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>
       </folder>
@@ -173,21 +162,6 @@
         <ccTool>
           <preprocessorList>
             <Elem>chaos_driver_powersupply_sim_dd_EXPORTS</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
-      <folder path="0/test">
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-            <pElem>../..</pElem>
-            <pElem>..</pElem>
-            <pElem>../../chaos-x86_64-dynamic-release/include</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>CHAOS</Elem>
-            <Elem>DEBUG</Elem>
-            <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>
       </folder>
