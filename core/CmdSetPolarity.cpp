@@ -103,15 +103,18 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 
 //custom acquire method
 void own::CmdSetPolarity::acquireHandler() {
+	SCLDBG_ << "enter acquireHandler";
 	int err = 0;
 	if((err = powersupply_drv->getPolarity(o_polarity)) != 0){
 	    LOG_AND_TROW(SCLERR_, 2, boost::str( boost::format("Error getting the polarity from driver with code %1%") % err));
 	}
 	getAttributeCache()->setOutputDomainAsChanged();
+	SCLDBG_ << "exit acquireHandler";
 }
 
 //Correlation and commit phase
 void own::CmdSetPolarity::ccHandler() {
+	SCLDBG_ << "enter ccHandler";
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	if(polarity_set_point == *o_polarity){
 		//set the operation flag on
@@ -119,10 +122,12 @@ void own::CmdSetPolarity::ccHandler() {
 		SCLDBG_ << boost::str(boost::format("[metric] We have reached the polarity in %1% milliseconds") % elapsed_msec);
 		BC_END_RUNNIG_PROPERTY
 	}
+	SCLDBG_ << "exit ccHandler";
 }
 
 //manage the timeout
 bool own::CmdSetPolarity::timeoutHandler() {
+	SCLDBG_ << "timeoutHandler";
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	setWorkState(false);
 	if(polarity_set_point == *o_polarity){

@@ -120,6 +120,7 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 }
 
 void own::CmdPSMode::acquireHandler() {
+	CMDCUINFO << "enter acquireHandler";
 	int err = 0;
 	int state = 0;
 	std::string state_description;
@@ -137,9 +138,11 @@ void own::CmdPSMode::acquireHandler() {
 	}
 	//force output dataset as changed
 	getAttributeCache()->setOutputDomainAsChanged();
+	CMDCUINFO << "exit acquireHandler";
 }
 
 void own::CmdPSMode::ccHandler() {
+	CMDCUINFO << "enter acquireHandler";
 	AbstractPowerSupplyCommand::ccHandler();
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	CMDCUINFO << "Check if we are gone";
@@ -178,9 +181,11 @@ void own::CmdPSMode::ccHandler() {
 		setWorkState(false);
 		CMDCUERR << boost::str(boost::format("[metric] Got alarm code %1% in %3% milliseconds") % *o_alarms % elapsed_msec);
 	}
+	CMDCUINFO << "exit acquireHandler";
 }
 
 bool own::CmdPSMode::timeoutHandler() {
+	CMDCUINFO << "enter timeoutHandler";
 	//move the state machine on fault
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	setWorkState(false);
@@ -213,5 +218,6 @@ bool own::CmdPSMode::timeoutHandler() {
 			BC_FAULT_RUNNIG_PROPERTY;
 		break;
 	}
+	CMDCUINFO << "exit timeoutHandler";
 	return false;
 }
