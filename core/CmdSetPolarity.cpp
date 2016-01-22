@@ -39,7 +39,7 @@ BATCH_COMMAND_CLOSE_DESCRIPTION()
 
     // return the implemented handler
 uint8_t own::CmdSetPolarity::implementedHandler() {
-    return	AbstractPowerSupplyCommand::implementedHandler();
+    return	AbstractPowerSupplyCommand::implementedHandler() | chaos_batch::HandlerType::HT_Acquisition;
 }
 
 void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
@@ -103,7 +103,6 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 
 //custom acquire method
 void own::CmdSetPolarity::acquireHandler() {
-	SCLDBG_ << "enter acquireHandler";
 	int err = 0;
 	int got_polarity;
 	if((err = powersupply_drv->getPolarity(&got_polarity)) != 0){
@@ -111,12 +110,10 @@ void own::CmdSetPolarity::acquireHandler() {
 	}
 	*o_polarity = got_polarity;
 	getAttributeCache()->setOutputDomainAsChanged();
-	SCLDBG_ << "exit acquireHandler with polarity " << got_polarity;
 }
 
 //Correlation and commit phase
 void own::CmdSetPolarity::ccHandler() {
-	SCLDBG_ << "enter ccHandler";
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	if(polarity_set_point == *o_polarity){
 		//set the operation flag on
@@ -124,7 +121,6 @@ void own::CmdSetPolarity::ccHandler() {
 		SCLDBG_ << boost::str(boost::format("[metric] We have reached the polarity in %1% milliseconds") % elapsed_msec);
 		BC_END_RUNNIG_PROPERTY
 	}
-	SCLDBG_ << "exit ccHandler";
 }
 
 //manage the timeout
