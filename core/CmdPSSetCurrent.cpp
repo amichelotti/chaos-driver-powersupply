@@ -26,10 +26,9 @@
 #include <boost/lexical_cast.hpp>
 #include <sstream>
 
-#define LOG_HEAD_CmdPSSetCurrent LOG_TAIL(CmdPSSetCurrent)
-#define SCLAPP_ LAPP_ << LOG_HEAD_CmdPSSetCurrent
-#define SCLDBG_ LDBG_ << LOG_HEAD_CmdPSSetCurrent
-#define SCLERR_ LERR_ << LOG_HEAD_CmdPSSetCurrent
+#define SCLAPP_ INFO_LOG(CmdPSSetCurrent) << "[" << getDeviceID() << "] "
+#define SCLDBG_ DBG_LOG(CmdPSSetCurrent) << "[" << getDeviceID() << "] "
+#define SCLERR_ ERR_LOG(CmdPSSetCurrent) << "[" << getDeviceID() << "] "
 
 
 namespace own =  driver::powersupply;
@@ -51,8 +50,13 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     chaos::common::data::RangeValueInfo current_sp_attr_info;
     chaos::common::data::RangeValueInfo attributeInfo;
 	AbstractPowerSupplyCommand::setHandler(data);
-        const double*max_current;
+
+	const double*max_current;
 	int err = 0;
+	int state;
+	std::string state_str;
+	float current = 0.f;
+	float slope_speed = 0.f;
 	o_current = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current");
 	o_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current_sp");
 	o_voltage = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "voltage");
@@ -63,9 +67,17 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	i_delta_setpoint = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "delta_setpoint");
 	i_setpoint_affinity = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "setpoint_affinity");
 	max_current =  getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "max_current");
-	float current = 0.f;
-	float slope_speed = 0.f;
-	
+
+	//acquire the current readout
+	SCLDBG_ << "fetch current readout";
+	if((err = powersupply_drv->getState(&state, state_str))) {
+		LOG_AND_TROW(SCLERR_, 1, boost::str(boost::format("Error fetching state readout with code %1%") % err));
+	} else {
+		*o_status_id = state;
+		//copy up to 255 and put the termination character
+		strncpy(o_status, state_str.c_str(), 256);
+	}
+
 	switch (*o_status_id) {
 		case common::powersupply::POWER_SUPPLY_STATE_ALARM:
 		case common::powersupply::POWER_SUPPLY_STATE_ERROR:
@@ -86,7 +98,17 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 			BC_EXEC_RUNNIG_PROPERTY
 			return;
 	}
-	
+
+
+	//acquire the current readout
+	SCLDBG_ << "fetch current readout";
+	if((err = powersupply_drv->getCurrentOutput(&current))) {
+		LOG_AND_TROW(SCLERR_, 1, boost::str(boost::format("Error fetching current readout with code %1%") % err));
+	}else{
+		*o_current = (double)current;
+	}
+	current = 0;
+
 	//set comamnd timeout for this instance
 	SCLDBG_ << "Checking for timeout";
 	
@@ -105,7 +127,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 		return;
     }
 
-    SCLDBG_ << "compute timeout for set current = " << current;s
+    SCLDBG_ << "compute timeout for set current = " << current;
 	if(*o_current_sp > current) {
 		SCLDBG_ << "The new current is lower then actual = " << *o_current_sp << "[new "<<current<<"]";
 		slope_speed  = *i_slope_down;

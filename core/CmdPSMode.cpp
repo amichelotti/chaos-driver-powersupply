@@ -10,9 +10,9 @@
 
 #include <boost/format.hpp>
 
-#define CMDCUINFO INFO_LOG(CmdPSMode)
-#define CMDCUDBG DBG_LOG(CmdPSMode)
-#define CMDCUERR ERR_LOG(CmdPSMode)
+#define CMDCUINFO INFO_LOG(CmdPSMode) << "[" << getDeviceID() << "] "
+#define CMDCUDBG DBG_LOG(CmdPSMode) << "[" << getDeviceID() << "] "
+#define CMDCUERR ERR_LOG(CmdPSMode) << "[" << getDeviceID() << "] "
 
 namespace own =  driver::powersupply;
 namespace c_data = chaos::common::data;
@@ -33,6 +33,9 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	CMDCUINFO << "Executing set handler";
 	BC_EXEC_RUNNIG_PROPERTY
 	int err = 0;
+	int state = 0;
+	std::string state_description;
+
 	AbstractPowerSupplyCommand::setHandler(data);
 	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "command_timeout");
 
@@ -48,13 +51,22 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 		BC_END_RUNNIG_PROPERTY;
 		return;
 	}
-		
+
+	//!get the only state because thsi command work only on it
+	if((err = powersupply_drv->getState(&state, state_description))){
+		LOG_AND_TROW(CMDCUERR, 1, boost::str( boost::format("Error calling driver for get state from powersupply") % err));
+	} else {
+		*o_status_id = state;
+		//copy up to 255 and put the termination character
+		strncpy(o_status, state_description.c_str(), 256);
+	}
+
 	switch (state_to_go) {
 		case 0://to standby
 			//i need to be in operational to exec
 			CMDCUINFO << "Request to go to stanby";
 			if(*o_status_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY){
-				CMDCUINFO << "Already in standby";s
+				CMDCUINFO << "Already in standby";
 				BC_END_RUNNIG_PROPERTY
 			} else if((*o_status_id != common::powersupply::POWER_SUPPLY_STATE_OPEN) &&
 			   (*o_status_id != common::powersupply::POWER_SUPPLY_STATE_ON)) {
@@ -74,7 +86,8 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 				BC_END_RUNNIG_PROPERTY
 			} else {
                 CMDCUINFO << "Request to go to operational";
-                if((*o_status_id != common::powersupply::POWER_SUPPLY_STATE_STANDBY)) {
+                if((*o_status_id != common::powersupply::POWER_SUPPLY_STATE_STANDBY) &&
+					(*o_status_id != common::powersupply::POWER_SUPPLY_STATE_OPEN)) {
 					CMDCUERR << boost::str( boost::format("Cant go to operational, current state is %1%[%2%]") % o_status % *o_status_id);
 					BC_END_RUNNIG_PROPERTY;
 					return;
@@ -130,27 +143,6 @@ void own::CmdPSMode::ccHandler() {
 	AbstractPowerSupplyCommand::ccHandler();
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	CMDCUINFO << "Check if we are gone";
-	switch(state_to_go) {
-		case 0://we need to go in stanby
-			if(*o_status_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
-				setWorkState(false);
-				//we are terminated the comman
-				CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] we end command in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-				BC_END_RUNNIG_PROPERTY
-				return;
-			}
-			break;
-			
-		case 1://we need to go on operational
-			if(*o_status_id == common::powersupply::POWER_SUPPLY_STATE_ON) {
-				setWorkState(false);
-				//we are terminated the command
-				CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] we end command in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-				BC_END_RUNNIG_PROPERTY
-				return;
-			}
-			break;
-	}
 	
 	if(*o_status_id == common::powersupply::POWER_SUPPLY_STATE_ALARM ||
 	   *o_status_id == common::powersupply::POWER_SUPPLY_STATE_ERROR ||
@@ -158,6 +150,28 @@ void own::CmdPSMode::ccHandler() {
 		BC_END_RUNNIG_PROPERTY
 		setWorkState(false);
 		CMDCUERR << boost::str(boost::format("[metric] Bad state got = %1% - [%2%] in %3% milliseconds") % *o_status_id % o_status % elapsed_msec);
+	} else {
+		switch(state_to_go) {
+			case 0://we need to go in stanby
+				if(*o_status_id == common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
+					setWorkState(false);
+					//we are terminated the comman
+					CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] we end command in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
+					BC_END_RUNNIG_PROPERTY
+					return;
+				}
+				break;
+
+			case 1://we need to go on operational
+				if(*o_status_id == common::powersupply::POWER_SUPPLY_STATE_ON) {
+					setWorkState(false);
+					//we are terminated the command
+					CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] we end command in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
+					BC_END_RUNNIG_PROPERTY
+					return;
+				}
+				break;
+		}
 	}
 	if(*o_alarms) {
 		BC_END_RUNNIG_PROPERTY

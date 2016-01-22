@@ -23,12 +23,9 @@
 
 #include <boost/format.hpp>
 
-#define LOG_HEAD_CmdPSSetSlope LOG_TAIL(CmdPSSetSlope)
-
-#define SCLAPP_ LAPP_ << LOG_HEAD_CmdPSSetSlope
-#define SCLDBG_ LDBG_ << LOG_HEAD_CmdPSSetSlope
-#define SCLERR_ LERR_ << LOG_HEAD_CmdPSSetSlope
-
+#define SCLAPP_ INFO_LOG(CmdPSSetSlope) << "[" << getDeviceID() << "] "
+#define SCLDBG_ DBG_LOG(CmdPSSetSlope) << "[" << getDeviceID() << "] "
+#define SCLERR_ ERR_LOG(CmdPSSetSlope) << "[" << getDeviceID() << "] "
 
 namespace own =  driver::powersupply;
 namespace ccc_slow_command = chaos::cu::control_manager::slow_command;

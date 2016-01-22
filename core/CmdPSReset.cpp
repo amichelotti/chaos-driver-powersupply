@@ -23,9 +23,9 @@
 
 #include <boost/format.hpp>
 
-#define CMDCU_ INFO_LOG(CmdPSReset)
-#define CMDCUDBG_ DBG_LOG(CmdPSReset)
-#define CMDCUERR_ ERR_LOG(CmdPSReset)
+#define CMDCU_ INFO_LOG(CmdPSReset) << "[" << getDeviceID() << "] "
+#define CMDCUDBG_ DBG_LOG(CmdPSReset) << "[" << getDeviceID() << "] "
+#define CMDCUERR_ ERR_LOG(CmdPSReset) << "[" << getDeviceID() << "] "
 
 namespace own =  driver::powersupply;
 namespace c_data = chaos::common::data;

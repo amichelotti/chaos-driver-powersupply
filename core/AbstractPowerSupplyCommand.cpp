@@ -18,12 +18,11 @@
  *    	limitations under the License.
  */
 
+#include "AbstractPowerSupplyCommand.h"
+#include <boost/format.hpp>
 #define CMDCUINFO_ INFO_LOG(AbstractPowerSupplyCommand)
 #define CMDCUDBG_ DBG_LOG(AbstractPowerSupplyCommand)
 #define CMDCUERR_ ERR_LOG(AbstractPowerSupplyCommand)
-
-#include "AbstractPowerSupplyCommand.h"
-#include <boost/format.hpp>
 
 using namespace driver::powersupply;
 namespace chaos_batch = chaos::common::batch_command;

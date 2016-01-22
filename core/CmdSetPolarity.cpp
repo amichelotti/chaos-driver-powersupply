@@ -23,11 +23,9 @@
 
 #include <boost/format.hpp>
 
-#define LOG_HEAD_CmdPSSetCurrent LOG_TAIL(CmdSetPolarity)
-#define SCLAPP_ LAPP_ << LOG_HEAD_CmdPSSetCurrent
-#define SCLDBG_ LDBG_ << LOG_HEAD_CmdPSSetCurrent
-#define SCLERR_ LERR_ << LOG_HEAD_CmdPSSetCurrent
-
+#define SCLAPP_ INFO_LOG(CmdSetPolarity) << "[" << getDeviceID() << "] "
+#define SCLDBG_ DBG_LOG(CmdSetPolarity) << "[" << getDeviceID() << "] "
+#define SCLERR_ ERR_LOG(CmdSetPolarity) << "[" << getDeviceID() << "] "
 
 namespace own =  driver::powersupply;
 namespace c_data = chaos::common::data;
