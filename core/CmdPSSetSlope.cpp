@@ -30,6 +30,7 @@
 namespace own =  driver::powersupply;
 namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
 namespace c_data = chaos::common::data;
+namespace chaos_batch = chaos::common::batch_command;
 
 BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdPSSetSlope,CMD_PS_SET_SLOPE_ALIAS,
                                                           "Set rising/falling current slope to a given values (A/s)",
@@ -42,7 +43,7 @@ BATCH_COMMAND_CLOSE_DESCRIPTION()
 
 // return the implemented handler
 uint8_t own::CmdPSSetSlope::implementedHandler() {
-    return	AbstractPowerSupplyCommand::implementedHandler();
+    return	AbstractPowerSupplyCommand::implementedHandler()|chaos_batch::HandlerType::HT_Acquisition;
 }
 
 void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
