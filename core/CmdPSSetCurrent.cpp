@@ -141,7 +141,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	double delta_setting = std::abs(*o_current_sp - current);
 	SCLDBG_ << "Delta setting is = " << delta_setting;
 	SCLDBG_ << "Slope speed is = " << slope_speed;
-	uint64_t computed_timeout = uint64_t(((delta_setting / slope_speed) * 1000)) + 60000;
+	uint64_t computed_timeout = uint64_t(((delta_setting / slope_speed) * 1000)) + 10000;
 	SCLDBG_ << "Calculated timout is = " << computed_timeout;
 	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
 	//set current set poi into the output channel
