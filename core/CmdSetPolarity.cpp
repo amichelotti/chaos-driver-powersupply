@@ -107,6 +107,7 @@ void own::CmdSetPolarity::acquireHandler() {
 	if((err = powersupply_drv->getPolarity(o_polarity)) != 0){
 	    LOG_AND_TROW(SCLERR_, 2, boost::str( boost::format("Error getting the polarity from driver with code %1%") % err));
 	}
+	getAttributeCache()->setOutputDomainAsChanged();
 }
 
 //Correlation and commit phase
