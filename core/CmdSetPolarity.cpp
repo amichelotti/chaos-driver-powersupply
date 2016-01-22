@@ -105,11 +105,13 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 void own::CmdSetPolarity::acquireHandler() {
 	SCLDBG_ << "enter acquireHandler";
 	int err = 0;
-	if((err = powersupply_drv->getPolarity(o_polarity)) != 0){
+	int got_polarity;
+	if((err = powersupply_drv->getPolarity(&got_polarity)) != 0){
 	    LOG_AND_TROW(SCLERR_, 2, boost::str( boost::format("Error getting the polarity from driver with code %1%") % err));
 	}
+	*o_polarity = got_polarity;
 	getAttributeCache()->setOutputDomainAsChanged();
-	SCLDBG_ << "exit acquireHandler";
+	SCLDBG_ << "exit acquireHandler with polarity " << got_polarity;
 }
 
 //Correlation and commit phase
