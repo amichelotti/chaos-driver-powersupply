@@ -112,8 +112,14 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	//set comamnd timeout for this instance
 	SCLDBG_ << "Checking for timeout";
 	
-	if(!data || !data->hasKey(CMD_PS_SET_CURRENT)) {
-		SCLERR_ << boost::str( boost::format("Set current parameter not present") % o_status % *o_status_id);
+	if(!data ||
+	   !data->hasKey(CMD_PS_SET_CURRENT)) {
+		SCLERR_ << "Set current parameter not present";
+		BC_EXEC_RUNNIG_PROPERTY
+		return;
+	}
+	if(!data->isDoubleValue(CMD_PS_SET_CURRENT)) {
+		SCLERR_ << "Set current parameter is not a Double data type";
 		BC_EXEC_RUNNIG_PROPERTY
 		return;
 	}
@@ -141,7 +147,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	double delta_setting = std::abs(*o_current_sp - current);
 	SCLDBG_ << "Delta setting is = " << delta_setting;
 	SCLDBG_ << "Slope speed is = " << slope_speed;
-	uint64_t computed_timeout = uint64_t(((delta_setting / slope_speed) * 1000)) + 10000;
+	uint64_t computed_timeout = uint64_t(((delta_setting / slope_speed) * 1000)) + DEFAULT_RAMP_TIME_OFFSET_MS;
 	SCLDBG_ << "Calculated timout is = " << computed_timeout;
 	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
 	//set current set poi into the output channel
@@ -154,7 +160,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	if(*i_setpoint_affinity) {
 		affinity_set_delta = *i_setpoint_affinity;
 	} else {
-		affinity_set_delta = 3;
+		affinity_set_delta = 1;
 	}
 	SCLDBG_ << "The setpoint affinity value is of +-" << affinity_set_delta << " of ampere";
 

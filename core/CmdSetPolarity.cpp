@@ -61,8 +61,8 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
 	} else {
 		//set five second of timeout
-		SCLDBG_ << "Timeout will be set to ms -> 5000";
-		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)10000);
+		SCLDBG_ << "Timeout will be set to ms ->" << DEFAULT_COMMAND_TIMEOUT_MS;
+		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)DEFAULT_COMMAND_TIMEOUT_MS);
 	}
 	int32_t polarity_readout = 0;
     polarity_set_point = data->getInt32Value(CMD_PS_SET_POLARITY_VALUE);

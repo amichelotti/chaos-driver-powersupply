@@ -52,8 +52,8 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
 	} else {
 		//set five second of timeout
-		CMDCUDBG_ << "Timeout will be set to ms -> 5000";
-		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)10000);
+		CMDCUDBG_ << "Timeout will be set to ms -> "<<DEFAULT_COMMAND_TIMEOUT_MS;
+		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)DEFAULT_COMMAND_TIMEOUT_MS);
 	}
 	
 	//send comamnd to driver
