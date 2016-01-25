@@ -49,6 +49,8 @@ void ChaosPowerSupplyDD::driverDeinit() throw(chaos::CException) {
 
 
 cu_driver::MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyDD::execOpcode(cu_driver::DrvMsgPtr cmd){
+        boost::mutex::scoped_lock lock(io_mux);
+
     cu_driver::MsgManagmentResultType::MsgManagmentResult result = cu_driver::MsgManagmentResultType::MMR_EXECUTED;
     powersupply_iparams_t *in = (powersupply_iparams_t *)cmd->inputData;
     powersupply_oparams_t *out = (powersupply_oparams_t *)cmd->resultData;
@@ -181,7 +183,8 @@ cu_driver::MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyDD::execOp
             PSDBG<<"Got Alarm maxk "<<out->alarm_mask;
 
             break;
-
+        default:
+            PSERR<<"Opcode not supported:"<<cmd->opcode;
     }
     return result;
 }
