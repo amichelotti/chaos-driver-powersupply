@@ -120,7 +120,6 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 }
 
 void own::CmdPSMode::acquireHandler() {
-	CMDCUINFO << "enter acquireHandler";
 	int err = 0;
 	int state = 0;
 	std::string state_description;
@@ -138,7 +137,6 @@ void own::CmdPSMode::acquireHandler() {
 	}
 	//force output dataset as changed
 	getAttributeCache()->setOutputDomainAsChanged();
-	CMDCUINFO << "exit acquireHandler";
 }
 
 void own::CmdPSMode::ccHandler() {

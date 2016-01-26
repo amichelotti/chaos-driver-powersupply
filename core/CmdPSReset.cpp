@@ -77,6 +77,7 @@ void own::CmdPSReset::ccHandler() {
 		//we are terminated the command
 		BC_END_RUNNIG_PROPERTY;
 	}
+	getAttributeCache()->setOutputDomainAsChanged();
 }
 
 bool own::CmdPSReset::timeoutHandler() {
