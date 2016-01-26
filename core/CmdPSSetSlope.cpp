@@ -62,6 +62,11 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
         asdown = *getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_down");
     }
 
+      if((isnormal(asdown)==false)|| (isnormal(asup)==false)){
+        SCLERR_ << "Set slope parameter is not a valid double number (nan?)";
+        BC_EXEC_RUNNIG_PROPERTY
+        return;
+    }
 	switch (*o_status_id) {
 		case common::powersupply::POWER_SUPPLY_STATE_ALARM:
 		case common::powersupply::POWER_SUPPLY_STATE_ERROR:

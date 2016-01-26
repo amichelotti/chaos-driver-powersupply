@@ -68,6 +68,13 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
     polarity_set_point = data->getInt32Value(CMD_PS_SET_POLARITY_VALUE);
     SCLAPP_ << "Set polarity called with value " << polarity_set_point;
     
+     if(((*o_status_id)&common::powersupply::POWER_SUPPLY_STATE_STANDBY)==0){
+            SCLERR_ << boost::str( boost::format("Bad state for set current comamnd %1%[%2%]") % o_status % *o_status_id);
+	    BC_END_RUNNIG_PROPERTY;
+	    return;
+     }	
+        
+    /*
 	switch (*o_status_id) {
 		case common::powersupply::POWER_SUPPLY_STATE_ALARM:
 		case common::powersupply::POWER_SUPPLY_STATE_ERROR:
@@ -89,7 +96,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 			BC_END_RUNNIG_PROPERTY;
 			return;
 	}
-
+*/
 	if((err = powersupply_drv->setPolarity(polarity_set_point)) != 0) {
 		LOG_AND_TROW(SCLERR_, 1, boost::str( boost::format("Error setting the polarity on driver with code %1%") % err));
 	}

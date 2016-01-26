@@ -78,27 +78,37 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 		strncpy(o_status, state_str.c_str(), 256);
 	}
 
-	switch (*o_status_id) {
+        if(((*o_status_id)&common::powersupply::POWER_SUPPLY_STATE_ON)==0){
+            SCLERR_ << boost::str( boost::format("Bad state for set current comamnd %1%[%2%]") % o_status % *o_status_id);
+	    BC_END_RUNNIG_PROPERTY;
+	    return;
+        }	
+        
+        
+        
+        /*
+         switch (*o_status_id) {
 		case common::powersupply::POWER_SUPPLY_STATE_ALARM:
 		case common::powersupply::POWER_SUPPLY_STATE_ERROR:
 		case common::powersupply::POWER_SUPPLY_STATE_UKN:
+                case common::powersupply::POWER_SUPPLY_STATE_OPEN:
+                case common::powersupply::POWER_SUPPLY_STATE_STANDBY:
+
 			//i need to be in operational to exec
 			SCLERR_ << boost::str( boost::format("Bad state for set current comamnd %1%[%2%]") % o_status % *o_status_id);
-			BC_EXEC_RUNNIG_PROPERTY
+			BC_END_RUNNIG_PROPERTY;
 			return;
 			
-		case common::powersupply::POWER_SUPPLY_STATE_OPEN:
 		case common::powersupply::POWER_SUPPLY_STATE_ON:
-		case common::powersupply::POWER_SUPPLY_STATE_STANDBY:
 			SCLDBG_ << "We can start the set current command";
 			break;
 			
 		default:
 			SCLERR_ << boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id);
-			BC_EXEC_RUNNIG_PROPERTY
+			BC_END_RUNNIG_PROPERTY;
 			return;
 	}
-
+*/
 
 	//acquire the current readout
 	SCLDBG_ << "fetch current readout";
@@ -115,21 +125,26 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	if(!data ||
 	   !data->hasKey(CMD_PS_SET_CURRENT)) {
 		SCLERR_ << "Set current parameter not present";
-		BC_EXEC_RUNNIG_PROPERTY
+		BC_END_RUNNIG_PROPERTY;
 		return;
 	}
 	if(!data->isDoubleValue(CMD_PS_SET_CURRENT)) {
 		SCLERR_ << "Set current parameter is not a Double data type";
-		BC_EXEC_RUNNIG_PROPERTY
+		BC_END_RUNNIG_PROPERTY;
 		return;
 	}
     
     current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
+    if(isnan(current)==true){
+        SCLERR_ << "Set current parameter is not a valid double number (nan?)";
+        BC_END_RUNNIG_PROPERTY;
+        return;
+    }
     if(*max_current && (current>*max_current)){
         std::stringstream ss;
         ss<<"current:"<<current<<" > "<<max_current;
 		SCLERR_ << boost::str( boost::format("current %1% gretear the maximum \"max_current\":%2%") % current % *max_current);
-		BC_EXEC_RUNNIG_PROPERTY
+		BC_END_RUNNIG_PROPERTY;
 		return;
     }
 
@@ -153,7 +168,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	//set current set poi into the output channel
 	if(*i_delta_setpoint && (delta_setting < *i_delta_setpoint)) {
 		SCLERR_ << "New current don't pass delta check of = " << *i_delta_setpoint << " setpoint point = "<<current <<" current set" << *o_current_sp;
-		BC_END_RUNNIG_PROPERTY
+		BC_END_RUNNIG_PROPERTY;
 		return;
 	}
 
@@ -183,8 +198,19 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 void own::CmdPSSetCurrent::acquireHandler() {
 	int err = 0;
 	float tmp_float;
+        int state=0;
+	std::string state_str;
 	//acquire the current readout
 	SCLDBG_ << "fetch current readout";
+        
+        if((err = powersupply_drv->getState(&state, state_str))) {
+		LOG_AND_TROW(SCLERR_, 1, boost::str(boost::format("Error fetching state readout with code %1%") % err));
+	} else {
+		*o_status_id = state;
+		//copy up to 255 and put the termination character
+		strncpy(o_status, state_str.c_str(), 256);
+	}
+        
 	if((err = powersupply_drv->getCurrentOutput(&tmp_float))) {
 		LOG_AND_TROW(SCLERR_, 1, boost::str(boost::format("Error fetching current readout with code %1%") % err));
 	}else{
@@ -218,7 +244,12 @@ void own::CmdPSSetCurrent::ccHandler() {
 		SCLDBG_ << "[metric ]Set point reached with - delta: "<< delta_current_reached <<" sp: "<< *o_current_sp <<" affinity check " << affinity_set_delta << " ampere in " << elapsed_msec << " milliseconds";
 		BC_END_RUNNIG_PROPERTY;
 		setWorkState(false);
-	}
+        }
+        if(((*o_status_id)&common::powersupply::POWER_SUPPLY_STATE_ON)==0){
+		SCLERR_ << "change state during set current;";
+                BC_FAULT_RUNNIG_PROPERTY;
+
+        }
 	if(*o_alarms) {
 		SCLERR_ << "We got alarms on powersupply so we end the command";
 		BC_END_RUNNIG_PROPERTY;
