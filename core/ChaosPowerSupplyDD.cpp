@@ -125,6 +125,13 @@ cu_driver::MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyDD::execOp
             out->result = power->getAlarms(&out->alarm_mask,in->timeout);
             PSDBG<<"Got alarms to:"<<out->alarm_mask<<" timeout:"<<in->timeout;
             break;
+            
+        case OP_GET_FEATURE:{
+            uint64_t feat=power->getFeatures();
+            out->alarm_mask=feat;
+            PSDBG<<"Got Features:"<<feat;
+        }
+            break;
         case OP_SHUTDOWN:
             PSDBG<<"Shutting down"<<" timeout:"<<in->timeout;
             out->result = power->shutdown(in->timeout);

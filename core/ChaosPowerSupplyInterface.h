@@ -49,6 +49,7 @@ namespace chaos {
                 OP_GET_ALARM_DESC,
                 OP_FORCE_MAX_CURRENT,
                 OP_FORCE_MAX_VOLTAGE,
+                OP_GET_FEATURE
             } ChaosPowerSupplyOpcode;
             
             typedef struct {
@@ -275,8 +276,12 @@ namespace chaos {
                  @return 0 if success or an error code
                  */
                 int forceMaxVoltage(float max);
-                
-                
+                 /**
+                 @brief return a bitfield of capabilities of the powersupply
+                 @return the a bit field of capability
+                 */
+                uint64_t getFeatures() ;
+
             };
         }
     }

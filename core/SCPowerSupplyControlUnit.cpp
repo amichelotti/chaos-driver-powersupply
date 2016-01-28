@@ -146,8 +146,8 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 
 
   ///
-  addAttributeToDataSet("max_current",
-                        "The maximum current applicable",
+  addAttributeToDataSet("currentSP",
+                        "The maximum/mininimum current applicable",
                         DataType::TYPE_DOUBLE,
                         DataType::Input);
 
@@ -220,11 +220,19 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw(CExceptio
   /*
    */
   SCCUAPP << "check mandatory default values";
-  getAttributeRangeValueInfo("max_current", attr_info);
+  getAttributeRangeValueInfo(std::string("currentSP"), attr_info);
 
   // REQUIRE MIN MAX SET IN THE MDS
   if (attr_info.maxRange.size()) {
     SCCUAPP << "max_current max=" << (max_range = attr_info.maxRange);
+        SCCUAPP << "min_current min=" << (min_range = attr_info.minRange);
+
+  }
+
+  // REQUIRE MIN MAX SET IN THE MDS
+  if (attr_info.minRange.size()) {
+        SCCUAPP << "min_current min=" << (min_range = attr_info.minRange);
+
   }
 
 
@@ -273,7 +281,9 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitStop() throw(CExceptio
 
 // Abstract method for the deinit of the control unit
 void ::driver::powersupply::SCPowerSupplyControlUnit::unitDeinit() throw(CException) {
-
+    SCCUAPP << "deinitializing ";
+    powersupply_drv->deinit();
+    
 }
 
 //! restore the control unit to snapshot
@@ -299,12 +309,8 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
     int32_t restore_polarity = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "polarity")->getValuePtr<int32_t>();
     double restore_current_sp = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "current_sp")->getValuePtr<double>();
     //handle bipolar
-    int is_bipolar=0;
-    if((restore_current_sp<0) || (*now_current_sp)<0 ){
-        is_bipolar=1;
-        RESTORE_LAPP << "IS bipolar!!";
-
-    }
+    int is_bipolar=powersupply_drv->getFeatures()& ::common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR;
+   
     ///
 
     if ((*now_polarity != restore_polarity)&&(is_bipolar==0)) {

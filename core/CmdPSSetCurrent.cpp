@@ -35,6 +35,7 @@ namespace own =  driver::powersupply;
 namespace c_data = chaos::common::data;
 namespace chaos_batch = chaos::common::batch_command;
 
+
 BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdPSSetCurrent,CMD_PS_SET_CURRENT_ALIAS,
                                                           "Set current (A) to the given value",
                                                           "72882f3e-35da-11e5-985f-334fcd6dff22")
@@ -51,12 +52,13 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     chaos::common::data::RangeValueInfo attributeInfo;
 	AbstractPowerSupplyCommand::setHandler(data);
 
-	const double*max_current;
+	double max_current=0,min_current=0;
 	int err = 0;
 	int state;
 	std::string state_str;
 	float current = 0.f;
 	float slope_speed = 0.f;
+        chaos::common::data::RangeValueInfo attr_info;
 	o_current = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current");
 	o_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current_sp");
 	o_voltage = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "voltage");
@@ -66,7 +68,32 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "command_timeout");
 	i_delta_setpoint = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "delta_setpoint");
 	i_setpoint_affinity = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "setpoint_affinity");
-	max_current =  getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "max_current");
+        
+        getDeviceDatabase()->getAttributeRangeValueInfo("currentSP", attr_info);
+
+  // REQUIRE MIN MAX SET IN THE MDS
+  if (attr_info.maxRange.size()) {
+      max_current = atof(attr_info.maxRange.c_str());
+    SCLDBG_ << "max_current max=" << max_current;
+
+  } else {
+           SCLERR_ << "not defined maximum 'currentSP' attribute, quitting command";
+                   BC_END_RUNNIG_PROPERTY;
+	    return;
+  }
+
+  // REQUIRE MIN MAX SET IN THE MDS
+  if (attr_info.minRange.size()) {
+            min_current = atof(attr_info.minRange.c_str());
+
+        SCLDBG_ << "min_current min=" << min_current;
+  } else {
+                  SCLERR_ << "not defined minimum 'currentSP' attribute, quitting command";
+                   BC_END_RUNNIG_PROPERTY;
+	    return;
+
+  }
+
 
 	//acquire the current readout
 	SCLDBG_ << "fetch current readout";
@@ -85,32 +112,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
         }	
         
         
-        
-        /*
-         switch (*o_status_id) {
-		case common::powersupply::POWER_SUPPLY_STATE_ALARM:
-		case common::powersupply::POWER_SUPPLY_STATE_ERROR:
-		case common::powersupply::POWER_SUPPLY_STATE_UKN:
-                case common::powersupply::POWER_SUPPLY_STATE_OPEN:
-                case common::powersupply::POWER_SUPPLY_STATE_STANDBY:
-
-			//i need to be in operational to exec
-			SCLERR_ << boost::str( boost::format("Bad state for set current comamnd %1%[%2%]") % o_status % *o_status_id);
-			BC_END_RUNNIG_PROPERTY;
-			return;
-			
-		case common::powersupply::POWER_SUPPLY_STATE_ON:
-			SCLDBG_ << "We can start the set current command";
-			break;
-			
-		default:
-			SCLERR_ << boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id);
-			BC_END_RUNNIG_PROPERTY;
-			return;
-	}
-*/
-
-	//acquire the current readout
+        //acquire the current readout
 	SCLDBG_ << "fetch current readout";
 	if((err = powersupply_drv->getCurrentOutput(&current))) {
 		LOG_AND_TROW(SCLERR_, 1, boost::str(boost::format("Error fetching current readout with code %1%") % err));
@@ -140,13 +142,14 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
         BC_END_RUNNIG_PROPERTY;
         return;
     }
-    if(*max_current && (current>*max_current)){
-        std::stringstream ss;
+    if(current>max_current || current<min_current){
+          std::stringstream ss;
         ss<<"current:"<<current<<" > "<<max_current;
-		SCLERR_ << boost::str( boost::format("current %1% gretear the maximum \"max_current\":%2%") % current % *max_current);
+		SCLERR_ << boost::str( boost::format("current %1% outside  the maximum/minimum 'currentSP' \"max_current\":%2% \"min_current\":%3%" ) % current % max_current % min_current);
 		BC_END_RUNNIG_PROPERTY;
 		return;
     }
+    
 
     SCLDBG_ << "compute timeout for set current = " << current;
 	if(*o_current_sp > current) {

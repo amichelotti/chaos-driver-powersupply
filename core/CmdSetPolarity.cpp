@@ -51,7 +51,11 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 		BC_END_RUNNIG_PROPERTY;
 		return;
     }
-
+        if(powersupply_drv->getFeatures()& common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR){
+            	SCLERR_ << "invalid command for bipolars";
+                BC_END_RUNNIG_PROPERTY;
+		return;
+        }
 	o_polarity = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
 	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "command_timeout");
 
