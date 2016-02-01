@@ -24,15 +24,14 @@
 
 #define LOG_HEAD_CmdPSDefault LOG_TAIL(CmdPSDefault)
 
-#define CMDCU_ INFO_LOG(CmdPSDefault)
-#define CMDCUDBG_ DBG_LOG(CmdPSDefault)
-#define CMDCUERR_ ERR_LOG(CmdPSDefault)
+#define CMDCU_ INFO_LOG(CmdPSDefault) << "[" << getDeviceID() << "] "
+#define CMDCUDBG_ DBG_LOG(CmdPSDefault) << "[" << getDeviceID() << "] "
+#define CMDCUERR_ ERR_LOG(CmdPSDefault) << "[" << getDeviceID() << "] "
 
 using namespace driver::powersupply;
 using namespace chaos::common::data;
 using namespace chaos::common::batch_command;
 using namespace chaos::cu::control_manager::slow_command;
-
 
 BATCH_COMMAND_OPEN_DESCRIPTION(driver::powersupply::,CmdPSDefault,
                                                           "Default method",
