@@ -82,7 +82,19 @@ namespace driver {
 			 Base destructor
 			 */
 			~SCPowerSupplyControlUnit();
+			 bool setSP(const std::string &name,double value,uint32_t size);
+			 bool setPol(const std::string &name,int value,uint32_t size);
+			 bool setRampH(const std::string &name,double value,uint32_t size);
+			 bool setRampL(const std::string &name,double value,uint32_t size);
+
+			 bool setMode(const std::string &name,int32_t value,uint32_t size);
+			 bool setAlarms(const std::string &name,long long value,uint32_t size);
+
+
+
 		};
+
+
 	}
 }
 

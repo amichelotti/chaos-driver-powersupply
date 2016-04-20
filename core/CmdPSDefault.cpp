@@ -66,9 +66,9 @@ void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 	o_voltage = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "voltage");
 	o_polarity = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
 	o_dev_state = getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "dev_state");
-	o_on = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "on");
-	o_stby = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "stby");
-	o_alarm = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "alarm");
+	o_on = (int32_t*)getAttributeCache()->getROPtr<int32_t>(DOMAIN_INPUT, "on");
+	o_stby = (int32_t*)getAttributeCache()->getROPtr<int32_t>(DOMAIN_INPUT, "stby");
+	o_alarm = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "alarms");
 
 	BC_NORMAL_RUNNIG_PROPERTY
     sequence_number = 0;

@@ -68,7 +68,58 @@ PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(::driver::powersupply::SCPowerSupplyCont
   }
 }
 
+bool ::driver::powersupply::SCPowerSupplyControlUnit::setSP(const std::string &name,double value,uint32_t size){
+    SCCUAPP << "set SP to " << value;
 
+	return setCurrent(value);
+}
+bool ::driver::powersupply::SCPowerSupplyControlUnit::setAlarms(const std::string &name,long long value,uint32_t size){
+    SCCUAPP << "set alarms " << value;
+	if(powersupply_drv->resetAlarms(value) != 0) {
+		return false;
+	}
+
+	return true;
+}
+bool  ::driver::powersupply::SCPowerSupplyControlUnit::setMode(const std::string &name,int32_t value,uint32_t size){
+	if(value&::common::powersupply::POWER_SUPPLY_STATE_STANDBY){
+	    SCCUAPP << "set standby";
+		return powerStandby();
+	} else if(value&::common::powersupply::POWER_SUPPLY_STATE_ON){
+	    SCCUAPP << "set ON";
+
+		return powerON();
+	}
+	return false;
+}
+bool  ::driver::powersupply::SCPowerSupplyControlUnit::setPol(const std::string &name,int32_t value,uint32_t size){
+    SCCUAPP << "set polarity:"<<value;
+
+	return setPolarity(value);
+}
+bool ::driver::powersupply::SCPowerSupplyControlUnit::setRampH(const std::string &name,double value,uint32_t size){
+	int err=-1;
+
+	  const double *asup = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_up");
+	  const double *asdown = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_down");
+	  if(value>0 && *asdown>0){
+		    SCCUAPP << "set ramp up:"<<value;
+
+		  err = powersupply_drv->setCurrentRampSpeed(value, *asdown);
+	  }
+	 return (err!=chaos::ErrorCode::EC_NO_ERROR);
+}
+bool ::driver::powersupply::SCPowerSupplyControlUnit::setRampL(const std::string &name,double value,uint32_t size){
+	int err= -1;
+	  const double *asup = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_up");
+	  const double *asdown = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_down");
+	  if(value>0 && *asdown>0){
+		    SCCUAPP << "set ramp down:"<<value;
+
+		  err = powersupply_drv->setCurrentRampSpeed(*asup, value);
+	  }
+	 return (err!=chaos::ErrorCode::EC_NO_ERROR);
+}
 /*
  Return the default configuration
  */
@@ -128,21 +179,25 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
                         DataType::TYPE_BYTEARRAY,
                         DataType::Output);
 */
-  /*
-   * JAVASCRIPT INTERFACE
-   */
+  addAttributeToDataSet("polarity",
+                          "polarity",
+                          DataType::TYPE_INT32,
+                          DataType::Input);
   addAttributeToDataSet("on",
                         "power supply is on",
                         DataType::TYPE_INT32,
-                        DataType::Output);
+                        DataType::Input);
+
   addAttributeToDataSet("stby",
                         "power supply is on standby",
                         DataType::TYPE_INT32,
-                        DataType::Output);
-  addAttributeToDataSet("alarm",
+                        DataType::Input);
+
+  addAttributeToDataSet("alarms",
                         "power supply alarm",
-                        DataType::TYPE_INT32,
-                        DataType::Output);
+                        DataType::TYPE_INT64,
+                        DataType::Input
+						);
 
 
   ///
@@ -181,6 +236,29 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
                         DataType::TYPE_INT32,
                         DataType::Input);
   //define the custom share, across slow command, variable
+
+  addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, double >(this,
+                                                                    &::driver::powersupply::SCPowerSupplyControlUnit::setSP,
+                                                                    "currentSP");
+  addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, double >(this,
+                                                                      &::driver::powersupply::SCPowerSupplyControlUnit::setRampH,
+                                                                      "slope_up");
+  addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, double >(this,
+                                                                      &::driver::powersupply::SCPowerSupplyControlUnit::setRampL,
+                                                                      "slope_down");
+  addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, int32_t >(this,
+                                                                      &::driver::powersupply::SCPowerSupplyControlUnit::setMode,
+                                                                      "on");
+  addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, int32_t >(this,
+                                                                      &::driver::powersupply::SCPowerSupplyControlUnit::setMode,
+                                                                      "stby");
+  addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, int32_t >(this,
+                                                                        &::driver::powersupply::SCPowerSupplyControlUnit::setPol,
+                                                                        "polarity");
+
+  addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, long long  >(this,
+                                                                         &::driver::powersupply::SCPowerSupplyControlUnit::setAlarms,
+                                                                         "alarms");
 }
 
 void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineCustomAttribute() {
