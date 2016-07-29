@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 project(chaos_driver_powersupply)
 SET(CHAOS_CUS core/SCPowerSupplyControlUnit.cpp)
-include($ENV{CHAOS_BUNDLE}/tools/project_template/CMakeChaos.txt)
 
 add_definitions(-DCHAOS -DDEBUG)
 FILE(GLOB core_src core/*.cpp)
