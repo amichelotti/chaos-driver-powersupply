@@ -1,13 +1,11 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 project(chaos_driver_powersupply)
 SET(CHAOS_CUS core/SCPowerSupplyControlUnit.cpp)
 
-add_definitions(-DCHAOS -DDEBUG)
 FILE(GLOB core_src core/*.cpp)
 SET(DRIVERS_LIB )
 add_subdirectory(models)
 
-MESSAGE(STATUS "Libraries ${DRIVERS_LIB}")
 ADD_EXECUTABLE(powersupply_cu test/powersupply_cu.cpp )
 ADD_EXECUTABLE(powersupply_test test/test_power_supply.cpp test/TestPowerSupply.cpp )
 

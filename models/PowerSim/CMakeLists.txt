@@ -1,9 +1,7 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 project(chaos_driver_powersupply_sim_dd)
 SET(DRIVERS_LIB ${DRIVERS_LIB}  ${PROJECT_NAME} common_powersupply_simulator PARENT_SCOPE)
-message(STATUS "Simulator driver ${DRIVERS_LIB}")
 
-add_definitions(-DCHAOS -DDEBUG)
 FILE(GLOB src *.cpp)
 
 
