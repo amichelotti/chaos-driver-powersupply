@@ -24,5 +24,5 @@ TARGET_LINK_LIBRARIES(powersupply_test ${DRIVERS_LIB} ${PROJECT_NAME} common_ser
 INSTALL_TARGETS(/bin powersupply_cu)
 INSTALL_TARGETS(/bin powersupply_test)
 INSTALL_TARGETS(/lib ${PROJECT_NAME})
-
+INSTALL(FILES conf/SCPowerSupplyControlUnit.conf DESTINATION etc/test/powersupply/conf)
 
