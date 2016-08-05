@@ -10,7 +10,7 @@ ADD_LIBRARY(${PROJECT_NAME} STATIC ${src})
 ELSE()
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${src})
 ENDIF()
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_powersupply_ocem common_serial_ocem)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_powersupply_ocem common_serial_ocem chaos_driver_powersupply)
 INSTALL_TARGETS(/lib ${PROJECT_NAME})
 
 

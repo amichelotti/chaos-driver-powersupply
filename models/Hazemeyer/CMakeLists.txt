@@ -9,7 +9,7 @@ ADD_LIBRARY(${PROJECT_NAME} STATIC ${src})
 ELSE()
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${src})
 ENDIF()
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_powersupply hazemeyer_powersupply HZLib common_modbus modbus)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_powersupply hazemeyer_powersupply HZLib common_modbus modbus chaos_driver_powersupply)
 INSTALL_TARGETS(/lib ${PROJECT_NAME} )
 
 

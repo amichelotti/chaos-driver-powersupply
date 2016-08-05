@@ -17,7 +17,7 @@ ELSE()
 ADD_LIBRARY(${PROJECT_NAME}  SHARED ${core_src})
 ENDIF()
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_powersupply chaos_common chaos_cutoolkit ${FrameworkLib})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_powersupply chaos_uitoolkit chaos_common chaos_cutoolkit ${FrameworkLib})
 TARGET_LINK_LIBRARIES(powersupply_cu ${DRIVERS_LIB} ${PROJECT_NAME} common_serial_ocem common_serial common_debug common_modbus modbus)
 TARGET_LINK_LIBRARIES(powersupply_test ${DRIVERS_LIB} ${PROJECT_NAME} common_serial_ocem common_test common_serial common_debug common_modbus modbus)
 
