@@ -23,16 +23,14 @@
 
 #include <boost/format.hpp>
 
-#define LOG_HEAD_CmdPSSetSlope LOG_TAIL(CmdPSSetSlope)
-
-#define SCLAPP_ LAPP_ << LOG_HEAD_CmdPSSetSlope
-#define SCLDBG_ LDBG_ << LOG_HEAD_CmdPSSetSlope
-#define SCLERR_ LERR_ << LOG_HEAD_CmdPSSetSlope
-
+#define SCLAPP_ INFO_LOG(CmdPSSetSlope) << "[" << getDeviceID() << "] "
+#define SCLDBG_ DBG_LOG(CmdPSSetSlope) << "[" << getDeviceID() << "] "
+#define SCLERR_ ERR_LOG(CmdPSSetSlope) << "[" << getDeviceID() << "] "
 
 namespace own =  driver::powersupply;
 namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
 namespace c_data = chaos::common::data;
+namespace chaos_batch = chaos::common::batch_command;
 
 BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdPSSetSlope,CMD_PS_SET_SLOPE_ALIAS,
                                                           "Set rising/falling current slope to a given values (A/s)",
@@ -45,65 +43,64 @@ BATCH_COMMAND_CLOSE_DESCRIPTION()
 
 // return the implemented handler
 uint8_t own::CmdPSSetSlope::implementedHandler() {
-    return	AbstractPowerSupplyCommand::implementedHandler();
+    return	AbstractPowerSupplyCommand::implementedHandler()|chaos_batch::HandlerType::HT_Acquisition;
 }
 
 void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
+	int err = 0;
 	float asup = 0.f;
 	float asdown = 0.f;
 	if(data->hasKey(CMD_PS_SET_SLOPE_UP)){
             asup = data->getDoubleValue(CMD_PS_SET_SLOPE_UP);
-        } else {
-            asup = *getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_up");
-        }
-        if(data->hasKey(CMD_PS_SET_SLOPE_DOWN)){
-            asdown = data->getDoubleValue(CMD_PS_SET_SLOPE_DOWN);
-        } else {
-            asdown = *getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_down");
-        }
+    } else {
+        asup = *getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_up");
+    }
+    if(data->hasKey(CMD_PS_SET_SLOPE_DOWN)){
+        asdown = data->getDoubleValue(CMD_PS_SET_SLOPE_DOWN);
+    } else {
+        asdown = *getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_down");
+    }
 
+      if((isnormal(asdown)==false)|| (isnormal(asup)==false)){
+        SCLERR_ << "Set slope parameter is not a valid double number (nan?)";
+        BC_EXEC_RUNNIG_PROPERTY
+        return;
+    }
 	switch (*o_status_id) {
 		case common::powersupply::POWER_SUPPLY_STATE_ALARM:
 		case common::powersupply::POWER_SUPPLY_STATE_ERROR:
 		case common::powersupply::POWER_SUPPLY_STATE_UKN:
 			//i need to be in operational to exec
-			CHAOS_EXCEPTION(1, boost::str( boost::format("Bas state for set slope comamnd %1%[%2%]") % o_status % *o_status_id));
+			SCLERR_ << boost::str( boost::format("Bas state for set slope comamnd %1%[%2%]") % o_status % *o_status_id);
 			break;
 
 		case common::powersupply::POWER_SUPPLY_STATE_OPEN:
 		case common::powersupply::POWER_SUPPLY_STATE_ON:
 		case common::powersupply::POWER_SUPPLY_STATE_STANDBY:
-			SCLDBG_ << "We can start the set slope command";
+			SCLAPP_ << "We can start the set slope command";
 			break;
 
 		default:
-			CHAOS_EXCEPTION(1, boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id));
+			SCLERR_ << boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id);
 	}
-
-
-	//set comamnd timeout for this instance
-//	SCLDBG_ << "Checking for timout";
-//	if(*i_command_timeout) {
-//		SCLDBG_ << "Timeout will be set to ms -> " << *i_command_timeout;
-//		setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
-//	}
 
 
 	if((asup > 0) && (asdown > 0)) {
 		SCLDBG_ << " set slope with asup=" << asup << " asdown=" << asdown ;
-                int err=powersupply_drv->setCurrentRampSpeed(asup, asdown );
-		if( (err!= chaos::ErrorCode::EC_NO_ERROR)  && (err!=chaos::ErrorCode::EC_NODE_OPERATION_NOT_SUPPORTED) ){
-			CHAOS_EXCEPTION(2, boost::str( boost::format("Error setting the slope %1%[%2%]") % o_status % *o_status_id));
+		if((err = powersupply_drv->setCurrentRampSpeed(asup, asdown ))){
+			LOG_AND_TROW(SCLERR_, 1, boost::str( boost::format("Error setting the slope %1%[%2%] with error %3%") % o_status % *o_status_id % err));
 		}
 	}
-
+	BC_END_RUNNIG_PROPERTY
 }
 
 void own::CmdPSSetSlope::ccHandler() {
 	AbstractPowerSupplyCommand::ccHandler();
+	BC_END_RUNNIG_PROPERTY;
 }
 
 bool own::CmdPSSetSlope::timeoutHandler() {
-	return true;
+	BC_END_RUNNIG_PROPERTY;
+	return false;
 }

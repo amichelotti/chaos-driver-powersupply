@@ -75,6 +75,12 @@ accessor->send(&message);\
 *pival = ret.alarm_mask;\
 return ret.result;
 
+#define READ_OP_64INT_TIM_NORET(op,pival,timeout) \
+PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
+accessor->send(&message);\
+*pival = ret.alarm_mask;
+
+
 #define READ_OP_2FLOAT_TIM(op,pfval0,pfval1,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
 accessor->send(&message);\
@@ -110,6 +116,16 @@ int ChaosPowerSupplyInterface::forceMaxVoltage(float max){
     WRITE_OP_FLOAT_TIM(OP_FORCE_MAX_VOLTAGE, max, 0);
 
 }
+
+int ChaosPowerSupplyInterface::setCurrentSensibility(float max){
+    WRITE_OP_FLOAT_TIM(OP_SET_CURRENT_SENSIBILITY, max, 0);
+
+}
+int ChaosPowerSupplyInterface::setVoltageSensibility(float max){
+    WRITE_OP_FLOAT_TIM(OP_SET_VOLTAGE_SENSIBILITY, max, 0);
+
+}
+
 
 int ChaosPowerSupplyInterface::getCurrentSP(float* current,uint32_t timeo_ms){
     READ_OP_FLOAT_TIM(OP_GET_SP, current, timeo_ms);
@@ -197,3 +213,9 @@ int ChaosPowerSupplyInterface::getAlarmDesc(uint64_t *desc){
     READ_OP_64INT_TIM(OP_GET_ALARM_DESC,desc,0);
 
 }
+uint64_t ChaosPowerSupplyInterface::getFeatures() {
+    uint64_t feats=0;
+    READ_OP_64INT_TIM_NORET(OP_GET_FEATURE,&feats,0);
+    return feats;
+}
+

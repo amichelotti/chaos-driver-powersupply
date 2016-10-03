@@ -27,9 +27,9 @@
 // initialization format is <POWERSUPPLY TYPE>:'<INITALISATION PARAMETERS>'
 static const boost::regex power_supply_init_match("(\\w+):(.+)");
 
-// initialisation format for simulator <serial port>,<slaveid>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<maxcurr:max voltage>
+// initialisation format for simulator <serial port>,<slaveid>,<feature=[0:monopolar,1:bipolar,2:pulse]>,<min curr:max curr>,<min volt:max voltage>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<force errors secs=0 [no error]>
 
-static const boost::regex power_supply_simulator_init_match("([\\w\\/]+),(\\d+),(\\d+):(\\d+),(\\d+):(\\d+),(\\d+):(\\d+)");
+static const boost::regex power_supply_simulator_init_match("([\\w\\/]+),(\\d+),(\\d+),(.+):(.+),(.+):(.+),(.+):(.+),(.+):(.+),(\\d+)");
 
 
 //GET_PLUGIN_CLASS_DEFINITION
@@ -70,19 +70,23 @@ void chaos::driver::powersupply::PowerSimDD::driverInit(const char *initParamete
             if(regex_match(initString, match, power_supply_simulator_init_match, boost::match_extra)){
                 std::string dev=match[1];
                 std::string slaveid=match[2];
-                std::string write_min=match[3];
-                std::string write_max=match[4];
-                std::string read_min=match[5];
-                std::string read_max=match[6];
-                std::string max_curr=match[7];
-                std::string max_vol=match[8];
-                PSLAPP<<"Allocating Simulated Power Supply device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<std::endl;
-                power = new ::common::powersupply::SimPSupply(dev.c_str(),atoi(slaveid.c_str()),atoi(write_min.c_str()),atoi(write_max.c_str()),atoi(read_min.c_str()),atoi(read_max.c_str()),atoi(max_curr.c_str()),atoi(max_vol.c_str()));
+                std::string features=match[3];
+                std::string min_curr=match[4];
+                std::string max_curr=match[5];
+                std::string min_volt=match[6];
+                std::string max_volt=match[7];
+                std::string write_min=match[8];
+                std::string write_max=match[9];
+                std::string read_min=match[10];
+                std::string read_max=match[11];
+                std::string force_err=match[12];
+                PSLAPP<<"Allocating Simulated Power Supply device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\" FORCING ERRORS:"<<force_err<<std::endl;
+                power = new ::common::powersupply::SimPSupply(dev.c_str(),atoi(slaveid.c_str()),strtoll(features.c_str(),0,0),atoi(min_curr.c_str()),atoi(max_curr.c_str()),atoi(min_volt.c_str()),atoi(max_volt.c_str()),atoi(write_min.c_str()),atoi(write_max.c_str()),atoi(read_min.c_str()),atoi(read_max.c_str()),SIMPSUPPLY_CURRENT_ADC,SIMPSUPPLY_VOLTAGE_ADC,SIMPSUPPLY_UPDATE_DELAY,atoi(force_err.c_str()));
                 if(power==NULL){
                     throw chaos::CException(1, "Cannot allocate resources for SimPSupply", "PowerSimDD::driverInit");
                 }
             } else {
-                throw chaos::CException(1, "Bad parameters for PowerSimDD <serial port>,<slaveid>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<maxcurr:max voltage>", "PowerSimDD::driverInit");
+                throw chaos::CException(1, "Bad parameters for PowerSimDD <serial port>,<slaveid>,<feature=[0:monopolar,1:bipolar,2:pulse]>,<min curr:max curr>,<min volt:max voltage>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<force errors secs=0 [no error]>", "PowerSimDD::driverInit");
 
             }
         } else {

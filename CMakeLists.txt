@@ -1,14 +1,11 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 project(chaos_driver_powersupply)
 SET(CHAOS_CUS core/SCPowerSupplyControlUnit.cpp)
-include($ENV{CHAOS_BUNDLE}/tools/project_template/CMakeChaos.txt)
 
-add_definitions(-DCHAOS -DDEBUG)
 FILE(GLOB core_src core/*.cpp)
 SET(DRIVERS_LIB )
 add_subdirectory(models)
 
-MESSAGE(STATUS "Libraries ${DRIVERS_LIB}")
 ADD_EXECUTABLE(powersupply_cu test/powersupply_cu.cpp )
 ADD_EXECUTABLE(powersupply_test test/test_power_supply.cpp test/TestPowerSupply.cpp )
 
@@ -20,12 +17,13 @@ ELSE()
 ADD_LIBRARY(${PROJECT_NAME}  SHARED ${core_src})
 ENDIF()
 
-TARGET_LINK_LIBRARIES(powersupply_cu ${DRIVERS_LIB} ${PROJECT_NAME} common_serial chaos_cutoolkit chaos_common common_debug common_modbus modbus chaos_cutoolkit chaos_uitoolkit ${FrameworkLib})
-TARGET_LINK_LIBRARIES(powersupply_test ${DRIVERS_LIB} ${PROJECT_NAME} common_test chaos_uitoolkit chaos_cutoolkit chaos_common common_debug common_modbus modbus ${FrameworkLib})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_powersupply chaos_uitoolkit chaos_common chaos_cutoolkit ${FrameworkLib})
+TARGET_LINK_LIBRARIES(powersupply_cu ${DRIVERS_LIB} ${PROJECT_NAME} common_serial_ocem common_serial common_debug common_modbus modbus)
+TARGET_LINK_LIBRARIES(powersupply_test ${DRIVERS_LIB} ${PROJECT_NAME} common_serial_ocem common_test common_serial common_debug common_modbus modbus)
 
 
 INSTALL_TARGETS(/bin powersupply_cu)
 INSTALL_TARGETS(/bin powersupply_test)
 INSTALL_TARGETS(/lib ${PROJECT_NAME})
-
+INSTALL(FILES conf/SCPowerSupplyControlUnit.conf DESTINATION etc/test/powersupply/conf)
 

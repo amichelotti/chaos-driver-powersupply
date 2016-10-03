@@ -27,6 +27,11 @@ int main (int argc, char* argv[] )
         LERR_<<"## you must specify a valid CU";
         return -3;
     }
+    if(chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption("metadata-server")==0){
+            LERR_<<"## you must specify a valid MDS";
+            return -4;
+      }
+
     arrCU=chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<std::vector<std::string> > ("supply");
     loop = chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<int> ("loop");
     keep = chaos::ui::ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->getOption<int> ("keep");

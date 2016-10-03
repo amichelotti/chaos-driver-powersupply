@@ -1,5 +1,5 @@
 /*
- *	CmdSetPolarity.h
+ *	CmdPSCalibration.h
  *	!CHOAS
  *	Created by Claudio Bisegni.
  *
@@ -18,9 +18,8 @@
  *    	limitations under the License.
  */
 
-
-#ifndef __PowerSupply__CmdSetPolarity__
-#define __PowerSupply__CmdSetPolarity__
+#ifndef __PowerSupply__CmdPSCalibration__
+#define __PowerSupply__CmdPSCalibration__
 
 #include "AbstractPowerSupplyCommand.h"
 
@@ -29,30 +28,26 @@ namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
 
 namespace driver {
 	namespace powersupply {
+		
+		//! Command for change the mode of the powersupply
+		DEFINE_BATCH_COMMAND_CLASS( CmdPSCalibration , AbstractPowerSupplyCommand) {
 
-            //! Command for change the mode of the powersupply
-		DEFINE_BATCH_COMMAND_CLASS( CmdSetPolarity , AbstractPowerSupplyCommand) {
-			int32_t *o_polarity;
-			const uint32_t	*i_command_timeout;
-	  		int32_t polarity_set_point;
+			
+                        double from,to,step;
 		protected:
-                //implemented handler
+			//implemented handler
 			uint8_t implementedHandler();
 			
-                // Set handler
+			// Set handler
 			void setHandler(c_data::CDataWrapper *data);
-
-	  		//custom acquire method
-	  		void acquireHandler();
-
-	  		//Correlation and commit phase
-	  		void ccHandler();
-
-	  		//manage the timeout
-	  		bool timeoutHandler();
+			
+			//Correlation and commit phase
+			void ccHandler();
+			
+			//manage the timeout
+			bool timeoutHandler();
 		};
 	}
 }
 
-
-#endif /* defined(__PowerSupply__CmdSetPolarity__) */
+#endif /* defined(__PowerSupply__CmdPSCalibration__) */

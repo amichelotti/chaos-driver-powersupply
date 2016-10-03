@@ -23,7 +23,7 @@
 #include <chaos/cu_toolkit/control_manager/SCAbstractControlUnit.h>
 #include <driver/powersupply/core/ChaosPowerSupplyInterface.h>
 
-
+using namespace chaos;
 namespace driver {
 	namespace powersupply {
 		
@@ -35,6 +35,7 @@ namespace driver {
 			
 			chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
 
+			bool whaitOnCommandID(uint64_t command_id);
 		protected:
 			/*
 			 Define the Control Unit Dataset and Actions
@@ -59,7 +60,16 @@ namespace driver {
 			 The Control Unit will be deinitialized and disposed
 			 */
 			void unitDeinit() throw(chaos::CException);
-			
+
+            //!restore method for powersupply
+			bool unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException);
+
+			//-----------utility methdo for the restore operation---------
+			bool powerON(bool sync = true);
+			bool powerStandby(bool sync = true);
+			bool setPolarity(int polarity, bool sync = true);
+			bool setCurrent(double current_set_point, bool sync = true);
+			bool setRampSpeed(double sup, double sdown, bool sync = true);
 		public:
 			/*
 			 Construct a new CU with an identifier
@@ -72,7 +82,19 @@ namespace driver {
 			 Base destructor
 			 */
 			~SCPowerSupplyControlUnit();
+			 bool setSP(const std::string &name,double value,uint32_t size);
+			 bool setPol(const std::string &name,int value,uint32_t size);
+			 bool setRampH(const std::string &name,double value,uint32_t size);
+			 bool setRampL(const std::string &name,double value,uint32_t size);
+
+			 bool setMode(const std::string &name,int32_t value,uint32_t size);
+			 bool setAlarms(const std::string &name,long long value,uint32_t size);
+
+
+
 		};
+
+
 	}
 }
 

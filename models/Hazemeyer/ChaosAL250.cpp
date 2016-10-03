@@ -91,12 +91,12 @@ void chaos::driver::powersupply::C_AL250::driverInit(const char *initParameter) 
     std::string ver;
     power->getSWVersion(ver,0);
     PSLAPP<<"Initialising PowerSupply Driver \""<<ver<<"\""<<std::endl;
-
+/*
     if(power->init()!=0){
         throw chaos::CException(1, "Initialisation of power supply failed", "C_AL250::driverInit");
     }
     PSDBG<<"Init done";
-
+*/
     
 }
 
