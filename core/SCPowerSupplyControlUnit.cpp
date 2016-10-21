@@ -131,42 +131,85 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
   installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSSetSlope));
   installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSSetCurrent));
   installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdSetPolarity));
+    
+    /// configuration
+    addAttributeToDataSet("polFromSet",
+                          "use the sign of set to drive polarity",
+                          DataType::TYPE_BOOLEAN,
+                          DataType::Input);
+    
+    addAttributeToDataSet("polSwSign",
+                          "invert the polarity",
+                          DataType::TYPE_BOOLEAN,
+                          DataType::Input);
+    
+    addAttributeToDataSet("stbyOnPol",
+                          "force standby on polarity changes",
+                          DataType::TYPE_BOOLEAN,
+                          DataType::Input);
+    
+    addAttributeToDataSet("zeroOnStby",
+                          "force zero set on standby on stand by",
+                          DataType::TYPE_BOOLEAN,
+                          DataType::Input);
+    
+    // ===================================== shoul be system
+    addAttributeToDataSet("bypass",
+                          "exclude HW changes",
+                          DataType::TYPE_BOOLEAN,
+                          DataType::Input);
+    
+    ///
 
-  //setup the dataset
-  addAttributeToDataSet("current",
-                        "current",
-                        DataType::TYPE_DOUBLE,
-                        DataType::Output);
-
-  addAttributeToDataSet("current_sp",
-                        "current Set Point",
-                        DataType::TYPE_DOUBLE,
-                        DataType::Output);
-
-  addAttributeToDataSet("voltage",
-                        "voltage",
-                        DataType::TYPE_DOUBLE,
-                        DataType::Output);
-
-  addAttributeToDataSet("polarity",
-                        "polarity",
-                        DataType::TYPE_INT32,
-                        DataType::Output);
-
+    //////////
+    
+    // input/output DataSet
+    addAttributeToDataSet("set",
+                          "setpoint/readout the current/voltage",
+                          DataType::TYPE_DOUBLE,
+                          DataType::Bidirectional);
+    
+    addAttributeToDataSet("rampUpRate",
+                          "ramp up in A/S or V/s",
+                          DataType::TYPE_DOUBLE,
+                          DataType::Bidirectional);
+    
+    addAttributeToDataSet("rampDownRate",
+                          "ramp down in A/S or V/s",
+                          DataType::TYPE_DOUBLE,
+                          DataType::Bidirectional);
+    
+    addAttributeToDataSet("stby",
+                          "force standby",
+                          DataType::TYPE_BOOLEAN,
+                          DataType::Bidirectional);
+    
+    addAttributeToDataSet("local",
+                          "force local",
+                          DataType::TYPE_BOOLEAN,
+                          DataType::Bidirectional);
+    
+    addAttributeToDataSet("polarity",
+                          "drive the polarity (for bipolar) -1 negative, 0 open, +1 positive",
+                          DataType::TYPE_INT32,
+                          DataType::Bidirectional);
+    
+    
+    
+    
+    
+ 
   addAttributeToDataSet("alarms",
                         "Alarms",
                         DataType::TYPE_INT64,
                         DataType::Output);
 
-  addAttributeToDataSet("status_id",
-                        "status_id",
+  addAttributeToDataSet("status",
+                        "status",
                         DataType::TYPE_INT32,
                         DataType::Output);
 
-  addAttributeToDataSet("status",
-                        "status",
-                        DataType::TYPE_STRING,
-                        DataType::Output, 256);
+  
 
   addAttributeToDataSet("dev_state",
                         "Bit field device state",
