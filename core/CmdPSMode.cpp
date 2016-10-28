@@ -42,13 +42,13 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	//requested mode
 	if(!data->hasKey(CMD_PS_MODE_TYPE)) {
 		CMDCUERR << "Mode type not present";
-		BC_END_RUNNIG_PROPERTY;
+		BC_END_RUNNING_PROPERTY;
 		return;
 	}
 	state_to_go = data->getInt32Value(CMD_PS_MODE_TYPE);
 	if(state_to_go>1) {
 		CMDCUERR << "Requeste mode type not implemented";
-		BC_END_RUNNIG_PROPERTY;
+		BC_END_RUNNING_PROPERTY;
 		return;
 	}
         
@@ -68,7 +68,7 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 			CMDCUINFO << "Request to go to stanby";
 			if((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_STANDBY){
 				CMDCUINFO << "Already in standby";
-				BC_END_RUNNIG_PROPERTY
+				BC_END_RUNNING_PROPERTY
 			} 
                     if((err = powersupply_drv->standby())) {
 					LOG_AND_TROW(CMDCUERR, 1, boost::str( boost::format("Error calling driver for standby on powersupply") % err));
@@ -79,7 +79,7 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 		case 1://to operational
 		    if((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_ON){
 				CMDCUINFO << "Already in on";
-				BC_END_RUNNIG_PROPERTY
+				BC_END_RUNNING_PROPERTY
 			} else {
                 CMDCUINFO << "Request to go to operational";
                 
@@ -106,7 +106,7 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	setWorkState(true);
 
 	//run in esclusive mode
-	BC_EXEC_RUNNIG_PROPERTY;
+	BC_EXEC_RUNNING_PROPERTY;
 }
 
 void own::CmdPSMode::acquireHandler() {
@@ -138,7 +138,7 @@ void own::CmdPSMode::ccHandler() {
 	if(((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_ALARM) ||
 	   ((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_ERROR) ||
 	   ((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_UKN)) {
-		BC_END_RUNNIG_PROPERTY
+		BC_END_RUNNING_PROPERTY
 		setWorkState(false);
 		CMDCUERR << boost::str(boost::format("[metric] Bad state got = %1% - [%2%] in %3% milliseconds") % *o_status_id % o_status % elapsed_msec);
 	} else {
@@ -148,7 +148,7 @@ void own::CmdPSMode::ccHandler() {
 					setWorkState(false);
 					//we are terminated the comman
 					CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] we end command in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-					BC_END_RUNNIG_PROPERTY
+					BC_END_RUNNING_PROPERTY
 					return;
 				}
 				break;
@@ -158,14 +158,14 @@ void own::CmdPSMode::ccHandler() {
 					setWorkState(false);
 					//we are terminated the command
 					CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] we end command in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-					BC_END_RUNNIG_PROPERTY
+					BC_END_RUNNING_PROPERTY
 					return;
 				}
 				break;
 		}
 	}
 	if(*o_alarms) {
-		BC_END_RUNNIG_PROPERTY
+		BC_END_RUNNING_PROPERTY
 		setWorkState(false);
 		CMDCUERR << boost::str(boost::format("[metric] Got alarm code %1% in %3% milliseconds") % *o_alarms % elapsed_msec);
 	}
@@ -182,10 +182,10 @@ bool own::CmdPSMode::timeoutHandler() {
 			if((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
 				//we are terminated the comman
 				CMDCUINFO << boost::str(boost::format("[metric] State reached on timeout %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-				BC_END_RUNNIG_PROPERTY;
+				BC_END_RUNNING_PROPERTY;
 			}else{
 			    CMDCUERR << boost::str(boost::format("[metric] State NOT REACHED %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-				BC_FAULT_RUNNIG_PROPERTY;
+				BC_FAULT_RUNNING_PROPERTY;
 			}
 
 		break;
@@ -194,16 +194,16 @@ bool own::CmdPSMode::timeoutHandler() {
 			if((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_ON) {
 				//we are terminated the command
 				CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-				BC_END_RUNNIG_PROPERTY;
+				BC_END_RUNNING_PROPERTY;
 			}else{
 			    CMDCUERR << boost::str(boost::format("[metric] State NOT REACHED %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-				BC_FAULT_RUNNIG_PROPERTY;
+				BC_FAULT_RUNNING_PROPERTY;
 			}
 		break;
 
 		default:
 		    CMDCUERR << boost::str(boost::format("[metric] State NOT REACHED %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-			BC_FAULT_RUNNIG_PROPERTY;
+			BC_FAULT_RUNNING_PROPERTY;
 		break;
 	}
 	CMDCUINFO << "exit timeoutHandler";

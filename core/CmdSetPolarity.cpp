@@ -48,12 +48,12 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 
     if(!data || !data->hasKey(CMD_PS_SET_POLARITY_VALUE) ) {
 		SCLERR_ << "Type of polarity not passed";
-		BC_END_RUNNIG_PROPERTY;
+		BC_END_RUNNING_PROPERTY;
 		return;
     }
         if(powersupply_drv->getFeatures()& common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR){
             	SCLERR_ << "invalid command for bipolars";
-                BC_END_RUNNIG_PROPERTY;
+                BC_END_RUNNING_PROPERTY;
 		return;
         }
 	o_polarity = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
@@ -74,7 +74,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
     
      if(((*o_status_id)&common::powersupply::POWER_SUPPLY_STATE_STANDBY)==0){
             SCLERR_ << boost::str( boost::format("Bad state for set current comamnd %1%[%2%]") % o_status % *o_status_id);
-	    BC_END_RUNNIG_PROPERTY;
+	    BC_END_RUNNING_PROPERTY;
 	    return;
      }	
         
@@ -87,7 +87,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 		case common::powersupply::POWER_SUPPLY_STATE_ON:
                 //i need to be in operational to exec
 			SCLERR_ << boost::str( boost::format("Bad state for set polarity command %1%[%2%]") % o_status % *o_status_id);
-			BC_END_RUNNIG_PROPERTY;
+			BC_END_RUNNING_PROPERTY;
 			return;
 			
 
@@ -97,7 +97,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 			
 		default:
 			SCLERR_ << boost::str(boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id);
-			BC_END_RUNNIG_PROPERTY;
+			BC_END_RUNNING_PROPERTY;
 			return;
 	}
 */
@@ -109,7 +109,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 	setWorkState(true);
 
     //run in exclusive mode
-    BC_EXEC_RUNNIG_PROPERTY
+    BC_EXEC_RUNNING_PROPERTY
 }
 
 //custom acquire method
@@ -130,7 +130,7 @@ void own::CmdSetPolarity::ccHandler() {
 		//set the operation flag on
 		setWorkState(false);
 		SCLDBG_ << boost::str(boost::format("[metric] We have reached the polarity in %1% milliseconds") % elapsed_msec);
-		BC_END_RUNNIG_PROPERTY
+		BC_END_RUNNING_PROPERTY
 	}
 }
 
@@ -142,10 +142,10 @@ bool own::CmdSetPolarity::timeoutHandler() {
 	if(polarity_set_point == *o_polarity){
 		//set the operation flag on
 		SCLDBG_ << boost::str(boost::format("[metric] Timeout reached in with set-point %1% and readout %2% in %3% milliseconds") % polarity_set_point % *o_polarity % elapsed_msec);
-		BC_END_RUNNIG_PROPERTY
+		BC_END_RUNNING_PROPERTY
 	}else{
 		SCLERR_ << boost::str(boost::format("[metric] Timeout reached in WITHOUT set-point %1% and readout %2% in %3% milliseconds") % polarity_set_point % *o_polarity % elapsed_msec);
-		BC_FAULT_RUNNIG_PROPERTY
+		BC_FAULT_RUNNING_PROPERTY
 	}
 	return false;
 }

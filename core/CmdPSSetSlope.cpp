@@ -64,7 +64,7 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 
       if((isnormal(asdown)==false)|| (isnormal(asup)==false)){
         SCLERR_ << "Set slope parameter is not a valid double number (nan?)";
-        BC_EXEC_RUNNIG_PROPERTY
+        BC_EXEC_RUNNING_PROPERTY
         return;
     }
 	switch (*o_status_id) {
@@ -92,15 +92,15 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 			LOG_AND_TROW(SCLERR_, 1, boost::str( boost::format("Error setting the slope %1%[%2%] with error %3%") % o_status % *o_status_id % err));
 		}
 	}
-	BC_END_RUNNIG_PROPERTY
+	BC_END_RUNNING_PROPERTY
 }
 
 void own::CmdPSSetSlope::ccHandler() {
 	AbstractPowerSupplyCommand::ccHandler();
-	BC_END_RUNNIG_PROPERTY;
+	BC_END_RUNNING_PROPERTY;
 }
 
 bool own::CmdPSSetSlope::timeoutHandler() {
-	BC_END_RUNNIG_PROPERTY;
+	BC_END_RUNNING_PROPERTY;
 	return false;
 }

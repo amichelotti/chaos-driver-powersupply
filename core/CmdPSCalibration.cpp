@@ -78,10 +78,10 @@ void own::CmdPSCalibration::setHandler(c_data::CDataWrapper *data) {
 
 void own::CmdPSCalibration::ccHandler() {
 	AbstractPowerSupplyCommand::ccHandler();
-	BC_END_RUNNIG_PROPERTY;
+	BC_END_RUNNING_PROPERTY;
 }
 
 bool own::CmdPSCalibration::timeoutHandler() {
-	BC_END_RUNNIG_PROPERTY;
+	BC_END_RUNNING_PROPERTY;
 	return false;
 }

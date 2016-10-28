@@ -64,7 +64,7 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 
 	//set working flag
 	setWorkState(true);
-	BC_EXEC_RUNNIG_PROPERTY;
+	BC_EXEC_RUNNING_PROPERTY;
 	getAttributeCache()->setOutputDomainAsChanged();
 }
 
@@ -75,7 +75,7 @@ void own::CmdPSReset::ccHandler() {
 		CMDCUDBG_ << boost::str(boost::format("[metric] We have reset the alarms in %1% milliseconds") % elapsed_msec);
 		setWorkState(false);
 		//we are terminated the command
-		BC_END_RUNNIG_PROPERTY;
+		BC_END_RUNNING_PROPERTY;
 	}
 	getAttributeCache()->setOutputDomainAsChanged();
 }
@@ -87,10 +87,10 @@ bool own::CmdPSReset::timeoutHandler() {
 	if(*o_alarms == 0) {
 		CMDCUDBG_ << boost::str(boost::format("[metric] We have reset the alarms on timeout in %1% milliseconds") % elapsed_msec);
 		//we are terminated the command
-		BC_END_RUNNIG_PROPERTY;
+		BC_END_RUNNING_PROPERTY;
 	} else {
 		CMDCUERR_ << boost::str(boost::format("[metric] We DON'T HAVE reset the alarms on timeout in %1% milliseconds") % elapsed_msec);
-		BC_FAULT_RUNNIG_PROPERTY;
+		BC_FAULT_RUNNING_PROPERTY;
 	}
 	return false;
 }

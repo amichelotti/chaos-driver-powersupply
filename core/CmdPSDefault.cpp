@@ -70,7 +70,7 @@ void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 	o_stby = (int32_t*)getAttributeCache()->getROPtr<int32_t>(DOMAIN_INPUT, "stby");
 	o_alarm = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "alarms");
 
-	BC_NORMAL_RUNNIG_PROPERTY
+	BC_NORMAL_RUNNING_PROPERTY
     sequence_number = 0;
 	slow_acquisition_idx = 0;
 }
