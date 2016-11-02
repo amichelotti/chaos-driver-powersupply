@@ -37,14 +37,28 @@ AbstractPowerSupplyCommand::~AbstractPowerSupplyCommand() {
 }
 
 void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
-	CMDCUDBG_ << "loading pointer for output channel";
-
-	o_status_id = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "status_id");
-	o_status = getAttributeCache()->getRWPtr<char>(DOMAIN_OUTPUT, "status");
+	CMDCUDBG_ << "setting ";
+    o_stby=getAttributeCache()->getRWPtr<bool>(DOMAIN_OUTPUT, "stby");
+    o_local=getAttributeCache()->getRWPtr<bool>(DOMAIN_OUTPUT, "local");
+    o_pol=getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
     o_alarms = getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "alarms");
-	
+    o_current_voltage =getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT,"current_voltage");
+    i_asup = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampUpRate");
+    i_asdown = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampDownRate");
+    c_polFromSet =getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "polFromSet");
+    c_polSwSign =getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "polSwSign");
+    c_stbyOnPol =getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "stbyOnPol");
+    c_zeroOnStby =getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "zeroOnStby");
+    s_bypass =getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "bypass");
+    p_minimumWorkingValue = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "minimumWorkingValue");
+    p_maximumWorkingValue = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "maximumWorkingValue");
+    p_warningThreshold = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "warningThreshold");
+    p_warningThresholdTimeout = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "warningThresholdTimeout");
+    p_resolution = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "resolution");
+
+    
 	//get pointer to the output datase variable
-	chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = driverAccessorsErogator->getAccessoInstanceByIndex(0);
+    chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = *s_bypass&&(driverAccessorsErogator->getAccessoInstanceByIndex(1))?driverAccessorsErogator->getAccessoInstanceByIndex(1):driverAccessorsErogator->getAccessoInstanceByIndex(0);
 	if(power_supply_accessor != NULL) {
 	  if(powersupply_drv == NULL){
 	    powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
@@ -54,11 +68,10 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 
 // return the implemented handler
 uint8_t AbstractPowerSupplyCommand::implementedHandler() {
-	return  chaos_batch::HandlerType::HT_Set |
-			chaos_batch::HandlerType::HT_Correlation;
+	return  chaos_batch::HandlerType::HT_Set |chaos_batch::HandlerType::HT_Acquisition;
 }
 
-void AbstractPowerSupplyCommand::ccHandler() {
+void AbstractPowerSupplyCommand::acquireHandler() {
 	
 }
 

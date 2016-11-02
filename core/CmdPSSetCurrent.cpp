@@ -60,11 +60,11 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	float slope_speed = 0.f;
         chaos::common::data::RangeValueInfo attr_info;
 	o_current = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current");
-	o_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current_sp");
+	o_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current_voltage");
 	o_voltage = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "voltage");
 
-	i_slope_up = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_up");
-	i_slope_down = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_down");
+	i_slope_up = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampUpRate");
+	i_slope_down = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampDownRate");
 	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "command_timeout");
 	i_delta_setpoint = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "delta_setpoint");
 	i_setpoint_affinity = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "setpoint_affinity");

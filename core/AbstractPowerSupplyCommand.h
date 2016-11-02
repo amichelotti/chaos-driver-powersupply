@@ -39,16 +39,26 @@ namespace driver {
 		  AbstractPowerSupplyCommand();
 		  ~AbstractPowerSupplyCommand();
 		protected:
-			char		*o_status;
-			int32_t		*o_status_id;
+			bool		*o_stby,*o_local;
+            const bool        *c_polFromSet,*c_zeroOnStby,*c_polSwSign,*c_stbyOnPol;
+            const bool  *s_bypass;
+            const std::string p_unit;
+            const int32_t* p_scale;
+            const double*p_minimumWorkingValue,*p_maximumWorkingValue,*p_warningThreshold,*p_warningThresholdTimeout,*p_resolution;
+
+            double      *o_current_voltage;
+            const double *i_asup ;
+            const double *i_asdown;
+            int32_t     *o_pol;
 			uint64_t	*o_alarms;
+            
 			//reference of the chaos bastraction ofpowersupply driver
 			chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
 			
 			//implemented handler
 			uint8_t implementedHandler();
 
-			void ccHandler();
+			void acquireHandler();
 			
 			// set the data fr the command
 			void setHandler(c_data::CDataWrapper *data);

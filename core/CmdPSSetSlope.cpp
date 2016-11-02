@@ -54,12 +54,12 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 	if(data->hasKey(CMD_PS_SET_SLOPE_UP)){
             asup = data->getDoubleValue(CMD_PS_SET_SLOPE_UP);
     } else {
-        asup = *getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_up");
+        asup = *getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampUpRate");
     }
     if(data->hasKey(CMD_PS_SET_SLOPE_DOWN)){
         asdown = data->getDoubleValue(CMD_PS_SET_SLOPE_DOWN);
     } else {
-        asdown = *getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_down");
+        asdown = *getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampDownRate");
     }
 
       if((isnormal(asdown)==false)|| (isnormal(asup)==false)){
