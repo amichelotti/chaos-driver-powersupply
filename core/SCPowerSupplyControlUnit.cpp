@@ -467,14 +467,11 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
             RESTORE_LAPP << "Put powersupply in on state to restore his status";
             powerON();
         }
-      
+    }
     usleep(100000);
     RESTORE_LAPP << "Apply new setpoint " << restore_current_sp;
     if (!setCurrent(restore_current_sp)) {
-      LOG_AND_TROW_FORMATTED(RESTORE_LERR,
-                             6,
-                             "Power supply is not gone to restore 'current setpoint %1%' state",
-                             %restore_current_sp);
+      RESTORE_LERR<<"## error restoring current:"<<restore_current_sp;
     }
     uint64_t restore_duration_in_ms = chaos::common::utility::TimingUtil::getTimeStamp() - start_restore_time;
     RESTORE_LAPP << "[metric] Restore successfully achieved in " << restore_duration_in_ms << " milliseconds";

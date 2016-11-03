@@ -80,7 +80,7 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
         *i_asup=asup;
         *i_asdown=asdown;
         getAttributeCache()->setInputDomainAsChanged();
-        pushInputDataset();
+       // pushInputDataset();
 	BC_END_RUNNING_PROPERTY
 }
 

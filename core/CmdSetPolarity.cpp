@@ -93,7 +93,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 	setWorkState(true);
         *i_pol=polarity_set_point;
         getAttributeCache()->setInputDomainAsChanged();
-        pushInputDataset();
+//        pushInputDataset();
 
     //run in exclusive mode
     BC_EXEC_RUNNING_PROPERTY
@@ -123,11 +123,11 @@ bool own::CmdSetPolarity::timeoutHandler() {
 	setWorkState(false);
 	if(polarity_set_point == *o_pol){
 		//set the operation flag on
-		SCLDBG_ << boost::str(boost::format("[metric] Timeout reached in with set-point %1% and readout %2% in %3% milliseconds") % polarity_set_point % *o_polarity % elapsed_msec);
+		SCLDBG_ << boost::str(boost::format("[metric] Timeout reached in with set-point %1% and readout %2% in %3% milliseconds") % polarity_set_point % *o_pol % elapsed_msec);
                 BC_END_RUNNING_PROPERTY;
                 return false;
 	}else{
-		SCLERR_ << boost::str(boost::format("[metric] Timeout reached in WITHOUT set-point %1% and readout %2% in %3% milliseconds") % polarity_set_point % *o_polarity % elapsed_msec);
+		SCLERR_ << boost::str(boost::format("[metric] Timeout reached in WITHOUT set-point %1% and readout %2% in %3% milliseconds") % polarity_set_point % *o_pol % elapsed_msec);
 
 	}
         BC_END_RUNNING_PROPERTY

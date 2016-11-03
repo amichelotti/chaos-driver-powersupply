@@ -47,9 +47,9 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 
 	//set comamnd timeout for this instance
 	CMDCUDBG_ << "Checking for timout";
-	if(*i_setTimeout) {
-		CMDCUDBG_ << "Timeout will be set to ms -> " << *i_setTimeout;
-		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_setTimeout);
+	if(*p_setTimeout) {
+		CMDCUDBG_ << "Timeout will be set to ms -> " << *p_setTimeout;
+		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *p_setTimeout);
 	} else {
 		//set five second of timeout
 		CMDCUDBG_ << "Timeout will be set to ms -> "<<DEFAULT_COMMAND_TIMEOUT_MS;
@@ -59,12 +59,14 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 	//send comamnd to driver
 	CMDCUDBG_ << "Resetting alarms";
 	if(powersupply_drv->resetAlarms(0) != 0) {
-		LOG_AND_TROW(CMDCUERR_, 1, boost::str( boost::format("Error resetting the allarms in state %1%[%2%]") % o_status % *o_status_id));
-	}
+		CMDCUERR_<<"## cannot reset alarms";
+                BC_END_RUNNING_PROPERTY;
+                return;
+        }
 
 	//set working flag
 	setWorkState(true);
-	BC_EXEC_RUNNIG_PROPERTY;
+	BC_EXEC_RUNNING_PROPERTY;
 	getAttributeCache()->setOutputDomainAsChanged();
 }
 

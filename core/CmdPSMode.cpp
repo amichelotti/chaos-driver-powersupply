@@ -86,10 +86,10 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	}
  
 	//set comamnd timeout for this instance
-	if(*i_setTimeout) {
-		CMDCUINFO << "Set time out in "<< *i_setTimeout << "milliseconds";
+	if(*p_setTimeout) {
+		CMDCUINFO << "Set time out in "<< *p_setTimeout << "milliseconds";
 		//we have a timeout for command so apply it to this instance
-		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_setTimeout);
+		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *p_setTimeout);
 	} else {
 		CMDCUINFO << "Set time out in milliseconds "<<DEFAULT_COMMAND_TIMEOUT_MS;
 		//we have a timeout for command so apply it to this instance
@@ -99,7 +99,7 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	//send comamnd to driver
 	setWorkState(true);
         getAttributeCache()->setInputDomainAsChanged();
-        pushInputDataset();
+//        pushInputDataset();
 	//run in esclusive mode
 	BC_EXEC_RUNNING_PROPERTY;
 }
@@ -119,12 +119,12 @@ void own::CmdPSMode::ccHandler() {
         
         if(*i_stby==*o_stby){
             CMDCUINFO<<"STATE reached stby:"<<*i_stby;
-            BC_END_RUNNIG_PROPERTY
+            BC_END_RUNNING_PROPERTY
             setWorkState(false);
             return;
         }
 	if(*o_alarms) {
-		BC_END_RUNNIG_PROPERTY
+		BC_END_RUNNING_PROPERTY
 		setWorkState(false);
 		CMDCUERR << boost::str(boost::format("[metric] Got alarm code %1% in %3% milliseconds") % *o_alarms % elapsed_msec);
 	}
@@ -138,11 +138,11 @@ bool own::CmdPSMode::timeoutHandler() {
 	setWorkState(false);
          if(*i_stby==*o_stby){
             CMDCUINFO<<"STATE reached stby:"<<*i_stby;
-            BC_END_RUNNIG_PROPERTY
+            BC_END_RUNNING_PROPERTY
             setWorkState(false);
             return false;
         }
-	BC_END_RUNNIG_PROPERTY
+	BC_END_RUNNING_PROPERTY
 
 	CMDCUINFO << "timeout";
 	return true;

@@ -137,7 +137,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 		SCLDBG_ << "The new current is higher then actual = " << *o_current << "[new "<<current<<"]";;
 		slope_speed  = *i_asup;
 	}
-        uint64_t computed_timeout = uint64_t(((delta_setting / slope_speed) * 1000)) + DEFAULT_RAMP_TIME_OFFSET_MS;
+        uint32_t computed_timeout = uint64_t(((delta / slope_speed) * 1000)) + DEFAULT_RAMP_TIME_OFFSET_MS;
 
         computed_timeout=std::max(computed_timeout,*p_setTimeout);
         
@@ -163,7 +163,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	*i_current = current;
 	setWorkState(true);
         getAttributeCache()->setInputDomainAsChanged();
-        pushInputDataset();
+      //  pushInputDataset();
 
 	BC_EXEC_RUNNING_PROPERTY;
 
@@ -191,7 +191,7 @@ void own::CmdPSSetCurrent::ccHandler() {
         
 	if(*o_alarms) {
 		SCLERR_ << "We got alarms on powersupply so we end the command";
-		BC_END_RUNNIG_PROPERTY;
+		BC_END_RUNNING_PROPERTY;
 		setWorkState(false);
 	}
 }

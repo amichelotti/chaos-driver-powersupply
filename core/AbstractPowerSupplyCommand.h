@@ -46,7 +46,7 @@ namespace driver {
             const std::string p_unit;
             const int32_t* p_scale;
             const double*p_minimumWorkingValue,*p_maximumWorkingValue,*p_warningThreshold,*p_resolution;
-            const int32_t *p_warningThresholdTimeout,*p_setTimeout,*p_getTimeout;
+            const uint32_t *p_warningThresholdTimeout,*p_setTimeout,*p_getTimeout;
 
             double *o_current,*o_voltage;
             double *i_asup,*i_current,*i_asdown;

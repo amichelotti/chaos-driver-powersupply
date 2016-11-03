@@ -63,9 +63,9 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
     p_minimumWorkingValue = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "minimumWorkingValue");
     p_maximumWorkingValue = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "maximumWorkingValue");
     p_warningThreshold = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "warningThreshold");
-    p_warningThresholdTimeout = getAttributeCache()->getROPtr<int32_t>(DOMAIN_INPUT, "warningThresholdTimeout");
-    p_setTimeout = getAttributeCache()->getROPtr<int32_t>(DOMAIN_INPUT, "setTimeout");
-    p_getTimeout = getAttributeCache()->getROPtr<int32_t>(DOMAIN_INPUT, "getTimeout");
+    p_warningThresholdTimeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "warningThresholdTimeout");
+    p_setTimeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "setTimeout");
+    p_getTimeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "getTimeout");
 
 
     p_resolution = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "resolution");
@@ -87,7 +87,7 @@ uint8_t AbstractPowerSupplyCommand::implementedHandler() {
 
 void AbstractPowerSupplyCommand::acquireHandler() {
     int err;
-    double tmp_float;
+    float tmp_float;
     int32_t tmp_int32;
     uint64_t tmp_uint64;
             
@@ -114,7 +114,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
     } else {
         CMDCUERR_<<boost::str( boost::format("Error calling driver on get alarms readout with code %1%") % err);
     }
-    
+    std::string desc;
     if((err = powersupply_drv->getState(&state, desc)) == 0){
         *o_stby = (state & common::powersupply::POWER_SUPPLY_STATE_STANDBY)?true:false;
         *o_local= (state & common::powersupply::POWER_SUPPLY_STATE_LOCAL)?true:false;
@@ -123,19 +123,19 @@ void AbstractPowerSupplyCommand::acquireHandler() {
             CMDCUDBG_<<"alarms!! "<<desc;
         }
     } else {
-        CMDCUERR_(CMDCUERR_, 5, boost::str( boost::format("Error calling driver on get state readout with code %1%") % err));
+        CMDCUERR_<<boost::str( boost::format("Error calling driver on get state readout with code %1%") % err);
     }
     
-    CMDCU_ << "current ->" << *o_current;
-    CMDCU_ << "current_sp ->" << *i_current;
-    CMDCU_ << "voltage ->" << *o_voltage;
-    CMDCU_ << "polarity ->" << *o_pol;
-    CMDCU_ << "alarms ->" << *o_alarms;
-    CMDCU_ << "stby -> " << *o_stby;
+    CMDCUDBG_ << "current ->" << *o_current;
+    CMDCUDBG_ << "current_sp ->" << *i_current;
+    CMDCUDBG_ << "voltage ->" << *o_voltage;
+    CMDCUDBG_ << "polarity ->" << *o_pol;
+    CMDCUDBG_ << "alarms ->" << *o_alarms;
+    CMDCUDBG_ << "stby -> " << *o_stby;
     
     
     //force output dataset as changed
-   // getAttributeCache()->setOutputDomainAsChanged();
+   getAttributeCache()->setOutputDomainAsChanged();
 
 	
 }
