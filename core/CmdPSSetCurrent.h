@@ -35,15 +35,7 @@ namespace driver {
 		DEFINE_BATCH_COMMAND_CLASS(CmdPSSetCurrent,AbstractPowerSupplyCommand) {
 			float asup;
 			float asdown;
-			double	*o_current_sp;
-			double	*o_current;
-			double	*o_voltage;
-			const double	*i_slope_up;
-			const double	*i_slope_down;
-			const uint32_t	*i_command_timeout;
-			const uint32_t	*i_delta_setpoint;
-			const uint32_t	*i_setpoint_affinity;
-
+		
 			//is the delta to the setpoint that notify the end of command
 			double affinity_set_delta;
             bool slow_acquisition_index;

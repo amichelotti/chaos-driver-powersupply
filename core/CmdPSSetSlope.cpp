@@ -48,59 +48,48 @@ uint8_t own::CmdPSSetSlope::implementedHandler() {
 
 void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
+        AbstractPowerSupplyCommand::acquireHandler();
+
 	int err = 0;
 	float asup = 0.f;
 	float asdown = 0.f;
 	if(data->hasKey(CMD_PS_SET_SLOPE_UP)){
             asup = data->getDoubleValue(CMD_PS_SET_SLOPE_UP);
     } else {
-        asup = *getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampUpRate");
+        asup = *i_asup;
     }
     if(data->hasKey(CMD_PS_SET_SLOPE_DOWN)){
         asdown = data->getDoubleValue(CMD_PS_SET_SLOPE_DOWN);
     } else {
-        asdown = *getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampDownRate");
+        asdown = *i_asdown;
     }
 
       if((isnormal(asdown)==false)|| (isnormal(asup)==false)){
         SCLERR_ << "Set slope parameter is not a valid double number (nan?)";
-        BC_EXEC_RUNNIG_PROPERTY
+        BC_END_RUNNING_PROPERTY;
         return;
     }
-	switch (*o_status_id) {
-		case common::powersupply::POWER_SUPPLY_STATE_ALARM:
-		case common::powersupply::POWER_SUPPLY_STATE_ERROR:
-		case common::powersupply::POWER_SUPPLY_STATE_UKN:
-			//i need to be in operational to exec
-			SCLERR_ << boost::str( boost::format("Bas state for set slope comamnd %1%[%2%]") % o_status % *o_status_id);
-			break;
-
-		case common::powersupply::POWER_SUPPLY_STATE_OPEN:
-		case common::powersupply::POWER_SUPPLY_STATE_ON:
-		case common::powersupply::POWER_SUPPLY_STATE_STANDBY:
-			SCLAPP_ << "We can start the set slope command";
-			break;
-
-		default:
-			SCLERR_ << boost::str( boost::format("Unrecognized state %1%[%2%]") % o_status % *o_status_id);
-	}
-
+	
 
 	if((asup > 0) && (asdown > 0)) {
 		SCLDBG_ << " set slope with asup=" << asup << " asdown=" << asdown ;
 		if((err = powersupply_drv->setCurrentRampSpeed(asup, asdown ))){
-			LOG_AND_TROW(SCLERR_, 1, boost::str( boost::format("Error setting the slope %1%[%2%] with error %3%") % o_status % *o_status_id % err));
+			SCLERR_<<"error setting slope up:"<<asup<<" slope down:"<<asdown;
 		}
 	}
-	BC_END_RUNNIG_PROPERTY
+        *i_asup=asup;
+        *i_asdown=asdown;
+        getAttributeCache()->setInputDomainAsChanged();
+        pushInputDataset();
+	BC_END_RUNNING_PROPERTY
 }
 
 void own::CmdPSSetSlope::ccHandler() {
-	AbstractPowerSupplyCommand::ccHandler();
-	BC_END_RUNNIG_PROPERTY;
+        AbstractPowerSupplyCommand::acquireHandler();
+	BC_END_RUNNING_PROPERTY;
 }
 
 bool own::CmdPSSetSlope::timeoutHandler() {
-	BC_END_RUNNIG_PROPERTY;
+	BC_END_RUNNING_PROPERTY;
 	return false;
 }

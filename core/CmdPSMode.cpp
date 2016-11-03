@@ -37,65 +37,59 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	std::string state_description;
 
 	AbstractPowerSupplyCommand::setHandler(data);
-	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "command_timeout");
+        AbstractPowerSupplyCommand::acquireHandler();
+
 
 	//requested mode
 	if(!data->hasKey(CMD_PS_MODE_TYPE)) {
 		CMDCUERR << "Mode type not present";
-		BC_END_RUNNIG_PROPERTY;
+		BC_END_RUNNING_PROPERTY;
 		return;
 	}
 	state_to_go = data->getInt32Value(CMD_PS_MODE_TYPE);
 	if(state_to_go>1) {
-		CMDCUERR << "Requeste mode type not implemented";
-		BC_END_RUNNIG_PROPERTY;
+		CMDCUERR << "Request mode type not implemented";
+		BC_END_RUNNING_PROPERTY;
 		return;
 	}
         
-	//!get the only state because thsi command work only on it
-	if((err = powersupply_drv->getState(&state, state_description))){
-		LOG_AND_TROW(CMDCUERR, 1, boost::str( boost::format("Error calling driver for get state from powersupply") % err));
-	} else {
-		*o_status_id = state;
-		//copy up to 255 and put the termination character
-		strncpy(o_status, state_description.c_str(), 256);
-	}
-        
+	
+
 
 	switch (state_to_go) {
 		case 0://to standby
 			//i need to be in operational to exec
 			CMDCUINFO << "Request to go to stanby";
-			if((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_STANDBY){
-				CMDCUINFO << "Already in standby";
-				BC_END_RUNNIG_PROPERTY
-			} 
+			 
                     if((err = powersupply_drv->standby())) {
-					LOG_AND_TROW(CMDCUERR, 1, boost::str( boost::format("Error calling driver for standby on powersupply") % err));
-                        }
-
+			CMDCUERR<<boost::str( boost::format("Error calling driver for standby on powersupply") % err);
+                        BC_END_RUNNING_PROPERTY;
+                        return;
+                       }
+                        *i_stby=true;
 			break;
 			
 		case 1://to operational
-		    if((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_ON){
-				CMDCUINFO << "Already in on";
-				BC_END_RUNNIG_PROPERTY
-			} else {
-                CMDCUINFO << "Request to go to operational";
+		   
+                    CMDCUINFO << "Request to go to operational";
                 
                 
-                if((err = powersupply_drv->poweron())) {
-					LOG_AND_TROW(CMDCUERR, 2, boost::str( boost::format("Error calling driver for power on powersupply") % err));
-                }
-            }
+                    if((err = powersupply_drv->poweron())) {
+			CMDCUERR<<boost::str( boost::format("Error calling driver for operation on powersupply") % err);
+                        BC_END_RUNNING_PROPERTY;
+                        return;
+                
+                    }
+                    *i_stby=false;
+
 			break;
 	}
  
 	//set comamnd timeout for this instance
-	if(*i_command_timeout) {
-		CMDCUINFO << "Set time out in "<< *i_command_timeout << "milliseconds";
+	if(*i_setTimeout) {
+		CMDCUINFO << "Set time out in "<< *i_setTimeout << "milliseconds";
 		//we have a timeout for command so apply it to this instance
-		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
+		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_setTimeout);
 	} else {
 		CMDCUINFO << "Set time out in milliseconds "<<DEFAULT_COMMAND_TIMEOUT_MS;
 		//we have a timeout for command so apply it to this instance
@@ -104,66 +98,31 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	
 	//send comamnd to driver
 	setWorkState(true);
-
+        getAttributeCache()->setInputDomainAsChanged();
+        pushInputDataset();
 	//run in esclusive mode
-	BC_EXEC_RUNNIG_PROPERTY;
+	BC_EXEC_RUNNING_PROPERTY;
 }
 
 void own::CmdPSMode::acquireHandler() {
-	int err = 0;
-	int state = 0;
-	std::string state_description;
-	//!get the only state because thsi command work only on it
-	if((err = powersupply_drv->getState(&state, state_description))){
-		LOG_AND_TROW(CMDCUERR, 1, boost::str( boost::format("Error calling driver for get state from powersupply") % err));
-	} else {
-		*o_status_id = state;
-		//copy up to 255 and put the termination character
-		strncpy(o_status, state_description.c_str(), 256);
-	}
+            AbstractPowerSupplyCommand::acquireHandler();
 
-	if((err = powersupply_drv->getAlarms(o_alarms))){
-		LOG_AND_TROW(CMDCUERR, 2, boost::str( boost::format("Error calling driver for get alarms from powersupply") % err));
-	}
 	//force output dataset as changed
 	getAttributeCache()->setOutputDomainAsChanged();
 }
 
 void own::CmdPSMode::ccHandler() {
 	CMDCUINFO << "enter acquireHandler";
-	AbstractPowerSupplyCommand::ccHandler();
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	CMDCUINFO << "Check if we are gone";
 	
-	if(((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_ALARM) ||
-	   ((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_ERROR) ||
-	   ((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_UKN)) {
-		BC_END_RUNNIG_PROPERTY
-		setWorkState(false);
-		CMDCUERR << boost::str(boost::format("[metric] Bad state got = %1% - [%2%] in %3% milliseconds") % *o_status_id % o_status % elapsed_msec);
-	} else {
-		switch(state_to_go) {
-			case 0://we need to go in stanby
-				if((*o_status_id)& common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
-					setWorkState(false);
-					//we are terminated the comman
-					CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] we end command in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-					BC_END_RUNNIG_PROPERTY
-					return;
-				}
-				break;
-
-			case 1://we need to go on operational
-				if((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_ON) {
-					setWorkState(false);
-					//we are terminated the command
-					CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] we end command in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-					BC_END_RUNNIG_PROPERTY
-					return;
-				}
-				break;
-		}
-	}
+        
+        if(*i_stby==*o_stby){
+            CMDCUINFO<<"STATE reached stby:"<<*i_stby;
+            BC_END_RUNNIG_PROPERTY
+            setWorkState(false);
+            return;
+        }
 	if(*o_alarms) {
 		BC_END_RUNNIG_PROPERTY
 		setWorkState(false);
@@ -177,35 +136,14 @@ bool own::CmdPSMode::timeoutHandler() {
 	//move the state machine on fault
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	setWorkState(false);
-	switch(state_to_go) {
-		case 0://we need to go in stanby
-			if((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
-				//we are terminated the comman
-				CMDCUINFO << boost::str(boost::format("[metric] State reached on timeout %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-				BC_END_RUNNIG_PROPERTY;
-			}else{
-			    CMDCUERR << boost::str(boost::format("[metric] State NOT REACHED %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-				BC_FAULT_RUNNIG_PROPERTY;
-			}
+         if(*i_stby==*o_stby){
+            CMDCUINFO<<"STATE reached stby:"<<*i_stby;
+            BC_END_RUNNIG_PROPERTY
+            setWorkState(false);
+            return false;
+        }
+	BC_END_RUNNIG_PROPERTY
 
-		break;
-
-		case 1://we need to go on operational
-			if((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_ON) {
-				//we are terminated the command
-				CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-				BC_END_RUNNIG_PROPERTY;
-			}else{
-			    CMDCUERR << boost::str(boost::format("[metric] State NOT REACHED %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-				BC_FAULT_RUNNIG_PROPERTY;
-			}
-		break;
-
-		default:
-		    CMDCUERR << boost::str(boost::format("[metric] State NOT REACHED %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-			BC_FAULT_RUNNIG_PROPERTY;
-		break;
-	}
-	CMDCUINFO << "exit timeoutHandler";
-	return false;
+	CMDCUINFO << "timeout";
+	return true;
 }

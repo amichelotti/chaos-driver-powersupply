@@ -194,7 +194,16 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
     
     addAttributeToDataSet("warningThresholdTimeout",
                           "the warning condition is generated after the given time in (us)",
-                          DataType::TYPE_DOUBLE,
+                          DataType::TYPE_INT32,
+                          DataType::Input);
+    
+    addAttributeToDataSet("setTimeout",
+                          "timeout for a SET operation(us)",
+                          DataType::TYPE_INT32,
+                          DataType::Input);
+    addAttributeToDataSet("getTimeout",
+                          "timeout for a SET operation(us)",
+                          DataType::TYPE_INT32,
                           DataType::Input);
     
     addBinaryAttributeAsSubtypeToDataSet("conversionFactor","Array of double Coefficents used to convert value from the CU actual units and the driver elementary units",chaos::DataType::SUB_TYPE_DOUBLE,1,chaos::DataType::Input);
@@ -265,7 +274,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 
   addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, double >(this,
                                                                     &::driver::powersupply::SCPowerSupplyControlUnit::setSP,
-                                                                    "current_voltage");
+                                                                    "current");
   addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, double >(this,
                                                                       &::driver::powersupply::SCPowerSupplyControlUnit::setRampH,
                                                                       "rampUpRate");

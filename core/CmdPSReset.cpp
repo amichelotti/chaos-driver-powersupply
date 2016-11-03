@@ -43,13 +43,13 @@ uint8_t own::CmdPSReset::implementedHandler() {
 
 void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
-	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "command_timeout");
-	
+        AbstractPowerSupplyCommand::acquireHandler();
+
 	//set comamnd timeout for this instance
 	CMDCUDBG_ << "Checking for timout";
-	if(*i_command_timeout) {
-		CMDCUDBG_ << "Timeout will be set to ms -> " << *i_command_timeout;
-		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
+	if(*i_setTimeout) {
+		CMDCUDBG_ << "Timeout will be set to ms -> " << *i_setTimeout;
+		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_setTimeout);
 	} else {
 		//set five second of timeout
 		CMDCUDBG_ << "Timeout will be set to ms -> "<<DEFAULT_COMMAND_TIMEOUT_MS;
@@ -69,13 +69,13 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 }
 
 void own::CmdPSReset::ccHandler() {
-	AbstractPowerSupplyCommand::ccHandler();
+        AbstractPowerSupplyCommand::acquireHandler();
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	if(*o_alarms == 0) {
 		CMDCUDBG_ << boost::str(boost::format("[metric] We have reset the alarms in %1% milliseconds") % elapsed_msec);
 		setWorkState(false);
 		//we are terminated the command
-		BC_END_RUNNIG_PROPERTY;
+		BC_END_RUNNING_PROPERTY;
 	}
 	getAttributeCache()->setOutputDomainAsChanged();
 }
@@ -87,10 +87,11 @@ bool own::CmdPSReset::timeoutHandler() {
 	if(*o_alarms == 0) {
 		CMDCUDBG_ << boost::str(boost::format("[metric] We have reset the alarms on timeout in %1% milliseconds") % elapsed_msec);
 		//we are terminated the command
-		BC_END_RUNNIG_PROPERTY;
+		BC_END_RUNNING_PROPERTY;
 	} else {
 		CMDCUERR_ << boost::str(boost::format("[metric] We DON'T HAVE reset the alarms on timeout in %1% milliseconds") % elapsed_msec);
-		BC_FAULT_RUNNIG_PROPERTY;
+		BC_END_RUNNING_PROPERTY;
+                return true;
 	}
 	return false;
 }
