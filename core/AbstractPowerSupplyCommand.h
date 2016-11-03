@@ -46,7 +46,7 @@ namespace driver {
             const int32_t* p_scale;
             const double*p_minimumWorkingValue,*p_maximumWorkingValue,*p_warningThreshold,*p_warningThresholdTimeout,*p_resolution;
 
-            double      *o_current_voltage;
+            double      *o_current,*o_voltage;
             const double *i_asup ;
             const double *i_asdown;
             int32_t     *o_pol;

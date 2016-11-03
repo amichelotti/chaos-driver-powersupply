@@ -207,8 +207,13 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
     //////////
     
     // input/output DataSet
-    addAttributeToDataSet("current_voltage",
-                          "setpoint the current/voltage",
+    addAttributeToDataSet("current",
+                          "setpoint the current",
+                          DataType::TYPE_DOUBLE,
+                          DataType::Bidirectional);
+    
+    addAttributeToDataSet("voltage",
+                          "setpoint the voltage",
                           DataType::TYPE_DOUBLE,
                           DataType::Bidirectional);
     

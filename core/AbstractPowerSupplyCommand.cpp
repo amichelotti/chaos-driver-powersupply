@@ -42,7 +42,9 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
     o_local=getAttributeCache()->getRWPtr<bool>(DOMAIN_OUTPUT, "local");
     o_pol=getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
     o_alarms = getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "alarms");
-    o_current_voltage =getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT,"current_voltage");
+    o_current =getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT,"current");
+    o_voltage =getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT,"voltage");
+
     i_asup = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampUpRate");
     i_asdown = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampDownRate");
     c_polFromSet =getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "polFromSet");
@@ -72,6 +74,65 @@ uint8_t AbstractPowerSupplyCommand::implementedHandler() {
 }
 
 void AbstractPowerSupplyCommand::acquireHandler() {
+    if((err = powersupply_drv->getCurrentOutput(&tmp_float))==0){
+        *o_current = (double)tmp_float;
+    } else {
+        LOG_AND_TROW(CMDCUERR_, 1, boost::str( boost::format("Error calling driver on get current readout with code %1%") % err));
+    }
+    
+    if((err = powersupply_drv->getVoltageOutput(&tmp_float)) == 0){
+        *o_voltage = (double)tmp_float;
+    } else {
+        LOG_AND_TROW(CMDCUERR_, 2, boost::str( boost::format("Error calling driver on get voltage readout with code %1%") % err));
+    }
+    
+    if((err = powersupply_drv->getPolarity(&tmp_uint32)) == 0){
+        *o_polarity = tmp_uint32;
+    } else {
+        LOG_AND_TROW(CMDCUERR_, 3, boost::str( boost::format("Error calling driver on get polarity readout with code %1%") % err));
+    }
+    
+    if((err = powersupply_drv->getAlarms(&tmp_uint64)) == 0){
+        *o_alarms = tmp_uint64;
+    } else {
+        LOG_AND_TROW(CMDCUERR_, 4, boost::str( boost::format("Error calling driver on get alarms readout with code %1%") % err));
+    }
+    
+    if((err = powersupply_drv->getState(&stato, desc)) == 0){
+        *o_status_id = stato;
+        //update the value and dimension of status channel
+        //getAttributeCache()->setOutputAttributeValue("status", (void*)desc.c_str(), (uint32_t)desc.size());
+        //the new pointer need to be got (set new size can reallocate the pointer)
+        o_status = getAttributeCache()->getRWPtr<char>(DOMAIN_OUTPUT, "status");
+        //copy up to 255 and put the termination character
+        strncpy(o_status, desc.c_str(), 256);
+    } else {
+        LOG_AND_TROW(CMDCUERR_, 5, boost::str( boost::format("Error calling driver on get state readout with code %1%") % err));
+    }
+    
+    CMDCU_ << "current ->" << *o_current;
+    CMDCU_ << "current_sp ->" << *o_current_sp;
+    CMDCU_ << "voltage ->" << *o_voltage;
+    CMDCU_ << "polarity ->" << *o_polarity;
+    CMDCU_ << "alarms ->" << *o_alarms;
+    CMDCU_ << "status_id -> " << *o_status_id;
+    
+    /*
+     * Javascript Interface
+     */
+    *o_on = (*o_status_id & common::powersupply::POWER_SUPPLY_STATE_ON) ? 1:0;
+    *o_stby = (*o_status_id & common::powersupply::POWER_SUPPLY_STATE_STANDBY)?1:0;
+    *o_alarm = (*o_alarms!=0)?1:0;
+    
+    
+    CMDCU_ << "stby =>"<<((*o_status_id & common::powersupply::POWER_SUPPLY_STATE_STANDBY)?1:0);
+    CMDCU_ << "status. -> " << o_status;
+    CMDCU_ << "dev_state -> " << *o_dev_state;
+    CMDCU_ << "sequence_number -> " << sequence_number;
+    
+    //force output dataset as changed
+    getAttributeCache()->setOutputDomainAsChanged();
+
 	
 }
 
