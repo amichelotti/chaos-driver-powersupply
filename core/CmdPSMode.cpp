@@ -55,7 +55,7 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
         
 	
 
-
+        CMDCUINFO << "mode:"<<state_to_go;
 	switch (state_to_go) {
 		case 0://to standby
 			//i need to be in operational to exec

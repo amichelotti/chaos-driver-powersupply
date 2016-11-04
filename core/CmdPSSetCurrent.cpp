@@ -108,6 +108,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	}
     
     current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
+    SCLAPP_<<"set current:"<<current;
     if(isnan(current)==true){
         SCLERR_ << "Set current parameter is not a valid double number (nan?)";
         BC_END_RUNNING_PROPERTY;

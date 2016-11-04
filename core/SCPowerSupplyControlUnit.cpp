@@ -81,10 +81,10 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setAlarms(const std::strin
 
 	return true;
 }
-bool  ::driver::powersupply::SCPowerSupplyControlUnit::setOn(const std::string &name,bool value,uint32_t size){
+bool  ::driver::powersupply::SCPowerSupplyControlUnit::setOff(const std::string &name,bool value,uint32_t size){
     if(value){
-        SCCUAPP << "set ON";
-        return powerON();
+        SCCUAPP << "set OFF";
+        return true;
 
     }
     SCCUAPP << "set OFF";
@@ -96,6 +96,9 @@ bool  ::driver::powersupply::SCPowerSupplyControlUnit::setStby(const std::string
     if(value){
         SCCUAPP << "set Standby";
         return powerStandby();
+    } else {
+       SCCUAPP << "set Operational";
+        return powerON();
     }
     
     return false;
@@ -170,7 +173,8 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
     addAttributeToDataSet("unit",
                           "current/voltage units",
                           DataType::TYPE_STRING,
-                          DataType::Input);
+                          DataType::Input,
+                           256);
     
     addAttributeToDataSet("scale",
                           "current/voltage scale",
@@ -282,8 +286,8 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
                                                                       &::driver::powersupply::SCPowerSupplyControlUnit::setRampL,
                                                                       "rampDownRate");
   addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, bool >(this,
-                                                                      &::driver::powersupply::SCPowerSupplyControlUnit::setOn,
-                                                                      "on");
+                                                                      &::driver::powersupply::SCPowerSupplyControlUnit::setOff,
+                                                                      "off");
   addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, bool >(this,
                                                                       &::driver::powersupply::SCPowerSupplyControlUnit::setStby,
                                                                       "stby");
@@ -313,7 +317,6 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw(CExceptio
 
   const double *asup = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampUpRate");
   const double *asdown = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampDownRate");
-  int32_t *status_id = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "status_id");
 
 
   chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = getAccessoInstanceByIndex(0);
@@ -333,20 +336,6 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw(CExceptio
   /*
    */
   SCCUAPP << "check mandatory default values";
-  getAttributeRangeValueInfo(std::string("currentSP"), attr_info);
-
-  // REQUIRE MIN MAX SET IN THE MDS
-  if (attr_info.maxRange.size()) {
-    SCCUAPP << "max_current max=" << (max_range = attr_info.maxRange);
-        SCCUAPP << "min_current min=" << (min_range = attr_info.minRange);
-
-  }
-
-  // REQUIRE MIN MAX SET IN THE MDS
-  if (attr_info.minRange.size()) {
-        SCCUAPP << "min_current min=" << (min_range = attr_info.minRange);
-
-  }
 
 
   // retrive the attribute description from the device database
@@ -364,7 +353,6 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw(CExceptio
   if (powersupply_drv->getState(&state_id, state_str, 30000) != 0) {
     throw chaos::CException(-6, "Error getting the state of the powersupply, possibily off", __FUNCTION__);
   }
-  *status_id = state_id;
   //notify change on status_id cached attribute
   getAttributeCache()->setOutputDomainAsChanged();
 
@@ -405,7 +393,6 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDeinit() throw(CExcept
 bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache *const snapshot_cache) throw(chaos::CException) {
   RESTORE_LAPP << "Check if restore cache has the needed data";
   //check if in the restore cache we have all information we need
-  if (!snapshot_cache->getSharedDomain(DOMAIN_OUTPUT).hasAttribute("status_id")) return false;
   if (!snapshot_cache->getSharedDomain(DOMAIN_OUTPUT).hasAttribute("polarity")) return false;
   if (!snapshot_cache->getSharedDomain(DOMAIN_OUTPUT).hasAttribute("current_voltage")) return false;
 
@@ -414,13 +401,13 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
   try {
     bool cmd_result = true;
     //get actual state
-    double *now_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current_voltage");
+    double *now_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current");
     bool now_stby = *getAttributeCache()->getRWPtr<bool>(DOMAIN_OUTPUT, "stby");
     int32_t *now_polarity = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
 
     //chec the restore polarity
     int32_t restore_polarity = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "polarity")->getValuePtr<int32_t>();
-    double restore_current_sp = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "current_voltage")->getValuePtr<double>();
+    double restore_current_sp = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "current")->getValuePtr<double>();
     //handle bipolar
     int is_bipolar=powersupply_drv->getFeatures()& ::common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR;
    
@@ -494,7 +481,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::powerON(bool sync) {
                      cmd_id,
                      0,
                      50,
-                     SubmissionRuleType::SUBMIT_NORMAL);
+                     SubmissionRuleType::SUBMIT_AND_Stack);
   if (sync) {
     //! whait for the current command id to finisch
     result = whaitOnCommandID(cmd_id);
@@ -512,7 +499,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::powerStandby(bool sync) {
                      cmd_id,
                      0,
                      50,
-                     SubmissionRuleType::SUBMIT_NORMAL);
+                     SubmissionRuleType::SUBMIT_AND_Stack);
   if (sync) {
     //! whait for the current command id to finisch
     result = whaitOnCommandID(cmd_id);
@@ -532,7 +519,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setPolarity(int polarity,
                      cmd_id,
                      0,
                      50,
-                     SubmissionRuleType::SUBMIT_NORMAL);
+                     SubmissionRuleType::SUBMIT_AND_Stack);
   if (sync) {
     //! whait for the current command id to finisch
     result = whaitOnCommandID(cmd_id);
@@ -552,7 +539,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setCurrent(double current_
                      cmd_id,
                      0,
                      50,
-                     SubmissionRuleType::SUBMIT_NORMAL);
+                     SubmissionRuleType::SUBMIT_AND_Stack);
   if (sync) {
     //! whait for the current command id to finisch
     result = whaitOnCommandID(cmd_id);

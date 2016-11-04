@@ -86,7 +86,7 @@ namespace driver {
 			 bool setPol(const std::string &name,int value,uint32_t size);
 			 bool setRampH(const std::string &name,double value,uint32_t size);
 			 bool setRampL(const std::string &name,double value,uint32_t size);
-             bool setOn(const std::string &name,bool value,uint32_t size);
+             bool setOff(const std::string &name,bool value,uint32_t size);
              bool setStby(const std::string &name,bool value,uint32_t size);
 
 			 bool setAlarms(const std::string &name,long long value,uint32_t size);
