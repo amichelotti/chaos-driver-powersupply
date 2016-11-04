@@ -20,9 +20,9 @@
 
 #include "AbstractPowerSupplyCommand.h"
 #include <boost/format.hpp>
-#define CMDCUINFO_ INFO_LOG(AbstractPowerSupplyCommand)
-#define CMDCUDBG_ DBG_LOG(AbstractPowerSupplyCommand)
-#define CMDCUERR_ ERR_LOG(AbstractPowerSupplyCommand)
+#define CMDCUINFO_ INFO_LOG(AbstractPowerSupplyCommand) <<"["<<getDeviceID()<<"]"
+#define CMDCUDBG_ DBG_LOG(AbstractPowerSupplyCommand) <<"["<<getDeviceID()<<"]"
+#define CMDCUERR_ ERR_LOG(AbstractPowerSupplyCommand) <<"["<<getDeviceID()<<"]"
 
 using namespace driver::powersupply;
 namespace chaos_batch = chaos::common::batch_command;
@@ -125,14 +125,12 @@ void AbstractPowerSupplyCommand::acquireHandler() {
     } else {
         CMDCUERR_<<boost::str( boost::format("Error calling driver on get state readout with code %1%") % err);
     }
-    
     CMDCUDBG_ << "current ->" << *o_current;
     CMDCUDBG_ << "current_sp ->" << *i_current;
     CMDCUDBG_ << "voltage ->" << *o_voltage;
     CMDCUDBG_ << "polarity ->" << *o_pol;
     CMDCUDBG_ << "alarms ->" << *o_alarms;
     CMDCUDBG_ << "stby -> " << *o_stby;
-    
     
     //force output dataset as changed
    getAttributeCache()->setOutputDomainAsChanged();

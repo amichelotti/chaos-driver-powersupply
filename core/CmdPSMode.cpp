@@ -140,10 +140,9 @@ bool own::CmdPSMode::timeoutHandler() {
             CMDCUINFO<<"STATE reached stby:"<<*i_stby;
             BC_END_RUNNING_PROPERTY
             setWorkState(false);
-            return false;
         }
 	BC_END_RUNNING_PROPERTY
 
 	CMDCUINFO << "timeout";
-	return true;
+	return false;
 }

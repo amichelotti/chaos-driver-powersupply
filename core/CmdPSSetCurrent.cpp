@@ -44,7 +44,7 @@ BATCH_COMMAND_CLOSE_DESCRIPTION()
 
 // return the implemented handler
 uint8_t own::CmdPSSetCurrent::implementedHandler(){
-    return	AbstractPowerSupplyCommand::implementedHandler()|chaos_batch::HandlerType::HT_Acquisition;
+    return	AbstractPowerSupplyCommand::implementedHandler()|chaos_batch::HandlerType::HT_Correlation;
 }
 
 void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
@@ -60,7 +60,8 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	float current = 0.f;
 	float slope_speed = 0.f;
         chaos::common::data::RangeValueInfo attr_info;
-	
+	getDeviceDatabase()->getAttributeRangeValueInfo("current", attr_info);
+
   // REQUIRE MIN MAX SET IN THE MDS
         if (attr_info.maxRange.size()) {
             max_current = atof(attr_info.maxRange.c_str());
@@ -86,8 +87,8 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
         SCLDBG_<<"minimum working value:"<<*p_minimumWorkingValue;
         SCLDBG_<<"maximu, working value:"<<*p_maximumWorkingValue;
         
-        min_current=std::max(*p_minimumWorkingValue,min_current);
-        max_current=std::min(max_current,*p_maximumWorkingValue);
+        //min_current=std::max(*p_minimumWorkingValue,min_current);
+        //max_current=std::min(max_current,*p_maximumWorkingValue);
         
 	
 	current = 0;
@@ -117,7 +118,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     if(current>max_current || current<min_current){
           std::stringstream ss;
         ss<<"current:"<<current<<" > "<<max_current;
-		SCLERR_ << boost::str( boost::format("current %1% outside  the maximum/minimum 'currentSP' \"max_current\":%2% \"min_current\":%3%" ) % current % max_current % min_current);
+		SCLERR_ << boost::str( boost::format("current %1% outside  the maximum/minimum 'current' \"max_current\":%2% \"min_current\":%3%" ) % current % max_current % min_current);
 		BC_END_RUNNING_PROPERTY;
 		return;
     }
@@ -145,7 +146,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	//compute the delta for check if w
 	SCLDBG_ << "Slope speed is = " << slope_speed;
 	SCLDBG_ << "Calculated timout is = " << computed_timeout;
-	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
+	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout*1000);
 	//set current set poi into the output channel
 
 	SCLDBG_ << "Set current to value " << current;
@@ -206,12 +207,12 @@ bool own::CmdPSSetCurrent::timeoutHandler() {
 		uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 		//the command is endedn because we have reached the affinitut delta set
 		SCLDBG_ << "[metric ]Set point reached with - delta: "<< delta_current_reached <<" sp: "<< *i_current <<" affinity check " << *p_warningThreshold << " ampere in " << elapsed_msec << " milliseconds";
-		BC_END_RUNNING_PROPERTY;
-		setWorkState(false);
         } else {
 		SCLERR_ << "[metric] Setpoint not reached on timeout with readout current " << *o_current << " in " << elapsed_msec << " milliseconds";
-		BC_END_RUNNING_PROPERTY;
-                return true;
+		
 	}
+        setWorkState(false);
+
+        BC_END_RUNNING_PROPERTY
 	return false;
 }
