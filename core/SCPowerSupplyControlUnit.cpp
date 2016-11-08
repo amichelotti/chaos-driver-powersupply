@@ -298,6 +298,41 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
   addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, long long  >(this,
                                                                          &::driver::powersupply::SCPowerSupplyControlUnit::setAlarms,
                                                                          "alarms");
+  
+  addAlarm("current_out_of_set",
+             "Notify when the 'current' readout drifts respect the 'current' set");
+  
+  addAlarm("current_value_not_reached",
+             "Notify when 'current' readout is not reached");
+  
+  addAlarm("polarity_out_of_set",
+             "Notify when the 'polarity' readout drifts respect the 'polarity' set");
+  
+  addAlarm("polarity_value_not_reached",
+             "Notify when 'polarity' readout is not reached");
+  
+  addAlarm("stby_out_of_set",
+             "Notify when the 'stby' readout drifts respect the 'polarity' set");
+  
+  addAlarm("stby_value_not_reached",
+             "Notify when 'stby' readout is not reached");
+  
+  
+  addAlarm("interlock",
+             "Notify when an interlock arise");
+  
+  addAlarm("current_invalid_set",
+             "Notify when a 'current' set cannot be done, for limits or mode");
+  
+  addAlarm("stby_invalid_set",
+             "Notify when a 'stby' set cannot be done, for limits or mode");
+  
+  addAlarm("polarity_invalid_set",
+             "Notify when a 'polarity' set cannot be done, for limits or mode");
+  
+  addAlarm("driver_error",
+             "Notify when an error arise from driver");
+
 }
 
 void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineCustomAttribute() {
@@ -320,6 +355,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw(CExceptio
 
 
   chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = getAccessoInstanceByIndex(0);
+
   if (power_supply_accessor == NULL) {
     throw chaos::CException(-1, "Cannot retrieve the requested driver", __FUNCTION__);
   }
@@ -481,7 +517,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::powerON(bool sync) {
                      cmd_id,
                      0,
                      50,
-                     SubmissionRuleType::SUBMIT_AND_Stack);
+                     SubmissionRuleType::SUBMIT_NORMAL);
   if (sync) {
     //! whait for the current command id to finisch
     result = whaitOnCommandID(cmd_id);
@@ -499,7 +535,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::powerStandby(bool sync) {
                      cmd_id,
                      0,
                      50,
-                     SubmissionRuleType::SUBMIT_AND_Stack);
+                     SubmissionRuleType::SUBMIT_NORMAL);
   if (sync) {
     //! whait for the current command id to finisch
     result = whaitOnCommandID(cmd_id);
@@ -519,7 +555,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setPolarity(int polarity,
                      cmd_id,
                      0,
                      50,
-                     SubmissionRuleType::SUBMIT_AND_Stack);
+                     SubmissionRuleType::SUBMIT_NORMAL);
   if (sync) {
     //! whait for the current command id to finisch
     result = whaitOnCommandID(cmd_id);
@@ -539,7 +575,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setCurrent(double current_
                      cmd_id,
                      0,
                      50,
-                     SubmissionRuleType::SUBMIT_AND_Stack);
+                     SubmissionRuleType::SUBMIT_NORMAL);
   if (sync) {
     //! whait for the current command id to finisch
     result = whaitOnCommandID(cmd_id);
@@ -561,7 +597,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setRampSpeed(double sup,
                      cmd_id,
                      0,
                      50,
-                     SubmissionRuleType::SUBMIT_AND_Stack);
+                     SubmissionRuleType::SUBMIT_NORMAL);
   if (sync) {
     //! whait for the current command id to finisch
     result = whaitOnCommandID(cmd_id);
@@ -595,7 +631,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::whaitOnCommandID(uint64_t 
         SCCUAPP << cmd_id << " -> COMPLETED";
         break;
       case BatchCommandEventType::EVT_FAULT:
-        SCCUAPP << cmd_id << " -> FALUT";
+        SCCUAPP << cmd_id << " -> FAULT";
         break;
     }
     //whait some times

@@ -42,9 +42,7 @@ BATCH_COMMAND_CLOSE_DESCRIPTION()
 
 
 // return the implemented handler
-uint8_t own::CmdPSSetSlope::implementedHandler() {
-    return	AbstractPowerSupplyCommand::implementedHandler()|chaos_batch::HandlerType::HT_Acquisition;
-}
+
 
 void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);

@@ -70,7 +70,7 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 
     p_resolution = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "resolution");
     
-    
+     
 	//get pointer to the output datase variable
     chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = *s_bypass&&(driverAccessorsErogator->getAccessoInstanceByIndex(1))?driverAccessorsErogator->getAccessoInstanceByIndex(1):driverAccessorsErogator->getAccessoInstanceByIndex(0);
 	if(power_supply_accessor != NULL) {
@@ -82,7 +82,7 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 
 // return the implemented handler
 uint8_t AbstractPowerSupplyCommand::implementedHandler() {
-	return  chaos_batch::HandlerType::HT_Set |chaos_batch::HandlerType::HT_Acquisition;
+	return  chaos_batch::HandlerType::HT_Set |chaos_batch::HandlerType::HT_Acquisition|chaos_batch::HandlerType::HT_Correlation;;
 }
 
 void AbstractPowerSupplyCommand::acquireHandler() {
@@ -132,12 +132,12 @@ void AbstractPowerSupplyCommand::acquireHandler() {
     CMDCUDBG_ << "alarms ->" << *o_alarms;
     CMDCUDBG_ << "stby -> " << *o_stby;
     
-    //force output dataset as changed
-   getAttributeCache()->setOutputDomainAsChanged();
-
-	
+    //force output dataset as changed	
 }
-
+void AbstractPowerSupplyCommand::ccHandler() {
+     getAttributeCache()->setOutputDomainAsChanged();
+    
+}
 void AbstractPowerSupplyCommand::getState(int& current_state, std::string& current_state_str) {
 	CHAOS_ASSERT(powersupply_drv)
 	int err = 0;
@@ -152,4 +152,5 @@ void AbstractPowerSupplyCommand::getState(int& current_state, std::string& curre
 void AbstractPowerSupplyCommand::setWorkState(bool working_flag) {
 	//int64_t *o_dev_state = getAttributeCache()->getRWPtr<int64_t>(DOMAIN_OUTPUT, "dev_state");
 	//*o_dev_state = working_flag;
+    setBusyFlag(working_flag);
 }

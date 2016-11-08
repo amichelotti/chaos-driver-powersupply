@@ -38,7 +38,7 @@ BATCH_COMMAND_CLOSE_DESCRIPTION()
 
 // return the implemented handler
 uint8_t own::CmdPSReset::implementedHandler() {
-    return	AbstractPowerSupplyCommand::implementedHandler() |chaos_batch::HandlerType::HT_Acquisition;
+    return	AbstractPowerSupplyCommand::implementedHandler() |chaos_batch::HandlerType::HT_Acquisition|chaos_batch::HandlerType::HT_Correlation;;
 }
 
 void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {

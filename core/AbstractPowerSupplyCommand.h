@@ -60,7 +60,8 @@ namespace driver {
 			uint8_t implementedHandler();
 
 			void acquireHandler();
-			
+			void ccHandler();
+
 			// set the data fr the command
 			void setHandler(c_data::CDataWrapper *data);
 

@@ -40,8 +40,6 @@ namespace driver {
 			double affinity_set_delta;
             bool slow_acquisition_index;
 		protected:
-			//implemented handler
-			uint8_t implementedHandler();
 			
 			// Set handler
 			void setHandler(c_data::CDataWrapper *data);

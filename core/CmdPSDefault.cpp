@@ -39,6 +39,7 @@ BATCH_COMMAND_OPEN_DESCRIPTION(driver::powersupply::,CmdPSDefault,
 BATCH_COMMAND_CLOSE_DESCRIPTION()
 CmdPSDefault::CmdPSDefault() {
 	powersupply_drv = NULL;
+        start_out_of_set_time=0;
 }
 
 CmdPSDefault::~CmdPSDefault() {
@@ -46,16 +47,12 @@ CmdPSDefault::~CmdPSDefault() {
 }
 
     // return the implemented handler
-uint8_t CmdPSDefault::implementedHandler() {
-        //add to default hadnler the acquisition one
-	return  AbstractPowerSupplyCommand::implementedHandler() |
-    HandlerType::HT_Acquisition;
-}
 
     // Start the command execution
 void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 	
 	AbstractPowerSupplyCommand::setHandler(data);
+        setWorkState(false);
 
 	BC_NORMAL_RUNNING_PROPERTY
   }
@@ -66,8 +63,53 @@ void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
  \return the mask for the runnign state
  */
 void CmdPSDefault::acquireHandler() {
-	CMDCU_ << "Acquiring data";
 	AbstractPowerSupplyCommand::acquireHandler();
 	//force output dataset as changed
-	getAttributeCache()->setOutputDomainAsChanged();
+	
+}
+void CmdPSDefault::ccHandler() {
+    /////  CHECKS during operational mode
+    if(*o_alarms){
+       setAlarmSeverity("interlock", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+       return;
+    }
+    setAlarmSeverity("interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    if(*i_stby!=*o_stby){
+        setAlarmSeverity("stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+    } else {
+        setAlarmSeverity("stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    }
+    
+    if(*o_stby == 0){
+        if(*p_warningThreshold>0){
+            //enable out of set warning
+
+            double err=fabs(*o_current-*i_current);
+            if(err>*p_warningThreshold){
+                if(start_out_of_set_time==0){
+                    start_out_of_set_time= chaos::common::utility::TimingUtil::getTimeStamp() ;
+                }
+                uint64_t tdiff=chaos::common::utility::TimingUtil::getTimeStamp() -start_out_of_set_time;
+                if(tdiff>*p_warningThresholdTimeout){
+                   setAlarmSeverity("current_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+                   CMDCUDBG_<<"current out of set detected diff:"<< err << " after "<<tdiff<< " ms";
+
+                }
+
+            } else {
+                start_out_of_set_time=0;
+                 setAlarmSeverity("current_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
+            }
+        }
+    
+        if(*o_stby && (*i_pol!=*o_pol)){
+             setAlarmSeverity("polarity_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+
+        } else {
+             setAlarmSeverity("polarity_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
+        }
+    }
+    getAttributeCache()->setOutputDomainAsChanged();
 }

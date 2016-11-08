@@ -36,7 +36,6 @@ namespace driver {
 	  		int32_t polarity_set_point;
 		protected:
                 //implemented handler
-			uint8_t implementedHandler();
 			
                 // Set handler
 			void setHandler(c_data::CDataWrapper *data);

@@ -38,23 +38,24 @@ BATCH_COMMAND_ADD_INT32_PARAM(CMD_PS_SET_POLARITY_VALUE, "Set the polarity >0 to
 BATCH_COMMAND_CLOSE_DESCRIPTION()
 
     // return the implemented handler
-uint8_t own::CmdSetPolarity::implementedHandler() {
-    return	AbstractPowerSupplyCommand::implementedHandler() | chaos_batch::HandlerType::HT_Acquisition;
-}
 
 void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 	AbstractPowerSupplyCommand::setHandler(data);
         AbstractPowerSupplyCommand::acquireHandler();
 
 	int err = 0;
+        setAlarmSeverity("polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
     if(!data || !data->hasKey(CMD_PS_SET_POLARITY_VALUE) ) {
 		SCLERR_ << "Type of polarity not passed";
+                setAlarmSeverity("polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+
 		BC_END_RUNNING_PROPERTY;
 		return;
     }
         if(powersupply_drv->getFeatures()& common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR){
             	SCLERR_ << "invalid command for bipolars";
+                setAlarmSeverity("polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
                 BC_END_RUNNING_PROPERTY;
 		return;
         }
@@ -75,6 +76,8 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
     if(*c_stbyOnPol){
         if(*o_stby==false){
            SCLERR_ << "## cannot change polarity since is not in standby";
+           setAlarmSeverity("polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+
             BC_END_RUNNING_PROPERTY;
 	    return;
 
@@ -84,6 +87,8 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
     
     if((err = powersupply_drv->setPolarity(polarity_set_point)) != 0) {
            SCLERR_ << "## error setting polarity to:"<<polarity_set_point;
+           setAlarmSeverity("polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+
            BC_END_RUNNING_PROPERTY;
 	   return;
 
@@ -94,6 +99,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
         *i_pol=polarity_set_point;
         getAttributeCache()->setInputDomainAsChanged();
 //        pushInputDataset();
+        setAlarmSeverity("polarity_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
     //run in exclusive mode
     BC_EXEC_RUNNING_PROPERTY
@@ -110,7 +116,6 @@ void own::CmdSetPolarity::ccHandler() {
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	if(polarity_set_point == *o_pol){
 		//set the operation flag on
-		setWorkState(false);
 		SCLDBG_ << boost::str(boost::format("[metric] We have reached the polarity in %1% milliseconds") % elapsed_msec);
 		BC_END_RUNNING_PROPERTY
 	}
@@ -120,17 +125,18 @@ void own::CmdSetPolarity::ccHandler() {
 bool own::CmdSetPolarity::timeoutHandler() {
 	SCLDBG_ << "timeoutHandler";
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
-	setWorkState(false);
 	if(polarity_set_point == *o_pol){
 		//set the operation flag on
 		SCLDBG_ << boost::str(boost::format("[metric] Timeout reached in with set-point %1% and readout %2% in %3% milliseconds") % polarity_set_point % *o_pol % elapsed_msec);
                 BC_END_RUNNING_PROPERTY;
                 return false;
 	}else{
+               setAlarmSeverity("polarity_value_not_reached",chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+
 		SCLERR_ << boost::str(boost::format("[metric] Timeout reached in WITHOUT set-point %1% and readout %2% in %3% milliseconds") % polarity_set_point % *o_pol % elapsed_msec);
 
 	}
         BC_END_RUNNING_PROPERTY
 
-	return true;
+	return false;
 }

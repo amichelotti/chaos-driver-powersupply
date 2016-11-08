@@ -25,9 +25,6 @@ BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdPSMode,CMD_PS_MODE
 BATCH_COMMAND_ADD_INT32_PARAM(CMD_PS_MODE_TYPE, "0:standby, 1:on",chaos::common::batch_command::BatchCommandAndParameterDescriptionkey::BC_PARAMETER_FLAG_MANDATORY)
 BATCH_COMMAND_CLOSE_DESCRIPTION()
 // return the implemented handler
-uint8_t own::CmdPSMode::implementedHandler() {
-    return	AbstractPowerSupplyCommand::implementedHandler()|chaos_batch::HandlerType::HT_Acquisition;
-}
 
 void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	CMDCUINFO << "Executing set handler";
@@ -38,17 +35,22 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 
 	AbstractPowerSupplyCommand::setHandler(data);
         AbstractPowerSupplyCommand::acquireHandler();
+        setAlarmSeverity("stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
 
 	//requested mode
 	if(!data->hasKey(CMD_PS_MODE_TYPE)) {
 		CMDCUERR << "Mode type not present";
+                        setAlarmSeverity("stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+
 		BC_END_RUNNING_PROPERTY;
 		return;
 	}
 	state_to_go = data->getInt32Value(CMD_PS_MODE_TYPE);
 	if(state_to_go>1) {
 		CMDCUERR << "Request mode type not implemented";
+                setAlarmSeverity("stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+
 		BC_END_RUNNING_PROPERTY;
 		return;
 	}
@@ -63,6 +65,8 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 			 
                     if((err = powersupply_drv->standby())) {
 			CMDCUERR<<boost::str( boost::format("Error calling driver for standby on powersupply") % err);
+                        setAlarmSeverity("stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+
                         BC_END_RUNNING_PROPERTY;
                         return;
                        }
@@ -76,6 +80,8 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
                 
                     if((err = powersupply_drv->poweron())) {
 			CMDCUERR<<boost::str( boost::format("Error calling driver for operation on powersupply") % err);
+                         setAlarmSeverity("stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+
                         BC_END_RUNNING_PROPERTY;
                         return;
                 
@@ -98,6 +104,8 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	
 	//send comamnd to driver
 	setWorkState(true);
+        setAlarmSeverity("stby_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
         getAttributeCache()->setInputDomainAsChanged();
 //        pushInputDataset();
 	//run in esclusive mode
@@ -114,11 +122,10 @@ void own::CmdPSMode::acquireHandler() {
 void own::CmdPSMode::ccHandler() {
 	CMDCUINFO << "enter acquireHandler";
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
-	CMDCUINFO << "Check if we are gone";
 	
         
         if(*i_stby==*o_stby){
-            CMDCUINFO<<"STATE reached stby:"<<*i_stby;
+            CMDCUINFO<<"STATE REACHED stby:"<<*i_stby;
             BC_END_RUNNING_PROPERTY
             setWorkState(false);
             return;
@@ -139,8 +146,10 @@ bool own::CmdPSMode::timeoutHandler() {
          if(*i_stby==*o_stby){
             CMDCUINFO<<"STATE reached stby:"<<*i_stby;
             BC_END_RUNNING_PROPERTY
-            setWorkState(false);
-        }
+         } else {
+           setAlarmSeverity("stby_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+
+         }
 	BC_END_RUNNING_PROPERTY
 
 	CMDCUINFO << "timeout";
