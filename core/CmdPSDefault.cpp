@@ -39,6 +39,7 @@ BATCH_COMMAND_OPEN_DESCRIPTION(driver::powersupply::,CmdPSDefault,
 BATCH_COMMAND_CLOSE_DESCRIPTION()
 CmdPSDefault::CmdPSDefault() {
 	powersupply_drv = NULL;
+        start_out_of_set_time=0;
 }
 
 CmdPSDefault::~CmdPSDefault() {
@@ -46,34 +47,15 @@ CmdPSDefault::~CmdPSDefault() {
 }
 
     // return the implemented handler
-uint8_t CmdPSDefault::implementedHandler() {
-        //add to default hadnler the acquisition one
-	return  AbstractPowerSupplyCommand::implementedHandler() |
-    HandlerType::HT_Acquisition;
-}
 
     // Start the command execution
 void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 	
 	AbstractPowerSupplyCommand::setHandler(data);
-
-	//set the default scheduling to one seconds
-	setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)1000000);
-
-	//get channel pointer
-	o_current = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current");
-	o_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current_sp");
-	o_voltage = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "voltage");
-	o_polarity = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
-	o_dev_state = getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "dev_state");
-	o_on = (int32_t*)getAttributeCache()->getROPtr<int32_t>(DOMAIN_INPUT, "on");
-	o_stby = (int32_t*)getAttributeCache()->getROPtr<int32_t>(DOMAIN_INPUT, "stby");
-	o_alarm = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "alarms");
+        setWorkState(false);
 
 	BC_NORMAL_RUNNING_PROPERTY
-    sequence_number = 0;
-	slow_acquisition_idx = 0;
-}
+  }
 
     // Aquire the necessary data for the command
 /*!
@@ -81,73 +63,53 @@ void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
  \return the mask for the runnign state
  */
 void CmdPSDefault::acquireHandler() {
-	string desc;
-	int err = 0;
-	int stato = 0;
-	float tmp_float = 0.0F;
-	int tmp_uint32 = 0;
-	uint64_t tmp_uint64 = 0;
-	CMDCU_ << "Acquiring data";
-	
-	boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getLockOnCustomAttributeCache();
-	r_lock->lock();
-	
-    if((err = powersupply_drv->getCurrentOutput(&tmp_float))==0){
-		*o_current = (double)tmp_float;
-    } else {
-		LOG_AND_TROW(CMDCUERR_, 1, boost::str( boost::format("Error calling driver on get current readout with code %1%") % err));
-	}
-
-	if((err = powersupply_drv->getVoltageOutput(&tmp_float)) == 0){
-		*o_voltage = (double)tmp_float;
-	} else {
-		LOG_AND_TROW(CMDCUERR_, 2, boost::str( boost::format("Error calling driver on get voltage readout with code %1%") % err));
-	}
-
-	if((err = powersupply_drv->getPolarity(&tmp_uint32)) == 0){
-		*o_polarity = tmp_uint32;
-	} else {
-		LOG_AND_TROW(CMDCUERR_, 3, boost::str( boost::format("Error calling driver on get polarity readout with code %1%") % err));
-	}
-
-	if((err = powersupply_drv->getAlarms(&tmp_uint64)) == 0){
-		*o_alarms = tmp_uint64;
-	} else {
-		LOG_AND_TROW(CMDCUERR_, 4, boost::str( boost::format("Error calling driver on get alarms readout with code %1%") % err));
-	}
-
-	if((err = powersupply_drv->getState(&stato, desc)) == 0){
-		*o_status_id = stato;
-		//update the value and dimension of status channel
-		//getAttributeCache()->setOutputAttributeValue("status", (void*)desc.c_str(), (uint32_t)desc.size());
-		//the new pointer need to be got (set new size can reallocate the pointer)
-		o_status = getAttributeCache()->getRWPtr<char>(DOMAIN_OUTPUT, "status");
-		//copy up to 255 and put the termination character
-		strncpy(o_status, desc.c_str(), 256);
-	} else {
-		LOG_AND_TROW(CMDCUERR_, 5, boost::str( boost::format("Error calling driver on get state readout with code %1%") % err));
-	}
-
-    CMDCU_ << "current ->" << *o_current;
-    CMDCU_ << "current_sp ->" << *o_current_sp;
-    CMDCU_ << "voltage ->" << *o_voltage;
-    CMDCU_ << "polarity ->" << *o_polarity;
-    CMDCU_ << "alarms ->" << *o_alarms;
-    CMDCU_ << "status_id -> " << *o_status_id;
-	
-	/*
-	 * Javascript Interface
-	 */
-	*o_on = (*o_status_id & common::powersupply::POWER_SUPPLY_STATE_ON) ? 1:0;
-	*o_stby = (*o_status_id & common::powersupply::POWER_SUPPLY_STATE_STANDBY)?1:0;
-	*o_alarm = (*o_alarms!=0)?1:0;
-
-   
-	CMDCU_ << "stby =>"<<((*o_status_id & common::powersupply::POWER_SUPPLY_STATE_STANDBY)?1:0);
-    CMDCU_ << "status. -> " << o_status;
-    CMDCU_ << "dev_state -> " << *o_dev_state;
-    CMDCU_ << "sequence_number -> " << sequence_number;
-	
+	AbstractPowerSupplyCommand::acquireHandler();
 	//force output dataset as changed
-	getAttributeCache()->setOutputDomainAsChanged();
+	
+}
+void CmdPSDefault::ccHandler() {
+    /////  CHECKS during operational mode
+    if(*o_alarms){
+       setAlarmSeverity("interlock", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+       return;
+    }
+    setAlarmSeverity("interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    if(*i_stby!=*o_stby){
+        setAlarmSeverity("stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+    } else {
+        setAlarmSeverity("stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    }
+    
+    if(*o_stby == 0){
+        if(*p_warningThreshold>0){
+            //enable out of set warning
+
+            double err=fabs(*o_current-*i_current);
+            if(err>*p_warningThreshold){
+                if(start_out_of_set_time==0){
+                    start_out_of_set_time= chaos::common::utility::TimingUtil::getTimeStamp() ;
+                }
+                uint64_t tdiff=chaos::common::utility::TimingUtil::getTimeStamp() -start_out_of_set_time;
+                if(tdiff>*p_warningThresholdTimeout){
+                   setAlarmSeverity("current_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+                   CMDCUDBG_<<"current out of set detected diff:"<< err << " after "<<tdiff<< " ms";
+
+                }
+
+            } else {
+                start_out_of_set_time=0;
+                 setAlarmSeverity("current_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
+            }
+        }
+    
+        if(*o_stby && (*i_pol!=*o_pol)){
+             setAlarmSeverity("polarity_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+
+        } else {
+             setAlarmSeverity("polarity_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
+        }
+    }
+    getAttributeCache()->setOutputDomainAsChanged();
 }

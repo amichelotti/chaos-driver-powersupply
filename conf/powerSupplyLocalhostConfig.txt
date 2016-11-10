@@ -1,0 +1,55 @@
+{
+    "data_servers": [
+	{
+    	    "hostname": "localhost:1700:32000|0",
+	    "id_server": 0,
+	    "is_live": true
+	}
+
+    ],
+    "us": [
+	{
+	    "unit_server_alias": "TEST",
+	    "private_key": null,
+	    "public_key": null,
+	    "cu_desc": [
+
+		{
+		    "unit_server_alias": "TEST",
+		    "cu_id": "BTF/QUADPOLE/QUATB001",
+		    "cu_type": "::driver::powersupply::SCPowerSupplyControlUnit",
+		    "cu_param": "",
+		    "auto_load": true,
+		    "auto_start": true,
+		    "auto_init": true,
+		    "storage_type": 2,
+		    "storage_ageing": 3600,
+
+		    "DriverDescription": [
+			{
+			    "DriverDescriptionName": "PowerSimDD",
+			    "DriverDescriptionVersion": "1.0.0",
+			    "DriverDescriptionInitParam": "SimPSupply:/dev/ttyr48,9,1,0:100,0:10,100:200,200:300,0"
+			}
+		    ],
+		    "AttrDesc": [
+			{
+			    "ds_attr_name": "current",
+			    "ds_max_range": "100",
+			    "ds_min_range": "0",
+			    "ds_default_value": "0"
+			},
+			{
+			    "ds_attr_name": "rampDownRate",
+			    "ds_max_range": "10",
+			    "ds_min_range": "1",
+			    "ds_default_value": "5"
+			},
+			{
+			    "ds_attr_name": "rampUpRate",
+			    "ds_max_range": "10",
+			    "ds_min_range": "1",
+			    "ds_default_value": "5"
+			}
+		    ]
+		}]}]}

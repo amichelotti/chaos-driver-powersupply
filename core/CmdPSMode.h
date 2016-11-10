@@ -34,8 +34,6 @@ namespace driver {
 			uint32_t state_to_go;
 			const uint32_t	*i_command_timeout;
 		protected:
-			//implemented handler
-			uint8_t implementedHandler();
 			
 			// Set handler
 			void setHandler(c_data::CDataWrapper *data);

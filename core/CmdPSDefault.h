@@ -31,22 +31,12 @@ namespace driver {
 	namespace powersupply {
 		
 		DEFINE_BATCH_COMMAND_CLASS(CmdPSDefault,AbstractPowerSupplyCommand) {
-			uint64_t		sequence_number;
-            uint64_t		last_slow_acq_time;
-			unsigned int	slow_acquisition_idx;
-			
-			uint64_t	*o_dev_state;
-			int32_t		*o_polarity;
-			double		*o_voltage;
-			double		*o_current_sp;
-			double		*o_current;
-			int32_t		*o_on;
-			int32_t		*o_stby;
-			int32_t		*o_alarm;
-
+		
+                    
+                    
 		protected:
-			// return the implemented handler
-			uint8_t implementedHandler();
+                    uint64_t start_out_of_set_time;
+                    // return the implemented handler
 			
 			// Start the command execution
 			void setHandler(c_data::CDataWrapper *data);
@@ -57,6 +47,11 @@ namespace driver {
 			 \return the mask for the runnign state
 			 */
 			void acquireHandler();
+                        /**
+                         perform checks of sets 
+                         */
+                        void ccHandler();
+
 		public:
 			CmdPSDefault();
 			~CmdPSDefault();

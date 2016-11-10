@@ -42,15 +42,12 @@ BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdPSSetCurrent,CMD_P
 BATCH_COMMAND_ADD_DOUBLE_PARAM(CMD_PS_SET_CURRENT, "current in A",chaos::common::batch_command::BatchCommandAndParameterDescriptionkey::BC_PARAMETER_FLAG_MANDATORY)
 BATCH_COMMAND_CLOSE_DESCRIPTION()
 
-// return the implemented handler
-uint8_t own::CmdPSSetCurrent::implementedHandler(){
-    return	AbstractPowerSupplyCommand::implementedHandler()|chaos_batch::HandlerType::HT_Acquisition;
-}
 
 void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     chaos::common::data::RangeValueInfo current_sp_attr_info;
     chaos::common::data::RangeValueInfo attributeInfo;
 	AbstractPowerSupplyCommand::setHandler(data);
+        AbstractPowerSupplyCommand::acquireHandler();
 
 	double max_current=0,min_current=0;
 	int err = 0;
@@ -59,66 +56,42 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	float current = 0.f;
 	float slope_speed = 0.f;
         chaos::common::data::RangeValueInfo attr_info;
-	o_current = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current");
-	o_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current_sp");
-	o_voltage = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "voltage");
-
-	i_slope_up = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_up");
-	i_slope_down = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "slope_down");
-	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "command_timeout");
-	i_delta_setpoint = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "delta_setpoint");
-	i_setpoint_affinity = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "setpoint_affinity");
-        
-        getDeviceDatabase()->getAttributeRangeValueInfo("currentSP", attr_info);
+	getDeviceDatabase()->getAttributeRangeValueInfo("current", attr_info);
+        setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
   // REQUIRE MIN MAX SET IN THE MDS
-  if (attr_info.maxRange.size()) {
-      max_current = atof(attr_info.maxRange.c_str());
-    SCLDBG_ << "max_current max=" << max_current;
+        if (attr_info.maxRange.size()) {
+            max_current = atof(attr_info.maxRange.c_str());
+          SCLDBG_ << "max_current max=" << max_current;
 
-  } else {
-           SCLERR_ << "not defined maximum 'currentSP' attribute, quitting command";
-                   BC_END_RUNNING_PROPERTY;
-	    return;
-  }
+        } else {
+                 SCLERR_ << "not defined maximum 'current voltage' attribute, quitting command";
+                 setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
-  // REQUIRE MIN MAX SET IN THE MDS
-  if (attr_info.minRange.size()) {
-            min_current = atof(attr_info.minRange.c_str());
+                 BC_END_RUNNING_PROPERTY;
+                 return;
+        }
 
-        SCLDBG_ << "min_current min=" << min_current;
-  } else {
-                  SCLERR_ << "not defined minimum 'currentSP' attribute, quitting command";
-                   BC_END_RUNNING_PROPERTY;
-	    return;
+        // REQUIRE MIN MAX SET IN THE MDS
+        if (attr_info.minRange.size()) {
+              min_current = atof(attr_info.minRange.c_str());
 
-  }
+              SCLDBG_ << "min_current min=" << min_current;
+        } else {
+               SCLERR_ << "not defined minimum 'current voltage' attribute, quitting command";
+               setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
+               BC_END_RUNNING_PROPERTY;
+               return;
 
-	//acquire the current readout
-	SCLDBG_ << "fetch current readout";
-	if((err = powersupply_drv->getState(&state, state_str))) {
-		LOG_AND_TROW(SCLERR_, 1, boost::str(boost::format("Error fetching state readout with code %1%") % err));
-	} else {
-		*o_status_id = state;
-		//copy up to 255 and put the termination character
-		strncpy(o_status, state_str.c_str(), 256);
-	}
-
-        if(((*o_status_id)&common::powersupply::POWER_SUPPLY_STATE_ON)==0){
-            SCLERR_ << boost::str( boost::format("Bad state for set current comamnd %1%[%2%]") % o_status % *o_status_id);
-	    BC_END_RUNNING_PROPERTY;
-	    return;
-        }	
+        }
+        SCLDBG_<<"minimum working value:"<<*p_minimumWorkingValue;
+        SCLDBG_<<"maximu, working value:"<<*p_maximumWorkingValue;
         
+        //min_current=std::max(*p_minimumWorkingValue,min_current);
+        //max_current=std::min(max_current,*p_maximumWorkingValue);
         
-        //acquire the current readout
-	SCLDBG_ << "fetch current readout";
-	if((err = powersupply_drv->getCurrentOutput(&current))) {
-		LOG_AND_TROW(SCLERR_, 1, boost::str(boost::format("Error fetching current readout with code %1%") % err));
-	}else{
-		*o_current = (double)current;
-	}
+	
 	current = 0;
 
 	//set comamnd timeout for this instance
@@ -127,153 +100,132 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	if(!data ||
 	   !data->hasKey(CMD_PS_SET_CURRENT)) {
 		SCLERR_ << "Set current parameter not present";
+                setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+
 		BC_END_RUNNING_PROPERTY;
 		return;
 	}
 	if(!data->isDoubleValue(CMD_PS_SET_CURRENT)) {
 		SCLERR_ << "Set current parameter is not a Double data type";
+                setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+
 		BC_END_RUNNING_PROPERTY;
 		return;
 	}
     
     current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
+    SCLAPP_<<"set current:"<<current;
     if(isnan(current)==true){
         SCLERR_ << "Set current parameter is not a valid double number (nan?)";
+        setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+
         BC_END_RUNNING_PROPERTY;
         return;
     }
     if(current>max_current || current<min_current){
           std::stringstream ss;
         ss<<"current:"<<current<<" > "<<max_current;
-		SCLERR_ << boost::str( boost::format("current %1% outside  the maximum/minimum 'currentSP' \"max_current\":%2% \"min_current\":%3%" ) % current % max_current % min_current);
+                setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+
+		SCLERR_ << boost::str( boost::format("current %1% outside  the maximum/minimum 'current' \"max_current\":%2% \"min_current\":%3%" ) % current % max_current % min_current);
 		BC_END_RUNNING_PROPERTY;
 		return;
     }
-    
+    double delta=abs(current-*o_current);
+    SCLDBG_ << "delta current = " << delta;
 
-    SCLDBG_ << "compute timeout for set current = " << current;
-	if(*o_current_sp > current) {
-		SCLDBG_ << "The new current is lower then actual = " << *o_current_sp << "[new "<<current<<"]";
-		slope_speed  = *i_slope_down;
-	}else {
-		SCLDBG_ << "The new current is higher then actual = " << *o_current_sp << "[new "<<current<<"]";;
-		slope_speed  = *i_slope_up;
-	}
-	
-	//compute the delta for check if we are on the right current at the end of the job
-	SCLDBG_ << "Delta current is = " << *i_delta_setpoint;
-	double delta_setting = std::abs(*o_current_sp - current);
-	SCLDBG_ << "Delta setting is = " << delta_setting;
-	SCLDBG_ << "Slope speed is = " << slope_speed;
-	uint64_t computed_timeout = uint64_t(((delta_setting / slope_speed) * 1000)) + DEFAULT_RAMP_TIME_OFFSET_MS;
-	SCLDBG_ << "Calculated timout is = " << computed_timeout;
-	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
-	//set current set poi into the output channel
-	if(*i_delta_setpoint && (delta_setting < *i_delta_setpoint)) {
-		SCLERR_ << "New current don't pass delta check of = " << *i_delta_setpoint << " setpoint point = "<<current <<" current set" << *o_current_sp;
-		BC_END_RUNNING_PROPERTY;
+    if(delta<*p_resolution){
+        SCLDBG_ << "operation inibited because of resolution:" << *p_resolution;
+    		BC_END_RUNNING_PROPERTY;
 		return;
-	}
+    }
 
-	if(*i_setpoint_affinity) {
-		affinity_set_delta = *i_setpoint_affinity;
-	} else {
-		affinity_set_delta = 1;
+        SCLDBG_ << "compute timeout for set current = " << current;
+	if(*o_current > current) {
+		SCLDBG_ << "The new current is lower then actual = " << *o_current << "[new "<<current<<"]";
+		slope_speed  = *i_asdown;
+	}else {
+		SCLDBG_ << "The new current is higher then actual = " << *o_current << "[new "<<current<<"]";;
+		slope_speed  = *i_asup;
 	}
-	SCLDBG_ << "The setpoint affinity value is of +-" << affinity_set_delta << " of ampere";
+        uint32_t computed_timeout = uint64_t(((delta / slope_speed) * 1000)) + DEFAULT_RAMP_TIME_OFFSET_MS;
+
+        computed_timeout=std::max(computed_timeout,*p_setTimeout);
+        
+	//compute the delta for check if w
+	SCLDBG_ << "Slope speed is = " << slope_speed;
+	SCLDBG_ << "Calculated timout is = " << computed_timeout;
+	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout*1000);
+	//set current set poi into the output channel
 
 	SCLDBG_ << "Set current to value " << current;
 	if((err = powersupply_drv->setCurrentSP(current)) != 0) {
-		LOG_AND_TROW(SCLERR_, 1, boost::str(boost::format("Error %1% setting current") % err));
+            SCLERR_<<"## error setting current "<<current;
+            setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+
+            BC_END_RUNNING_PROPERTY;
+            return;
 	}
 	if((err = powersupply_drv->startCurrentRamp()) != 0) {
-		LOG_AND_TROW(SCLERR_, 2, boost::str(boost::format("Error %1% setting current") % err));
+            SCLERR_<<"## error setting current ramp "<<current;
+            setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+
+            BC_END_RUNNING_PROPERTY;
+            return;
 	}
 	//assign new current setpoint
 	slow_acquisition_index = false;
-	*o_current_sp = current;
-	powersupply_drv->accessor->base_opcode_priority=100;
+	*i_current = current;
 	setWorkState(true);
+        getAttributeCache()->setInputDomainAsChanged();
+      //  pushInputDataset();
+        setAlarmSeverity("current_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
 	BC_EXEC_RUNNING_PROPERTY;
 
 }
 
 void own::CmdPSSetCurrent::acquireHandler() {
-	int err = 0;
-	float tmp_float;
-        int state=0;
-	std::string state_str;
 	//acquire the current readout
-	SCLDBG_ << "fetch current readout";
-        
-        if((err = powersupply_drv->getState(&state, state_str))) {
-		LOG_AND_TROW(SCLERR_, 1, boost::str(boost::format("Error fetching state readout with code %1%") % err));
-	} else {
-		*o_status_id = state;
-		//copy up to 255 and put the termination character
-		strncpy(o_status, state_str.c_str(), 256);
-	}
-        
-	if((err = powersupply_drv->getCurrentOutput(&tmp_float))) {
-		LOG_AND_TROW(SCLERR_, 1, boost::str(boost::format("Error fetching current readout with code %1%") % err));
-	}else{
-		*o_current = (double)tmp_float;
-	}
-	if((slow_acquisition_index = !slow_acquisition_index)) {
-	    SCLDBG_ << "fetch voltage readout";
-	    //acquire the voltage readout
-        if((err = powersupply_drv->getVoltageOutput(&tmp_float))) {
-			LOG_AND_TROW(SCLERR_, 2, boost::str(boost::format("Error fetching voltage readout with code %1%") % err));
-        }else{
-            *o_voltage = (double)tmp_float;
-        }
-	} else {
-	    SCLDBG_ << "fetch alarms readout";
-		if((err = powersupply_drv->getAlarms(o_alarms))){
-			LOG_AND_TROW(SCLERR_, 2, boost::str(boost::format("Error fetching alarms readout with code %1%") % err));
-		}
-	}
+        AbstractPowerSupplyCommand::acquireHandler();
+
 	//force output dataset as changed
 	getAttributeCache()->setOutputDomainAsChanged();
 }
 
 void own::CmdPSSetCurrent::ccHandler() {
 	//check if we are int the delta of the setpoit to end the command
-	double delta_current_reached = std::abs(*o_current_sp - *o_current);
-	SCLDBG_ << "Readout: "<< *o_current <<" SetPoint: "<< *o_current_sp <<" Delta to reach: " << delta_current_reached;
-	if(delta_current_reached <= affinity_set_delta) {
+	double delta_current_reached = std::abs(*o_current - *i_current);
+	SCLDBG_ << "Readout: "<< *o_current <<" SetPoint: "<< *i_current<<" Delta to reach: " << delta_current_reached;
+	if(delta_current_reached <= *p_resolution || delta_current_reached<*p_warningThreshold) {
 		uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 		//the command is endedn because we have reached the affinitut delta set
-		SCLDBG_ << "[metric ]Set point reached with - delta: "<< delta_current_reached <<" sp: "<< *o_current_sp <<" affinity check " << affinity_set_delta << " ampere in " << elapsed_msec << " milliseconds";
+		SCLDBG_ << "[metric ]Set point reached with - delta: "<< delta_current_reached <<" sp: "<< *i_current <<" affinity check " << *p_warningThreshold << " ampere in " << elapsed_msec << " milliseconds";
 		BC_END_RUNNING_PROPERTY;
-		setWorkState(false);
         }
-        if(((*o_status_id)&common::powersupply::POWER_SUPPLY_STATE_ON)==0){
-		SCLERR_ << "change state during set current;";
-                BC_FAULT_RUNNING_PROPERTY;
-
-        }
+        
 	if(*o_alarms) {
 		SCLERR_ << "We got alarms on powersupply so we end the command";
 		BC_END_RUNNING_PROPERTY;
-		setWorkState(false);
 	}
 }
 
 bool own::CmdPSSetCurrent::timeoutHandler() {
-	double delta_current_reached = std::abs(*o_current_sp - *o_current);
+	double delta_current_reached = std::abs(*i_current - *o_current);
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	//move the state machine on fault
-	setWorkState(false);
-	powersupply_drv->accessor->base_opcode_priority=50;
-	if(delta_current_reached <= affinity_set_delta) {
+	if(delta_current_reached <= *p_resolution || delta_current_reached<*p_warningThreshold) {
 		uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
-		SCLDBG_ << "[metric] Setpoint reached on timeout with readout current " << *o_current << " in " << elapsed_msec << " milliseconds";
 		//the command is endedn because we have reached the affinitut delta set
-		BC_END_RUNNING_PROPERTY;
-	}else {
+		SCLDBG_ << "[metric ]Set point reached with - delta: "<< delta_current_reached <<" sp: "<< *i_current <<" affinity check " << *p_warningThreshold << " ampere in " << elapsed_msec << " milliseconds";
+        } else {
 		SCLERR_ << "[metric] Setpoint not reached on timeout with readout current " << *o_current << " in " << elapsed_msec << " milliseconds";
-		BC_FAULT_RUNNING_PROPERTY;
+                setAlarmSeverity("value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+
+		
 	}
+        setWorkState(false);
+
+        BC_END_RUNNING_PROPERTY
 	return false;
 }

@@ -32,12 +32,10 @@ namespace driver {
 
             //! Command for change the mode of the powersupply
 		DEFINE_BATCH_COMMAND_CLASS( CmdSetPolarity , AbstractPowerSupplyCommand) {
-			int32_t *o_polarity;
 			const uint32_t	*i_command_timeout;
 	  		int32_t polarity_set_point;
 		protected:
                 //implemented handler
-			uint8_t implementedHandler();
 			
                 // Set handler
 			void setHandler(c_data::CDataWrapper *data);
