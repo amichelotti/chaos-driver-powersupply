@@ -75,11 +75,8 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setSP(const std::string &n
 }
 bool ::driver::powersupply::SCPowerSupplyControlUnit::setAlarms(const std::string &name,long long value,uint32_t size){
     SCCUAPP << "set alarms " << value;
-	if(powersupply_drv->resetAlarms(value) != 0) {
-		return false;
-	}
-
-	return true;
+	
+	return setAlarms(value);
 }
 bool  ::driver::powersupply::SCPowerSupplyControlUnit::setOff(const std::string &name,bool value,uint32_t size){
     if(value){
@@ -551,6 +548,28 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setPolarity(int polarity,
   cmd_pack->addInt32Value(CMD_PS_SET_POLARITY_VALUE, polarity);
   //send command
   submitBatchCommand(CMD_PS_SET_POLARITY_ALIAS,
+                     cmd_pack.release(),
+                     cmd_id,
+                     0,
+                     50,
+                     SubmissionRuleType::SUBMIT_NORMAL);
+  if (sync) {
+    //! whait for the current command id to finisch
+    result = whaitOnCommandID(cmd_id);
+  }
+  return result;
+}
+
+
+
+bool ::driver::powersupply::SCPowerSupplyControlUnit::setAlarms(long long alarms,
+                                                                  bool sync) {
+  uint64_t cmd_id;
+  bool result = true;
+  std::auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
+  cmd_pack->addInt64Value("alarms", (uint64_t)alarms);
+  //send command
+  submitBatchCommand(CMD_PS_RESET_ALIAS,
                      cmd_pack.release(),
                      cmd_id,
                      0,

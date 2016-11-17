@@ -68,7 +68,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
                  SCLERR_ << "not defined maximum 'current voltage' attribute, quitting command";
                  setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
-                 BC_END_RUNNING_PROPERTY;
+                 BC_FAULT_RUNNING_PROPERTY;
                  return;
         }
 
@@ -81,7 +81,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
                SCLERR_ << "not defined minimum 'current voltage' attribute, quitting command";
                setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
-               BC_END_RUNNING_PROPERTY;
+               BC_FAULT_RUNNING_PROPERTY;
                return;
 
         }
@@ -102,14 +102,14 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 		SCLERR_ << "Set current parameter not present";
                 setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
-		BC_END_RUNNING_PROPERTY;
+		BC_FAULT_RUNNING_PROPERTY;
 		return;
 	}
 	if(!data->isDoubleValue(CMD_PS_SET_CURRENT)) {
 		SCLERR_ << "Set current parameter is not a Double data type";
                 setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
-		BC_END_RUNNING_PROPERTY;
+		BC_FAULT_RUNNING_PROPERTY;
 		return;
 	}
     
@@ -119,7 +119,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
         SCLERR_ << "Set current parameter is not a valid double number (nan?)";
         setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
-        BC_END_RUNNING_PROPERTY;
+        BC_FAULT_RUNNING_PROPERTY;
         return;
     }
     if(current>max_current || current<min_current){
@@ -128,7 +128,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
                 setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
 		SCLERR_ << boost::str( boost::format("current %1% outside  the maximum/minimum 'current' \"max_current\":%2% \"min_current\":%3%" ) % current % max_current % min_current);
-		BC_END_RUNNING_PROPERTY;
+		BC_FAULT_RUNNING_PROPERTY;
 		return;
     }
     double delta=abs(current-*o_current);
@@ -163,14 +163,14 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
             SCLERR_<<"## error setting current "<<current;
             setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
-            BC_END_RUNNING_PROPERTY;
+            BC_FAULT_RUNNING_PROPERTY;
             return;
 	}
 	if((err = powersupply_drv->startCurrentRamp()) != 0) {
             SCLERR_<<"## error setting current ramp "<<current;
             setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
-            BC_END_RUNNING_PROPERTY;
+            BC_FAULT_RUNNING_PROPERTY;
             return;
 	}
 	//assign new current setpoint

@@ -43,7 +43,7 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 		CMDCUERR << "Mode type not present";
                         setAlarmSeverity("stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
-		BC_END_RUNNING_PROPERTY;
+		BC_FAULT_RUNNING_PROPERTY;
 		return;
 	}
 	state_to_go = data->getInt32Value(CMD_PS_MODE_TYPE);
@@ -51,7 +51,7 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 		CMDCUERR << "Request mode type not implemented";
                 setAlarmSeverity("stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
-		BC_END_RUNNING_PROPERTY;
+		BC_FAULT_RUNNING_PROPERTY;
 		return;
 	}
         
@@ -64,10 +64,10 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 			CMDCUINFO << "Request to go to stanby";
 			 
                     if((err = powersupply_drv->standby())) {
-			CMDCUERR<<boost::str( boost::format("Error calling driver for standby on powersupply") % err);
+			CMDCUERR<<boost::str( boost::format("Error calling driver for \"standby\" on powersupply err:%1%") % err);
                         setAlarmSeverity("stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
-                        BC_END_RUNNING_PROPERTY;
+                        BC_FAULT_RUNNING_PROPERTY;
                         return;
                        }
                         *i_stby=true;
@@ -79,10 +79,10 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
                 
                 
                     if((err = powersupply_drv->poweron())) {
-			CMDCUERR<<boost::str( boost::format("Error calling driver for operation on powersupply") % err);
+			CMDCUERR<<boost::str( boost::format("Error calling driver for \"operational\" on powersupply err:%1%") % err);
                          setAlarmSeverity("stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
-                        BC_END_RUNNING_PROPERTY;
+                        BC_FAULT_RUNNING_PROPERTY;
                         return;
                 
                     }
@@ -120,7 +120,6 @@ void own::CmdPSMode::acquireHandler() {
 }
 
 void own::CmdPSMode::ccHandler() {
-	CMDCUINFO << "enter acquireHandler";
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	
         
@@ -133,9 +132,8 @@ void own::CmdPSMode::ccHandler() {
 	if(*o_alarms) {
 		BC_END_RUNNING_PROPERTY
 		setWorkState(false);
-		CMDCUERR << boost::str(boost::format("[metric] Got alarm code %1% in %3% milliseconds") % *o_alarms % elapsed_msec);
+		CMDCUERR << boost::str(boost::format("[metric] Got alarm code %1% in %2% milliseconds") % *o_alarms % elapsed_msec);
 	}
-	CMDCUINFO << "exit acquireHandler";
 }
 
 bool own::CmdPSMode::timeoutHandler() {

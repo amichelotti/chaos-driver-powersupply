@@ -45,18 +45,19 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 
 	int err = 0;
         setAlarmSeverity("polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+        setAlarmSeverity("polarity_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
     if(!data || !data->hasKey(CMD_PS_SET_POLARITY_VALUE) ) {
 		SCLERR_ << "Type of polarity not passed";
                 setAlarmSeverity("polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
-		BC_END_RUNNING_PROPERTY;
+		BC_FAULT_RUNNING_PROPERTY;
 		return;
     }
         if(powersupply_drv->getFeatures()& common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR){
             	SCLERR_ << "invalid command for bipolars";
                 setAlarmSeverity("polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
-                BC_END_RUNNING_PROPERTY;
+                BC_FAULT_RUNNING_PROPERTY;
 		return;
         }
 
@@ -78,7 +79,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
            SCLERR_ << "## cannot change polarity since is not in standby";
            setAlarmSeverity("polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
-            BC_END_RUNNING_PROPERTY;
+            BC_FAULT_RUNNING_PROPERTY;
 	    return;
 
         }
@@ -89,7 +90,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
            SCLERR_ << "## error setting polarity to:"<<polarity_set_point;
            setAlarmSeverity("polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
-           BC_END_RUNNING_PROPERTY;
+           BC_FAULT_RUNNING_PROPERTY;
 	   return;
 
     }
@@ -99,7 +100,6 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
         *i_pol=polarity_set_point;
         getAttributeCache()->setInputDomainAsChanged();
 //        pushInputDataset();
-        setAlarmSeverity("polarity_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
     //run in exclusive mode
     BC_EXEC_RUNNING_PROPERTY

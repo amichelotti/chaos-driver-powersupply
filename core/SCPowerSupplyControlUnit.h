@@ -70,6 +70,8 @@ namespace driver {
 			bool setPolarity(int polarity, bool sync = true);
 			bool setCurrent(double current_set_point, bool sync = true);
 			bool setRampSpeed(double sup, double sdown, bool sync = true);
+                        bool setAlarms(long long value, bool sync = true);
+
 		public:
 			/*
 			 Construct a new CU with an identifier

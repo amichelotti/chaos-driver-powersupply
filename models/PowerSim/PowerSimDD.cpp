@@ -27,9 +27,9 @@
 // initialization format is <POWERSUPPLY TYPE>:'<INITALISATION PARAMETERS>'
 static const boost::regex power_supply_init_match("(\\w+):(.+)");
 
-// initialisation format for simulator <serial port>,<slaveid>,<feature=[0:monopolar,1:bipolar,2:pulse]>,<min curr:max curr>,<min volt:max voltage>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<force errors secs=0 [no error]>
+// initialisation format for simulator <serial port>,<slaveid>,<feature=[0:monopolar,1:bipolar,2:pulse]>,<min curr:max curr>,<min volt:max voltage>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<force errors secs=0 [no error]>,<readout uncertently in percent respect (max-min) 0=no  uncertently>
 
-static const boost::regex power_supply_simulator_init_match("([\\w\\/]+),(\\d+),(\\d+),(.+):(.+),(.+):(.+),(.+):(.+),(.+):(.+),(\\d+)");
+static const boost::regex power_supply_simulator_init_match("([\\w\\/]+),(\\d+),(\\d+),(.+):(.+),(.+):(.+),(.+):(.+),(.+):(.+),(\\d+),([\\d\.]+)");
 
 
 //GET_PLUGIN_CLASS_DEFINITION
@@ -80,8 +80,9 @@ void chaos::driver::powersupply::PowerSimDD::driverInit(const char *initParamete
                 std::string read_min=match[10];
                 std::string read_max=match[11];
                 std::string force_err=match[12];
+                std::string err_readout=match[13];
                 PSLAPP<<"Allocating Simulated Power Supply device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\" FORCING ERRORS:"<<force_err<<std::endl;
-                power = new ::common::powersupply::SimPSupply(dev.c_str(),atoi(slaveid.c_str()),strtoll(features.c_str(),0,0),atoi(min_curr.c_str()),atoi(max_curr.c_str()),atoi(min_volt.c_str()),atoi(max_volt.c_str()),atoi(write_min.c_str()),atoi(write_max.c_str()),atoi(read_min.c_str()),atoi(read_max.c_str()),SIMPSUPPLY_CURRENT_ADC,SIMPSUPPLY_VOLTAGE_ADC,SIMPSUPPLY_UPDATE_DELAY,atoi(force_err.c_str()));
+                power = new ::common::powersupply::SimPSupply(dev.c_str(),atoi(slaveid.c_str()),strtoll(features.c_str(),0,0),atoi(min_curr.c_str()),atoi(max_curr.c_str()),atoi(min_volt.c_str()),atoi(max_volt.c_str()),atoi(write_min.c_str()),atoi(write_max.c_str()),atoi(read_min.c_str()),atoi(read_max.c_str()),SIMPSUPPLY_CURRENT_ADC,SIMPSUPPLY_VOLTAGE_ADC,SIMPSUPPLY_UPDATE_DELAY,atoi(force_err.c_str()),atof(err_readout.c_str()));
                 if(power==NULL){
                     throw chaos::CException(1, "Cannot allocate resources for SimPSupply", "PowerSimDD::driverInit");
                 }
