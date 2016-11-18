@@ -105,6 +105,7 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	//send comamnd to driver
 	setWorkState(true);
         setAlarmSeverity("stby_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+        setAlarmSeverity("stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
         getAttributeCache()->setInputDomainAsChanged();
 //        pushInputDataset();

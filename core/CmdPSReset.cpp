@@ -60,9 +60,10 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 	CMDCUDBG_ << "Resetting alarms";
 	if(powersupply_drv->resetAlarms(0) != 0) {
 		CMDCUERR_<<"## cannot reset alarms";
-                BC_END_RUNNING_PROPERTY;
+                BC_FAULT_RUNNING_PROPERTY;
                 return;
         }
+        setAlarmSeverity("interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
 	//set working flag
 	setWorkState(true);

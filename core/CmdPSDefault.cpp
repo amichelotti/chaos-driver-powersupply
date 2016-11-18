@@ -69,16 +69,17 @@ void CmdPSDefault::acquireHandler() {
 }
 void CmdPSDefault::ccHandler() {
     /////  CHECKS during operational mode
+     if(*i_stby!=*o_stby){
+        setAlarmSeverity("stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+    } else {
+        setAlarmSeverity("stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    }
     if(*o_alarms){
        setAlarmSeverity("interlock", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
        return;
     }
     setAlarmSeverity("interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-    if(*i_stby!=*o_stby){
-        setAlarmSeverity("stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelWarning);
-    } else {
-        setAlarmSeverity("stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
-    }
+   
     
     if(*o_stby == 0){
         if(*p_warningThreshold>0){
