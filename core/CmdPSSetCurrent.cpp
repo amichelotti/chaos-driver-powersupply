@@ -166,13 +166,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
             BC_FAULT_RUNNING_PROPERTY;
             return;
 	}
-	if((err = powersupply_drv->startCurrentRamp()) != 0) {
-            SCLERR_<<"## error setting current ramp "<<current;
-            setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
-
-            BC_FAULT_RUNNING_PROPERTY;
-            return;
-	}
+       
 	//assign new current setpoint
 	slow_acquisition_index = false;
 	*i_current = current;
@@ -180,7 +174,20 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
         getAttributeCache()->setInputDomainAsChanged();
       //  pushInputDataset();
         setAlarmSeverity("current_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+        if(*o_stby){
+         // we are in standby only the SP is set
+             SCLDBG_ << "we are in standby we cannot start ramp SP: "<<*i_current;
 
+         BC_END_RUNNING_PROPERTY;
+         return;
+        } 
+        if((err = powersupply_drv->startCurrentRamp()) != 0) {
+              SCLERR_<<"## error setting current ramp "<<current;
+              setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+
+              BC_FAULT_RUNNING_PROPERTY;
+              return;
+          }
 	BC_EXEC_RUNNING_PROPERTY;
 
 }

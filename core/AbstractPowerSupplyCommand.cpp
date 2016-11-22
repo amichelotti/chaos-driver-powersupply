@@ -78,6 +78,7 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	    powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
 	  }
 	}
+    setWorkState(false);
 }
 
 // return the implemented handler
