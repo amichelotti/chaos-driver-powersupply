@@ -139,7 +139,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 
     if(delta<*p_resolution){
         SCLDBG_ << "operation inibited because of resolution:" << *p_resolution;
-         metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,CHAOS_FORMAT("operation inibited because of resolution %1%",%*p_resolution ));
+         metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,CHAOS_FORMAT("operation inibited because of resolution %1% , delta current %2%",%*p_resolution %delta ));
         *i_current = current;
         getAttributeCache()->setInputDomainAsChanged();
 
@@ -167,7 +167,8 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 
 	SCLDBG_ << "Set current to value " << current;
 	if((err = powersupply_drv->setCurrentSP(current)) != 0) {
-            SCLERR_<<"## error setting current "<<current;
+            metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error setting current %1%") % current) );
+
             setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
             BC_FAULT_RUNNING_PROPERTY;

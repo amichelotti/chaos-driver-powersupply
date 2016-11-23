@@ -39,9 +39,9 @@ using namespace chaos::cu::control_manager::slow_command;
 using namespace chaos::cu::driver_manager::driver;
 
 
-#define SCCUAPP INFO_LOG(SCPowerSupplyControlUnit)
-#define SCCUDBG DBG_LOG(SCPowerSupplyControlUnit)
-#define SCCUERR ERR_LOG(SCPowerSupplyControlUnit)
+#define SCCUAPP INFO_LOG(SCPowerSupplyControlUnit) << "[" << getDeviceID() << "] "
+#define SCCUDBG DBG_LOG(SCPowerSupplyControlUnit) << "[" << getDeviceID() << "] "
+#define SCCUERR ERR_LOG(SCPowerSupplyControlUnit) << "[" << getDeviceID() << "] "
 
 PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(::driver::powersupply::SCPowerSupplyControlUnit)
 
@@ -343,7 +343,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineCustomAttribute(
 // Abstract method for the initialization of the control unit
 
 void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CException) {
-    SCCUAPP << "Starting restore";
+     metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,"Initializing");
 
     int err = 0;
     int state_id;
@@ -382,10 +382,12 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
      * current_sp_attr_info.reset();
      */
     if (*asup <= 0) {
-        throw chaos::CException(-4, "No slop up speed set", __FUNCTION__);
+        //throw chaos::CException(-4, "No slop up speed set", __FUNCTION__);
+        metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,"No slop up speed set" );
+
     }
     if (*asdown <= 0) {
-        throw chaos::CException(-5, "No slop down speed set", __FUNCTION__);
+        metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,"No slop down speed set" );
     }
 
 
@@ -403,7 +405,9 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
     SCCUAPP << "set default slope value up:" << *asup << " down:" << *asdown;
     err = powersupply_drv->setCurrentRampSpeed(*asup, *asdown);
     if ((err != chaos::ErrorCode::EC_NO_ERROR) && (err != chaos::ErrorCode::EC_NODE_OPERATION_NOT_SUPPORTED)) {
-        throw chaos::CException(-7, "Error setting slope ", __FUNCTION__);
+          metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error setting Ramp Speep %1% %2") % *asup %*asdown) );
+
+     //   throw chaos::CException(-7, "Error setting slope ", __FUNCTION__);
         //TODO: check the  boost::bad_format_string: format-string is ill-formed
         //throw chaos::CException(2, boost::str( boost::format("Error %1 setting the slope in state %2%[%3%]") % err % state_str % state_id), std::string(__FUNCTION__));
     }

@@ -48,8 +48,8 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	}
 	state_to_go = data->getInt32Value(CMD_PS_MODE_TYPE);
 	if(state_to_go>1) {
-		CMDCUERR << "Request mode type not implemented";
                 setAlarmSeverity("stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+                metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Request mode '%1%' not implemented") % state_to_go) );
 
 		BC_FAULT_RUNNING_PROPERTY;
 		return;
