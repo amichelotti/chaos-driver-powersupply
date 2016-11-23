@@ -140,6 +140,8 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     if(delta<*p_resolution){
         SCLDBG_ << "operation inibited because of resolution:" << *p_resolution;
          metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,CHAOS_FORMAT("operation inibited because of resolution %1%",%*p_resolution ));
+        *i_current = current;
+        getAttributeCache()->setInputDomainAsChanged();
 
     		BC_END_RUNNING_PROPERTY;
 		return;
@@ -226,6 +228,8 @@ bool own::CmdPSSetCurrent::timeoutHandler() {
 	double delta_current_reached = std::abs(*i_current - *o_current);
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	//move the state machine on fault
+         metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,CHAOS_FORMAT("timeout, delta current remaining %1%",%delta_current_reached));
+
 	if(delta_current_reached <= *p_resolution || delta_current_reached<*p_warningThreshold) {
 		uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 		//the command is endedn because we have reached the affinitut delta set
