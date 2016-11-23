@@ -58,6 +58,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
         chaos::common::data::RangeValueInfo attr_info;
 	getDeviceDatabase()->getAttributeRangeValueInfo("current", attr_info);
         setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+        setAlarmSeverity("current_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
   // REQUIRE MIN MAX SET IN THE MDS
         if (attr_info.maxRange.size()) {
@@ -66,6 +67,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 
         } else {
                  SCLERR_ << "not defined maximum 'current voltage' attribute, quitting command";
+                 metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,"not defined maximum 'current voltage' attribute, quitting command" );
                  setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
                  BC_FAULT_RUNNING_PROPERTY;
@@ -80,6 +82,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
         } else {
                SCLERR_ << "not defined minimum 'current voltage' attribute, quitting command";
                setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+                 metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,"not defined minimum 'current voltage' attribute, quitting command" );
 
                BC_FAULT_RUNNING_PROPERTY;
                return;
@@ -126,8 +129,8 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
           std::stringstream ss;
         ss<<"current:"<<current<<" > "<<max_current;
                 setAlarmSeverity("current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+                 metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,CHAOS_FORMAT("current %1% outside  the maximum/minimum 'current' \"max_current\":%2% \"min_current\":%3%" , % current % max_current % min_current));
 
-		SCLERR_ << boost::str( boost::format("current %1% outside  the maximum/minimum 'current' \"max_current\":%2% \"min_current\":%3%" ) % current % max_current % min_current);
 		BC_FAULT_RUNNING_PROPERTY;
 		return;
     }
@@ -136,6 +139,8 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 
     if(delta<*p_resolution){
         SCLDBG_ << "operation inibited because of resolution:" << *p_resolution;
+         metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,CHAOS_FORMAT("operation inibited because of resolution %1%",%*p_resolution ));
+
     		BC_END_RUNNING_PROPERTY;
 		return;
     }

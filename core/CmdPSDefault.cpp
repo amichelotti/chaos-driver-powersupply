@@ -75,6 +75,8 @@ void CmdPSDefault::ccHandler() {
         setAlarmSeverity("stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelWarning);
     } else {
         setAlarmSeverity("stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+        setAlarmSeverity("stby_value_not_reached",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
     }
     if(*o_alarms){
        setAlarmSeverity("interlock", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
@@ -102,6 +104,7 @@ void CmdPSDefault::ccHandler() {
             } else {
                 start_out_of_set_time=0;
                  setAlarmSeverity("current_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+                 setAlarmSeverity("current_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
             }
         }
@@ -111,6 +114,8 @@ void CmdPSDefault::ccHandler() {
 
         } else {
              setAlarmSeverity("polarity_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+             setAlarmSeverity("polarity_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
 
         }
     }

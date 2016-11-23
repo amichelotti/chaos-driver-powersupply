@@ -64,7 +64,9 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 			CMDCUINFO << "Request to go to stanby";
 			 
                     if((err = powersupply_drv->standby())) {
-			CMDCUERR<<boost::str( boost::format("Error calling driver for \"standby\" on powersupply err:%1%") % err);
+                        metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error calling driver for \"standby\" on powersupply err:%1%") % err) );
+
+		//	CMDCUERR<<boost::str( boost::format("Error calling driver for \"standby\" on powersupply err:%1%") % err);
                         setAlarmSeverity("stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
                         BC_FAULT_RUNNING_PROPERTY;
@@ -79,7 +81,7 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
                 
                 
                     if((err = powersupply_drv->poweron())) {
-			CMDCUERR<<boost::str( boost::format("Error calling driver for \"operational\" on powersupply err:%1%") % err);
+                        metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error calling driver for \"operational\" on powersupply err:%1%") % err) );
                          setAlarmSeverity("stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
                         BC_FAULT_RUNNING_PROPERTY;

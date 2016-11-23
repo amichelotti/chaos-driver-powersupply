@@ -55,8 +55,10 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 		return;
     }
         if(powersupply_drv->getFeatures()& common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR){
-            	SCLERR_ << "invalid command for bipolars";
+            	//SCLERR_ << "invalid command for bipolars";
                 setAlarmSeverity("polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+                           metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,"invalid command for bipolars");
+
                 BC_FAULT_RUNNING_PROPERTY;
 		return;
         }
@@ -76,8 +78,9 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
     
     if(*c_stbyOnPol){
         if(*o_stby==false){
-           SCLERR_ << "## cannot change polarity since is not in standby";
+          // SCLERR_ << "## cannot change polarity since is not in standby";
            setAlarmSeverity("polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+           metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError, "cannot change polarity since is not in standby" );
 
             BC_FAULT_RUNNING_PROPERTY;
 	    return;

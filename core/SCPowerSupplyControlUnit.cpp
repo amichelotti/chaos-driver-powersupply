@@ -223,6 +223,15 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
     //////////
 
     // input/output DataSet
+    addAttributeToDataSet("stby",
+            "force standby",
+            DataType::TYPE_BOOLEAN,
+            DataType::Bidirectional);
+    addAttributeToDataSet("polarity",
+            "drive the polarity (for bipolar) -1 negative, 0 open, +1 positive",
+            DataType::TYPE_INT32,
+            DataType::Bidirectional);
+    
     addAttributeToDataSet("current",
             "setpoint the current",
             DataType::TYPE_DOUBLE,
@@ -231,6 +240,11 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
     addAttributeToDataSet("voltage",
             "setpoint the voltage",
             DataType::TYPE_DOUBLE,
+            DataType::Bidirectional);
+    
+     addAttributeToDataSet("alarms",
+            "Alarms input clear, output alarm mask",
+            DataType::TYPE_INT64,
             DataType::Bidirectional);
 
     addAttributeToDataSet("rampUpRate",
@@ -243,10 +257,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
             DataType::TYPE_DOUBLE,
             DataType::Bidirectional);
 
-    addAttributeToDataSet("stby",
-            "force standby",
-            DataType::TYPE_BOOLEAN,
-            DataType::Bidirectional);
+    
 
     addAttributeToDataSet("off",
             "force off (loose control)",
@@ -264,16 +275,10 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
             DataType::Bidirectional);
 
 
-    addAttributeToDataSet("polarity",
-            "drive the polarity (for bipolar) -1 negative, 0 open, +1 positive",
-            DataType::TYPE_INT32,
-            DataType::Bidirectional);
+    
 
 
-    addAttributeToDataSet("alarms",
-            "Alarms input clear, output alarm mask",
-            DataType::TYPE_INT64,
-            DataType::Bidirectional);
+   
 
 
 
