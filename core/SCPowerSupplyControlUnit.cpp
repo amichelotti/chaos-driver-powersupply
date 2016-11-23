@@ -275,13 +275,6 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
             DataType::Bidirectional);
 
 
-    
-
-
-   
-
-
-
 
 
     addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, double >(this,
@@ -470,7 +463,16 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
     double *now_current_sp = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "current");
     bool *now_stby = getAttributeCache()->getRWPtr<bool>(DOMAIN_OUTPUT, "stby");
     int32_t *now_polarity = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
+    uint64_t *alarm=getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "alarms");
+    if(*alarm!=0){
+        metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,CHAOS_FORMAT("There are active alarms %1% during restore, try to rese",%*alarm ));
+        RESTORE_LAPP << " resetting alarms";
 
+        if(!setAlarms(1)){
+              RESTORE_LERR << " 2 error resetting alarms";
+           return false;
+        }
+    }
     //chec the restore polarity
     int32_t restore_polarity = *snapshot_cache->getAttributeValue(DOMAIN_INPUT, "polarity")->getValuePtr<int32_t>();
     double restore_current_sp = *snapshot_cache->getAttributeValue(DOMAIN_INPUT, "current")->getValuePtr<double>();
@@ -516,23 +518,23 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
                     return false;
                 }
                 RESTORE_LAPP << "9 going power on";
-
-                if (powerON() == false) {
+            }
+              
+            if (powerON() == false) {
                     RESTORE_LERR << " 10 error restoring poweron";
                     return false;
-                }
-                RESTORE_LAPP << "11 restoring current:" << restore_current_sp;
-
-                if (!setCurrent(restore_current_sp)) {
-                    RESTORE_LERR << "12 error restoring current to " << restore_current_sp;
-                    return false;
-                }
+                
             }
+            RESTORE_LAPP << "11 restoring current:" << restore_current_sp;
 
-        }
-        uint64_t restore_duration_in_ms = chaos::common::utility::TimingUtil::getTimeStamp() - start_restore_time;
-        RESTORE_LAPP << "[metric] Restore successfully achieved in " << restore_duration_in_ms << " milliseconds";
-        return true;
+           if (!setCurrent(restore_current_sp)) {
+            RESTORE_LERR << "12 error restoring current to " << restore_current_sp;
+            return false;
+            }
+            uint64_t restore_duration_in_ms = chaos::common::utility::TimingUtil::getTimeStamp() - start_restore_time;
+            RESTORE_LAPP << "[metric] Restore successfully achieved in " << restore_duration_in_ms << " milliseconds";
+            return true;
+        }    
 
     }
     //handle bipolar
