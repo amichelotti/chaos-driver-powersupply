@@ -405,12 +405,14 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
     SCCUAPP << "set default slope value up:" << *asup << " down:" << *asdown;
     err = powersupply_drv->setCurrentRampSpeed(*asup, *asdown);
     if ((err != chaos::ErrorCode::EC_NO_ERROR) && (err != chaos::ErrorCode::EC_NODE_OPERATION_NOT_SUPPORTED)) {
-          metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error setting Ramp Speep %1% %2") % *asup %*asdown) );
+          metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error setting Ramp Speep %1% %2%") % *asup %*asdown) );
 
      //   throw chaos::CException(-7, "Error setting slope ", __FUNCTION__);
         //TODO: check the  boost::bad_format_string: format-string is ill-formed
         //throw chaos::CException(2, boost::str( boost::format("Error %1 setting the slope in state %2%[%3%]") % err % state_str % state_id), std::string(__FUNCTION__));
     }
+         metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,"Init Done");
+
 }
 
 // Abstract method for the start of the control unit
