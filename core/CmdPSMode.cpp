@@ -94,16 +94,18 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	}
  
 	//set comamnd timeout for this instance
+        uint64_t timeo;
 	if(*p_setTimeout) {
 		CMDCUINFO << "Set time out in "<< *p_setTimeout << "milliseconds";
 		//we have a timeout for command so apply it to this instance
-		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *p_setTimeout);
+		timeo= *p_setTimeout;
 	} else {
 		CMDCUINFO << "Set time out in milliseconds "<<DEFAULT_COMMAND_TIMEOUT_MS;
+                timeo =DEFAULT_COMMAND_TIMEOUT_MS;
 		//we have a timeout for command so apply it to this instance
-		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)DEFAULT_COMMAND_TIMEOUT_MS);
 	}
-	
+    setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)timeo);
+
 	//send comamnd to driver
 	setWorkState(true);
         setAlarmSeverity("stby_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
@@ -112,6 +114,8 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
         getAttributeCache()->setInputDomainAsChanged();
 //        pushInputDataset();
 	//run in esclusive mode
+        metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,boost::str( boost::format("performing command mode:%1% timeo %2%2 ms") % state_to_go %timeo) );
+
 	BC_EXEC_RUNNING_PROPERTY;
 }
 

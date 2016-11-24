@@ -35,6 +35,7 @@
               <itemPath>../../chaosframework/chaos/common/batch_command/BatchCommandException.h</itemPath>
               <itemPath>../../chaosframework/chaos/common/batch_command/BatchCommandExecutor.cpp</itemPath>
               <itemPath>../../chaosframework/chaos/common/batch_command/BatchCommandExecutor.h</itemPath>
+              <itemPath>../../chaosframework/chaos/common/batch_command/BatchCommandSandbox.cpp</itemPath>
               <itemPath>../../chaosframework/chaos/common/batch_command/BatchCommandSandbox.h</itemPath>
               <itemPath>../../chaosframework/chaos/common/batch_command/BatchCommandSandboxEventHandler.h</itemPath>
               <itemPath>../../chaosframework/chaos/common/batch_command/BatchCommandTypes.h</itemPath>
@@ -1163,6 +1164,13 @@
         <ccTool flags="2">
         </ccTool>
       </item>
+      <item path="../../chaosframework/chaos/common/batch_command/BatchCommandSandbox.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="2">
+        </ccTool>
+      </item>
       <item path="../../chaosframework/chaos/cu_toolkit/control_manager/slow_command/SlowCommandExecutor.cpp"
             ex="false"
             tool="1"
@@ -1812,7 +1820,7 @@
             <pElem>../../chaosframework</pElem>
             <pElem>../..</pElem>
             <pElem>..</pElem>
-            <pElem>../../chaosframework/chaos-distrib-x86_64-Linux/include</pElem>
+            <pElem>../chaos-distrib-x86_64-Linux/include</pElem>
             <pElem>.</pElem>
           </incDir>
           <preprocessorList>
@@ -1992,7 +2000,7 @@
             <pElem>../../chaosframework</pElem>
             <pElem>../..</pElem>
             <pElem>..</pElem>
-            <pElem>../../chaosframework/chaos-distrib-x86_64-Linux/include</pElem>
+            <pElem>../chaos-distrib-x86_64-Linux/include</pElem>
             <pElem>.</pElem>
           </incDir>
           <preprocessorList>
@@ -2172,7 +2180,7 @@
             <pElem>../../chaosframework</pElem>
             <pElem>../..</pElem>
             <pElem>..</pElem>
-            <pElem>../../chaosframework/chaos-distrib-x86_64-Linux/include</pElem>
+            <pElem>../chaos-distrib-x86_64-Linux/include</pElem>
             <pElem>.</pElem>
           </incDir>
           <preprocessorList>
@@ -2575,7 +2583,6 @@
             <pElem>../../chaosframework</pElem>
             <pElem>../..</pElem>
             <pElem>..</pElem>
-            <pElem>../../chaosframework/chaos-distrib-x86_64-Linux/include</pElem>
           </incDir>
           <preprocessorList>
             <Elem>CHAOS</Elem>
@@ -2586,6 +2593,7 @@
       <folder path="chaos_bundle/chaosframework">
         <ccTool>
           <incDir>
+            <pElem>../../chaosframework/chaos-distrib-x86_64-Linux/include</pElem>
             <pElem>../chaos/common/script/lua/core</pElem>
             <pElem>../chaos/common/chaos/common</pElem>
             <pElem>../chaos/common/chaos/common/metadata_logging</pElem>
@@ -2598,10 +2606,20 @@
       </folder>
       <folder path="chaos_bundle/common/powersupply">
         <ccTool>
+          <incDir>
+            <pElem>../chaos-distrib-x86_64-Linux/include</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>POWER_SUPPLY_DEFAULT_TIMEOUT=4000</Elem>
             <Elem>SIMPSUPPLY_DEBUG</Elem>
           </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="chaos_bundle/common/test">
+        <ccTool>
+          <incDir>
+            <pElem>../../chaosframework/chaos-distrib-x86_64-Linux/include</pElem>
+          </incDir>
         </ccTool>
       </folder>
       <folder path="slow_command">

@@ -46,7 +46,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 	int err = 0;
         setAlarmSeverity("polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
         setAlarmSeverity("polarity_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-
+        uint64_t timeo;
     if(!data || !data->hasKey(CMD_PS_SET_POLARITY_VALUE) ) {
 		SCLERR_ << "Type of polarity not passed";
                 setAlarmSeverity("polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
@@ -66,12 +66,14 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 	SCLDBG_ << "Checking for timout";
 	if(*p_setTimeout) {
 		SCLDBG_ << "Timeout will be set to ms -> " << *p_setTimeout;
-		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *p_setTimeout);
+                timeo =  *p_setTimeout;
 	} else {
 		//set five second of timeout
 		SCLDBG_ << "Timeout will be set to ms ->" << DEFAULT_COMMAND_TIMEOUT_MS;
-		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)DEFAULT_COMMAND_TIMEOUT_MS);
+                timeo = DEFAULT_COMMAND_TIMEOUT_MS;
 	}
+        setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)timeo);
+
 	int32_t polarity_readout = 0;
     polarity_set_point = data->getInt32Value(CMD_PS_SET_POLARITY_VALUE);
     SCLAPP_ << "Set polarity called with value " << polarity_set_point;
@@ -103,6 +105,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
         *i_pol=polarity_set_point;
         getAttributeCache()->setInputDomainAsChanged();
 //        pushInputDataset();
+        metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,boost::str( boost::format("performing command set polarity :%1% timeout %2% ms") % polarity_set_point %timeo ) );
 
     //run in exclusive mode
     BC_EXEC_RUNNING_PROPERTY

@@ -196,6 +196,9 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
               BC_FAULT_RUNNING_PROPERTY;
               return;
           }
+        
+        metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,boost::str( boost::format("performing command set current :%1% timeout %2%") % current % (computed_timeout*1000)) );
+
 	BC_EXEC_RUNNING_PROPERTY;
 
 }
