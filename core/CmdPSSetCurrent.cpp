@@ -162,7 +162,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	//compute the delta for check if w
 	SCLDBG_ << "Slope speed is = " << slope_speed;
 	SCLDBG_ << "Calculated timout is = " << computed_timeout;
-	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout*1000);
+	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
 	//set current set poi into the output channel
 
 	SCLDBG_ << "Set current to value " << current;
@@ -197,7 +197,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
               return;
           }
         
-        metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,boost::str( boost::format("performing command set current :%1% timeout %2%") % current % (computed_timeout*1000)) );
+        metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,boost::str( boost::format("performing command set current :%1% timeout %2%") % current % computed_timeout) );
 
 	BC_EXEC_RUNNING_PROPERTY;
 
