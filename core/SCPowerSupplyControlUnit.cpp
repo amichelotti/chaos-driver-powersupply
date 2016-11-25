@@ -71,13 +71,13 @@ _control_unit_drivers) {
 bool ::driver::powersupply::SCPowerSupplyControlUnit::setSP(const std::string &name, double value, uint32_t size) {
     SCCUAPP << "set SP to " << value;
 
-    return setCurrent(value);
+    return setCurrent(value,false);
 }
 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::setAlarms(const std::string &name, long long value, uint32_t size) {
     SCCUAPP << "set alarms " << value;
 
-    return setAlarms(value);
+    return setAlarms(value,false);
 }
 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::setOff(const std::string &name, bool value, uint32_t size) {
@@ -94,10 +94,10 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setOff(const std::string &
 bool ::driver::powersupply::SCPowerSupplyControlUnit::setStby(const std::string &name, bool value, uint32_t size) {
     if (value) {
         SCCUAPP << "set Standby";
-        return powerStandby();
+        return powerStandby(false);
     } else {
         SCCUAPP << "set Operational";
-        return powerON();
+        return powerON(false);
     }
 
     return false;
@@ -106,7 +106,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setStby(const std::string 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::setPol(const std::string &name, int32_t value, uint32_t size) {
     SCCUAPP << "set polarity:" << value;
 
-    return setPolarity(value);
+    return setPolarity(value,false);
 }
 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::setRampH(const std::string &name, double value, uint32_t size) {
@@ -145,6 +145,60 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
     installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdSetPolarity));
 
 
+    // input/output DataSet
+    addAttributeToDataSet("stby",
+            "force standby",
+            DataType::TYPE_BOOLEAN,
+            DataType::Bidirectional);
+    addAttributeToDataSet("polarity",
+            "drive the polarity (for bipolar) -1 negative, 0 open, +1 positive",
+            DataType::TYPE_INT32,
+            DataType::Bidirectional);
+    
+    addAttributeToDataSet("current",
+            "setpoint the current",
+            DataType::TYPE_DOUBLE,
+            DataType::Bidirectional);
+
+    addAttributeToDataSet("voltage",
+            "setpoint the voltage",
+            DataType::TYPE_DOUBLE,
+            DataType::Bidirectional);
+    
+     addAttributeToDataSet("alarms",
+            "Alarms input clear, output alarm mask",
+            DataType::TYPE_INT64,
+            DataType::Bidirectional);
+
+    addAttributeToDataSet("rampUpRate",
+            "ramp up in A/S or V/s",
+            DataType::TYPE_DOUBLE,
+            DataType::Bidirectional);
+
+    addAttributeToDataSet("rampDownRate",
+            "ramp down in A/S or V/s",
+            DataType::TYPE_DOUBLE,
+            DataType::Bidirectional);
+
+    
+
+    addAttributeToDataSet("off",
+            "force off (loose control)",
+            DataType::TYPE_BOOLEAN,
+            DataType::Bidirectional);
+
+    addAttributeToDataSet("triggerArmed",
+            "enable triggered acquisition",
+            DataType::TYPE_BOOLEAN,
+            DataType::Bidirectional);
+
+    addAttributeToDataSet("local",
+            "force local (loose control)",
+            DataType::TYPE_BOOLEAN,
+            DataType::Bidirectional);
+
+
+//// CONFIGURATION 
     /// power supply configuration
     addAttributeToDataSet("polFromSet",
             "use the sign of set to drive polarity",
@@ -220,61 +274,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
             DataType::TYPE_DOUBLE,
             DataType::Input);
 
-    //////////
-
-    // input/output DataSet
-    addAttributeToDataSet("stby",
-            "force standby",
-            DataType::TYPE_BOOLEAN,
-            DataType::Bidirectional);
-    addAttributeToDataSet("polarity",
-            "drive the polarity (for bipolar) -1 negative, 0 open, +1 positive",
-            DataType::TYPE_INT32,
-            DataType::Bidirectional);
-    
-    addAttributeToDataSet("current",
-            "setpoint the current",
-            DataType::TYPE_DOUBLE,
-            DataType::Bidirectional);
-
-    addAttributeToDataSet("voltage",
-            "setpoint the voltage",
-            DataType::TYPE_DOUBLE,
-            DataType::Bidirectional);
-    
-     addAttributeToDataSet("alarms",
-            "Alarms input clear, output alarm mask",
-            DataType::TYPE_INT64,
-            DataType::Bidirectional);
-
-    addAttributeToDataSet("rampUpRate",
-            "ramp up in A/S or V/s",
-            DataType::TYPE_DOUBLE,
-            DataType::Bidirectional);
-
-    addAttributeToDataSet("rampDownRate",
-            "ramp down in A/S or V/s",
-            DataType::TYPE_DOUBLE,
-            DataType::Bidirectional);
-
-    
-
-    addAttributeToDataSet("off",
-            "force off (loose control)",
-            DataType::TYPE_BOOLEAN,
-            DataType::Bidirectional);
-
-    addAttributeToDataSet("triggerArmed",
-            "enable triggered acquisition",
-            DataType::TYPE_BOOLEAN,
-            DataType::Bidirectional);
-
-    addAttributeToDataSet("local",
-            "force local (loose control)",
-            DataType::TYPE_BOOLEAN,
-            DataType::Bidirectional);
-
-
+    ////////// CONFIGURATION?
 
 
     addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, double >(this,

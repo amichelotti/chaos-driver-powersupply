@@ -3326,6 +3326,7 @@
             <pElem>../../chaosframework</pElem>
             <pElem>../..</pElem>
             <pElem>..</pElem>
+            <pElem>../../chaosframework/chaos-distrib-x86_64-Linux/include</pElem>
           </incDir>
           <preprocessorList>
             <Elem>CHAOS</Elem>
@@ -3336,7 +3337,6 @@
       <folder path="chaos_bundle/chaosframework">
         <ccTool>
           <incDir>
-            <pElem>../../chaosframework/chaos-distrib-x86_64-Linux/include</pElem>
             <pElem>../chaos/common/script/lua/core</pElem>
             <pElem>../chaos/common/chaos/common</pElem>
             <pElem>../chaos/common/chaos/common/metadata_logging</pElem>
@@ -3349,20 +3349,10 @@
       </folder>
       <folder path="chaos_bundle/common/powersupply">
         <ccTool>
-          <incDir>
-            <pElem>../chaos-distrib-x86_64-Linux/include</pElem>
-          </incDir>
           <preprocessorList>
             <Elem>POWER_SUPPLY_DEFAULT_TIMEOUT=4000</Elem>
             <Elem>SIMPSUPPLY_DEBUG</Elem>
           </preprocessorList>
-        </ccTool>
-      </folder>
-      <folder path="chaos_bundle/common/test">
-        <ccTool>
-          <incDir>
-            <pElem>../../chaosframework/chaos-distrib-x86_64-Linux/include</pElem>
-          </incDir>
         </ccTool>
       </folder>
       <folder path="slow_command">
