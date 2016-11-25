@@ -62,7 +62,7 @@ namespace driver {
         const char * const CMD_PS_CALIBRATE_TO = "to";
         const char * const CMD_PS_CALIBRATE_STEPS = "steps";
 
-        #define DEFAULT_COMMAND_TIMEOUT_MS   10000
+        #define DEFAULT_COMMAND_TIMEOUT_MS   10000000
         #define DEFAULT_RAMP_TIME_OFFSET_MS  10000
 
 	}
