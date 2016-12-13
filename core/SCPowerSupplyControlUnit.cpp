@@ -71,7 +71,7 @@ _control_unit_drivers) {
 bool ::driver::powersupply::SCPowerSupplyControlUnit::setSP(const std::string &name, double value, uint32_t size) {
     SCCUAPP << "set SP to " << value;
 
-    return setCurrent(value,false);
+    return setCurrent(value,true);
 }
 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::setAlarms(const std::string &name, long long value, uint32_t size) {
@@ -94,10 +94,10 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setOff(const std::string &
 bool ::driver::powersupply::SCPowerSupplyControlUnit::setStby(const std::string &name, bool value, uint32_t size) {
     if (value) {
         SCCUAPP << "set Standby";
-        return powerStandby(false);
+        return powerStandby(true);
     } else {
         SCCUAPP << "set Operational";
-        return powerON(false);
+        return powerON(true);
     }
 
     return false;
@@ -106,7 +106,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setStby(const std::string 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::setPol(const std::string &name, int32_t value, uint32_t size) {
     SCCUAPP << "set polarity:" << value;
 
-    return setPolarity(value,false);
+    return setPolarity(value,true);
 }
 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::setRampH(const std::string &name, double value, uint32_t size) {
