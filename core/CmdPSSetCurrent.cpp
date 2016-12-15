@@ -176,7 +176,6 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	}
        
 	//assign new current setpoint
-	slow_acquisition_index = false;
 	*i_current = current;
 	setWorkState(true);
         getAttributeCache()->setInputDomainAsChanged();
