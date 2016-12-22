@@ -116,7 +116,7 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	//run in esclusive mode
         metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,boost::str( boost::format("performing command mode:%1% timeo %2%2 ms") % state_to_go %timeo) );
 
-	BC_EXEC_RUNNING_PROPERTY;
+	BC_NORMAL_RUNNING_PROPERTY;
 }
 
 void own::CmdPSMode::acquireHandler() {

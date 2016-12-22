@@ -108,7 +108,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
         metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,boost::str( boost::format("performing command set polarity :%1% timeout %2% ms") % polarity_set_point %timeo ) );
 
     //run in exclusive mode
-    BC_EXEC_RUNNING_PROPERTY
+    BC_NORMAL_RUNNING_PROPERTY
 }
 
 //custom acquire method

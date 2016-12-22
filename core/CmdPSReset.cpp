@@ -67,7 +67,7 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
 
 	//set working flag
 	setWorkState(true);
-	BC_EXEC_RUNNING_PROPERTY;
+	BC_NORMAL_RUNNING_PROPERTY;
 	getAttributeCache()->setOutputDomainAsChanged();
 }
 
