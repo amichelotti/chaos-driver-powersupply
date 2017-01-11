@@ -35,6 +35,7 @@ BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdPSReset,CMD_PS_RES
                                                           "Reset alarms",
                                                           "2d4c97a2-35da-11e5-b01c-57447c7fdd89")
 BATCH_COMMAND_CLOSE_DESCRIPTION()
+using namespace chaos::cu::control_manager;
 
 // return the implemented handler
 uint8_t own::CmdPSReset::implementedHandler() {
@@ -63,7 +64,7 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
                 BC_FAULT_RUNNING_PROPERTY;
                 return;
         }
-        setAlarmSeverity("interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+        setStateVariableSeverity(StateVariableTypeAlarm,"interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
 	//set working flag
 	setWorkState(true);

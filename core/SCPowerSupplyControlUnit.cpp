@@ -34,6 +34,7 @@ using namespace chaos;
 
 using namespace chaos::common::data;
 using namespace chaos::common::batch_command;
+using namespace chaos::cu::control_manager;
 
 using namespace chaos::cu::control_manager::slow_command;
 using namespace chaos::cu::driver_manager::driver;
@@ -300,38 +301,39 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
             &::driver::powersupply::SCPowerSupplyControlUnit::setAlarms,
             "alarms");
 
-    addAlarm("current_out_of_set",
+
+    addStateVariable(StateVariableTypeWarning,"current_out_of_set",
             "Notify when the 'current' readout drifts respect the 'current' set");
 
-    addAlarm("current_value_not_reached",
+    addStateVariable(StateVariableTypeWarning,"current_value_not_reached",
             "Notify when 'current' readout is not reached");
 
-    addAlarm("polarity_out_of_set",
+    addStateVariable(StateVariableTypeWarning,"polarity_out_of_set",
             "Notify when the 'polarity' readout drifts respect the 'polarity' set");
 
-    addAlarm("polarity_value_not_reached",
+    addStateVariable(StateVariableTypeWarning,"polarity_value_not_reached",
             "Notify when 'polarity' readout is not reached");
 
-    addAlarm("stby_out_of_set",
+    addStateVariable(StateVariableTypeWarning,"stby_out_of_set",
             "Notify when the 'stby' readout drifts respect the 'polarity' set");
 
-    addAlarm("stby_value_not_reached",
+    addStateVariable(StateVariableTypeWarning,"stby_value_not_reached",
             "Notify when 'stby' readout is not reached");
 
 
-    addAlarm("interlock",
+    addStateVariable(StateVariableTypeAlarm,"interlock",
             "Notify when an interlock arise");
 
-    addAlarm("current_invalid_set",
+    addStateVariable(StateVariableTypeWarning,"current_invalid_set",
             "Notify when a 'current' set cannot be done, for limits or mode");
 
-    addAlarm("stby_invalid_set",
+    addStateVariable(StateVariableTypeWarning,"stby_invalid_set",
             "Notify when a 'stby' set cannot be done, for limits or mode");
 
-    addAlarm("polarity_invalid_set",
+    addStateVariable(StateVariableTypeWarning,"polarity_invalid_set",
             "Notify when a 'polarity' set cannot be done, for limits or mode");
 
-    addAlarm("driver_error",
+    addStateVariable(StateVariableTypeWarning,"driver_error",
             "Notify when an error arise from driver");
 
 }
