@@ -46,19 +46,19 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
         AbstractPowerSupplyCommand::acquireHandler();
 
 	int err = 0;
-        setStateVariableSeverity(StateVariableTypeWarning,"polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-        setStateVariableSeverity(StateVariableTypeWarning,"polarity_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+        setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+        setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
         uint64_t timeo;
     if(!data || !data->hasKey(CMD_PS_SET_POLARITY_VALUE) ) {
 		SCLERR_ << "Type of polarity not passed";
-                setStateVariableSeverity(StateVariableTypeWarning,"polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+                setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
 		BC_FAULT_RUNNING_PROPERTY;
 		return;
     }
         if(powersupply_drv->getFeatures()& common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR){
             	//SCLERR_ << "invalid command for bipolars";
-                setStateVariableSeverity(StateVariableTypeWarning,"polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+                setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
                            metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,"invalid command for bipolars");
 
                 BC_FAULT_RUNNING_PROPERTY;
@@ -83,7 +83,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
     if(*c_stbyOnPol){
         if(*o_stby==false){
           // SCLERR_ << "## cannot change polarity since is not in standby";
-           setStateVariableSeverity(StateVariableTypeWarning,"polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+           setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
            metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError, "cannot change polarity since is not in standby" );
 
             BC_FAULT_RUNNING_PROPERTY;
@@ -95,7 +95,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
     
     if((err = powersupply_drv->setPolarity(polarity_set_point)) != 0) {
            SCLERR_ << "## error setting polarity to:"<<polarity_set_point;
-           setStateVariableSeverity(StateVariableTypeWarning,"polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+           setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
            BC_FAULT_RUNNING_PROPERTY;
 	   return;
@@ -139,7 +139,7 @@ bool own::CmdSetPolarity::timeoutHandler() {
                 BC_END_RUNNING_PROPERTY;
                 return false;
 	}else{
-               setStateVariableSeverity(StateVariableTypeWarning,"polarity_value_not_reached",chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+               setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_value_not_reached",chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
 		SCLERR_ << boost::str(boost::format("[metric] Timeout reached in WITHOUT set-point %1% and readout %2% in %3% milliseconds") % polarity_set_point % *o_pol % elapsed_msec);
 

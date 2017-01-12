@@ -301,38 +301,38 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
             "alarms");
 
 
-    addStateVariable(StateVariableTypeWarning,"current_out_of_set",
+    addStateVariable(StateVariableTypeAlarmCU,"current_out_of_set",
             "Notify when the 'current' readout drifts respect the 'current' set");
 
-    addStateVariable(StateVariableTypeWarning,"current_value_not_reached",
+    addStateVariable(StateVariableTypeAlarmCU,"current_value_not_reached",
             "Notify when 'current' readout is not reached");
 
-    addStateVariable(StateVariableTypeWarning,"polarity_out_of_set",
+    addStateVariable(StateVariableTypeAlarmCU,"polarity_out_of_set",
             "Notify when the 'polarity' readout drifts respect the 'polarity' set");
 
-    addStateVariable(StateVariableTypeWarning,"polarity_value_not_reached",
+    addStateVariable(StateVariableTypeAlarmCU,"polarity_value_not_reached",
             "Notify when 'polarity' readout is not reached");
 
-    addStateVariable(StateVariableTypeWarning,"stby_out_of_set",
+    addStateVariable(StateVariableTypeAlarmCU,"stby_out_of_set",
             "Notify when the 'stby' readout drifts respect the 'polarity' set");
 
-    addStateVariable(StateVariableTypeWarning,"stby_value_not_reached",
+    addStateVariable(StateVariableTypeAlarmCU,"stby_value_not_reached",
             "Notify when 'stby' readout is not reached");
 
 
-    addStateVariable(StateVariableTypeAlarm,"interlock",
+    addStateVariable(StateVariableTypeAlarmDEV,"interlock",
             "Notify when an interlock arise");
 
-    addStateVariable(StateVariableTypeWarning,"current_invalid_set",
+    addStateVariable(StateVariableTypeAlarmCU,"current_invalid_set",
             "Notify when a 'current' set cannot be done, for limits or mode");
 
-    addStateVariable(StateVariableTypeWarning,"stby_invalid_set",
+    addStateVariable(StateVariableTypeAlarmCU,"stby_invalid_set",
             "Notify when a 'stby' set cannot be done, for limits or mode");
 
-    addStateVariable(StateVariableTypeWarning,"polarity_invalid_set",
+    addStateVariable(StateVariableTypeAlarmCU,"polarity_invalid_set",
             "Notify when a 'polarity' set cannot be done, for limits or mode");
 
-    addStateVariable(StateVariableTypeWarning,"driver_error",
+    addStateVariable(StateVariableTypeAlarmCU,"driver_error",
             "Notify when an error arise from driver");
 
 }

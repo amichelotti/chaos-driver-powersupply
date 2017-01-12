@@ -74,17 +74,17 @@ void CmdPSDefault::ccHandler() {
 
     /////  CHECKS during operational mode
      if(*i_stby!=*o_stby){
-        setStateVariableSeverity(StateVariableTypeWarning,"stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+        setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelWarning);
     } else {
-        setStateVariableSeverity(StateVariableTypeWarning,"stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
-        setStateVariableSeverity(StateVariableTypeWarning,"stby_value_not_reached",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+        setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+        setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_value_not_reached",chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
     }
     if(*o_alarms){
-       setStateVariableSeverity(StateVariableTypeAlarm,"interlock", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+       setStateVariableSeverity(StateVariableTypeAlarmDEV,"interlock", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
        return;
     }
-    setStateVariableSeverity(StateVariableTypeAlarm,"interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    setStateVariableSeverity(StateVariableTypeAlarmDEV,"interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
    
     
     if(*o_stby == 0){
@@ -98,25 +98,25 @@ void CmdPSDefault::ccHandler() {
                 }
                 uint64_t tdiff=chaos::common::utility::TimingUtil::getTimeStamp() -start_out_of_set_time;
                 if(tdiff>*p_warningThresholdTimeout){
-                   setStateVariableSeverity(StateVariableTypeWarning,"current_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+                   setStateVariableSeverity(StateVariableTypeAlarmCU,"current_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
                    CMDCUDBG_<<"current out of set detected diff:"<< err << " after "<<tdiff<< " ms";
 
                 }
 
             } else {
                 start_out_of_set_time=0;
-                 setStateVariableSeverity(StateVariableTypeWarning,"current_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-                 setStateVariableSeverity(StateVariableTypeWarning,"current_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+                 setStateVariableSeverity(StateVariableTypeAlarmCU,"current_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+                 setStateVariableSeverity(StateVariableTypeAlarmCU,"current_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
             }
         }
     
         if(*o_stby && (*i_pol!=*o_pol)){
-             setStateVariableSeverity(StateVariableTypeWarning,"polarity_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+             setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
         } else {
-             setStateVariableSeverity(StateVariableTypeWarning,"polarity_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-             setStateVariableSeverity(StateVariableTypeWarning,"polarity_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+             setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+             setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
 
         }

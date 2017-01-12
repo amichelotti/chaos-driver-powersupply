@@ -36,20 +36,20 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 
 	AbstractPowerSupplyCommand::setHandler(data);
         AbstractPowerSupplyCommand::acquireHandler();
-        setStateVariableSeverity(StateVariableTypeWarning,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+        setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
 
 	//requested mode
 	if(!data->hasKey(CMD_PS_MODE_TYPE)) {
 		CMDCUERR << "Mode type not present";
-                        setStateVariableSeverity(StateVariableTypeWarning,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+                        setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
 		BC_FAULT_RUNNING_PROPERTY;
 		return;
 	}
 	state_to_go = data->getInt32Value(CMD_PS_MODE_TYPE);
 	if(state_to_go>1) {
-                setStateVariableSeverity(StateVariableTypeWarning,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+                setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
                 metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Request mode '%1%' not implemented") % state_to_go) );
 
 		BC_FAULT_RUNNING_PROPERTY;
@@ -68,7 +68,7 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
                         metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error calling driver for \"standby\" on powersupply err:%1%") % err) );
 
 		//	CMDCUERR<<boost::str( boost::format("Error calling driver for \"standby\" on powersupply err:%1%") % err);
-                        setStateVariableSeverity(StateVariableTypeWarning,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+                        setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
                         BC_FAULT_RUNNING_PROPERTY;
                         return;
@@ -83,7 +83,7 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
                 
                     if((err = powersupply_drv->poweron())) {
                         metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error calling driver for \"operational\" on powersupply err:%1%") % err) );
-                         setStateVariableSeverity(StateVariableTypeWarning,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+                         setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
                         BC_FAULT_RUNNING_PROPERTY;
                         return;
@@ -109,8 +109,8 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 
 	//send comamnd to driver
 	setWorkState(true);
-        setStateVariableSeverity(StateVariableTypeWarning,"stby_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-        setStateVariableSeverity(StateVariableTypeWarning,"stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+        setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+        setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
         getAttributeCache()->setInputDomainAsChanged();
 //        pushInputDataset();
@@ -153,7 +153,7 @@ bool own::CmdPSMode::timeoutHandler() {
             CMDCUINFO<<"STATE reached stby:"<<*i_stby;
             BC_END_RUNNING_PROPERTY
          } else {
-           setStateVariableSeverity(StateVariableTypeWarning,"stby_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+           setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
          }
 	BC_END_RUNNING_PROPERTY

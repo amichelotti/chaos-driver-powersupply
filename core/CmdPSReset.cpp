@@ -64,7 +64,7 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
                 BC_FAULT_RUNNING_PROPERTY;
                 return;
         }
-        setStateVariableSeverity(StateVariableTypeAlarm,"interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+        setStateVariableSeverity(StateVariableTypeAlarmDEV,"interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
 	//set working flag
 	setWorkState(true);
