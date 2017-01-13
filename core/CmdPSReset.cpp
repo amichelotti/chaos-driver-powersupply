@@ -64,7 +64,8 @@ void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
                 BC_FAULT_RUNNING_PROPERTY;
                 return;
         }
-        setStateVariableSeverity(StateVariableTypeAlarmDEV,"interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    setStateVariableSeverity(StateVariableTypeAlarmCU, chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
 	//set working flag
 	setWorkState(true);
@@ -77,15 +78,15 @@ void own::CmdPSReset::ccHandler() {
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	if(*o_alarms == 0) {
 		CMDCUDBG_ << boost::str(boost::format("[metric] We have reset the alarms in %1% milliseconds") % elapsed_msec);
-		setWorkState(false);
 		//we are terminated the command
+	    setWorkState(false);
+
 		BC_END_RUNNING_PROPERTY;
 	}
 	getAttributeCache()->setOutputDomainAsChanged();
 }
 
 bool own::CmdPSReset::timeoutHandler() {
-	setWorkState(false);
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	CMDCUERR_ << ("We have reached timout on reset alarms");
 	if(*o_alarms == 0) {
@@ -97,5 +98,7 @@ bool own::CmdPSReset::timeoutHandler() {
 		BC_END_RUNNING_PROPERTY;
                 
 	}
+    setWorkState(false);
+
 	return false;
 }

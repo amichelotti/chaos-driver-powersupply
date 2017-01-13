@@ -136,7 +136,9 @@ bool own::CmdSetPolarity::timeoutHandler() {
 	if(polarity_set_point == *o_pol){
 		//set the operation flag on
 		SCLDBG_ << boost::str(boost::format("[metric] Timeout reached in with set-point %1% and readout %2% in %3% milliseconds") % polarity_set_point % *o_pol % elapsed_msec);
-                BC_END_RUNNING_PROPERTY;
+	    setWorkState(false);
+
+		BC_END_RUNNING_PROPERTY;
                 return false;
 	}else{
                setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_value_not_reached",chaos::common::alarm::MultiSeverityAlarmLevelWarning);
@@ -144,6 +146,8 @@ bool own::CmdSetPolarity::timeoutHandler() {
 		SCLERR_ << boost::str(boost::format("[metric] Timeout reached in WITHOUT set-point %1% and readout %2% in %3% milliseconds") % polarity_set_point % *o_pol % elapsed_msec);
 
 	}
+    setWorkState(false);
+
         BC_END_RUNNING_PROPERTY
 
 	return false;

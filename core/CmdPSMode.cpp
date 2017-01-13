@@ -134,7 +134,6 @@ void own::CmdPSMode::ccHandler() {
         if(*i_stby==*o_stby){
             CMDCUINFO<<"STATE REACHED stby:"<<*i_stby;
             BC_END_RUNNING_PROPERTY
-            setWorkState(false);
             return;
         }
 	if(*o_alarms) {
@@ -148,7 +147,6 @@ bool own::CmdPSMode::timeoutHandler() {
 	CMDCUINFO << "enter timeoutHandler";
 	//move the state machine on fault
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
-	setWorkState(false);
          if(*i_stby==*o_stby){
             CMDCUINFO<<"STATE reached stby:"<<*i_stby;
             BC_END_RUNNING_PROPERTY
@@ -156,7 +154,9 @@ bool own::CmdPSMode::timeoutHandler() {
            setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
          }
+
 	BC_END_RUNNING_PROPERTY
+    setWorkState(false);
 
 	CMDCUINFO << "timeout";
 	return false;

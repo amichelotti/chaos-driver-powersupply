@@ -33,7 +33,7 @@ using namespace chaos::common::data;
 using namespace chaos::common::batch_command;
 using namespace chaos::cu::control_manager::slow_command;
 using namespace chaos::cu::control_manager;
-
+using namespace common::powersupply;
 
 BATCH_COMMAND_OPEN_DESCRIPTION(driver::powersupply::,CmdPSDefault,
                                                           "Default method",
@@ -52,9 +52,9 @@ CmdPSDefault::~CmdPSDefault() {
 
     // Start the command execution
 void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
-	
+
 	AbstractPowerSupplyCommand::setHandler(data);
-        setWorkState(false);
+    setWorkState(false);
 
 	BC_NORMAL_RUNNING_PROPERTY
   }
@@ -69,8 +69,12 @@ void CmdPSDefault::acquireHandler() {
 	//force output dataset as changed
 	
 }
+#define SETDEVALARM(x,y,desc) \
+		if((x)&y){\
+	       setStateVariableSeverity(StateVariableTypeAlarmDEV,desc, chaos::common::alarm::MultiSeverityAlarmLevelHigh);\
+		}
+
 void CmdPSDefault::ccHandler() {
-      setWorkState(false);
 
     /////  CHECKS during operational mode
      if(*i_stby!=*o_stby){
@@ -81,10 +85,30 @@ void CmdPSDefault::ccHandler() {
 
     }
     if(*o_alarms){
+    	SETDEVALARM(*o_alarms,POWER_SUPPLY_EVENT_DOOR_OPEN,"door_open");
+    	SETDEVALARM(*o_alarms,POWER_SUPPLY_EVENT_OVER_TEMP,"over_temp");
+    	SETDEVALARM(*o_alarms,POWER_SUPPLY_FUSE_FAULT,"fuse_fault");
+    	SETDEVALARM(*o_alarms,POWER_SUPPLY_EARTH_FAULT,"earth_fault");
+    	SETDEVALARM(*o_alarms,POWER_SUPPLY_OVER_VOLTAGE,"over_voltage");
+    	SETDEVALARM(*o_alarms,POWER_SUPPLY_OVER_CURRENT,"over_current");
+    	SETDEVALARM(*o_alarms,POWER_SUPPLY_COMMUNICATION_FAILURE,"communication_failure");
+    	SETDEVALARM(*o_alarms,POWER_SUPPLY_MAINUNIT_FAIL,"mainunit_failure");
+    	SETDEVALARM(*o_alarms,POWER_SUPPLY_EXTERNAL_INTERLOCK,"external_interlock");
+    	SETDEVALARM(*o_alarms,POWER_SUPPLY_SETPOINT_CARD_FAULT,"card_fault");
+    	SETDEVALARM(*o_alarms,POWER_SUPPLY_CUBICLE_OVT,"cubicle_over_temp");
+    	SETDEVALARM(*o_alarms,POWER_SUPPLY_DCCT_OVT,"dcct_fault");
+    	SETDEVALARM(*o_alarms,POWER_SUPPLY_ACTIVE_FILTER_FUSE,"active_filter_fuse");
+
+    	SETDEVALARM(*o_alarms,POWER_SUPPLY_ACTIVE_FILTER_OVT,"active_filter_overtemp");
+
+
+
        setStateVariableSeverity(StateVariableTypeAlarmDEV,"interlock", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+       getAttributeCache()->setOutputDomainAsChanged();
+
        return;
     }
-    setStateVariableSeverity(StateVariableTypeAlarmDEV,"interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, chaos::common::alarm::MultiSeverityAlarmLevelClear);
    
     
     if(*o_stby == 0){

@@ -219,10 +219,14 @@ void own::CmdPSSetCurrent::ccHandler() {
 		uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 		//the command is endedn because we have reached the affinitut delta set
 		SCLDBG_ << "[metric ]Set point reached with - delta: "<< delta_current_reached <<" sp: "<< *i_current <<" affinity check " << *p_warningThreshold << " ampere in " << elapsed_msec << " milliseconds";
+	    setWorkState(false);
+
 		BC_END_RUNNING_PROPERTY;
         }
         
 	if(*o_alarms) {
+	    setWorkState(false);
+
 		SCLERR_ << "We got alarms on powersupply so we end the command";
 		BC_END_RUNNING_PROPERTY;
 	}
@@ -244,7 +248,7 @@ bool own::CmdPSSetCurrent::timeoutHandler() {
 
 		
 	}
-        setWorkState(false);
+    setWorkState(false);
 
         BC_END_RUNNING_PROPERTY
 	return false;

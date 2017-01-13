@@ -78,7 +78,6 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	    powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
 	  }
 	}
-    setWorkState(false);
 }
 
 // return the implemented handler
@@ -154,4 +153,6 @@ void AbstractPowerSupplyCommand::setWorkState(bool working_flag) {
 	//int64_t *o_dev_state = getAttributeCache()->getRWPtr<int64_t>(DOMAIN_OUTPUT, "dev_state");
 	//*o_dev_state = working_flag;
     setBusyFlag(working_flag);
+    getAttributeCache()->setOutputDomainAsChanged();
+
 }

@@ -335,6 +335,47 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
     addStateVariable(StateVariableTypeAlarmCU,"driver_error",
             "Notify when an error arise from driver");
 
+    addStateVariable(StateVariableTypeAlarmCU,"communication_failure",
+               "Notify when a CU->HW communication error");
+
+    addStateVariable(StateVariableTypeAlarmDEV,"door_open",
+                "Notify when a door open");
+    addStateVariable(StateVariableTypeAlarmDEV,"over_temp",
+                    "Notify when a over temperature");
+
+    addStateVariable(StateVariableTypeAlarmDEV,"fuse_fault",
+                    "Notify when a fuse fault");
+    addStateVariable(StateVariableTypeAlarmDEV,"earth_fault",
+                        "Notify when a earth fault");
+
+    addStateVariable(StateVariableTypeAlarmDEV,"over_voltage",
+                        "Notify when a over voltage");
+
+    addStateVariable(StateVariableTypeAlarmDEV,"over_current",
+                            "Notify when a over current");
+
+    addStateVariable(StateVariableTypeAlarmDEV,"communication_failure",
+                            "Notify when a comunication failure");
+    addStateVariable(StateVariableTypeAlarmDEV,"mainunit_failure",
+                            "Notify when a generic main unit failure");
+    addStateVariable(StateVariableTypeAlarmDEV,"external_interlock",
+                            "Notify when an external interlock");
+
+    addStateVariable(StateVariableTypeAlarmDEV,"card_fault",
+                            "Notify when a set point card fault");
+
+    addStateVariable(StateVariableTypeAlarmDEV,"cubicle_over_temp",
+                            "Notify when a cubicle over temperature");
+
+    addStateVariable(StateVariableTypeAlarmDEV,"dcct_fault",
+                            "Notify when dcct fault");
+
+    addStateVariable(StateVariableTypeAlarmDEV,"active_filter_fuse",
+                            "Notify when a filter fuse error");
+
+    addStateVariable(StateVariableTypeAlarmDEV,"active_filter_overtemp",
+                                "Notify when a filter fuse overtemp");
+
 }
 
 void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineCustomAttribute() {
@@ -477,6 +518,8 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 
         if(!setAlarms(1)){
               RESTORE_LERR << " 2 error resetting alarms";
+              metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,CHAOS_FORMAT("Error resetting alarms active alarms %1% during restore, try to rese",%*alarm ));
+
            return false;
         }
     }
