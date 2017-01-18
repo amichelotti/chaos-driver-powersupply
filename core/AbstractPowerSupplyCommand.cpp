@@ -27,13 +27,18 @@
 using namespace driver::powersupply;
 namespace chaos_batch = chaos::common::batch_command;
 
-AbstractPowerSupplyCommand::AbstractPowerSupplyCommand() {
-  powersupply_drv = NULL;
+AbstractPowerSupplyCommand::AbstractPowerSupplyCommand():powersupply_drv(NULL) {
 }
 AbstractPowerSupplyCommand::~AbstractPowerSupplyCommand() {
+
   if(powersupply_drv)
     delete (powersupply_drv);
   powersupply_drv = NULL;
+}
+void AbstractPowerSupplyCommand::endHandler() {
+	CMDCUDBG_<<"Close Command";
+	setWorkState(false);
+
 }
 
 void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {

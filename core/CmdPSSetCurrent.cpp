@@ -43,12 +43,17 @@ BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdPSSetCurrent,CMD_P
 BATCH_COMMAND_ADD_DOUBLE_PARAM(CMD_PS_SET_CURRENT, "current in A",chaos::common::batch_command::BatchCommandAndParameterDescriptionkey::BC_PARAMETER_FLAG_MANDATORY)
 BATCH_COMMAND_CLOSE_DESCRIPTION()
 
+own::CmdPSSetCurrent::~CmdPSSetCurrent(){
 
+}
 void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     chaos::common::data::RangeValueInfo current_sp_attr_info;
     chaos::common::data::RangeValueInfo attributeInfo;
+	setWorkState(true);
+
 	AbstractPowerSupplyCommand::setHandler(data);
         AbstractPowerSupplyCommand::acquireHandler();
+
 
 	double max_current=0,min_current=0;
 	int err = 0;
@@ -163,7 +168,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 	//compute the delta for check if w
 	SCLDBG_ << "Slope speed is = " << slope_speed;
 	SCLDBG_ << "Calculated timout is = " << computed_timeout;
-	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout);
+	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, computed_timeout*1000);
 	//set current set poi into the output channel
 
 	SCLDBG_ << "Set current to value " << current;
@@ -178,7 +183,6 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
        
 	//assign new current setpoint
 	*i_current = current;
-	setWorkState(true);
         getAttributeCache()->setInputDomainAsChanged();
       //  pushInputDataset();
         setStateVariableSeverity(StateVariableTypeAlarmCU,"current_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
@@ -219,13 +223,11 @@ void own::CmdPSSetCurrent::ccHandler() {
 		uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 		//the command is endedn because we have reached the affinitut delta set
 		SCLDBG_ << "[metric ]Set point reached with - delta: "<< delta_current_reached <<" sp: "<< *i_current <<" affinity check " << *p_warningThreshold << " ampere in " << elapsed_msec << " milliseconds";
-	    setWorkState(false);
 
 		BC_END_RUNNING_PROPERTY;
         }
         
 	if(*o_alarms) {
-	    setWorkState(false);
 
 		SCLERR_ << "We got alarms on powersupply so we end the command";
 		BC_END_RUNNING_PROPERTY;
@@ -248,7 +250,6 @@ bool own::CmdPSSetCurrent::timeoutHandler() {
 
 		
 	}
-    setWorkState(false);
 
         BC_END_RUNNING_PROPERTY
 	return false;

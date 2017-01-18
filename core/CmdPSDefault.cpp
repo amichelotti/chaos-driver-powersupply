@@ -54,7 +54,7 @@ CmdPSDefault::~CmdPSDefault() {
 void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 
 	AbstractPowerSupplyCommand::setHandler(data);
-    setWorkState(false);
+    metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,"Entering in Default");
 
 	BC_NORMAL_RUNNING_PROPERTY
   }
@@ -82,7 +82,6 @@ void CmdPSDefault::ccHandler() {
     } else {
         setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
         setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_value_not_reached",chaos::common::alarm::MultiSeverityAlarmLevelClear);
-
     }
     if(*o_alarms){
     	SETDEVALARM(*o_alarms,POWER_SUPPLY_EVENT_DOOR_OPEN,"door_open");

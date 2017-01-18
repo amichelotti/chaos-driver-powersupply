@@ -40,12 +40,18 @@ BATCH_COMMAND_ADD_INT32_PARAM(CMD_PS_SET_POLARITY_VALUE, "Set the polarity >0 to
 BATCH_COMMAND_CLOSE_DESCRIPTION()
 
     // return the implemented handler
+own::CmdSetPolarity::~CmdSetPolarity(){
 
+}
 void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
+	setWorkState(true);
+
 	AbstractPowerSupplyCommand::setHandler(data);
         AbstractPowerSupplyCommand::acquireHandler();
 
+
 	int err = 0;
+
         setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
         setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
         uint64_t timeo;
@@ -74,7 +80,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 		SCLDBG_ << "Timeout will be set to ms ->" << DEFAULT_COMMAND_TIMEOUT_MS;
                 timeo = DEFAULT_COMMAND_TIMEOUT_MS;
 	}
-        setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)timeo);
+        setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)timeo*1000);
 
 	int32_t polarity_readout = 0;
     polarity_set_point = data->getInt32Value(CMD_PS_SET_POLARITY_VALUE);
@@ -103,7 +109,6 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
     }
 
 	//set the operation flag on
-	setWorkState(true);
         *i_pol=polarity_set_point;
         getAttributeCache()->setInputDomainAsChanged();
 //        pushInputDataset();
@@ -136,7 +141,6 @@ bool own::CmdSetPolarity::timeoutHandler() {
 	if(polarity_set_point == *o_pol){
 		//set the operation flag on
 		SCLDBG_ << boost::str(boost::format("[metric] Timeout reached in with set-point %1% and readout %2% in %3% milliseconds") % polarity_set_point % *o_pol % elapsed_msec);
-	    setWorkState(false);
 
 		BC_END_RUNNING_PROPERTY;
                 return false;
@@ -146,7 +150,6 @@ bool own::CmdSetPolarity::timeoutHandler() {
 		SCLERR_ << boost::str(boost::format("[metric] Timeout reached in WITHOUT set-point %1% and readout %2% in %3% milliseconds") % polarity_set_point % *o_pol % elapsed_msec);
 
 	}
-    setWorkState(false);
 
         BC_END_RUNNING_PROPERTY
 

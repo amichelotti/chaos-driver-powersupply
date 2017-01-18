@@ -38,7 +38,7 @@ namespace driver {
 		
 			//is the delta to the setpoint that notify the end of command
 		protected:
-			
+			~CmdPSSetCurrent();
 			// Set handler
 			void setHandler(c_data::CDataWrapper *data);
 
