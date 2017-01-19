@@ -36,7 +36,7 @@ AbstractPowerSupplyCommand::~AbstractPowerSupplyCommand() {
   powersupply_drv = NULL;
 }
 void AbstractPowerSupplyCommand::endHandler() {
-	CMDCUDBG_<<"Close Command";
+	CMDCUDBG_<<"Close Command:'"<<this->getAlias()<<"'";
 	setWorkState(false);
 
 }
