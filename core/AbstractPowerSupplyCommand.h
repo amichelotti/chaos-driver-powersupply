@@ -62,7 +62,7 @@ namespace driver {
 			void acquireHandler();
 			void ccHandler();
 			void endHandler();
-
+			// return 0 on success
 			// set the data fr the command
 			void setHandler(c_data::CDataWrapper *data);
 

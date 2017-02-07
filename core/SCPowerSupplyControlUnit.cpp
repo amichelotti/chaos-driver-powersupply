@@ -474,7 +474,8 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitStop() throw (CExcepti
 void ::driver::powersupply::SCPowerSupplyControlUnit::unitDeinit() throw (CException) {
     SCCUAPP << "deinitializing ";
     powersupply_drv->deinit();
-
+    delete powersupply_drv;
+    powersupply_drv=NULL;
 }
 
 //! restore the control unit to snapshot
