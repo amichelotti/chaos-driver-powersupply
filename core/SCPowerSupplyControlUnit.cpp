@@ -39,9 +39,9 @@ using namespace chaos::cu::control_manager::slow_command;
 using namespace chaos::cu::driver_manager::driver;
 
 
-#define SCCUAPP INFO_LOG(SCPowerSupplyControlUnit) << "[" << getDeviceID() << "] "
-#define SCCUDBG DBG_LOG(SCPowerSupplyControlUnit) << "[" << getDeviceID() << "] "
-#define SCCUERR ERR_LOG(SCPowerSupplyControlUnit) << "[" << getDeviceID() << "] "
+#define SCCUAPP CUINFO
+#define SCCUDBG CUDBG
+#define SCCUERR CUERR
 
 PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(::driver::powersupply::SCPowerSupplyControlUnit)
 

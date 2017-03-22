@@ -84,8 +84,16 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 		   
                     CMDCUINFO << "Request to go to operational";
                 
-                
-                    if((err = powersupply_drv->poweron())) {
+                   if((err = powersupply_drv->poweron())) {
+                	   if(*o_pol == 0 ){
+                	          metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,boost::str( boost::format("cannot go to operational because of polarity open err:%1% ") % err) );
+                	          setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+
+                	          BC_FAULT_RUNNING_PROPERTY;
+                	          return;
+
+                	   }
+
                         metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error calling driver for \"operational\" on powersupply err:%1%") % err) );
                          setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
