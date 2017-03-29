@@ -259,14 +259,18 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
             DataType::Input);
 
     addAttributeToDataSet("setTimeout",
-            "timeout for a SET operation(us)",
+            "timeout for a SET operation(ms)",
             DataType::TYPE_INT32,
             DataType::Input);
     addAttributeToDataSet("getTimeout",
-            "timeout for a SET operation(us)",
+            "timeout for a GET operation(ms)",
             DataType::TYPE_INT32,
             DataType::Input);
 
+    addAttributeToDataSet("driverTimeout",
+               "default driver timeout)",
+               DataType::TYPE_INT32,
+               DataType::Input);
     addBinaryAttributeAsSubtypeToDataSet("conversionFactor", "Array of double Coefficents used to convert value from the CU actual units and the driver elementary units", chaos::DataType::SUB_TYPE_DOUBLE, 1, chaos::DataType::Input);
 
     addAttributeToDataSet("resolution",
