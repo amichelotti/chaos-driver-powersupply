@@ -114,18 +114,20 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 		BC_FAULT_RUNNING_PROPERTY;
 		return;
 	}
-	if(!data->isDoubleValue(CMD_PS_SET_CURRENT)) {
+/*	if(!data->isDoubleValue(CMD_PS_SET_CURRENT)) {
 		SCLERR_ << "Set current parameter is not a Double data type";
-                setStateVariableSeverity(StateVariableTypeAlarmCU,"current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+         setStateVariableSeverity(StateVariableTypeAlarmCU,"current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
 		BC_FAULT_RUNNING_PROPERTY;
 		return;
 	}
+	*/
     
     current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
     SCLAPP_<<"set current:"<<current;
     if(isnan(current)==true){
-        SCLERR_ << "Set current parameter is not a valid double number (nan?)";
+    //    SCLERR_ << "Set current parameter is not a valid double number (nan?)";
+        metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,"Set current parameter is not a valid double number (nan?)");
         setStateVariableSeverity(StateVariableTypeAlarmCU,"current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
         BC_FAULT_RUNNING_PROPERTY;
@@ -135,7 +137,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
           std::stringstream ss;
         ss<<"current:"<<current<<" > "<<max_current;
                 setStateVariableSeverity(StateVariableTypeAlarmCU,"current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
-                 metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,CHAOS_FORMAT("current %1% outside  the maximum/minimum 'current' \"max_current\":%2% \"min_current\":%3%" , % current % max_current % min_current));
+                metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,CHAOS_FORMAT("current %1% outside  the maximum/minimum 'current' \"max_current\":%2% \"min_current\":%3%" , % current % max_current % min_current));
 
 		BC_FAULT_RUNNING_PROPERTY;
 		return;
