@@ -644,7 +644,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 bool ::driver::powersupply::SCPowerSupplyControlUnit::powerON(bool sync) {
     uint64_t cmd_id;
     bool result = true;
-    std::auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
+    std::unique_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
     cmd_pack->addInt32Value(CMD_PS_MODE_TYPE, 1);
     //send command
     submitBatchCommand(CMD_PS_MODE_ALIAS,
@@ -663,7 +663,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::powerON(bool sync) {
 bool ::driver::powersupply::SCPowerSupplyControlUnit::powerStandby(bool sync) {
     uint64_t cmd_id;
     bool result = true;
-    std::auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
+    std::unique_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
     cmd_pack->addInt32Value(CMD_PS_MODE_TYPE, 0);
     //send command
     submitBatchCommand(CMD_PS_MODE_ALIAS,
@@ -683,7 +683,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setPolarity(int polarity,
         bool sync) {
     uint64_t cmd_id;
     bool result = true;
-    std::auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
+    std::unique_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
     cmd_pack->addInt32Value(CMD_PS_SET_POLARITY_VALUE, polarity);
     //send command
     submitBatchCommand(CMD_PS_SET_POLARITY_ALIAS,
@@ -703,7 +703,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setAlarms(long long alarms
         bool sync) {
     uint64_t cmd_id;
     bool result = true;
-    std::auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
+    std::unique_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
     cmd_pack->addInt64Value("alarms", (uint64_t) alarms);
     //send command
     submitBatchCommand(CMD_PS_RESET_ALIAS,
@@ -723,7 +723,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setCurrent(double current_
         bool sync) {
     uint64_t cmd_id;
     bool result = true;
-    std::auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
+    std::unique_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
     cmd_pack->addDoubleValue(CMD_PS_SET_CURRENT, current_set_point);
     //send command
     submitBatchCommand(CMD_PS_SET_CURRENT_ALIAS,
@@ -744,7 +744,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setRampSpeed(double sup,
         bool sync) {
     uint64_t cmd_id;
     bool result = true;
-    std::auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
+    std::unique_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
     cmd_pack->addDoubleValue(CMD_PS_SET_SLOPE_UP, sup);
     cmd_pack->addDoubleValue(CMD_PS_SET_SLOPE_DOWN, sdown);
     //send command
@@ -762,7 +762,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setRampSpeed(double sup,
 }
 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::whaitOnCommandID(uint64_t cmd_id) {
-    std::auto_ptr<CommandState> cmd_state;
+    std::unique_ptr<CommandState> cmd_state;
     do {
         cmd_state = getStateForCommandID(cmd_id);
         if (!cmd_state.get()) break;
