@@ -20,9 +20,6 @@
 #ifndef __driver_AL250_h__
 #define __driver_AL250_h__
 
-#ifndef PSLAPP
-#define PSLAPP LAPP_ << "[ChaosPowerSupplyDD] "
-#endif
 
 // include your class/functions headers here
 #include "../../../../common/powersupply/models/Hazemeyer/AL250PowerSupply.h"

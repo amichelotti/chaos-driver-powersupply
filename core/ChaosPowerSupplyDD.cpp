@@ -24,10 +24,6 @@
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
 #include "driver/powersupply/core/ChaosPowerSupplyInterface.h"
 
-#define PSLAPP		LAPP_ << "[ChaosPowerSupplyDD] "
-#define PSDBG		LDBG_ << "[ChaosPowerSupplyDD] "
-#define PSERR		LERR_ << "[ChaosPowerSupplyDD] "
-
 using namespace chaos::driver::powersupply;
 //default constructor definition
 DEFAULT_CU_DRIVER_PLUGIN_CONSTRUCTOR_WITH_NS(chaos::driver::powersupply, ChaosPowerSupplyDD) {
