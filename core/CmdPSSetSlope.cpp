@@ -66,7 +66,7 @@ void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
         asdown = *i_asdown;
     }
 
-      if((isnormal(asdown)==false)|| (isnormal(asup)==false)){
+      if((std::isnormal(asdown)==false)|| (std::isnormal(asup)==false)){
         SCLERR_ << "Set slope parameter is not a valid double number (nan?)";
         BC_END_RUNNING_PROPERTY;
         return;
