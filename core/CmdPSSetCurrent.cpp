@@ -125,7 +125,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     
     current = static_cast<float>(data->getDoubleValue(CMD_PS_SET_CURRENT));
     SCLAPP_<<"set current:"<<current;
-    if(isnan(current)==true){
+    if(std::isnan(current)==true){
     //    SCLERR_ << "Set current parameter is not a valid double number (nan?)";
         metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,"Set current parameter is not a valid double number (nan?)");
         setStateVariableSeverity(StateVariableTypeAlarmCU,"current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
