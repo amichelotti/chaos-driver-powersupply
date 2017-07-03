@@ -414,7 +414,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
     }
 
     if (powersupply_drv->init() != 0) {
-        throw chaos::CException(-3, "Cannot initialize powersupply " + control_unit_instance, __FUNCTION__);
+      throw chaos::CException(-3, "Cannot initialize powersupply " + getCUID(), __FUNCTION__);
 
     }
     //check mandatory default values
