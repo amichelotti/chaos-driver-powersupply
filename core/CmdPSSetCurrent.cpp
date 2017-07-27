@@ -142,7 +142,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 		BC_FAULT_RUNNING_PROPERTY;
 		return;
     }
-    double delta=abs(current-*o_current);
+    double delta=fabs(current-*o_current);
     SCLDBG_ << "delta current = " << delta;
 
     if(delta<*p_resolution){
@@ -219,9 +219,9 @@ void own::CmdPSSetCurrent::acquireHandler() {
 
 void own::CmdPSSetCurrent::ccHandler() {
 	//check if we are int the delta of the setpoit to end the command
-	double delta_current_reached = std::abs(*o_current - *i_current);
+	double delta_current_reached = fabs(*o_current - *i_current);
 	SCLDBG_ << "Readout: "<< *o_current <<" SetPoint: "<< *i_current<<" Delta to reach: " << delta_current_reached;
-	if(delta_current_reached <= *p_resolution || delta_current_reached<*p_warningThreshold) {
+	if((delta_current_reached <= *p_resolution) || (delta_current_reached<*p_warningThreshold)) {
 		uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 		//the command is endedn because we have reached the affinitut delta set
 		SCLDBG_ << "[metric ]Set point reached with - delta: "<< delta_current_reached <<" sp: "<< *i_current <<" affinity check " << *p_warningThreshold << " ampere in " << elapsed_msec << " milliseconds";
@@ -237,7 +237,7 @@ void own::CmdPSSetCurrent::ccHandler() {
 }
 
 bool own::CmdPSSetCurrent::timeoutHandler() {
-	double delta_current_reached = std::abs(*i_current - *o_current);
+	double delta_current_reached = fabs(*i_current - *o_current);
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	//move the state machine on fault
          metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,CHAOS_FORMAT("timeout, delta current remaining %1%",%delta_current_reached));

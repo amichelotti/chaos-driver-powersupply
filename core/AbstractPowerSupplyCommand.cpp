@@ -97,10 +97,11 @@ void AbstractPowerSupplyCommand::acquireHandler() {
     float tmp_float;
     int32_t tmp_int32;
     uint64_t tmp_uint64;
-    setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
 
     if((err = powersupply_drv->getCurrentOutput(&tmp_float))==0){
         *o_current = (double)tmp_float;
+	setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     } else {
         setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
@@ -117,6 +118,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
     
     if((err = powersupply_drv->getPolarity(&tmp_int32)) == 0){
         *o_pol = tmp_int32;
+	setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     } else {
         setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
@@ -125,6 +127,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
     
     if((err = powersupply_drv->getAlarms(&tmp_uint64)) == 0){
         *o_alarms = tmp_uint64;
+	setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     } else {
         setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
@@ -134,12 +137,13 @@ void AbstractPowerSupplyCommand::acquireHandler() {
     }
     std::string desc;
     if((err = powersupply_drv->getState(&state, desc,*p_driverTimeout)) == 0){
-        *o_stby = (state & common::powersupply::POWER_SUPPLY_STATE_STANDBY)?true:false;
-        *o_local= (state & common::powersupply::POWER_SUPPLY_STATE_LOCAL)?true:false;
-        *o_off=(state & common::powersupply::POWER_SUPPLY_STATE_OFF)?true:false;
-        if(*o_alarms){
-            CMDCUDBG_<<"alarms!! "<<desc;
-        }
+      setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+      *o_stby = (state & common::powersupply::POWER_SUPPLY_STATE_STANDBY)?true:false;
+      *o_local= (state & common::powersupply::POWER_SUPPLY_STATE_LOCAL)?true:false;
+      *o_off=(state & common::powersupply::POWER_SUPPLY_STATE_OFF)?true:false;
+      if(*o_alarms){
+	CMDCUDBG_<<"alarms!! "<<desc;
+      }
     } else {
         setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
