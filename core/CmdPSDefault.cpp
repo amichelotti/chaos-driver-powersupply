@@ -106,6 +106,9 @@ void CmdPSDefault::ccHandler() {
        getAttributeCache()->setOutputDomainAsChanged();
 
        return;
+    } else {
+        setStateVariableSeverity(StateVariableTypeAlarmDEV,"interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
     }
     setStateVariableSeverity(StateVariableTypeAlarmDEV, chaos::common::alarm::MultiSeverityAlarmLevelClear);
    
