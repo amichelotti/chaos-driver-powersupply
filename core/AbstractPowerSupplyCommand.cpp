@@ -97,31 +97,40 @@ void AbstractPowerSupplyCommand::acquireHandler() {
     float tmp_float;
     int32_t tmp_int32;
     uint64_t tmp_uint64;
+	chaos::common::alarm::MultiSeverityAlarmLevel level_stat;
 
 
     if((err = powersupply_drv->getCurrentOutput(&tmp_float))==0){
         *o_current = (double)tmp_float;
 	setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     } else {
+    	if(getStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error",level_stat) && (level_stat!=chaos::common::alarm::MultiSeverityAlarmLevelHigh)){
+            metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error calling driver on get current readout with code %1%") % err));
+
+    	}
         setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
-        metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error calling driver on get current readout with code %1%") % err));
     }
     
     if((err = powersupply_drv->getVoltageOutput(&tmp_float)) == 0){
         *o_voltage = (double)tmp_float;
     } else {
-        setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+    	if(getStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error",level_stat) && (level_stat!=chaos::common::alarm::MultiSeverityAlarmLevelHigh)){
+            metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error calling driver on get voltage readout with code %1%") % err));
 
-        metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error calling driver on get voltage readout with code %1%") % err));
+    	}
+    		setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+
     }
     
     if((err = powersupply_drv->getPolarity(&tmp_int32)) == 0){
         *o_pol = tmp_int32;
 	setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     } else {
-        setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+    	if(getStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error",level_stat) && (level_stat!=chaos::common::alarm::MultiSeverityAlarmLevelHigh)){
 
+    		setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+    	}
         metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error calling driver on get polarity readout with code %1%") % err));
     }
     
@@ -129,10 +138,12 @@ void AbstractPowerSupplyCommand::acquireHandler() {
         *o_alarms = tmp_uint64;
 	setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     } else {
+    	if(getStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error",level_stat) && (level_stat!=chaos::common::alarm::MultiSeverityAlarmLevelHigh)){
+            metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error calling driver on get alarms readout with code %1%") % err) );
+    	}
         setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
 
-        metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error calling driver on get alarms readout with code %1%") % err) );
 
     }
     std::string desc;
@@ -145,9 +156,11 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 	CMDCUDBG_<<"alarms!! "<<desc;
       }
     } else {
+    	if(getStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error",level_stat) && (level_stat!=chaos::common::alarm::MultiSeverityAlarmLevelHigh)){
+            metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error calling driver on get state readout with code %1%") % err) );
+    	}
         setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
-        metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error calling driver on get state readout with code %1%") % err) );
 
         //CMDCUERR_<<boost::str( boost::format("Error calling driver on get state readout with code %1%") % err);
     }
