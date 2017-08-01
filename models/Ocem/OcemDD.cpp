@@ -82,7 +82,7 @@ void chaos::driver::powersupply::OcemDD::driverInit(const char *initParameter) t
             }
         } else {
             throw chaos::CException(1, "Unsupported driver", "OcemDD::driverInit");
-        
+
         }
     } else {
             throw chaos::CException(1, "Malformed initialisation string", "OcemDD::driverInit");
