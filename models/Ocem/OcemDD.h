@@ -19,6 +19,7 @@
  */
 #ifndef __driver_OcemDD_h__
 #define __driver_OcemDD_h__
+#undef POWER_SUPPLY_DEFAULT_TIMEOUT
 #define POWER_SUPPLY_DEFAULT_TIMEOUT 5000
 
 // include your class/functions headers here
