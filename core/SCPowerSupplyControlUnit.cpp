@@ -338,6 +338,8 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 
     addStateVariable(StateVariableTypeAlarmCU,"driver_error",
             "Notify when an error arise from driver");
+    addStateVariable(StateVariableTypeAlarmCU,"driver_timeout",
+               "Notify when a driver timeout error arise");
 
     addStateVariable(StateVariableTypeAlarmCU,"communication_failure",
                "Notify when a CU->HW communication error");
