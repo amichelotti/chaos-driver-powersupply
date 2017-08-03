@@ -115,3 +115,12 @@ void chaos::driver::powersupply::OcemDD::driverInit(const char *initParameter) t
     
 }
 
+void chaos::driver::powersupply::OcemDD::driverDeinit() throw(chaos::CException) {
+    if(power){
+        PSDBG<< "Removing PowerSupply driver "<<std::hex<<power<<std::dec;
+
+        delete power;
+    }
+    power = NULL;
+}
+

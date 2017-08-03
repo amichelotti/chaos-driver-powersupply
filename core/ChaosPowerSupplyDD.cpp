@@ -38,6 +38,8 @@ ChaosPowerSupplyDD::~ChaosPowerSupplyDD() {
 
 void ChaosPowerSupplyDD::driverDeinit() throw(chaos::CException) {
     if(power){
+        PSDBG<< "Removing PowerSupply driver "<<std::hex<<power<<std::dec;
+
         delete power;
     }
     power = NULL;

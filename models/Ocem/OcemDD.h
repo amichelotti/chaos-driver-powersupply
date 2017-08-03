@@ -41,7 +41,8 @@ namespace chaos {
             class OcemDD: public ChaosPowerSupplyDD{
                 
                 void driverInit(const char *initParameter) throw(chaos::CException);
-                
+                void driverDeinit() throw(chaos::CException);
+
             public:
                 OcemDD();
                 ~OcemDD();
