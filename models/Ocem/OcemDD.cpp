@@ -24,7 +24,7 @@
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
 #include <common/misc/driver/ChannelFactory.h>
 #include <chaos/common/data/CDataWrapper.h>
-
+using namespace chaos::common::data;
 // initialization format is <POWERSUPPLY TYPE>:'<INITALISATION PARAMETERS>'
 static const boost::regex power_supply_init_match("(\\w+):(.+)");
 
@@ -45,82 +45,79 @@ CLOSE_REGISTER_PLUGIN
 
 //default constructor definition
 chaos::driver::powersupply::OcemDD::OcemDD() {
-    power = NULL;
-	
+	power = NULL;
+
 }
 
 //default descrutcor
 chaos::driver::powersupply::OcemDD::~OcemDD() {
-	
+
+}
+void chaos::driver::powersupply::OcemDD::driverInit(const chaos::common::data::CDataWrapper& json) throw(chaos::CException){
+	::common::misc::driver::AbstractChannel_psh channel=::common::misc::driver::ChannelFactory::getChannel(json);
+
 }
 
 void chaos::driver::powersupply::OcemDD::driverInit(const char *initParameter) throw(chaos::CException) {
-    //check the input parameter
+	//check the input parameter
 	boost::smatch match;
 	std::string inputStr = initParameter;
-        std::string slaveid;
+	std::string slaveid;
 	PSLAPP << "Init  driver initialisation string:\""<<initParameter<<"\""<<std::endl;
-    if(power){
-          throw chaos::CException(1, "Already Initialised", "OcemDD::driverInit");
-    }
-    chaos::common::data::CDataWrapper p;
-    try {
-    		p.setSerializedJsonData(initParameter);
-    	//	power = new ::common::powersupply::OcemE642X(p);
-			if(power==NULL){
-				  throw chaos::CException(1, "Cannot allocate resources for OcemE642X", "OcemDD::driverInit");
+	if(power){
+		throw chaos::CException(1, "Already Initialised", "OcemDD::driverInit");
+	}
+
+
+
+	if(regex_match(inputStr, match, power_supply_init_match, boost::match_extra)){
+		std::string powerSupplyType=match[1];
+		std::string initString=match[2];
+		if(powerSupplyType=="OcemE642X"){
+			if(regex_match(initString, match, power_supply_ocem_init_match, boost::match_extra)){
+				std::string dev=match[1];
+				slaveid=match[2];
+				std::string maxcurr=match[3];
+				std::string maxvoltage=match[3];
+				PSLAPP<<"Allocating OcemE642X device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<std::endl;
+				::common::misc::driver::AbstractChannel_psh channel;
+				channel=::common::misc::driver::ChannelFactory::getChannel(dev,9600,0,8,1);
+				//power = new ::common::powersupply::OcemE642X(dev.c_str(),atoi(slaveid.c_str()),(float)atof(maxcurr.c_str()),(float)atof(maxvoltage.c_str()));
+				power =new ::common::powersupply::OcemE642X("OcemProtocolScheduleCFQ",channel,atoi(slaveid.c_str()),(float)atof(maxcurr.c_str()),(float)atof(maxvoltage.c_str()));
+				if(power==NULL){
+					throw chaos::CException(1, "Cannot allocate resources for OcemE642X", "OcemDD::driverInit");
+				}
+
+			} else {
+				throw chaos::CException(1, "Bad parameters for OcemE642X <serial port>,<slaveid>,<maxcurr:maxvoltage>", "OcemDD::driverInit");
+
 			}
-    } catch (std::exception ee) {
+		} else {
+			throw chaos::CException(1, "Unsupported driver", "OcemDD::driverInit");
 
+		}
+	} else {
+		throw chaos::CException(1, "Malformed initialisation string", "OcemDD::driverInit");
 
-    if(regex_match(inputStr, match, power_supply_init_match, boost::match_extra)){
-        std::string powerSupplyType=match[1];
-        std::string initString=match[2];
-        if(powerSupplyType=="OcemE642X"){
-            if(regex_match(initString, match, power_supply_ocem_init_match, boost::match_extra)){
-                std::string dev=match[1];
-                slaveid=match[2];
-                std::string maxcurr=match[3];
-                std::string maxvoltage=match[3];
-                PSLAPP<<"Allocating OcemE642X device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<std::endl;
-                ::common::misc::driver::AbstractChannel_psh channel;
-                channel=::common::misc::driver::ChannelFactory::getChannel(dev,9600,0,8,1);
-                //power = new ::common::powersupply::OcemE642X(dev.c_str(),atoi(slaveid.c_str()),(float)atof(maxcurr.c_str()),(float)atof(maxvoltage.c_str()));
-                power =new ::common::powersupply::OcemE642X("OcemProtocolScheduleCFQ",channel,atoi(slaveid.c_str()),(float)atof(maxcurr.c_str()),(float)atof(maxvoltage.c_str()));
-                if(power==NULL){
-                      throw chaos::CException(1, "Cannot allocate resources for OcemE642X", "OcemDD::driverInit");
-                }
-            
-            } else {
-                 throw chaos::CException(1, "Bad parameters for OcemE642X <serial port>,<slaveid>,<maxcurr:maxvoltage>", "OcemDD::driverInit");
+	}
 
-            }
-        } else {
-            throw chaos::CException(1, "Unsupported driver", "OcemDD::driverInit");
-
-        }
-    } else {
-            throw chaos::CException(1, "Malformed initialisation string", "OcemDD::driverInit");
-    
-    }
-    }
-    std::string ver;
-    power->getSWVersion(ver,0);
-    PSLAPP<<"DRIVER INSTANTITED \""<<ver<<"\""<<std::endl;
-/*
+	std::string ver;
+	power->getSWVersion(ver,0);
+	PSLAPP<<"DRIVER INSTANTITED \""<<ver<<"\""<<std::endl;
+	/*
     if(power->init()!=0){
         throw chaos::CException(1, "Initialisation of power supply \""+inputStr+"\" slaveid "+slaveid+" failed", "OcemDD::driverInit");
     }
-  */
-    
+	 */
+
 }
 
 void chaos::driver::powersupply::OcemDD::driverDeinit() throw(chaos::CException) {
-    if(power){
-        PSDBG<< "Removing PowerSupply driver "<<std::hex<<power<<std::dec;
+	if(power){
+		PSDBG<< "Removing PowerSupply driver "<<std::hex<<power<<std::dec;
 
-        delete power;
-    }
-    power = NULL;
+		delete power;
+	}
+	power = NULL;
 }
 
