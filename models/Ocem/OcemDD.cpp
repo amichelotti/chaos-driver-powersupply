@@ -55,6 +55,14 @@ chaos::driver::powersupply::OcemDD::~OcemDD() {
 }
 void chaos::driver::powersupply::OcemDD::driverInit(const chaos::common::data::CDataWrapper& json) throw(chaos::CException){
 	::common::misc::driver::AbstractChannel_psh channel=::common::misc::driver::ChannelFactory::getChannel(json);
+	power =new ::common::powersupply::OcemE642X(channel,json);
+	if(power==NULL){
+		throw chaos::CException(1, "Cannot allocate resources for OcemE642X", "OcemDD::driverInit");
+	}
+
+	std::string ver;
+	power->getSWVersion(ver,0);
+	PSLAPP<<"DRIVER INSTANTITED \""<<ver<<"\""<<std::endl;
 
 }
 
