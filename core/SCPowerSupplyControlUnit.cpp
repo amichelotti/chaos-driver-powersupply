@@ -221,10 +221,10 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
             DataType::Input);
 
     // ===================================== shoul be system
-    addAttributeToDataSet("bypass",
-            "exclude HW changes",
-            DataType::TYPE_BOOLEAN,
-            DataType::Input);
+    // addAttributeToDataSet("bypass",
+    //         "exclude HW changes",
+    //         DataType::TYPE_BOOLEAN,
+    //         DataType::Input);
 
     /// Dataset per analog dataset element properties
     addAttributeToDataSet("unit",
@@ -402,10 +402,10 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
 
     const double *asup = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampUpRate");
     const double *asdown = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampDownRate");
-    const bool* s_bypass = getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "bypass");
-    chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = *s_bypass && (getAccessoInstanceByIndex(1)) ? getAccessoInstanceByIndex(1) : getAccessoInstanceByIndex(0);
+    //    const bool* s_bypass = getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "bypass");
+    //    chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = *s_bypass && (getAccessoInstanceByIndex(1)) ? getAccessoInstanceByIndex(1) : getAccessoInstanceByIndex(0);
 
-    //chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = getAccessoInstanceByIndex(0);
+    chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = getAccessoInstanceByIndex(0);
 
     if (power_supply_accessor == NULL) {
         throw chaos::CException(-1, "Cannot retrieve the requested driver", __FUNCTION__);
