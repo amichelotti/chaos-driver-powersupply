@@ -66,7 +66,7 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	c_polSwSign =getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "polSwSign");
 	c_stbyOnPol =getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "stbyOnPol");
 	c_zeroOnStby =getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "zeroOnStby");
-	s_bypass =getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "bypass");
+	//	s_bypass =getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "bypass");
 	p_minimumWorkingValue = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "minimumWorkingValue");
 	p_maximumWorkingValue = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "maximumWorkingValue");
 	p_warningThreshold = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "warningThreshold");
@@ -80,7 +80,7 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 
 
 	//get pointer to the output datase variable
-	chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = *s_bypass&&(driverAccessorsErogator->getAccessoInstanceByIndex(1))?driverAccessorsErogator->getAccessoInstanceByIndex(1):driverAccessorsErogator->getAccessoInstanceByIndex(0);
+	chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = (driverAccessorsErogator->getAccessoInstanceByIndex(1))?driverAccessorsErogator->getAccessoInstanceByIndex(1):driverAccessorsErogator->getAccessoInstanceByIndex(0);
 	if(power_supply_accessor != NULL) {
 		if(powersupply_drv == NULL){
 			powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
