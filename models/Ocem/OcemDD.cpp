@@ -61,7 +61,7 @@ void chaos::driver::powersupply::OcemDD::driverInit(const chaos::common::data::C
 		GET_PARAMETER(driver,max_curr,float,1);
 		GET_PARAMETER(driver,max_volt,float,0);
 
-		power =new ::common::powersupply::OcemE642X(protocol.c_str(),channel,slaveid,maxcurr,maxvoltage);
+		power =new ::common::powersupply::OcemE642X(protocol.c_str(),channel,slaveid,max_curr,max_volt);
 
 		if(power==NULL){
 			throw chaos::CException(1, "Cannot allocate resources for OcemE642X", "OcemDD::driverInit");
