@@ -58,10 +58,10 @@ void chaos::driver::powersupply::OcemDD::driverInit(const chaos::common::data::C
 	GET_PARAMETER_TREE((&json),driver){
 		GET_PARAMETER(driver,slaveid,int32_t,1);
 		GET_PARAMETER(driver,protocol,string,1);
-		GET_PARAMETER(driver,maxcurr,float,1);
-		GET_PARAMETER(driver,maxvoltage,float,1);
+		GET_PARAMETER(driver,max_curr,float,1);
+		GET_PARAMETER(driver,max_volt,float,0);
 
-		power =new ::common::powersupply::OcemE642X("OcemProtocolScheduleCFQ",channel,slaveid,maxcurr,maxvoltage);
+		power =new ::common::powersupply::OcemE642X(protocol.c_str(),channel,slaveid,maxcurr,maxvoltage);
 
 		if(power==NULL){
 			throw chaos::CException(1, "Cannot allocate resources for OcemE642X", "OcemDD::driverInit");
