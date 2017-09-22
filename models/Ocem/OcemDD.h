@@ -19,7 +19,8 @@
  */
 #ifndef __driver_OcemDD_h__
 #define __driver_OcemDD_h__
-
+#undef POWER_SUPPLY_DEFAULT_TIMEOUT
+#define POWER_SUPPLY_DEFAULT_TIMEOUT 5000
 
 // include your class/functions headers here
 
@@ -40,7 +41,10 @@ namespace chaos {
             class OcemDD: public ChaosPowerSupplyDD{
                 
                 void driverInit(const char *initParameter) throw(chaos::CException);
-                
+                void driverInit(const chaos::common::data::CDataWrapper& json) throw(chaos::CException);
+
+                void driverDeinit() throw(chaos::CException);
+
             public:
                 OcemDD();
                 ~OcemDD();

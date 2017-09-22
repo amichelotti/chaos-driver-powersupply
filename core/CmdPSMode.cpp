@@ -17,195 +17,156 @@
 namespace own =  driver::powersupply;
 namespace c_data = chaos::common::data;
 namespace chaos_batch = chaos::common::batch_command;
+using namespace chaos::cu::control_manager;
 
 //using  namespace driver::powersupply;
 BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdPSMode,CMD_PS_MODE_ALIAS,
-                                                          "Set powersupply mode (on,standby)",
-                                                          "34c5dc7e-35ca-11e5-a7ed-971f57b4b945")
+		"Set powersupply mode (on,standby)",
+		"34c5dc7e-35ca-11e5-a7ed-971f57b4b945")
 BATCH_COMMAND_ADD_INT32_PARAM(CMD_PS_MODE_TYPE, "0:standby, 1:on",chaos::common::batch_command::BatchCommandAndParameterDescriptionkey::BC_PARAMETER_FLAG_MANDATORY)
 BATCH_COMMAND_CLOSE_DESCRIPTION()
 // return the implemented handler
-uint8_t own::CmdPSMode::implementedHandler() {
-    return	AbstractPowerSupplyCommand::implementedHandler()|chaos_batch::HandlerType::HT_Acquisition;
-}
+own::CmdPSMode::~CmdPSMode(){
 
+}
 void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	CMDCUINFO << "Executing set handler";
-	
+
 	int err = 0;
 	int state = 0;
 	std::string state_description;
+	setWorkState(true);
 
 	AbstractPowerSupplyCommand::setHandler(data);
-	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "command_timeout");
+	AbstractPowerSupplyCommand::acquireHandler();
+
+	setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
 
 	//requested mode
 	if(!data->hasKey(CMD_PS_MODE_TYPE)) {
 		CMDCUERR << "Mode type not present";
-		BC_END_RUNNIG_PROPERTY;
+		setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+
+		BC_FAULT_RUNNING_PROPERTY;
 		return;
 	}
 	state_to_go = data->getInt32Value(CMD_PS_MODE_TYPE);
 	if(state_to_go>1) {
-		CMDCUERR << "Requeste mode type not implemented";
-		BC_END_RUNNIG_PROPERTY;
+		setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Request mode '%1%' not implemented") % state_to_go) );
+
+		BC_FAULT_RUNNING_PROPERTY;
 		return;
 	}
-        
-	//!get the only state because thsi command work only on it
-	if((err = powersupply_drv->getState(&state, state_description))){
-		LOG_AND_TROW(CMDCUERR, 1, boost::str( boost::format("Error calling driver for get state from powersupply") % err));
-	} else {
-		*o_status_id = state;
-		//copy up to 255 and put the termination character
-		strncpy(o_status, state_description.c_str(), 256);
-	}
-        
 
+
+
+	CMDCUINFO << "mode:"<<state_to_go;
 	switch (state_to_go) {
-		case 0://to standby
-			//i need to be in operational to exec
-			CMDCUINFO << "Request to go to stanby";
-			if((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_STANDBY){
-				CMDCUINFO << "Already in standby";
-				BC_END_RUNNIG_PROPERTY
-			} 
-                    if((err = powersupply_drv->standby())) {
-					LOG_AND_TROW(CMDCUERR, 1, boost::str( boost::format("Error calling driver for standby on powersupply") % err));
-                        }
+	case 0://to standby
+		//i need to be in operational to exec
+		CMDCUINFO << "Request to go to stanby";
 
-			break;
-			
-		case 1://to operational
-		    if((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_ON){
-				CMDCUINFO << "Already in on";
-				BC_END_RUNNIG_PROPERTY
-			} else {
-                CMDCUINFO << "Request to go to operational";
-                
-                
-                if((err = powersupply_drv->poweron())) {
-					LOG_AND_TROW(CMDCUERR, 2, boost::str( boost::format("Error calling driver for power on powersupply") % err));
-                }
-            }
-			break;
+		if((err = powersupply_drv->standby())) {
+			metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error calling driver for \"standby\" on powersupply err:%1%") % err) );
+
+			//	CMDCUERR<<boost::str( boost::format("Error calling driver for \"standby\" on powersupply err:%1%") % err);
+			setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+
+			BC_FAULT_RUNNING_PROPERTY;
+			return;
+		}
+		*i_stby=true;
+		break;
+
+	case 1://to operational
+
+		CMDCUINFO << "Request to go to operational";
+
+		if((err = powersupply_drv->poweron())) {
+			if(*o_pol == 0 ){
+				metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,boost::str( boost::format("cannot go to operational because of polarity open err:%1% ") % err) );
+				setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+
+				BC_FAULT_RUNNING_PROPERTY;
+				return;
+
+			}
+
+			metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error calling driver for \"operational\" on powersupply err:%1%") % err) );
+			setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+
+			BC_FAULT_RUNNING_PROPERTY;
+			return;
+
+		}
+		*i_stby=false;
+
+		break;
 	}
- 
+
 	//set comamnd timeout for this instance
-	if(*i_command_timeout) {
-		CMDCUINFO << "Set time out in "<< *i_command_timeout << "milliseconds";
+	uint64_t timeo;
+	if(*p_setTimeout) {
+		CMDCUINFO << "Set time out in "<< *p_setTimeout << "milliseconds";
 		//we have a timeout for command so apply it to this instance
-		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
+		timeo= *p_setTimeout;
 	} else {
 		CMDCUINFO << "Set time out in milliseconds "<<DEFAULT_COMMAND_TIMEOUT_MS;
+		timeo =DEFAULT_COMMAND_TIMEOUT_MS;
 		//we have a timeout for command so apply it to this instance
-		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)DEFAULT_COMMAND_TIMEOUT_MS);
 	}
-	
-	//send comamnd to driver
-	setWorkState(true);
+	setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)timeo*1000);
 
+	//send comamnd to driver
+	setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+	setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
+	getAttributeCache()->setInputDomainAsChanged();
 	//run in esclusive mode
-	BC_EXEC_RUNNIG_PROPERTY;
+	metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,boost::str( boost::format("performing command mode:%1% timeo %2%2 ms") % state_to_go %timeo) );
+
+	BC_NORMAL_RUNNING_PROPERTY;
 }
 
 void own::CmdPSMode::acquireHandler() {
-	int err = 0;
-	int state = 0;
-	std::string state_description;
-	//!get the only state because thsi command work only on it
-	if((err = powersupply_drv->getState(&state, state_description))){
-		LOG_AND_TROW(CMDCUERR, 1, boost::str( boost::format("Error calling driver for get state from powersupply") % err));
-	} else {
-		*o_status_id = state;
-		//copy up to 255 and put the termination character
-		strncpy(o_status, state_description.c_str(), 256);
-	}
+	AbstractPowerSupplyCommand::acquireHandler();
 
-	if((err = powersupply_drv->getAlarms(o_alarms))){
-		LOG_AND_TROW(CMDCUERR, 2, boost::str( boost::format("Error calling driver for get alarms from powersupply") % err));
-	}
 	//force output dataset as changed
 	getAttributeCache()->setOutputDomainAsChanged();
 }
 
 void own::CmdPSMode::ccHandler() {
-	CMDCUINFO << "enter acquireHandler";
-	AbstractPowerSupplyCommand::ccHandler();
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
-	CMDCUINFO << "Check if we are gone";
-	
-	if(((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_ALARM) ||
-	   ((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_ERROR) ||
-	   ((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_UKN)) {
-		BC_END_RUNNIG_PROPERTY
-		setWorkState(false);
-		CMDCUERR << boost::str(boost::format("[metric] Bad state got = %1% - [%2%] in %3% milliseconds") % *o_status_id % o_status % elapsed_msec);
-	} else {
-		switch(state_to_go) {
-			case 0://we need to go in stanby
-				if((*o_status_id)& common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
-					setWorkState(false);
-					//we are terminated the comman
-					CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] we end command in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-					BC_END_RUNNIG_PROPERTY
-					return;
-				}
-				break;
 
-			case 1://we need to go on operational
-				if((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_ON) {
-					setWorkState(false);
-					//we are terminated the command
-					CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] we end command in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-					BC_END_RUNNIG_PROPERTY
-					return;
-				}
-				break;
-		}
+
+	if(*i_stby==*o_stby){
+		CMDCUINFO<<"STATE REACHED stby:"<<*i_stby;
+		BC_END_RUNNING_PROPERTY
+		return;
 	}
 	if(*o_alarms) {
-		BC_END_RUNNIG_PROPERTY
-		setWorkState(false);
-		CMDCUERR << boost::str(boost::format("[metric] Got alarm code %1% in %3% milliseconds") % *o_alarms % elapsed_msec);
+		BC_END_RUNNING_PROPERTY
+		CMDCUERR << boost::str(boost::format("[metric] Got alarm code %1% in %2% milliseconds") % *o_alarms % elapsed_msec);
 	}
-	CMDCUINFO << "exit acquireHandler";
 }
 
 bool own::CmdPSMode::timeoutHandler() {
 	CMDCUINFO << "enter timeoutHandler";
 	//move the state machine on fault
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
-	setWorkState(false);
-	switch(state_to_go) {
-		case 0://we need to go in stanby
-			if((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_STANDBY) {
-				//we are terminated the comman
-				CMDCUINFO << boost::str(boost::format("[metric] State reached on timeout %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-				BC_END_RUNNIG_PROPERTY;
-			}else{
-			    CMDCUERR << boost::str(boost::format("[metric] State NOT REACHED %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-				BC_FAULT_RUNNIG_PROPERTY;
-			}
+	if(*i_stby==*o_stby){
+		CMDCUINFO<<"STATE reached stby:"<<*i_stby;
+		BC_END_RUNNING_PROPERTY
+		return false;
+	} else {
+		setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
-		break;
-
-		case 1://we need to go on operational
-			if((*o_status_id) & common::powersupply::POWER_SUPPLY_STATE_ON) {
-				//we are terminated the command
-				CMDCUINFO << boost::str(boost::format("[metric] State reached %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-				BC_END_RUNNIG_PROPERTY;
-			}else{
-			    CMDCUERR << boost::str(boost::format("[metric] State NOT REACHED %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-				BC_FAULT_RUNNIG_PROPERTY;
-			}
-		break;
-
-		default:
-		    CMDCUERR << boost::str(boost::format("[metric] State NOT REACHED %1% [%2%] on timeout in %3% milliseconds") % o_status % *o_status_id % elapsed_msec);
-			BC_FAULT_RUNNIG_PROPERTY;
-		break;
 	}
-	CMDCUINFO << "exit timeoutHandler";
+
+	BC_END_RUNNING_PROPERTY
+
+	CMDCUINFO << "timeout";
 	return false;
 }

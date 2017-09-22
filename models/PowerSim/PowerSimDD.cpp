@@ -22,14 +22,15 @@
 #include <boost/regex.hpp>
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
 #include "driver/powersupply/core/ChaosPowerSupplyInterface.h"
+#include <common/misc/driver/ConfigDriverMacro.h>
 
 
 // initialization format is <POWERSUPPLY TYPE>:'<INITALISATION PARAMETERS>'
 static const boost::regex power_supply_init_match("(\\w+):(.+)");
 
-// initialisation format for simulator <serial port>,<slaveid>,<feature=[0:monopolar,1:bipolar,2:pulse]>,<min curr:max curr>,<min volt:max voltage>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<force errors secs=0 [no error]>
+// initialisation format for simulator <serial port>,<slaveid>,<feature=[0:monopolar,1:bipolar,2:pulse]>,<min curr:max curr>,<min volt:max voltage>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<force errors secs=0 [no error]>,<readout uncertently in percent respect (max-min) 0=no  uncertently>
 
-static const boost::regex power_supply_simulator_init_match("([\\w\\/]+),(\\d+),(\\d+),(.+):(.+),(.+):(.+),(.+):(.+),(.+):(.+),(\\d+)");
+static const boost::regex power_supply_simulator_init_match("([\\w\\/]+),(\\d+),(\\d+),(.+):(.+),(.+):(.+),(.+):(.+),(.+):(.+),(\\d+),([\\d\.]+)");
 
 
 //GET_PLUGIN_CLASS_DEFINITION
@@ -46,63 +47,116 @@ CLOSE_REGISTER_PLUGIN
 
 //default constructor definition
 chaos::driver::powersupply::PowerSimDD::PowerSimDD() {
-    power = NULL;
-	
+	power = NULL;
+
 }
 
 //default descrutcor
 chaos::driver::powersupply::PowerSimDD::~PowerSimDD() {
-	
+
+}
+using namespace std;
+void chaos::driver::powersupply::PowerSimDD::driverInit(const chaos::common::data::CDataWrapper& json) throw(chaos::CException){
+	GET_PARAMETER_TREE((&json),driver){
+		GET_PARAMETER(driver,slaveid,int32_t,1);
+		GET_PARAMETER(driver,dev,string,1);
+		GET_PARAMETER(driver,max_curr,float,1);
+		GET_PARAMETER(driver,max_volt,float,1);
+		GET_PARAMETER_DEFAULT(driver,feature,int32_t,0);
+		GET_PARAMETER_DEFAULT(driver,min_curr,double,0.0);
+		GET_PARAMETER_DEFAULT(driver,min_volt,double,0.0);
+		GET_PARAMETER_DEFAULT(driver,min_write_time_ms,int32_t,100);
+		GET_PARAMETER_DEFAULT(driver,max_write_time_ms,int32_t,200);
+		GET_PARAMETER_DEFAULT(driver,min_read_time_ms,int32_t,200);
+		GET_PARAMETER_DEFAULT(driver,max_read_time_ms,int32_t,300);
+		GET_PARAMETER_DEFAULT(driver,force_err_sec,int32_t,0);
+		GET_PARAMETER_DEFAULT(driver,readout_err,float,0.0);
+		GET_PARAMETER_DEFAULT(driver,update_delay_us,int32_t,SIMPSUPPLY_UPDATE_DELAY);
+		GET_PARAMETER_DEFAULT(driver,current_adc_bits,int32_t,SIMPSUPPLY_CURRENT_ADC);
+		GET_PARAMETER_DEFAULT(driver,voltage_adc_bits,int32_t,SIMPSUPPLY_VOLTAGE_ADC);
+
+		PSLAPP<<"Allocating Simulated Power Supply device driver params: \""<<json.getJSONString();
+		power = new ::common::powersupply::SimPSupply(dev.c_str(),
+				slaveid,
+				static_cast<uint64_t>(feature),
+				min_curr,
+				max_curr,
+				min_volt,
+				max_volt,
+				min_write_time_ms,
+				max_write_time_ms,
+				min_write_time_ms,
+				max_write_time_ms,
+				current_adc_bits,
+				voltage_adc_bits,
+				update_delay_us,
+				force_err_sec,
+				readout_err);
+		if(power==NULL){
+			throw chaos::CException(1, "Cannot allocate resources for SimPSupply", "PowerSimDD::driverInit");
+		}
+
+		std::string ver;
+		power->getSWVersion(ver,0);
+		PSLAPP<<"Initialising PowerSimDD Driver \""<<ver<<"\""<<std::endl;
+
+		if(power->init()!=0){
+				throw chaos::CException(1, "JSON Initialisation of power supply failed", "PowerSimDD::driverInit");
+		}
+		return;
+	}
+	throw chaos::CException(1, "JSON Initialisation of power supply failed, bad json", "PowerSimDD::driverInit");
 }
 
 void chaos::driver::powersupply::PowerSimDD::driverInit(const char *initParameter) throw(chaos::CException) {
-    //check the input parameter
+	//check the input parameter
 	boost::smatch match;
 	std::string inputStr = initParameter;
 	PSLAPP << "Init PowerSimDD driver initialisation string:\""<<initParameter<<"\""<<std::endl;
-    if(power){
-          throw chaos::CException(1, "Already Initialised", "PowerSimDD::driverInit");
-    }
-    if(regex_match(inputStr, match, power_supply_init_match, boost::match_extra)){
-        std::string powerSupplyType=match[1];
-        std::string initString=match[2];
-        if(powerSupplyType=="SimPSupply"){
-            if(regex_match(initString, match, power_supply_simulator_init_match, boost::match_extra)){
-                std::string dev=match[1];
-                std::string slaveid=match[2];
-                std::string features=match[3];
-                std::string min_curr=match[4];
-                std::string max_curr=match[5];
-                std::string min_volt=match[6];
-                std::string max_volt=match[7];
-                std::string write_min=match[8];
-                std::string write_max=match[9];
-                std::string read_min=match[10];
-                std::string read_max=match[11];
-                std::string force_err=match[12];
-                PSLAPP<<"Allocating Simulated Power Supply device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\" FORCING ERRORS:"<<force_err<<std::endl;
-                power = new ::common::powersupply::SimPSupply(dev.c_str(),atoi(slaveid.c_str()),strtoll(features.c_str(),0,0),atoi(min_curr.c_str()),atoi(max_curr.c_str()),atoi(min_volt.c_str()),atoi(max_volt.c_str()),atoi(write_min.c_str()),atoi(write_max.c_str()),atoi(read_min.c_str()),atoi(read_max.c_str()),SIMPSUPPLY_CURRENT_ADC,SIMPSUPPLY_VOLTAGE_ADC,SIMPSUPPLY_UPDATE_DELAY,atoi(force_err.c_str()));
-                if(power==NULL){
-                    throw chaos::CException(1, "Cannot allocate resources for SimPSupply", "PowerSimDD::driverInit");
-                }
-            } else {
-                throw chaos::CException(1, "Bad parameters for PowerSimDD <serial port>,<slaveid>,<feature=[0:monopolar,1:bipolar,2:pulse]>,<min curr:max curr>,<min volt:max voltage>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<force errors secs=0 [no error]>", "PowerSimDD::driverInit");
+	if(power){
+		throw chaos::CException(1, "Already Initialised", "PowerSimDD::driverInit");
+	}
+	if(regex_match(inputStr, match, power_supply_init_match, boost::match_extra)){
+		std::string powerSupplyType=match[1];
+		std::string initString=match[2];
+		if(powerSupplyType=="SimPSupply"){
+			if(regex_match(initString, match, power_supply_simulator_init_match, boost::match_extra)){
+				std::string dev=match[1];
+				std::string slaveid=match[2];
+				std::string features=match[3];
+				std::string min_curr=match[4];
+				std::string max_curr=match[5];
+				std::string min_volt=match[6];
+				std::string max_volt=match[7];
+				std::string write_min=match[8];
+				std::string write_max=match[9];
+				std::string read_min=match[10];
+				std::string read_max=match[11];
+				std::string force_err=match[12];
+				std::string err_readout=match[13];
+				PSLAPP<<"Allocating Simulated Power Supply device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\" FORCING ERRORS:"<<force_err<<std::endl;
+				power = new ::common::powersupply::SimPSupply(dev.c_str(),atoi(slaveid.c_str()),strtoll(features.c_str(),0,0),atoi(min_curr.c_str()),atoi(max_curr.c_str()),atoi(min_volt.c_str()),atoi(max_volt.c_str()),atoi(write_min.c_str()),atoi(write_max.c_str()),atoi(read_min.c_str()),atoi(read_max.c_str()),SIMPSUPPLY_CURRENT_ADC,SIMPSUPPLY_VOLTAGE_ADC,SIMPSUPPLY_UPDATE_DELAY,atoi(force_err.c_str()),atof(err_readout.c_str()));
+				if(power==NULL){
+					throw chaos::CException(1, "Cannot allocate resources for SimPSupply", "PowerSimDD::driverInit");
+				}
+			} else {
+				throw chaos::CException(1, "Bad parameters for PowerSimDD <serial port>,<slaveid>,<feature=[0:monopolar,1:bipolar,2:pulse]>,<min curr:max curr>,<min volt:max voltage>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<force errors secs=0 [no error]>", "PowerSimDD::driverInit");
 
-            }
-        } else {
-              throw chaos::CException(1, "Unsupported Power Supply", "PowerSimDD::driverInit");
-        }
-    } else {
-        throw chaos::CException(1, "Malformed initialisation string", "PowerSimDD::driverInit");
+			}
+		} else {
+			throw chaos::CException(1, "Unsupported Power Supply", "PowerSimDD::driverInit");
+		}
+	} else {
+		throw chaos::CException(1, "Malformed initialisation string", "PowerSimDD::driverInit");
 
-    }
-    std::string ver;
-    power->getSWVersion(ver,0);
-    PSLAPP<<"Initialising PowerSimDD Driver \""<<ver<<"\""<<std::endl;
+	}
+	std::string ver;
+	power->getSWVersion(ver,0);
+	PSLAPP<<"Initialising PowerSimDD Driver \""<<ver<<"\""<<std::endl;
 
-    if(power->init()!=0){
-        throw chaos::CException(1, "Initialisation of power supply failed", "PowerSimDD::driverInit");
-    }
+	if(power->init()!=0){
+		throw chaos::CException(1, "Initialisation of power supply failed", "PowerSimDD::driverInit");
+	}
 
-    
+
 }

@@ -70,6 +70,8 @@ namespace driver {
 			bool setPolarity(int polarity, bool sync = true);
 			bool setCurrent(double current_set_point, bool sync = true);
 			bool setRampSpeed(double sup, double sdown, bool sync = true);
+                        bool setAlarms(long long value, bool sync = true);
+
 		public:
 			/*
 			 Construct a new CU with an identifier
@@ -86,8 +88,9 @@ namespace driver {
 			 bool setPol(const std::string &name,int value,uint32_t size);
 			 bool setRampH(const std::string &name,double value,uint32_t size);
 			 bool setRampL(const std::string &name,double value,uint32_t size);
+             bool setOff(const std::string &name,bool value,uint32_t size);
+             bool setStby(const std::string &name,bool value,uint32_t size);
 
-			 bool setMode(const std::string &name,int32_t value,uint32_t size);
 			 bool setAlarms(const std::string &name,long long value,uint32_t size);
 
 

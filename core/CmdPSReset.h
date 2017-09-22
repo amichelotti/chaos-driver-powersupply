@@ -35,7 +35,7 @@ namespace driver {
 		protected:
 			//implemented handler
 			uint8_t implementedHandler();
-			
+			~CmdPSReset();
 			// Set handler
 			void setHandler(c_data::CDataWrapper *data);
 			

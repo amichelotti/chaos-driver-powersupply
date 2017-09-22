@@ -35,9 +35,7 @@ namespace driver {
 			const double	*i_slope_up;
 			const double	*i_slope_down;
 		protected:
-			//implemented handler
-			uint8_t implementedHandler();
-			
+			~CmdPSSetSlope();
 			// Set handler
 			void setHandler(c_data::CDataWrapper *data);
 			

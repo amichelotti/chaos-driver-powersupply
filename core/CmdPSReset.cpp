@@ -35,62 +35,72 @@ BATCH_COMMAND_OPEN_DESCRIPTION_ALIAS(driver::powersupply::,CmdPSReset,CMD_PS_RES
                                                           "Reset alarms",
                                                           "2d4c97a2-35da-11e5-b01c-57447c7fdd89")
 BATCH_COMMAND_CLOSE_DESCRIPTION()
+using namespace chaos::cu::control_manager;
 
 // return the implemented handler
 uint8_t own::CmdPSReset::implementedHandler() {
-    return	AbstractPowerSupplyCommand::implementedHandler() |chaos_batch::HandlerType::HT_Acquisition;
+    return	AbstractPowerSupplyCommand::implementedHandler() |chaos_batch::HandlerType::HT_Acquisition|chaos_batch::HandlerType::HT_Correlation;;
 }
 
+own::CmdPSReset::~CmdPSReset(){
+
+}
 void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
+	setWorkState(true);
+
 	AbstractPowerSupplyCommand::setHandler(data);
-	i_command_timeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "command_timeout");
-	
+    AbstractPowerSupplyCommand::acquireHandler();
+
 	//set comamnd timeout for this instance
 	CMDCUDBG_ << "Checking for timout";
-	if(*i_command_timeout) {
-		CMDCUDBG_ << "Timeout will be set to ms -> " << *i_command_timeout;
-		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *i_command_timeout);
+	if(*p_setTimeout) {
+		CMDCUDBG_ << "Timeout will be set to ms -> " << *p_setTimeout;
+		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, *p_setTimeout);
 	} else {
 		//set five second of timeout
 		CMDCUDBG_ << "Timeout will be set to ms -> "<<DEFAULT_COMMAND_TIMEOUT_MS;
-		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)DEFAULT_COMMAND_TIMEOUT_MS);
+		setFeatures(chaos_batch::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)DEFAULT_COMMAND_TIMEOUT_MS*1000);
 	}
 	
 	//send comamnd to driver
 	CMDCUDBG_ << "Resetting alarms";
 	if(powersupply_drv->resetAlarms(0) != 0) {
-		LOG_AND_TROW(CMDCUERR_, 1, boost::str( boost::format("Error resetting the allarms in state %1%[%2%]") % o_status % *o_status_id));
-	}
+		CMDCUERR_<<"## cannot reset alarms";
+                BC_FAULT_RUNNING_PROPERTY;
+                return;
+        }
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    setStateVariableSeverity(StateVariableTypeAlarmCU, chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
 	//set working flag
-	setWorkState(true);
-	BC_EXEC_RUNNIG_PROPERTY;
+	BC_NORMAL_RUNNING_PROPERTY;
 	getAttributeCache()->setOutputDomainAsChanged();
 }
 
 void own::CmdPSReset::ccHandler() {
-	AbstractPowerSupplyCommand::ccHandler();
+        AbstractPowerSupplyCommand::acquireHandler();
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	if(*o_alarms == 0) {
 		CMDCUDBG_ << boost::str(boost::format("[metric] We have reset the alarms in %1% milliseconds") % elapsed_msec);
-		setWorkState(false);
 		//we are terminated the command
-		BC_END_RUNNIG_PROPERTY;
+
+		BC_END_RUNNING_PROPERTY;
 	}
 	getAttributeCache()->setOutputDomainAsChanged();
 }
 
 bool own::CmdPSReset::timeoutHandler() {
-	setWorkState(false);
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 	CMDCUERR_ << ("We have reached timout on reset alarms");
 	if(*o_alarms == 0) {
 		CMDCUDBG_ << boost::str(boost::format("[metric] We have reset the alarms on timeout in %1% milliseconds") % elapsed_msec);
 		//we are terminated the command
-		BC_END_RUNNIG_PROPERTY;
+		BC_END_RUNNING_PROPERTY;
 	} else {
 		CMDCUERR_ << boost::str(boost::format("[metric] We DON'T HAVE reset the alarms on timeout in %1% milliseconds") % elapsed_msec);
-		BC_FAULT_RUNNIG_PROPERTY;
+		BC_END_RUNNING_PROPERTY;
+                
 	}
+
 	return false;
 }
