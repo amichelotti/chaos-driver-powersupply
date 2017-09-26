@@ -22,7 +22,7 @@
 #include <string>
 #include <boost/regex.hpp>
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
-#include <common/misc/driver/ChannelFactory.h>
+#include <common/serial/core/SerialChannelFactory.h>
 #include <chaos/common/data/CDataWrapper.h>
 using namespace chaos::common::data;
 // initialization format is <POWERSUPPLY TYPE>:'<INITALISATION PARAMETERS>'
@@ -54,7 +54,7 @@ chaos::driver::powersupply::OcemDD::~OcemDD() {
 
 }
 void chaos::driver::powersupply::OcemDD::driverInit(const chaos::common::data::CDataWrapper& json) throw(chaos::CException){
-	::common::misc::driver::AbstractChannel_psh channel=::common::misc::driver::ChannelFactory::getChannel(json);
+	::common::serial::AbstractSerialChannel_psh channel=::common::serial::SerialChannelFactory::getChannel(json);
 	GET_PARAMETER_TREE((&json),driver){
 		GET_PARAMETER(driver,slaveid,int32_t,1);
 		GET_PARAMETER(driver,protocol,string,1);
@@ -98,8 +98,8 @@ void chaos::driver::powersupply::OcemDD::driverInit(const char *initParameter) t
 				std::string maxcurr=match[3];
 				std::string maxvoltage=match[3];
 				PSLAPP<<"Allocating OcemE642X device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<std::endl;
-				::common::misc::driver::AbstractChannel_psh channel;
-				channel=::common::misc::driver::ChannelFactory::getChannel(dev,9600,0,8,1);
+				::common::serial::AbstractSerialChannel_psh channel;
+				channel=::common::serial::SerialChannelFactory::getChannel(dev,9600,0,8,1);
 				//power = new ::common::powersupply::OcemE642X(dev.c_str(),atoi(slaveid.c_str()),(float)atof(maxcurr.c_str()),(float)atof(maxvoltage.c_str()));
 				power =new ::common::powersupply::OcemE642X("OcemProtocolScheduleCFQ",channel,atoi(slaveid.c_str()),(float)atof(maxcurr.c_str()),(float)atof(maxvoltage.c_str()));
 				if(power==NULL){
