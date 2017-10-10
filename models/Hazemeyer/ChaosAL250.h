@@ -22,6 +22,7 @@
 
 
 // include your class/functions headers here
+
 #include "../../../../common/powersupply/models/Hazemeyer/AL250PowerSupply.h"
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
 
@@ -40,7 +41,7 @@ namespace chaos {
             class C_AL250: public ChaosPowerSupplyDD{
                 //::common::powersupply::AL250 *Unit;
                 void driverInit(const char *initParameter) throw(chaos::CException);
-                
+                void driverInit(const chaos::common::data::CDataWrapper& json) throw(chaos::CException);
             public:
                 C_AL250();
                 ~C_AL250();
