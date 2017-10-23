@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
+add_subdirectory(ExternalDriver)
 add_subdirectory(Ocem)
 add_subdirectory(Hazemeyer)
 add_subdirectory(PowerSim)

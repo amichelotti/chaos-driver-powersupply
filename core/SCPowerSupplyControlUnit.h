@@ -23,7 +23,6 @@
 #include <chaos/cu_toolkit/control_manager/SCAbstractControlUnit.h>
 #include <driver/powersupply/core/ChaosPowerSupplyInterface.h>
 
-using namespace chaos;
 namespace driver {
 	namespace powersupply {
 		
@@ -62,7 +61,7 @@ namespace driver {
 			void unitDeinit() throw(chaos::CException);
 
             //!restore method for powersupply
-			bool unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException);
+            bool unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(chaos::CException);
 
 			//-----------utility methdo for the restore operation---------
 			bool powerON(bool sync = true);

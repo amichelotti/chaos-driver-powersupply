@@ -21,6 +21,7 @@
 #include <driver/powersupply/models/Ocem/OcemDD.h>
 #include <driver/powersupply/models/PowerSim/PowerSimDD.h>
 #include <driver/powersupply/models/Hazemeyer/ChaosAL250.h>
+#include <driver/powersupply/models/ExternalDriver/ChaosPowerSupplyExternalDriver.h>
 
 #include <driver/powersupply/core/SCPowerSupplyControlUnit.h>
 
@@ -61,7 +62,10 @@ int main(int argc,char**argv){
                 REGISTER_CU(::driver::powersupply::SCPowerSupplyControlUnit); /* file: driver/powersupply/SCPowerSupplyControlUnit.h */
                 REGISTER_DRIVER(chaos::driver::powersupply,OcemDD); /* file: driver/powersupply/models/Ocem/OcemDD.h */
                 REGISTER_DRIVER(chaos::driver::powersupply,PowerSimDD); 
-                REGISTER_DRIVER(chaos::driver::powersupply,C_AL250); 
+                REGISTER_DRIVER(chaos::driver::powersupply,C_AL250);
+                REGISTER_DRIVER(chaos::driver::powersupply,ChaosPowerSupplyRemoteServerDriver);
+                REGISTER_DRIVER(chaos::driver::powersupply,ChaosPowerSupplyRemoteClientDriver);
+            
                 chaos::cu::ChaosCUToolkit::getInstance()->start();
         } catch (CException& e) {
                 std::cerr<<"Exception:"<<std::endl;
