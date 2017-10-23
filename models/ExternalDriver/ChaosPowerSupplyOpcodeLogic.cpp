@@ -87,9 +87,16 @@ MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyOpcodeLogic::execOpco
             init_pack->addStringValue("opc", "init");
             init_pack->addCSDataValue("par", *powersupply_init_pack);
             SEND_REQUEST(cmd, init_pack, response);
+            if(response.get()){INFO << response->getJSONString();}
             break;
         }
         case OP_DEINIT:{
+            CDWShrdPtr response;
+            CDWUniquePtr init_pack(new CDataWrapper());
+            init_pack->addStringValue("opc", "deinit");
+            init_pack->addCSDataValue("par", *powersupply_init_pack);
+            SEND_REQUEST(cmd, init_pack, response);
+            if(response.get()){INFO << response->getJSONString();}
             break;
         }
         case OP_SET_POLARITY:{
