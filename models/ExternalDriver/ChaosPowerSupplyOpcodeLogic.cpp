@@ -80,6 +80,8 @@ c->ret = response->getInt32Value("err");\
 //! Execute a command
 MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyOpcodeLogic::execOpcode(DrvMsgPtr cmd) {
     MsgManagmentResultType::MsgManagmentResult result = MsgManagmentResultType::MMR_EXECUTED;
+    powersupply_iparams_t *in = (powersupply_iparams_t *)cmd->inputData;
+    powersupply_oparams_t *out = (powersupply_oparams_t *)cmd->resultData;
     switch(cmd->opcode) {
         case OP_INIT:{
             CDWShrdPtr response;
@@ -88,6 +90,7 @@ MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyOpcodeLogic::execOpco
             init_pack->addCSDataValue("par", *powersupply_init_pack);
             SEND_REQUEST(cmd, init_pack, response);
             if(response.get()){INFO << response->getJSONString();}
+            out->result = cmd->ret;
             break;
         }
         case OP_DEINIT:{
@@ -97,6 +100,7 @@ MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyOpcodeLogic::execOpco
             init_pack->addCSDataValue("par", *powersupply_init_pack);
             SEND_REQUEST(cmd, init_pack, response);
             if(response.get()){INFO << response->getJSONString();}
+            out->result = cmd->ret;
             break;
         }
         case OP_SET_POLARITY:{
