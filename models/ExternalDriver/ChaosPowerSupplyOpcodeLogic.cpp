@@ -231,14 +231,17 @@ int ChaosPowerSupplyOpcodeLogic::getAlarms(DrvMsgPtr cmd, uint64_t*alrm,uint32_t
 }
 
 int ChaosPowerSupplyOpcodeLogic::shutdown(DrvMsgPtr cmd, uint32_t timeo_ms){
+    CHAOS_ASSERT(false);
     return 0;
 }
 
 int ChaosPowerSupplyOpcodeLogic::standby(DrvMsgPtr cmd, uint32_t timeo_ms){
+    CHAOS_ASSERT(false);
     return 0;
 }
 
 int ChaosPowerSupplyOpcodeLogic::poweron(DrvMsgPtr cmd, uint32_t timeo_ms){
+    CHAOS_ASSERT(false);
     return 0;
 }
 
@@ -258,6 +261,7 @@ int ChaosPowerSupplyOpcodeLogic::getState(DrvMsgPtr cmd, int* state,std::string&
 }
 
 int ChaosPowerSupplyOpcodeLogic::getSWVersion(DrvMsgPtr cmd, std::string& version,uint32_t timeo_ms){
+    CHAOS_ASSERT(false);
     return 0;
 }
 
@@ -275,42 +279,52 @@ int ChaosPowerSupplyOpcodeLogic::getHWVersion(DrvMsgPtr cmd, std::string& versio
 }
 
 int ChaosPowerSupplyOpcodeLogic::getCurrentSensibility(DrvMsgPtr cmd, float *sens){
+    CHAOS_ASSERT(false);
     return 0;
 }
 
 int ChaosPowerSupplyOpcodeLogic::getVoltageSensibility(DrvMsgPtr cmd, float *sens){
+    CHAOS_ASSERT(false);
     return 0;
 }
 
 int ChaosPowerSupplyOpcodeLogic::setCurrentSensibility(DrvMsgPtr cmd, float sens){
+    CHAOS_ASSERT(false);
     return 0;
 }
 
 int ChaosPowerSupplyOpcodeLogic::setVoltageSensibility(DrvMsgPtr cmd, float sens){
+    CHAOS_ASSERT(false);
     return 0;
 }
 
 int ChaosPowerSupplyOpcodeLogic::getMaxMinCurrent(DrvMsgPtr cmd, float*max,float*min){
+    CHAOS_ASSERT(false);
     return 0;
 }
 
 int ChaosPowerSupplyOpcodeLogic::getMaxMinVoltage(DrvMsgPtr cmd, float*max,float*min){
+    CHAOS_ASSERT(false);
     return 0;
 }
 
 int ChaosPowerSupplyOpcodeLogic::getAlarmDesc(DrvMsgPtr cmd, uint64_t* alarm){
+    CHAOS_ASSERT(false);
     return 0;
 }
 
 int ChaosPowerSupplyOpcodeLogic::forceMaxCurrent(DrvMsgPtr cmd, float max){
+    CHAOS_ASSERT(false);
     return 0;
 }
 
 int ChaosPowerSupplyOpcodeLogic::forceMaxVoltage(DrvMsgPtr cmd, float max){
+    CHAOS_ASSERT(false);
     return 0;
 }
 
 uint64_t ChaosPowerSupplyOpcodeLogic::getFeatures(DrvMsgPtr cmd) {
+    CHAOS_ASSERT(false);
     return 0;
 }
 
@@ -323,18 +337,15 @@ MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyOpcodeLogic::execOpco
     memset(cmd->err_msg, 0, 255);
     memset(cmd->err_dom, 0, 255);
     switch(cmd->opcode) {
-        case OP_INIT:{
+        case OP_INIT:
             out->result = sendInit(cmd);
             break;
-        }
-        case OP_DEINIT:{
+        case OP_DEINIT:
             out->result = sendDeinit(cmd);
             break;
-        }
         case OP_SET_POLARITY:
             DBG<< "Set Polarity to:"<<in->ivalue<<" timeo:"<<in->timeout;
             out->result= setPolarity(cmd, in->ivalue,in->timeout);
-            
             break;
         case OP_GET_POLARITY:
             out->result = getPolarity(cmd, &out->ivalue,in->timeout);
@@ -344,7 +355,6 @@ MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyOpcodeLogic::execOpco
             DBG<< "Set Current SP to:"<<in->fvalue0<<" timeo:"<<in->timeout;
             out->result = setCurrentSP(cmd, in->fvalue0,in->timeout);
             break;
-            
         case OP_FORCE_MAX_CURRENT:
             DBG<< "Force max current"<<in->fvalue0;
             out->result = forceMaxCurrent(cmd, in->fvalue0);
@@ -361,8 +371,6 @@ MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyOpcodeLogic::execOpco
             DBG<< "Set voltage sensibility"<<in->fvalue0;
             out->result = setVoltageSensibility(cmd, in->fvalue0);
             break;
-            
-            
         case OP_GET_SP: // get current set point
             out->result = getCurrentSP(cmd, &out->fvalue0,in->timeout);
             DBG<< "Got Current SP "<<out->fvalue0;
@@ -391,7 +399,6 @@ MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyOpcodeLogic::execOpco
             out->result = getAlarms(cmd, &out->alarm_mask,in->timeout);
             DBG<<"Got alarms to:"<<out->alarm_mask<<" timeout:"<<in->timeout;
             break;
-            
         case OP_GET_FEATURE:{
             uint64_t feat=getFeatures(cmd);
             out->alarm_mask=feat;
