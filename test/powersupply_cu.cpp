@@ -63,8 +63,8 @@ int main(int argc,char**argv){
                 REGISTER_DRIVER(chaos::driver::powersupply,OcemDD); /* file: driver/powersupply/models/Ocem/OcemDD.h */
                 REGISTER_DRIVER(chaos::driver::powersupply,PowerSimDD); 
                 REGISTER_DRIVER(chaos::driver::powersupply,C_AL250);
-                REGISTER_DRIVER(chaos::driver::powersupply,ChaosPowerSupplyRemoteServerDriver);
-                REGISTER_DRIVER(chaos::driver::powersupply,ChaosPowerSupplyRemoteClientDriver);
+		REGISTER_DRIVER(chaos::driver::powersupply,ChaosPowerSupplyRemoteServerDriver);
+		REGISTER_DRIVER(chaos::driver::powersupply,ChaosPowerSupplyRemoteClientDriver);
             
                 chaos::cu::ChaosCUToolkit::getInstance()->start();
         } catch (CException& e) {
