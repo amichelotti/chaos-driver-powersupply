@@ -24,7 +24,6 @@
 
 #include <chaos/common/global.h>
 #include <chaos/common/chaos_types.h>
-#include <chaos/common/bson/util/base64.h>
 #include <chaos/common/data/CDataVariant.h>
 #define INFO INFO_LOG(ChaosPowerSupplyOpcodeLogic)
 #define ERR ERR_LOG(ChaosPowerSupplyOpcodeLogic)
