@@ -25,10 +25,12 @@
 #include "ChaosPowerSupplyOpcodeLogic.h"
 #include <chaos/cu_toolkit/driver_manager/driver/OpcodeDriverWrapper.h>
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractServerRemoteIODriver.h>
+using namespace chaos::driver::powersupply;
+
 namespace chaos {
     namespace driver {
         namespace powersupply {
-EXTERNAL_CLIENT_SERVER_DRIVER_CLASS_DEFINITION(ChaosPowerSupply, ChaosPowerSupplyOpcodeLogic);
+EXTERNAL_CLIENT_SERVER_DRIVER_CLASS_DEFINITION(ChaosPowerSupply, chaos::driver::powersupply::ChaosPowerSupplyOpcodeLogic);
         }
     }
 }

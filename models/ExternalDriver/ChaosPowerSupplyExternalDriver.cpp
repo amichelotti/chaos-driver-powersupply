@@ -22,9 +22,8 @@
 #include "ChaosPowerSupplyExternalDriver.h"
 
 using namespace chaos::driver::powersupply;
-
-OPEN_CU_DRIVER_PLUGIN_CLASS_DEFINITION(ChaosPowerSupplyRemoteServerDriver, 1.0.0, ChaosPowerSupplyRemoteServerDriver)
+OPEN_CU_DRIVER_PLUGIN_CLASS_DEFINITION(ChaosPowerSupplyRemoteServerDriver, 1.0.0, chaos::driver::powersupply::ChaosPowerSupplyRemoteServerDriver)
 CLOSE_CU_DRIVER_PLUGIN_CLASS_DEFINITION
 
-OPEN_CU_DRIVER_PLUGIN_CLASS_DEFINITION(ChaosPowerSupplyRemoteClientDriver, 1.0.0, ChaosPowerSupplyRemoteClientDriver)
+OPEN_CU_DRIVER_PLUGIN_CLASS_DEFINITION(ChaosPowerSupplyRemoteClientDriver, 1.0.0, chaos::driver::powersupply::ChaosPowerSupplyRemoteClientDriver)
 CLOSE_CU_DRIVER_PLUGIN_CLASS_DEFINITION
