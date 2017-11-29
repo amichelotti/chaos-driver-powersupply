@@ -491,7 +491,11 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDeinit() throw (CExcep
 bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw (chaos::CException) {
 	RESTORE_LAPP << "Check if restore cache has the needed data";
 	//check if in the restore cache we have all information we need
-	if (!snapshot_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute("polarity")) {
+    if (!snapshot_cache->getSharedDomain(DOMAIN_OUTPUT).hasAttribute("local")) {
+        RESTORE_LERR << " missing 'local' to restore";
+        return false;
+    }
+    if (!snapshot_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute("polarity")) {
 		RESTORE_LERR << " missing 'polarity' to restore";
 		return false;
 	}
