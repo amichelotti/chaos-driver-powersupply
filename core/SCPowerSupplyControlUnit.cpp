@@ -509,11 +509,6 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 		return false;
 	}
 
-	bool islocal = *snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, "local")->getValuePtr<bool>();
-	if (islocal) {
-		RESTORE_LAPP << "Powersupply is in local so no restore can be applied, return OK";
-		return true;
-	}
 
 	RESTORE_LAPP << "Start the restore of the powersupply";
 	uint64_t start_restore_time = chaos::common::utility::TimingUtil::getTimeStamp();
