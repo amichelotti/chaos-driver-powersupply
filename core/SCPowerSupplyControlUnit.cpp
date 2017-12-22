@@ -491,10 +491,10 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDeinit() throw (CExcep
 bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw (chaos::CException) {
 	RESTORE_LAPP << "Check if restore cache has the needed data";
 	//check if in the restore cache we have all information we need
-    if (!snapshot_cache->getSharedDomain(DOMAIN_OUTPUT).hasAttribute("local")) {
+  /*  if (!snapshot_cache->getSharedDomain(DOMAIN_OUTPUT).hasAttribute("local")) {
         RESTORE_LERR << " missing 'local' to restore";
         return false;
-    }
+    }*/
     if (!snapshot_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute("polarity")) {
 		RESTORE_LERR << " missing 'polarity' to restore";
 		return false;
@@ -535,10 +535,10 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	int is_bipolar = powersupply_drv->getFeatures()& ::common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR;
 
 	//chec the restore polarity
-	int32_t restore_polarity = *snapshot_cache->getAttributeValue(DOMAIN_INPUT, "polarity")->getValuePtr<int32_t>();
+    int32_t restore_polarity = *(snapshot_cache->getAttributeValue(DOMAIN_INPUT, "polarity"))->getValuePtr<int32_t>();
 	bool triggerPolarityRestore=((is_bipolar == 0) && ((*now_polarity != restore_polarity) || (*now_polarity_i!= *now_polarity)));
-	double restore_current_sp = *snapshot_cache->getAttributeValue(DOMAIN_INPUT, "current")->getValuePtr<double>();
-	bool restore_stby = *snapshot_cache->getAttributeValue(DOMAIN_INPUT, "stby")->getValuePtr<bool>();
+    double restore_current_sp = *(snapshot_cache->getAttributeValue(DOMAIN_INPUT, "current"))->getValuePtr<double>();
+    bool restore_stby = *(snapshot_cache->getAttributeValue(DOMAIN_INPUT, "stby"))->getValuePtr<bool>();
 	bool triggerStbyRestore=(restore_stby != *now_stby) || (*now_stby != *now_stby_i);
 	RESTORE_LAPP << "current SP:" << *now_current_sp << "==> " << restore_current_sp;
 	RESTORE_LAPP << "current STBY:" << *now_stby << "(input:)"<<*now_stby_i<<" ==>" << restore_stby;
