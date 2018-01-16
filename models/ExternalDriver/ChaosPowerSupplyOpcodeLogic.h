@@ -33,7 +33,6 @@ namespace chaos {
         namespace powersupply {
             class ChaosPowerSupplyOpcodeLogic:
             public chaos::cu::driver_manager::driver::OpcodeExternalCommandMapper {
-                chaos::common::data::CDWUniquePtr powersupply_init_pack;
             protected:
                 int sendInit(cu::driver_manager::driver::DrvMsgPtr cmd);
                 

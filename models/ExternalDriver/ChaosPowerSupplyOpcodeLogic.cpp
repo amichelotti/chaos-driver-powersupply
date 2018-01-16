@@ -39,13 +39,6 @@ ChaosPowerSupplyOpcodeLogic::~ChaosPowerSupplyOpcodeLogic() {}
 
 void ChaosPowerSupplyOpcodeLogic::driverInit(const chaos::common::data::CDataWrapper& init_parameter) throw(chaos::CException) {
     INFO << init_parameter.getJSONString();
-    if(init_parameter.hasKey("powersupply_init_param") == false) {
-        throw CException(-1, "No init parameter", __PRETTY_FUNCTION__);
-    }
-    if(init_parameter.isCDataWrapperValue("powersupply_init_param") == false) {
-        throw CException(-1, "Init parameter need to be a json object", __PRETTY_FUNCTION__);
-    }
-    powersupply_init_pack.reset(init_parameter.getCSDataValue("powersupply_init_param"));
 }
 
 void ChaosPowerSupplyOpcodeLogic::driverDeinit() throw(chaos::CException) {
@@ -96,23 +89,13 @@ RETURN_ERROR(cmd, e1, es1.c_str(), __PRETTY_FUNCTION__);\
 }
 
 int ChaosPowerSupplyOpcodeLogic::sendInit(DrvMsgPtr cmd) {
-    CDWShrdPtr response;
-    CDWUniquePtr init_pack(new CDataWrapper());
-    init_pack->addStringValue("opc", "init");
-    init_pack->addCSDataValue("par", *powersupply_init_pack);
-    SEND_REQUEST(cmd, init_pack, response);
-    if(response.get()){DBG << response->getJSONString();}
+    cmd->ret =  0;
     return  cmd->ret;
 }
 
 int ChaosPowerSupplyOpcodeLogic::sendDeinit(DrvMsgPtr cmd) {
-    CDWShrdPtr response;
-    CDWUniquePtr init_pack(new CDataWrapper());
-    init_pack->addStringValue("opc", "deinit");
-    init_pack->addCSDataValue("par", *powersupply_init_pack);
-    SEND_REQUEST(cmd, init_pack, response);
-    if(response.get()){DBG << response->getJSONString();}
-    return cmd->ret;
+    cmd->ret =  0;
+    return  cmd->ret;
 }
 
 int ChaosPowerSupplyOpcodeLogic::setPolarity(DrvMsgPtr cmd, int pol, uint32_t timeo_ms) {
