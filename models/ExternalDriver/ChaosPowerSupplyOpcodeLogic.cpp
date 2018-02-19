@@ -238,6 +238,7 @@ int ChaosPowerSupplyOpcodeLogic::getState(DrvMsgPtr cmd, int* state,std::string&
     CDWShrdPtr response;
     CDWUniquePtr init_pack(new CDataWrapper());
     init_pack->addStringValue("opc", "get_state");
+    DBG<<"GETTING STATE...";
     SEND_REQUEST(cmd, init_pack, response);
     if(response.get()){DBG << response->getJSONString();}
     if(cmd->ret) {return cmd->ret;}
@@ -257,6 +258,7 @@ int ChaosPowerSupplyOpcodeLogic::getSWVersion(DrvMsgPtr cmd, std::string& versio
 int ChaosPowerSupplyOpcodeLogic::getHWVersion(DrvMsgPtr cmd, std::string& version, uint32_t timeo_ms){
     CDWShrdPtr response;
     CDWUniquePtr init_pack(new CDataWrapper());
+    DBG<<"GETTING VERSION...";
     init_pack->addStringValue("opc", "get_hw_ver");
     SEND_REQUEST(cmd, init_pack, response);
     if(response.get()){DBG << response->getJSONString();}
