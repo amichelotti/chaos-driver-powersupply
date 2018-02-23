@@ -22,7 +22,7 @@
 #include "CmdPSCalibration.h"
 
 #include <boost/format.hpp>
-
+#include <common/debug/core/debug.h>
 #define SCLAPP_ INFO_LOG(CmdPSCalibration) << "[" << getDeviceID() << "] "
 #define SCLDBG_ DBG_LOG(CmdPSCalibration) << "[" << getDeviceID() << "] "
 #define SCLERR_ ERR_LOG(CmdPSCalibration) << "[" << getDeviceID() << "] "

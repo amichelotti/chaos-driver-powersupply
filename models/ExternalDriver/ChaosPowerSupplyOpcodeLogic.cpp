@@ -25,6 +25,9 @@
 #include <chaos/common/global.h>
 #include <chaos/common/chaos_types.h>
 #include <chaos/common/data/CDataVariant.h>
+#undef INFO
+#undef ERR
+#undef DBG
 #define INFO INFO_LOG(ChaosPowerSupplyOpcodeLogic)
 #define ERR ERR_LOG(ChaosPowerSupplyOpcodeLogic)
 #define DBG DBG_LOG(ChaosPowerSupplyOpcodeLogic)
@@ -73,6 +76,13 @@ c->ret = response->getInt32Value("err");\
 WRITE_ERR_ON_CMD(c, -2, "'err' key not found on external driver return package", __PRETTY_FUNCTION__);\
 }\
 }
+
+#define SEND_REQUEST_OPC(opc,c, r,a) {\
+    int err;\
+if(err=sendOpcodeMessage(opc,ChaosMoveOperator(r))) {\
+WRITE_ERR_ON_CMD(err, -1, "Error from from remote driver", __PRETTY_FUNCTION__);\
+}}
+
 #define CHECK_KEY_AND_TYPE_IN_RESPONSE(r, k, t, e1, e2)\
 if(!r->hasKey(k)) {\
 std::string es1 = CHAOS_FORMAT("'%1%' key is mandatory in remote driver response",%k);\
@@ -237,9 +247,10 @@ int ChaosPowerSupplyOpcodeLogic::poweron(DrvMsgPtr cmd, uint32_t timeo_ms){
 int ChaosPowerSupplyOpcodeLogic::getState(DrvMsgPtr cmd, int* state,std::string& desc,uint32_t timeo_ms){
     CDWShrdPtr response;
     CDWUniquePtr init_pack(new CDataWrapper());
-    init_pack->addStringValue("opc", "get_state");
+   // init_pack->addStringValue("opc", "get_state");
     DBG<<"GETTING STATE...";
-    SEND_REQUEST(cmd, init_pack, response);
+    //init_pack->addStringValue(MESSAGE_URI,remote_uri_instance);
+    SEND_REQUEST_OPC("get_state",cmd, init_pack, response);
     if(response.get()){DBG << response->getJSONString();}
     if(cmd->ret) {return cmd->ret;}
     

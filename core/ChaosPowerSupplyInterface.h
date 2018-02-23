@@ -12,7 +12,7 @@
 #include <iostream>
 #include <chaos/cu_toolkit/driver_manager/driver/DriverTypes.h>
 #include <chaos/cu_toolkit/driver_manager/driver/DriverAccessor.h>
-#include <common/powersupply/powersupply.h>
+#include <common/powersupply/core/AbstractPowerSupply.h>
 #include <stdint.h>
 namespace chaos_driver=::chaos::cu::driver_manager::driver;
 namespace chaos {
