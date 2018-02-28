@@ -114,8 +114,15 @@ int ChaosPowerSupplyOpcodeLogic::sendInit(DrvMsgPtr cmd) {
 }
 
 int ChaosPowerSupplyOpcodeLogic::sendDeinit(DrvMsgPtr cmd) {
+    CDWShrdPtr response;
+
+    CDWUniquePtr init_pack(new CDataWrapper());
+
     cmd->ret =  0;
-    return  cmd->ret;
+    SEND_REQUEST_OPC("deinit",cmd, init_pack, response);
+
+    if(response.get()){DBG << response->getJSONString();}
+    return cmd->ret;
 }
 
 int ChaosPowerSupplyOpcodeLogic::setPolarity(DrvMsgPtr cmd, int pol, uint32_t timeo_ms) {
