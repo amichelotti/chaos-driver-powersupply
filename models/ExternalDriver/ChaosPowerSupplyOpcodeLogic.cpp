@@ -127,13 +127,10 @@ int ChaosPowerSupplyOpcodeLogic::sendDeinit(DrvMsgPtr cmd) {
 
 int ChaosPowerSupplyOpcodeLogic::setPolarity(DrvMsgPtr cmd, int pol, uint32_t timeo_ms) {
     CDWShrdPtr response;
-    CDWUniquePtr init_pack(new CDataWrapper());
     CDWUniquePtr set_pola_pack(new CDataWrapper());
-   // init_pack->addStringValue("opc", "set_pola");
     set_pola_pack->addInt32Value("value", pol);
-    init_pack->addCSDataValue("par", *set_pola_pack);
-    //SEND_REQUEST(cmd, init_pack, response);
-    SEND_REQUEST_OPC("set_pola",cmd, init_pack, response);
+
+    SEND_REQUEST_OPC("set_pola",cmd, set_pola_pack, response);
 
     if(response.get()){DBG << response->getJSONString();}
     return cmd->ret;
@@ -142,8 +139,6 @@ int ChaosPowerSupplyOpcodeLogic::setPolarity(DrvMsgPtr cmd, int pol, uint32_t ti
 int ChaosPowerSupplyOpcodeLogic::getPolarity(DrvMsgPtr cmd, int* pol,uint32_t timeo_ms){
     CDWShrdPtr response;
     CDWUniquePtr init_pack(new CDataWrapper());
-   // init_pack->addStringValue("opc", "get_pola");
-   // SEND_REQUEST(cmd, init_pack, response);
     SEND_REQUEST_OPC("get_pola",cmd, init_pack, response);
 
     if(response.get()){DBG << response->getJSONString();}
@@ -156,13 +151,11 @@ int ChaosPowerSupplyOpcodeLogic::getPolarity(DrvMsgPtr cmd, int* pol,uint32_t ti
 
 int ChaosPowerSupplyOpcodeLogic::setCurrentSP(DrvMsgPtr cmd, float current,uint32_t timeo_ms){
     CDWShrdPtr response;
-    CDWUniquePtr init_pack(new CDataWrapper());
     CDWUniquePtr set_cur_pack(new CDataWrapper());
    // init_pack->addStringValue("opc", "set_cur");
     set_cur_pack->addDoubleValue("value", current);
-    init_pack->addCSDataValue("par", *set_cur_pack);
    // SEND_REQUEST(cmd, init_pack, response);
-    SEND_REQUEST_OPC("set_cur",cmd, init_pack, response);
+    SEND_REQUEST_OPC("set_cur",cmd, set_cur_pack, response);
 
     if(response.get()){DBG << response->getJSONString();}
     return cmd->ret;
@@ -227,12 +220,8 @@ int ChaosPowerSupplyOpcodeLogic::getCurrentOutput(DrvMsgPtr cmd, float* current,
 int ChaosPowerSupplyOpcodeLogic::setCurrentRampSpeed(DrvMsgPtr cmd, float asup, float asdown, uint32_t timeo_ms){
     CDWShrdPtr response;
     CDWUniquePtr init_pack(new CDataWrapper());
-    CDWUniquePtr set_slope_pack(new CDataWrapper());
-  //  init_pack->addStringValue("opc", "set_slope");
-    set_slope_pack->addDoubleValue("up", asup);
-    set_slope_pack->addDoubleValue("uptown", asdown);
-    init_pack->addCSDataValue("par", *set_slope_pack);
-    //SEND_REQUEST(cmd, init_pack, response);
+    init_pack->addDoubleValue("up", asup);
+    init_pack->addDoubleValue("down", asdown);
     SEND_REQUEST_OPC("set_slope",cmd, init_pack, response);
 
     if(response.get()){DBG << response->getJSONString();}
@@ -272,13 +261,34 @@ int ChaosPowerSupplyOpcodeLogic::shutdown(DrvMsgPtr cmd, uint32_t timeo_ms){
 }
 
 int ChaosPowerSupplyOpcodeLogic::standby(DrvMsgPtr cmd, uint32_t timeo_ms){
-    CHAOS_ASSERT(false);
-    return 0;
+    CDWShrdPtr response;
+    CDWUniquePtr init_pack(new CDataWrapper());
+    DBG<<"SET STANDBY...";
+
+    init_pack->addInt32Value("value",0);
+    SEND_REQUEST_OPC("set_mode",cmd, init_pack, response);
+    if(response.get()){DBG << response->getJSONString();}
+    if(cmd->ret) {
+        return cmd->ret;
+    }
+    return -1;
+
+
 }
 
 int ChaosPowerSupplyOpcodeLogic::poweron(DrvMsgPtr cmd, uint32_t timeo_ms){
-    CHAOS_ASSERT(false);
-    return 0;
+    CDWShrdPtr response;
+    CDWUniquePtr init_pack(new CDataWrapper());
+    DBG<<"SET OPER...";
+
+    init_pack->addInt32Value("value",1);
+    SEND_REQUEST_OPC("set_mode",cmd, init_pack, response);
+    if(response.get()){DBG << response->getJSONString();}
+    if(cmd->ret) {
+        return cmd->ret;
+    }
+    return -1;
+
 }
 
 int ChaosPowerSupplyOpcodeLogic::getState(DrvMsgPtr cmd, int* state,std::string& desc,uint32_t timeo_ms){
