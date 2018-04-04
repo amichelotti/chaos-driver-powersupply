@@ -62,18 +62,17 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
 		BC_FAULT_RUNNING_PROPERTY;
 		return;
 	}
-#if 0
-    if(powersupply_drv->getFeatures()& common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR){
+    
+if(powersupply_drv->getFeatures()& common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR){
         SCLERR_ << "invalid command for bipolars";
 		setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,"invalid command for bipolars");
 
-		BC_FAULT_RUNNING_PROPERTY;
+		BC_NORMAL_RUNNING_PROPERTY;
 		return;
 	}
-#endif
 
-	SCLDBG_ << "Checking for timout";
+	SCLDBG_ << "Checking for timeout";
 	if(*p_setTimeout) {
 		SCLDBG_ << "Timeout will be set to ms -> " << *p_setTimeout;
 		timeo =  *p_setTimeout;

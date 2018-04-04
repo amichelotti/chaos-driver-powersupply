@@ -143,6 +143,9 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 	}
 
 
+	if (powersupply_drv->getFeatures() & common::powersupply::POWER_SUPPLY_FEAT_MONOPOLAR)
+{
+    
 	if((err = powersupply_drv->getPolarity(&tmp_int32)) == 0){
 		*o_pol = tmp_int32;
 	} else {
@@ -163,7 +166,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 
 		}
 	}
-
+}
 
 	if((err = powersupply_drv->getAlarms(&tmp_uint64)) == 0){
 		*o_alarms = tmp_uint64;
