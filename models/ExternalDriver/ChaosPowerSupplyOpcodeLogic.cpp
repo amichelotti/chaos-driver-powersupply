@@ -210,8 +210,8 @@ int ChaosPowerSupplyOpcodeLogic::getCurrentOutput(DrvMsgPtr cmd, float* current,
 
     if(response.get()){DBG << response->getJSONString();}
     if(cmd->ret) {return cmd->ret;}
-    CDataWrapperType type = response->getValueType("value");
-    INFO << type;
+    //CDataWrapperType type = response->getValueType("value");
+   // INFO << type;
     CHECK_KEY_IN_RESPONSE(response, "value", -1);
     *current = response->getVariantValue("value").asDouble();
     return cmd->ret;
