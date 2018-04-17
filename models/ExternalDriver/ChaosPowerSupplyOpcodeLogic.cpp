@@ -114,7 +114,7 @@ int ChaosPowerSupplyOpcodeLogic::sendInit(DrvMsgPtr cmd) {
 }
 
 int ChaosPowerSupplyOpcodeLogic::sendDeinit(DrvMsgPtr cmd) {
-    CDWShrdPtr response;
+    /*CDWShrdPtr response;
 
     CDWUniquePtr init_pack(new CDataWrapper());
 
@@ -122,6 +122,10 @@ int ChaosPowerSupplyOpcodeLogic::sendDeinit(DrvMsgPtr cmd) {
     SEND_REQUEST_OPC("deinit",cmd, init_pack, response);
 
     if(response.get()){DBG << response->getJSONString();}
+    */
+    cmd->ret=sendDeinitRequest();
+
+
     return cmd->ret;
 }
 
