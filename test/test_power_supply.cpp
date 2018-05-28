@@ -8,7 +8,7 @@
 #include "TestPowerSupply.h"
 
 
-int main (int argc, char* argv[] )
+int main (int argc, const char* argv[] )
 {
   int debug,loop,keep;
   std::vector<std::string> arrCU;
