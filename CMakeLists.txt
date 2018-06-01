@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(chaos_driver_powersupply)
 SET(CHAOS_CUS core/SCPowerSupplyControlUnit.cpp)
+find_package(chaos MODULE REQUIRED)
+include_directories(../../ ${chaos_INCLUDE_DIRS})
 
 FILE(GLOB core_src core/*.cpp)
 SET(DRIVERS_LIB )
