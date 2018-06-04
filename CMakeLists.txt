@@ -17,11 +17,12 @@ ADD_LIBRARY(${PROJECT_NAME} STATIC ${core_src})
 SET(CMAKE_EXE_LINKER_FLAGS "-static -Wl,--whole-archive -lchaos_common -Wl,--no-whole-archive")
 ELSE()
 ADD_LIBRARY(${PROJECT_NAME}  SHARED ${core_src})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_powersupply ${FrameworkLib} )
 ENDIF()
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_powersupply chaos_uitoolkit chaos_cutoolkit chaos_common ${FrameworkLib})
-TARGET_LINK_LIBRARIES(powersupply_cu ${DRIVERS_LIB} ${PROJECT_NAME} common_serial_ocem common_serial common_debug common_modbus modbus)
-TARGET_LINK_LIBRARIES(powersupply_test ${DRIVERS_LIB} ${PROJECT_NAME} common_serial_ocem common_test common_serial common_debug common_modbus modbus pthread)
+
+TARGET_LINK_LIBRARIES(powersupply_cu ${DRIVERS_LIB} ${PROJECT_NAME} common_serial_ocem common_serial common_debug common_modbus modbus ${FrameworkLib})
+TARGET_LINK_LIBRARIES(powersupply_test ${DRIVERS_LIB} ${PROJECT_NAME} common_serial_ocem common_test common_serial common_debug common_modbus modbus ${FrameworkLib})
 
 
 INSTALL_TARGETS(/bin/powersupply powersupply_cu)
