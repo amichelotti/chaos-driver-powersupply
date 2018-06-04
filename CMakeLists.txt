@@ -21,7 +21,7 @@ ENDIF()
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_powersupply chaos_uitoolkit chaos_cutoolkit chaos_common ${FrameworkLib})
 TARGET_LINK_LIBRARIES(powersupply_cu ${DRIVERS_LIB} ${PROJECT_NAME} common_serial_ocem common_serial common_debug common_modbus modbus)
-TARGET_LINK_LIBRARIES(powersupply_test ${DRIVERS_LIB} ${PROJECT_NAME} common_serial_ocem common_test common_serial common_debug common_modbus modbus)
+TARGET_LINK_LIBRARIES(powersupply_test ${DRIVERS_LIB} ${PROJECT_NAME} common_serial_ocem common_test common_serial common_debug common_modbus modbus pthread)
 
 
 INSTALL_TARGETS(/bin/powersupply powersupply_cu)
