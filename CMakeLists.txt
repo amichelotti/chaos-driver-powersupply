@@ -22,7 +22,7 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_powersupply ${FrameworkLib} )
 ENDIF()
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_serial_ocem common_serial common_debug common_modbus modbus chaos_uitoolkit ${FrameworkLib})
-TARGET_LINK_LIBRARIES(powersupply_cu ${DRIVERS_LIB} ${PROJECT_NAME})
+TARGET_LINK_LIBRARIES(powersupply_cu ${DRIVERS_LIB} ${PROJECT_NAME} ${FrameworkLib})
 # TARGET_LINK_LIBRARIES(powersupply_test ${DRIVERS_LIB} ${PROJECT_NAME}  common_test)
 
 
