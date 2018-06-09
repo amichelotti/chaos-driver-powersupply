@@ -25,6 +25,8 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_serial_ocem common_serial common_de
 TARGET_LINK_LIBRARIES(powersupply_cu ${DRIVERS_LIB} ${PROJECT_NAME} ${FrameworkLib})
 # TARGET_LINK_LIBRARIES(powersupply_test ${DRIVERS_LIB} ${PROJECT_NAME}  common_test)
 
+FILE(GLOB files "core/*.h")
+INSTALL(FILES ${files} DESTINATION include/driver/powersupply/core)
 
 INSTALL_TARGETS(/bin/powersupply powersupply_cu)
 # INSTALL_TARGETS(/bin/powerdupply powersupply_test)
