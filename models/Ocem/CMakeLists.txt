@@ -11,6 +11,8 @@ ELSE()
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${src})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_powersupply_ocem common_serial_ocem chaos_driver_powersupply)
 ENDIF()
+FILE(GLOB files "*.h")
+INSTALL(FILES ${files} DESTINATION include/driver/powersupply/models/Ocem)
 
 INSTALL_TARGETS(/lib ${PROJECT_NAME})
 

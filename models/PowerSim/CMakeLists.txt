@@ -13,6 +13,8 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_powersupply_simulator common_powers
 ENDIF()
 
 
+FILE(GLOB files "*.h")
+INSTALL(FILES ${files} DESTINATION include/driver/powersupply/models/PowerSim)
 
 INSTALL_TARGETS(/lib ${PROJECT_NAME})
 
