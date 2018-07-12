@@ -25,9 +25,9 @@
 #include <chaos/common/chaos_types.h>
 #include <chaos/common/utility/LockableObject.h>
 #include <chaos/cu_toolkit/driver_manager/driver/OpcodeExternalCommandMapper.h>
-
+#ifndef POWER_SUPPLY_DEFAULT_TIMEOUT
 #define POWER_SUPPLY_DEFAULT_TIMEOUT 5000
-
+#endif
 namespace chaos {
     namespace driver {
         namespace powersupply {
