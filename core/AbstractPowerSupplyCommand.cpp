@@ -37,11 +37,7 @@ AbstractPowerSupplyCommand::~AbstractPowerSupplyCommand() {
 		delete (powersupply_drv);
 	powersupply_drv = NULL;
 }
-void AbstractPowerSupplyCommand::endHandler() {
-	CMDCUDBG_<<"Close Command:'"<<this->getAlias()<<"'";
-	setWorkState(false);
 
-}
 
 void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	CMDCUDBG_ << "setting ";
@@ -241,15 +237,7 @@ void AbstractPowerSupplyCommand::getState(int& current_state, std::string& curre
 																			int err = 0;
 	std::string state_str;
 	if((err=powersupply_drv->getState(&current_state, state_str, *p_getTimeout?*p_getTimeout:10000)) != 0) {
-		//setWorkState(false);
 		CMDCUERR_ << boost::str( boost::format("Error getting the powersupply state = %1% ") % err);
 	}
-
-}
-
-void AbstractPowerSupplyCommand::setWorkState(bool working_flag) {
-	//int64_t *o_dev_state = getAttributeCache()->getRWPtr<int64_t>(DOMAIN_OUTPUT, "dev_state");
-	//*o_dev_state = working_flag;
-	getAttributeCache()->setOutputDomainAsChanged();
 
 }

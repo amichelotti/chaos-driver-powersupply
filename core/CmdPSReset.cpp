@@ -46,7 +46,6 @@ own::CmdPSReset::~CmdPSReset(){
 
 }
 void own::CmdPSReset::setHandler(c_data::CDataWrapper *data) {
-	setWorkState(true);
 
 	AbstractPowerSupplyCommand::setHandler(data);
     AbstractPowerSupplyCommand::acquireHandler();

@@ -44,7 +44,6 @@ own::CmdSetPolarity::~CmdSetPolarity(){
 
 }
 void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
-	setWorkState(true);
 
 	AbstractPowerSupplyCommand::setHandler(data);
 	AbstractPowerSupplyCommand::acquireHandler();

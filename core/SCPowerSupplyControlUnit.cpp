@@ -137,12 +137,12 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setRampL(const std::string
  */
 void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw (chaos::CException) {
 	//install all command
-	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSDefault), true);
-	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSMode));
-	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSReset));
-	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSSetSlope));
-	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSSetCurrent));
-	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdSetPolarity));
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSDefault), true,true);
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSMode),false);
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSReset),false);
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSSetSlope),false);
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSSetCurrent),false);
+	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdSetPolarity),false);
 
 
 	// input/output DataSet
