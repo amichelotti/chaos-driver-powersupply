@@ -82,6 +82,7 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 			powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
 		}
 	}
+	*o_alarms=0;
 }
 
 // return the implemented handler
@@ -194,7 +195,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 		*o_local= (state & common::powersupply::POWER_SUPPLY_STATE_LOCAL)?true:false;
 		*o_off=(state & common::powersupply::POWER_SUPPLY_STATE_OFF)?true:false;
 		if(*o_alarms){
-			CMDCUDBG_<<"alarms!! "<<desc;
+			CMDCUDBG_<<"alarms!! "<<*o_alarms<<" desc:"<<desc;
 		}
 	} else {
 		driver_error++;
