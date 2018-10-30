@@ -277,10 +277,11 @@ int ChaosPowerSupplyOpcodeLogic::standby(DrvMsgPtr cmd, uint32_t timeo_ms){
     init_pack->addInt32Value("value",0);
     SEND_REQUEST_OPC("set_mode",cmd, init_pack, response);
     if(response.get()){DBG << response->getJSONString();}
+	else {DBG << "standby Response Null";}
     if(cmd->ret) {
         return cmd->ret;
     }
-    return -1;
+    return 0;
 
 
 }
@@ -293,10 +294,11 @@ int ChaosPowerSupplyOpcodeLogic::poweron(DrvMsgPtr cmd, uint32_t timeo_ms){
     init_pack->addInt32Value("value",1);
     SEND_REQUEST_OPC("set_mode",cmd, init_pack, response);
     if(response.get()){DBG << response->getJSONString();}
+	else {DBG << "standby Response Null";}
     if(cmd->ret) {
         return cmd->ret;
     }
-    return -1;
+    return 0;
 
 }
 
