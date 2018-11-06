@@ -114,12 +114,20 @@ RETURN_ERROR(cmd, e1, es1.c_str(), __PRETTY_FUNCTION__);\
 }
 
 int ChaosPowerSupplyOpcodeLogic::sendInit(DrvMsgPtr cmd) {
+    CDWShrdPtr response;
+
+    CDWUniquePtr init_pack(new CDataWrapper());
+
     cmd->ret =  0;
-    return  cmd->ret;
+    SEND_REQUEST_OPC("init",cmd, init_pack, response);
+
+    if(response.get()){DBG << response->getJSONString();}
+
+    return cmd->ret;
 }
 
 int ChaosPowerSupplyOpcodeLogic::sendDeinit(DrvMsgPtr cmd) {
-    /*CDWShrdPtr response;
+    CDWShrdPtr response;
 
     CDWUniquePtr init_pack(new CDataWrapper());
 
@@ -127,9 +135,6 @@ int ChaosPowerSupplyOpcodeLogic::sendDeinit(DrvMsgPtr cmd) {
     SEND_REQUEST_OPC("deinit",cmd, init_pack, response);
 
     if(response.get()){DBG << response->getJSONString();}
-    */
-    cmd->ret=sendDeinitRequest();
-
 
     return cmd->ret;
 }
