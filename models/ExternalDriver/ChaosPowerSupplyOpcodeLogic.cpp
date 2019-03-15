@@ -112,7 +112,7 @@ if(!r->hasKey(k)) {\
 std::string es1 = CHAOS_FORMAT("'%1%' key is mandatory in remote driver response",%k);\
 RETURN_ERROR(cmd, e1, es1.c_str(), __PRETTY_FUNCTION__);\
 }
-
+/*
 int ChaosPowerSupplyOpcodeLogic::sendInit(DrvMsgPtr cmd) {
     CDWShrdPtr response;
 
@@ -138,7 +138,7 @@ int ChaosPowerSupplyOpcodeLogic::sendDeinit(DrvMsgPtr cmd) {
 
     return cmd->ret;
 }
-
+*/
 int ChaosPowerSupplyOpcodeLogic::setPolarity(DrvMsgPtr cmd, int pol, uint32_t timeo_ms) {
     CDWShrdPtr response;
     CDWUniquePtr set_pola_pack(new CDataWrapper());

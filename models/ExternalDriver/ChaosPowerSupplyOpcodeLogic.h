@@ -34,9 +34,9 @@ namespace chaos {
             class ChaosPowerSupplyOpcodeLogic:
             public chaos::cu::driver_manager::driver::OpcodeExternalCommandMapper {
             protected:
-                int sendInit(cu::driver_manager::driver::DrvMsgPtr cmd);
+           //     int sendInit(cu::driver_manager::driver::DrvMsgPtr cmd);
                 
-                int sendDeinit(cu::driver_manager::driver::DrvMsgPtr cmd);
+//int sendDeinit(cu::driver_manager::driver::DrvMsgPtr cmd);
                 /**
                  @brief sets the current polarity
                  @param pol if >0 sets positive current polarity, if <0 sets negative current polarity, =0 opens the circuit, no current
