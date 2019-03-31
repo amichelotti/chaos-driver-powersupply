@@ -35,7 +35,6 @@ void own::CmdPSMode::setHandler(c_data::CDataWrapper *data) {
 	int err = 0;
 	int state = 0;
 	std::string state_description;
-	setWorkState(true);
 
 	AbstractPowerSupplyCommand::setHandler(data);
 	AbstractPowerSupplyCommand::acquireHandler();

@@ -37,11 +37,7 @@ AbstractPowerSupplyCommand::~AbstractPowerSupplyCommand() {
 		delete (powersupply_drv);
 	powersupply_drv = NULL;
 }
-void AbstractPowerSupplyCommand::endHandler() {
-	CMDCUDBG_<<"Close Command:'"<<this->getAlias()<<"'";
-	setWorkState(false);
 
-}
 
 void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	CMDCUDBG_ << "setting ";
@@ -86,6 +82,7 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 			powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
 		}
 	}
+	*o_alarms=0;
 }
 
 // return the implemented handler
@@ -143,6 +140,9 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 	}
 
 
+	if (powersupply_drv->getFeatures() & common::powersupply::POWER_SUPPLY_FEAT_MONOPOLAR)
+{
+    
 	if((err = powersupply_drv->getPolarity(&tmp_int32)) == 0){
 		*o_pol = tmp_int32;
 	} else {
@@ -163,7 +163,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 
 		}
 	}
-
+}
 
 	if((err = powersupply_drv->getAlarms(&tmp_uint64)) == 0){
 		*o_alarms = tmp_uint64;
@@ -195,7 +195,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 		*o_local= (state & common::powersupply::POWER_SUPPLY_STATE_LOCAL)?true:false;
 		*o_off=(state & common::powersupply::POWER_SUPPLY_STATE_OFF)?true:false;
 		if(*o_alarms){
-			CMDCUDBG_<<"alarms!! "<<desc;
+			CMDCUDBG_<<"alarms!! "<<*o_alarms<<" desc:"<<desc;
 		}
 	} else {
 		driver_error++;
@@ -238,16 +238,7 @@ void AbstractPowerSupplyCommand::getState(int& current_state, std::string& curre
 																			int err = 0;
 	std::string state_str;
 	if((err=powersupply_drv->getState(&current_state, state_str, *p_getTimeout?*p_getTimeout:10000)) != 0) {
-		//setWorkState(false);
 		CMDCUERR_ << boost::str( boost::format("Error getting the powersupply state = %1% ") % err);
 	}
-
-}
-
-void AbstractPowerSupplyCommand::setWorkState(bool working_flag) {
-	//int64_t *o_dev_state = getAttributeCache()->getRWPtr<int64_t>(DOMAIN_OUTPUT, "dev_state");
-	//*o_dev_state = working_flag;
-	setBusyFlag(working_flag);
-	getAttributeCache()->setOutputDomainAsChanged();
 
 }

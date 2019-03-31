@@ -21,6 +21,7 @@
 #include <driver/powersupply/models/Ocem/OcemDD.h>
 #include <driver/powersupply/models/PowerSim/PowerSimDD.h>
 #include <driver/powersupply/models/Hazemeyer/ChaosAL250.h>
+#include <driver/powersupply/models/ExternalDriver/ChaosPowerSupplyExternalDriver.h>
 
 #include <driver/powersupply/core/SCPowerSupplyControlUnit.h>
 
@@ -54,14 +55,17 @@ namespace cu_driver_manager = chaos::cu::driver_manager;
 // initialisation format for simulator <serial port>,<slaveid>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<maxcurr:max voltage>
 
 static const boost::regex power_supply_simulator_init_match("([\\w\\/]+),(\\d+),(\\d+):(\\d+),(\\d+):(\\d+),(\\d+):(\\d+)");
-int main(int argc,char**argv){
+int main(int argc,const char**argv){
         try{
 
                 chaos::cu::ChaosCUToolkit::getInstance()->init(argc, argv);
                 REGISTER_CU(::driver::powersupply::SCPowerSupplyControlUnit); /* file: driver/powersupply/SCPowerSupplyControlUnit.h */
                 REGISTER_DRIVER(chaos::driver::powersupply,OcemDD); /* file: driver/powersupply/models/Ocem/OcemDD.h */
                 REGISTER_DRIVER(chaos::driver::powersupply,PowerSimDD); 
-                REGISTER_DRIVER(chaos::driver::powersupply,C_AL250); 
+                REGISTER_DRIVER(chaos::driver::powersupply,C_AL250);
+		REGISTER_DRIVER(chaos::driver::powersupply,ChaosPowerSupplyRemoteServerDriver);
+		REGISTER_DRIVER(chaos::driver::powersupply,ChaosPowerSupplyRemoteClientDriver);
+            
                 chaos::cu::ChaosCUToolkit::getInstance()->start();
         } catch (CException& e) {
                 std::cerr<<"Exception:"<<std::endl;

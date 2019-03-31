@@ -75,7 +75,6 @@ void CmdPSDefault::acquireHandler() {
 		}
 
 void CmdPSDefault::ccHandler() {
-	setWorkState(false);
 	/////  CHECKS during operational mode
 	if(*i_stby!=*o_stby){
 		setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelWarning);

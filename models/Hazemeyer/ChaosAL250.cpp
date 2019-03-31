@@ -21,6 +21,7 @@
 
 #include <string>
 #include <boost/regex.hpp>
+#include <common/modbus/core/ModbusChannelFactory.h>
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
 
 // initialization format is <POWERSUPPLY TYPE>:'<INITALISATION PARAMETERS>'
@@ -30,7 +31,7 @@ static const boost::regex power_supply_init_match("(\\w+):(.+)");
 static const boost::regex power_supply_hazemeyer_init_match("([\\w\\/,]+):(\\d+)");
 
 //GET_PLUGIN_CLASS_DEFINITION
-//we need only to define the driver because we don't are makeing a plugin
+//we need only to define the driver because we don't are making a plugin
 
 OPEN_CU_DRIVER_PLUGIN_CLASS_DEFINITION(C_AL250, 1.0.0, chaos::driver::powersupply::C_AL250)
 REGISTER_CU_DRIVER_PLUGIN_CLASS_INIT_ATTRIBUTE(chaos::driver::powersupply::C_AL250, http_address/dnsname:port)
@@ -53,6 +54,27 @@ chaos::driver::powersupply::C_AL250::C_AL250() {
 chaos::driver::powersupply::C_AL250::~C_AL250() {
 	
 }
+
+
+void chaos::driver::powersupply::C_AL250::driverInit(const chaos::common::data::CDataWrapper& json) throw(chaos::CException)
+{
+    PSLAPP << "Init  driver initialisation with json " <<json.getJSONString().c_str();
+    ::common::modbus::AbstractModbusChannel_psh channel=::common::modbus::ModbusChannelFactory::getChannel(json);
+    if(power)
+    {
+          throw chaos::CException(1, "Already Initialised", "C_AL250::driverInit");
+    }
+        
+     power = new ::common::powersupply::AL250(channel,json);
+     if(power==NULL)
+     {
+         throw chaos::CException(1, "Cannot allocate resources for C_AL250", "C_AL250::driverInit");
+     }
+    
+
+    
+}
+
 
 void chaos::driver::powersupply::C_AL250::driverInit(const char *initParameter) throw(chaos::CException) {
     //check the input parameter
