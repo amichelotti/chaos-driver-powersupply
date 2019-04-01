@@ -1,3 +1,4 @@
+CMakeLists.txt
 core/AbstractPowerSupplyCommand.cpp
 core/AbstractPowerSupplyCommand.h
 core/ChaosPowerSupplyDD.cpp
@@ -28,6 +29,7 @@ models/ExternalDriver/ChaosPowerSupplyExternalDriver.cpp
 models/ExternalDriver/ChaosPowerSupplyExternalDriver.h
 models/ExternalDriver/ChaosPowerSupplyOpcodeLogic.cpp
 models/ExternalDriver/ChaosPowerSupplyOpcodeLogic.h
+models/Hazemeyer/CMakeLists.txt
 models/Hazemeyer/ChaosAL250.cpp
 models/Hazemeyer/ChaosAL250.h
 models/Ocem/OcemDD.cpp

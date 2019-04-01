@@ -25,19 +25,18 @@
 #include <chaos/common/chaos_types.h>
 #include <chaos/common/utility/LockableObject.h>
 #include <chaos/cu_toolkit/driver_manager/driver/OpcodeExternalCommandMapper.h>
-
+#ifndef POWER_SUPPLY_DEFAULT_TIMEOUT
 #define POWER_SUPPLY_DEFAULT_TIMEOUT 5000
-
+#endif
 namespace chaos {
     namespace driver {
         namespace powersupply {
             class ChaosPowerSupplyOpcodeLogic:
             public chaos::cu::driver_manager::driver::OpcodeExternalCommandMapper {
-                chaos::common::data::CDWUniquePtr powersupply_init_pack;
             protected:
-                int sendInit(cu::driver_manager::driver::DrvMsgPtr cmd);
+           //     int sendInit(cu::driver_manager::driver::DrvMsgPtr cmd);
                 
-                int sendDeinit(cu::driver_manager::driver::DrvMsgPtr cmd);
+//int sendDeinit(cu::driver_manager::driver::DrvMsgPtr cmd);
                 /**
                  @brief sets the current polarity
                  @param pol if >0 sets positive current polarity, if <0 sets negative current polarity, =0 opens the circuit, no current

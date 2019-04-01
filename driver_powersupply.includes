@@ -1,6 +1,5 @@
-core
-models/ExternalDriver
+../../chaosframework
+.
+../../chaosframework/usr/local/include
+
 models/Hazemeyer
-models/Ocem
-models/PowerSim
-test

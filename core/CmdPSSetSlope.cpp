@@ -47,7 +47,6 @@ own::CmdPSSetSlope::~CmdPSSetSlope(){
 
 }
 void own::CmdPSSetSlope::setHandler(c_data::CDataWrapper *data) {
-	setWorkState(true);
 
 	AbstractPowerSupplyCommand::setHandler(data);
         AbstractPowerSupplyCommand::acquireHandler();
