@@ -12,6 +12,7 @@ using namespace chaos::driver::powersupply;
 #define PREPARE_OP_RET_INT_TIMEOUT(op,tim) \
 powersupply_oparams_t ret;\
 powersupply_iparams_t idata;\
+ret.result=DRV_BYPASS_DEFAULT_CODE;\
 message.opcode = op; \
 message.inputData=(void*)&idata;\
 idata.timeout=tim;\
@@ -47,6 +48,7 @@ return ret.result;
 #define READ_OP_FLOAT_TIM(op,pfval,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout);\
 ret.fvalue0=*pfval;\
+ret.fvalue0=*pfval;\
 accessor->send(&message);\
 *pfval = ret.fvalue0;\
 return ret.result;
@@ -61,6 +63,7 @@ return ret.result;
 #define READ_OP_INT_STRING_TIM(op,pival,pstring,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
 *ret.str=0;\
+ret.ivalue=*pival;\
 accessor->send(&message);\
 *pival = ret.ivalue;\
 pstring = ret.str;\
