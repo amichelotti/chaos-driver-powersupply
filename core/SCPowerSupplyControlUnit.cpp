@@ -65,38 +65,39 @@ PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(::driver::powersupply::SCPowerSupplyCont
 ::driver::powersupply::SCPowerSupplyControlUnit::~SCPowerSupplyControlUnit() {
 	if (powersupply_drv) {
 		delete (powersupply_drv);
+		powersupply_drv=NULL;
 	}
 }
 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::setSP(const std::string &name, double value, uint32_t size) {
-	SCCUAPP << "set SP to " << value;
+	SCCUDBG << "set SP to " << value;
 
 	return setCurrent(value,true);
 }
 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::setAlarms(const std::string &name, long long value, uint32_t size) {
-	SCCUAPP << "set alarms " << value;
+	SCCUDBG << "set alarms " << value;
 
 	return setAlarms(value,false);
 }
 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::setOff(const std::string &name, bool value, uint32_t size) {
 	if (value) {
-		SCCUAPP << "set OFF";
+		SCCUDBG << "set OFF";
 		return true;
 
 	}
-	SCCUAPP << "set OFF";
+	SCCUDBG << "set OFF";
 
 	return false;
 }
 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::setStby(const std::string &name, bool value, uint32_t size) {
 	if (value) {
-		SCCUAPP << "set Standby";
+		SCCUDBG << "set Standby";
 		return powerStandby(true);
 	} else {
-		SCCUAPP << "set Operational";
+		SCCUDBG << "set Operational";
 		return powerON(true);
 	}
 
@@ -104,7 +105,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setStby(const std::string 
 }
 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::setPol(const std::string &name, int32_t value, uint32_t size) {
-	SCCUAPP << "set polarity:" << value;
+	SCCUDBG << "set polarity:" << value;
 
 	return setPolarity(value,true);
 }
@@ -114,7 +115,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setRampH(const std::string
 
 	const double *asdown = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampDownRate");
 	if (value > 0 && *asdown > 0) {
-		SCCUAPP << "set ramp up:" << value;
+		SCCUDBG << "set ramp up:" << value;
 
 		err = powersupply_drv->setCurrentRampSpeed(value, *asdown);
 	}
@@ -125,7 +126,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setRampL(const std::string
 	int err = -1;
 	const double *asup = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampUpRate");
 	if (value > 0 && *asup > 0) {
-		SCCUAPP << "set ramp down:" << value;
+		SCCUDBG << "set ramp down:" << value;
 
 		err = powersupply_drv->setCurrentRampSpeed(*asup, value);
 	}
@@ -422,7 +423,6 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
 	//check mandatory default values
 	/*
 	 */
-	SCCUAPP << "check mandatory default values";
 
 
 	// retrive the attribute description from the device database
@@ -446,11 +446,11 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
 	getAttributeCache()->setOutputDomainAsChanged();
 
 	if (powersupply_drv->getHWVersion(device_hw, 1000) == 0) {
-		SCCUAPP << "hardware found: \"" << device_hw << "\"";
+		SCCUDBG << "hardware found: \"" << device_hw << "\"";
 	}
 
 
-	SCCUAPP << "set default slope value up:" << *asup << " down:" << *asdown;
+	SCCUDBG << "set default slope value up:" << *asup << " down:" << *asdown;
 	err = powersupply_drv->setCurrentRampSpeed(*asup, *asdown);
 	if ((err != chaos::ErrorCode::EC_NO_ERROR) && (err != chaos::ErrorCode::EC_NODE_OPERATION_NOT_SUPPORTED)) {
 		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error setting Ramp Speep %1% %2%") % *asup %*asdown) );
@@ -478,14 +478,14 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitStop() throw (CExcepti
 // Abstract method for the deinit of the control unit
 
 void ::driver::powersupply::SCPowerSupplyControlUnit::unitDeinit() throw (CException) {
-	SCCUAPP << "deinitializing ";
+	SCCUDBG << "deinitializing ";
 	powersupply_drv->deinit();
 	delete powersupply_drv;
 	powersupply_drv=NULL;
 }
 
 //! restore the control unit to snapshot
-#define RESTORE_LAPP SCCUAPP << "[RESTORE-" <<getCUID() << "] "
+#define RESTORE_LAPP SCCUDBG << "[RESTORE-" <<getCUID() << "] "
 #define RESTORE_LERR SCCUERR << "[RESTORE-" <<getCUID() << "] "
 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw (chaos::CException) {
@@ -769,25 +769,25 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::whaitOnCommandID(uint64_t 
 
 		switch (cmd_state->last_event) {
 		case BatchCommandEventType::EVT_QUEUED:
-			SCCUAPP << cmd_id << " -> QUEUED";
+			SCCUDBG << cmd_id << " -> QUEUED";
 			break;
 		case BatchCommandEventType::EVT_RUNNING:
-			SCCUAPP << cmd_id << " -> RUNNING";
+			SCCUDBG << cmd_id << " -> RUNNING";
 			break;
 		case BatchCommandEventType::EVT_WAITING:
-			SCCUAPP << cmd_id << " -> WAITING";
+			SCCUDBG << cmd_id << " -> WAITING";
 			break;
 		case BatchCommandEventType::EVT_PAUSED:
-			SCCUAPP << cmd_id << " -> PAUSED";
+			SCCUDBG << cmd_id << " -> PAUSED";
 			break;
 		case BatchCommandEventType::EVT_KILLED:
-			SCCUAPP << cmd_id << " -> KILLED";
+			SCCUDBG << cmd_id << " -> KILLED";
 			break;
 		case BatchCommandEventType::EVT_COMPLETED:
-			SCCUAPP << cmd_id << " -> COMPLETED";
+			SCCUDBG << cmd_id << " -> COMPLETED";
 			break;
 		case BatchCommandEventType::EVT_FAULT:
-			SCCUAPP << cmd_id << " -> FAULT";
+			SCCUDBG << cmd_id << " -> FAULT";
 			break;
 		}
 		//whait some times
