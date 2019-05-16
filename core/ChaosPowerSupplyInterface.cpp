@@ -12,17 +12,18 @@ using namespace chaos::driver::powersupply;
 #define PREPARE_OP_RET_INT_TIMEOUT(op,tim) \
 powersupply_oparams_t ret;\
 powersupply_iparams_t idata;\
+ret.result=DRV_BYPASS_DEFAULT_CODE;\
 message.opcode = op; \
 message.inputData=(void*)&idata;\
 idata.timeout=tim;\
 message.inputDataLength=sizeof(powersupply_iparams_t);\
 message.resultDataLength=sizeof(powersupply_oparams_t);\
-message.resultData = (void*)&ret;\
+message.resultData = (void*)&ret;
 
 #define WRITE_OP_INT_TIM(op,ival,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
 idata.ivalue=ival;\
- accessor->send(&message,100);			\
+accessor->send(&message,100);			\
 return ret.result;
 
 #define WRITE_OP_64INT_TIM(op,ival,timeout) \
@@ -34,7 +35,7 @@ return ret.result;
 #define WRITE_OP_FLOAT_TIM(op,fval,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
 idata.fvalue0=fval;\
- accessor->send(&message,100);			\
+accessor->send(&message,100);			\
 return ret.result;
 
 #define WRITE_OP_2FLOAT_TIM(op,fval0,fval1,timeout) \
@@ -45,19 +46,24 @@ accessor->send(&message);\
 return ret.result;
 
 #define READ_OP_FLOAT_TIM(op,pfval,timeout) \
-PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
+PREPARE_OP_RET_INT_TIMEOUT(op,timeout);\
+ret.fvalue0=*pfval;\
+ret.fvalue0=*pfval;\
 accessor->send(&message);\
 *pfval = ret.fvalue0;\
 return ret.result;
 
 #define READ_OP_INT_TIM(op,pival,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
+ret.ivalue=*pival;\
 accessor->send(&message);\
 *pival = ret.ivalue;\
 return ret.result;
 
 #define READ_OP_INT_STRING_TIM(op,pival,pstring,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
+*ret.str=0;\
+ret.ivalue=*pival;\
 accessor->send(&message);\
 *pival = ret.ivalue;\
 pstring = ret.str;\
@@ -65,24 +71,29 @@ return ret.result;
 
 #define READ_OP_INT_TIM(op,pival,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
+ret.ivalue=*pival;\
 accessor->send(&message);\
 *pival = ret.ivalue;\
 return ret.result;
 
 #define READ_OP_64INT_TIM(op,pival,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
+ret.alarm_mask= *pival;\
 accessor->send(&message);\
 *pival = ret.alarm_mask;\
 return ret.result;
 
 #define READ_OP_64INT_TIM_NORET(op,pival,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
+ret.alarm_mask= *pival;\
 accessor->send(&message);\
 *pival = ret.alarm_mask;
 
 
 #define READ_OP_2FLOAT_TIM(op,pfval0,pfval1,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
+ret.fvalue0=*pfval0 ;\
+ret.fvalue1=*pfval1 ;\
 accessor->send(&message);\
 *pfval0 = ret.fvalue0;\
 *pfval1 = ret.fvalue1;\
