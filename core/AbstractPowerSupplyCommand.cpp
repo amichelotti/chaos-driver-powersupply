@@ -102,6 +102,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 		*o_current = (double)tmp_float;
 	} else {
 		driver_error++;
+		CMDCUERR_<<"Error getting current err:"<<err;
 		if(err==POWER_SUPPLY_TIMEOUT){
 			if(getStateVariableSeverity(StateVariableTypeAlarmCU,"driver_timeout",level_stat) && (level_stat!=chaos::common::alarm::MultiSeverityAlarmLevelHigh)){
 				metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Timeout Error calling driver on get current readout with code %1%") % err));
@@ -121,6 +122,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 		*o_voltage = (double)tmp_float;
 	} else {
 		driver_error++;
+		CMDCUERR_<<"Error getting voltage err:"<<err;
 
 		if(err==POWER_SUPPLY_TIMEOUT){
 			if(getStateVariableSeverity(StateVariableTypeAlarmCU,"driver_timeout",level_stat) && (level_stat!=chaos::common::alarm::MultiSeverityAlarmLevelHigh)){
@@ -147,6 +149,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 		*o_pol = tmp_int32;
 	} else {
 		driver_error++;
+		CMDCUERR_<<"Error getting feature err:"<<err;
 
 		if(err==POWER_SUPPLY_TIMEOUT){
 			if(getStateVariableSeverity(StateVariableTypeAlarmCU,"driver_timeout",level_stat) && (level_stat!=chaos::common::alarm::MultiSeverityAlarmLevelHigh)){
@@ -169,6 +172,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 		*o_alarms = tmp_uint64;
 	} else {
 		driver_error++;
+		CMDCUERR_<<"Error getting alarms err:"<<err;
 
 		if(err==POWER_SUPPLY_TIMEOUT){
 
@@ -199,6 +203,8 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 		}
 	} else {
 		driver_error++;
+		CMDCUERR_<<"Error getting state err:"<<err;
+
 		if(err==POWER_SUPPLY_TIMEOUT){
 
 			if(getStateVariableSeverity(StateVariableTypeAlarmCU,"driver_timeout",level_stat) && (level_stat!=chaos::common::alarm::MultiSeverityAlarmLevelHigh)){
