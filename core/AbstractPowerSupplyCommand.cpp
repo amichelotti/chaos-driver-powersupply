@@ -226,7 +226,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 		setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_timeout", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
 	}
-	CMDCUDBG_ << "current:" << *o_current<< ",current_sp:" << *i_current<< ",polarity:" << *o_pol<< ",alarms:" << *o_alarms<< ",stby -> " << *o_stby
+	CMDCUDBG_ << "current:" << *o_current<< ",current_sp:" << *i_current<< ",polarity:" << *o_pol<< ",alarms:" << *o_alarms<< ",stby -> " << *o_stby;
 
 	//force output dataset as changed
 }
