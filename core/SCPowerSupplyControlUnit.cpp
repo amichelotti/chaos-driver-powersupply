@@ -75,7 +75,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setSP(const std::string &n
 	return setCurrent(value,true);
 }
 
-bool ::driver::powersupply::SCPowerSupplyControlUnit::setAlarms(const std::string &name, long long value, uint32_t size) {
+bool ::driver::powersupply::SCPowerSupplyControlUnit::setAlarms(const std::string &name, uint64_t value, uint32_t size) {
 	SCCUDBG << "set alarms " << value;
 
 	return setAlarms(value,false);
@@ -301,7 +301,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 			&::driver::powersupply::SCPowerSupplyControlUnit::setPol,
 			"polarity");
 
-	addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, long long >(this,
+	addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, uint64_t >(this,
 			&::driver::powersupply::SCPowerSupplyControlUnit::setAlarms,
 			"alarms");
 
@@ -699,7 +699,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setPolarity(int polarity,
 	return result;
 }
 
-bool ::driver::powersupply::SCPowerSupplyControlUnit::setAlarms(long long alarms,
+bool ::driver::powersupply::SCPowerSupplyControlUnit::setAlarms(uint64_t alarms,
 		bool sync) {
 	uint64_t cmd_id;
 	bool result = true;
