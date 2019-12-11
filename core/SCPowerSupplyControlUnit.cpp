@@ -647,6 +647,9 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::powerON(bool sync) {
 	ChaosUniquePtr<CDataWrapper> cmd_pack(new CDataWrapper());
 	cmd_pack->addInt32Value(CMD_PS_MODE_TYPE, 1);
 	//send command
+	if(getState()!=chaos::CUStateKey::START){
+		return true;
+	}
 	submitBatchCommand(CMD_PS_MODE_ALIAS,
 			cmd_pack.release(),
 			cmd_id,
@@ -666,6 +669,9 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::powerStandby(bool sync) {
 	std::auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
 	cmd_pack->addInt32Value(CMD_PS_MODE_TYPE, 0);
 	//send command
+	if(getState()!=chaos::CUStateKey::START){
+		return true;
+	}
 	submitBatchCommand(CMD_PS_MODE_ALIAS,
 			cmd_pack.release(),
 			cmd_id,
@@ -725,6 +731,9 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setCurrent(double current_
 	bool result = true;
 	ChaosUniquePtr<CDataWrapper> cmd_pack(new CDataWrapper());
 	cmd_pack->addDoubleValue(CMD_PS_SET_CURRENT, current_set_point);
+	if(getState()!=chaos::CUStateKey::START){
+		return true;
+	}
 	//send command
 	submitBatchCommand(CMD_PS_SET_CURRENT_ALIAS,
 			cmd_pack.release(),
@@ -763,6 +772,9 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setRampSpeed(double sup,
 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::whaitOnCommandID(uint64_t cmd_id) {
 	ChaosUniquePtr<chaos::common::batch_command::CommandState> cmd_state;
+	if(getState()!=chaos::CUStateKey::START){
+		return true;
+	}
 	do {
 		cmd_state = getStateForCommandID(cmd_id);
 		if (!cmd_state.get()) break;
