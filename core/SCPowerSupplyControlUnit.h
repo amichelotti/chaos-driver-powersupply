@@ -69,7 +69,7 @@ namespace driver {
 			bool setPolarity(int polarity, bool sync = true);
 			bool setCurrent(double current_set_point, bool sync = true);
 			bool setRampSpeed(double sup, double sdown, bool sync = true);
-                        bool setAlarms(long long value, bool sync = true);
+                        bool setAlarms(uint64_t value, bool sync = true);
 
 		public:
 			/*
@@ -90,7 +90,7 @@ namespace driver {
              bool setOff(const std::string &name,bool value,uint32_t size);
              bool setStby(const std::string &name,bool value,uint32_t size);
 
-			 bool setAlarms(const std::string &name,long long value,uint32_t size);
+			 bool setAlarms(const std::string &name,uint64_t value,uint32_t size);
 
 
 
