@@ -250,17 +250,20 @@ void own::CmdPSSetCurrent::ccHandler() {
 bool own::CmdPSSetCurrent::timeoutHandler() {
 	//double delta_current_reached = fabs(*i_current - *o_current);
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
+        std::stringstream ss;
+
 	//move the state machine on fault
         if(getDeviceDatabase()->compareTo("current",*i_current,*o_current)==0){
-		std::stringstream ss;
 		ss<< "Setpoint reached on timeout set point " << *i_current<< " readout position" << *o_current << " in " << elapsed_msec << " milliseconds";
 
 		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,ss.str() );
 		BC_END_RUNNING_PROPERTY;
                 return true;
 	}  else {
-		SCLERR_ << "[metric] Setpoint not reached on timeout with readout current " << *o_current << " in " << elapsed_msec << " milliseconds";
-                setStateVariableSeverity(StateVariableTypeAlarmCU,"value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+		ss << "Setpoint NOT reached on timeout with readout current " << *o_current << " in " << elapsed_msec << " milliseconds";
+                setStateVariableSeverity(StateVariableTypeAlarmCU,"current_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+                metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,ss.str() );
+
 
 		
 	}
