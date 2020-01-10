@@ -72,7 +72,7 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	p_driverTimeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "driverTimeout");
 
 
-	p_resolution = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "resolution");
+	//p_resolution = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "resolution");
 
 
 	//get pointer to the output datase variable
