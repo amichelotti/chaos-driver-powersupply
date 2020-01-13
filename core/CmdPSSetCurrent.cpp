@@ -71,8 +71,8 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
           SCLDBG_ << "max_current max=" << max_current;
 
         } else {
-                 SCLERR_ << "not defined maximum 'current voltage' attribute, quitting command";
-                 metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,"not defined maximum 'current voltage' attribute, quitting command" );
+                 SCLERR_ << "not defined maximum 'current' attribute, quitting command";
+                 metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,"not defined maximum 'current' attribute, quitting command" );
                  setStateVariableSeverity(StateVariableTypeAlarmCU,"current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
                  BC_FAULT_RUNNING_PROPERTY;
