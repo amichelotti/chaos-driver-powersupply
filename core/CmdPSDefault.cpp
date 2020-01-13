@@ -80,7 +80,6 @@ void CmdPSDefault::ccHandler() {
 		setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 	} else {
 		setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
-		setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_value_not_reached",chaos::common::alarm::MultiSeverityAlarmLevelClear);
 	}
 	if(*o_alarms){
 		SETDEVALARM(*o_alarms,POWER_SUPPLY_EVENT_DOOR_OPEN,"door_open");
@@ -131,7 +130,6 @@ void CmdPSDefault::ccHandler() {
 			} else {
 				start_out_of_set_time=0;
 				setStateVariableSeverity(StateVariableTypeAlarmCU,"current_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-				setStateVariableSeverity(StateVariableTypeAlarmCU,"current_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
 			}
 		}
@@ -141,7 +139,6 @@ void CmdPSDefault::ccHandler() {
 
 	} else {
 		setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-		setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 	}
 	getAttributeCache()->setOutputDomainAsChanged();
 }

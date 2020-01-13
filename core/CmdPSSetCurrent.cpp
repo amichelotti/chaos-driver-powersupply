@@ -71,8 +71,8 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
           SCLDBG_ << "max_current max=" << max_current;
 
         } else {
-                 SCLERR_ << "not defined maximum 'current voltage' attribute, quitting command";
-                 metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,"not defined maximum 'current voltage' attribute, quitting command" );
+                 SCLERR_ << "not defined maximum 'current' attribute, quitting command";
+                 metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,"not defined maximum 'current' attribute, quitting command" );
                  setStateVariableSeverity(StateVariableTypeAlarmCU,"current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
                  BC_FAULT_RUNNING_PROPERTY;
@@ -143,7 +143,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     }
     double delta=fabs(current-*o_current);
     SCLDBG_ << "delta current = " << delta;
-
+/*
     if(delta<*p_resolution){
         SCLDBG_ << "operation inibited because of resolution:" << *p_resolution;
          metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,CHAOS_FORMAT("operation inibited because of resolution %1% , delta current %2%",%*p_resolution %delta ));
@@ -153,7 +153,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
     		BC_END_RUNNING_PROPERTY;
 		return;
     }
-
+*/
         SCLDBG_ << "compute timeout for set current = " << current;
 	if(*o_current > current) {
 		SCLDBG_ << "The new current is lower then actual = " << *o_current << "[new "<<current<<"]";
@@ -219,7 +219,19 @@ void own::CmdPSSetCurrent::acquireHandler() {
 void own::CmdPSSetCurrent::ccHandler() {
 	//check if we are int the delta of the setpoit to end the command
 	double delta_current_reached = fabs(*o_current - *i_current);
-	SCLDBG_ << "Readout: "<< *o_current <<" SetPoint: "<< *i_current<<" Delta to reach: " << delta_current_reached;
+
+        uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
+	if(getDeviceDatabase()->compareTo("current",*i_current,*o_current)==0){
+		std::stringstream ss;
+		ss<< "Setpoint reached set point " << *i_current<< " readout position" << *o_current << " in " << elapsed_msec << " milliseconds";
+
+		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,ss.str() );
+		BC_END_RUNNING_PROPERTY;
+                return;
+	} 
+
+	/*
+        SCLDBG_ << "Readout: "<< *o_current <<" SetPoint: "<< *i_current<<" Delta to reach: " << delta_current_reached;
 	if((delta_current_reached <= *p_resolution) || (delta_current_reached<*p_warningThreshold)) {
 		uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
 		//the command is endedn because we have reached the affinitut delta set
@@ -227,7 +239,7 @@ void own::CmdPSSetCurrent::ccHandler() {
 
 		BC_END_RUNNING_PROPERTY;
         }
-        
+        */
 	if(*o_alarms) {
 
 		SCLERR_ << "We got alarms on powersupply so we end the command";
@@ -236,18 +248,22 @@ void own::CmdPSSetCurrent::ccHandler() {
 }
 
 bool own::CmdPSSetCurrent::timeoutHandler() {
-	double delta_current_reached = fabs(*i_current - *o_current);
+	//double delta_current_reached = fabs(*i_current - *o_current);
 	uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
-	//move the state machine on fault
-         metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,CHAOS_FORMAT("timeout, delta current remaining %1%",%delta_current_reached));
+        std::stringstream ss;
 
-	if(delta_current_reached <= *p_resolution || delta_current_reached<*p_warningThreshold) {
-		uint64_t elapsed_msec = chaos::common::utility::TimingUtil::getTimeStamp() - getSetTime();
-		//the command is endedn because we have reached the affinitut delta set
-		SCLDBG_ << "[metric ]Set point reached with - delta: "<< delta_current_reached <<" sp: "<< *i_current <<" affinity check " << *p_warningThreshold << " ampere in " << elapsed_msec << " milliseconds";
-        } else {
-		SCLERR_ << "[metric] Setpoint not reached on timeout with readout current " << *o_current << " in " << elapsed_msec << " milliseconds";
-                setStateVariableSeverity(StateVariableTypeAlarmCU,"value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+	//move the state machine on fault
+        if(getDeviceDatabase()->compareTo("current",*i_current,*o_current)==0){
+		ss<< "Setpoint reached on timeout set point " << *i_current<< " readout position" << *o_current << " in " << elapsed_msec << " milliseconds";
+
+		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,ss.str() );
+		BC_END_RUNNING_PROPERTY;
+                return true;
+	}  else {
+		ss << "Setpoint NOT reached on timeout with readout current " << *o_current << " in " << elapsed_msec << " milliseconds";
+                setStateVariableSeverity(StateVariableTypeAlarmCU,"current_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+                metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,ss.str() );
+
 
 		
 	}

@@ -274,10 +274,10 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 			DataType::Input);
 	addBinaryAttributeAsSubtypeToDataSet("conversionFactor", "Array of double Coefficents used to convert value from the CU actual units and the driver elementary units", chaos::DataType::SUB_TYPE_DOUBLE, 1, chaos::DataType::Input);
 
-	addAttributeToDataSet("resolution",
+/*	addAttributeToDataSet("resolution",
 			"Double Minimum meaningful variation of the set respect to the last accepted one",
 			DataType::TYPE_DOUBLE,
-			DataType::Input);
+			DataType::Input);*/
 
 	////////// CONFIGURATION?
 
