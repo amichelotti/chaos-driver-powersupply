@@ -72,7 +72,7 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	p_driverTimeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "driverTimeout");
 
 
-	p_resolution = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "resolution");
+	//p_resolution = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "resolution");
 
 
 	//get pointer to the output datase variable
@@ -100,7 +100,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 
 	if((err = powersupply_drv->getCurrentOutput(&tmp_float))==0){
 		*o_current = (double)tmp_float;
-	} else {
+	} else if(err!=DRV_BYPASS_DEFAULT_CODE){
 		driver_error++;
 		CMDCUERR_<<"Error getting current err:"<<err;
 		if(err==POWER_SUPPLY_TIMEOUT){
@@ -120,7 +120,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 	}
 	if((err = powersupply_drv->getVoltageOutput(&tmp_float)) == 0){
 		*o_voltage = (double)tmp_float;
-	} else {
+	} else if(err!=DRV_BYPASS_DEFAULT_CODE){
 		driver_error++;
 		CMDCUERR_<<"Error getting voltage err:"<<err;
 
@@ -147,7 +147,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
     
 	if((err = powersupply_drv->getPolarity(&tmp_int32)) == 0){
 		*o_pol = tmp_int32;
-	} else {
+	} else if(err!=DRV_BYPASS_DEFAULT_CODE){
 		driver_error++;
 		CMDCUERR_<<"Error getting feature err:"<<err;
 
@@ -170,7 +170,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 
 	if((err = powersupply_drv->getAlarms(&tmp_uint64)) == 0){
 		*o_alarms = tmp_uint64;
-	} else {
+	} else if(err!=DRV_BYPASS_DEFAULT_CODE){
 		driver_error++;
 		CMDCUERR_<<"Error getting alarms err:"<<err;
 
@@ -201,7 +201,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 		if(*o_alarms){
 			CMDCUDBG_<<"alarms!! "<<*o_alarms<<" desc:"<<desc;
 		}
-	} else {
+	} else if(err!=DRV_BYPASS_DEFAULT_CODE) {
 		driver_error++;
 		CMDCUERR_<<"Error getting state err:"<<err;
 
