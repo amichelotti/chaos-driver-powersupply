@@ -40,8 +40,8 @@ using namespace chaos::cu::driver_manager::driver;
 
 
 #define SCCUAPP CUINFO
-#define SCCUDBG CUDBG
-#define SCCUERR CUERR
+#define SCCUDBG CUDBG<< "[" << getDeviceID() << "] "
+#define SCCUERR CUERR<< "[" << getDeviceID() << "] "
 
 PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(::driver::powersupply::SCPowerSupplyControlUnit)
 
