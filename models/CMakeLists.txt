@@ -4,4 +4,6 @@ add_subdirectory(Ocem)
 add_subdirectory(Hazemeyer)
 add_subdirectory(PowerSim)
 add_subdirectory(ExternalDriver)
+add_subdirectory(dante)
+
 SET(DRIVERS_LIB ${DRIVERS_LIB} PARENT_SCOPE)
