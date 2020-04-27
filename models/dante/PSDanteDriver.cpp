@@ -72,7 +72,7 @@ int PSDanteDriver::setCurrentRampSpeed(float asup, float asdown, uint32_t timeo_
 {
     chaos::common::data::CDataWrapper cd;
     cd.addDoubleValue("value", asup);
-    chaos::common::data::CDWUniquePtr ret = dante.postData("setSlop", &cd);
+    chaos::common::data::CDWUniquePtr ret = dante.postData("setSlope", &cd);
     if (ret.get() && ret->hasKey(::driver::data_import::PROT_ERROR))
     {
         chaos::common::data::CDWUniquePtr rr = ret->getCSDataValue(::driver::data_import::PROT_ERROR);
