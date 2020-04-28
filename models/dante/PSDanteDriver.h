@@ -14,7 +14,8 @@ class PSDanteDriver : public ::common::powersupply::AbstractPowerSupply
 
     ::driver::data_import::DanteDriver dante;
     double current;
-
+    std::string protocol2String(int32_t t);
+    int alarmType,polarityType,interfaceType,protocol;
 public:
     PSDanteDriver(const char *initParameter);
     ~PSDanteDriver();
