@@ -62,12 +62,12 @@ void chaos::driver::powersupply::DanteDD::driverInit(const char *initParameter) 
 	boost::smatch match;
 	std::string inputStr = initParameter;
 	std::string slaveid;
-	PSLAPP << "Init  driver initialisation string:\""<<initParameter<<"\""<<std::endl;
+	DANTE_DBG << "Init  driver initialisation string:\""<<initParameter<<"\""<<std::endl;
 	
 	power=(::common::powersupply::AbstractPowerSupply*)new PSDanteDriver(initParameter);
 	std::string ver;
 	power->getSWVersion(ver,0);
-	PSLAPP<<"DRIVER INSTANTITED \""<<ver<<"\""<<std::endl;
+	DANTE_DBG<<"DRIVER INSTANTITED \""<<ver<<"\""<<std::endl;
 	/*
     if(power->init()!=0){
         throw chaos::CException(1, "Initialisation of power supply \""+inputStr+"\" slaveid "+slaveid+" failed", "DanteDD::driverInit");
@@ -83,3 +83,12 @@ void chaos::driver::powersupply::DanteDD::driverDeinit() throw(chaos::CException
 	}
 }
 
+chaos::common::data::CDWUniquePtr chaos::driver::powersupply::DanteDD::getDrvProperties(){
+	return ((PSDanteDriver*)power)->getDrvProperties();
+
+ }
+                  
+int chaos::driver::powersupply::DanteDD::setDrvProperty(const std::string& key, const std::string& value){
+  DANTE_ERR<<" Attributes are read only, cannot set:"<<key<<" to:"<<value;
+  return -1;
+}

@@ -20,6 +20,10 @@ public:
     PSDanteDriver(const char *initParameter);
     ~PSDanteDriver();
 
+
+    chaos::common::data::CDWUniquePtr getDrvProperties();
+
+
     /**
              @brief sets the current polarity
              @param pol if >0 sets positive current polarity, if <0 sets negative current polarity, =0 opens the circuit, no current

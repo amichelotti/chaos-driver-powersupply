@@ -386,7 +386,15 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 }
 
 void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineCustomAttribute() {
+  std::string config;
+  chaos::common::data::CDWUniquePtr attr;
+  
+ 	chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = getAccessoInstanceByIndex(0);
 
+	attr=power_supply_accessor->getDrvProperties();
+  SCCUDBG << "ADDING CUSTOPN:" << attr->getCompliantJSONString();
+  setDriverInfo(*attr.get());
+  
 }
 
 // Abstract method for the initialization of the control unit
@@ -431,11 +439,11 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
 	 */
 	if (*asup <= 0) {
 		//throw chaos::CException(-4, "No slop up speed set", __FUNCTION__);
-		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,"No slop up speed set" );
+		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,"No slop up speed set" );
 
 	}
 	if (*asdown <= 0) {
-		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,"No slop down speed set" );
+		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,"No slop down speed set" );
 	}
 
 
@@ -450,7 +458,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
 	}
 
 
-	SCCUDBG << "set default slope value up:" << *asup << " down:" << *asdown;
+/*	SCCUDBG << "set default slope value up:" << *asup << " down:" << *asdown;
 	err = powersupply_drv->setCurrentRampSpeed(*asup, *asdown);
 	if ((err != chaos::ErrorCode::EC_NO_ERROR) && (err != chaos::ErrorCode::EC_NODE_OPERATION_NOT_SUPPORTED)) {
 		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error setting Ramp Speep %1% %2%") % *asup %*asdown) );
@@ -459,6 +467,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
 		//TODO: check the  boost::bad_format_string: format-string is ill-formed
 		//throw chaos::CException(2, boost::str( boost::format("Error %1 setting the slope in state %2%[%3%]") % err % state_str % state_id), std::string(__FUNCTION__));
 	}
+*/
 	metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,"Init Done");
 
 }

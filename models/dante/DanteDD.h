@@ -48,6 +48,9 @@ namespace chaos {
             public:
                 DanteDD();
                 ~DanteDD();
+                chaos::common::data::CDWUniquePtr getDrvProperties();
+                  
+                int setDrvProperty(const std::string& key, const std::string& value);
 
             };
         }

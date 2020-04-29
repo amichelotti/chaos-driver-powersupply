@@ -292,6 +292,16 @@ uint64_t PSDanteDriver::getFeatures()
     return ::common::powersupply::POWER_SUPPLY_FEAT_MONOPOLAR;
 }
 
+
+
+chaos::common::data::CDWUniquePtr PSDanteDriver::getDrvProperties(){
+chaos::common::data::CDWUniquePtr ret=dante.getDrvProperties();
+DANTE_DBG << "Props:"<<ret->getCompliantJSONString();
+  return ret;
+
+ }
+                  
+
 } // namespace powersupply
 } // namespace driver
 } // namespace chaos
