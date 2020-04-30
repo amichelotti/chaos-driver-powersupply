@@ -63,8 +63,8 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 	c_stbyOnPol =getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "stbyOnPol");
 	c_zeroOnStby =getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "zeroOnStby");
 	//	s_bypass =getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "bypass");
-	p_minimumWorkingValue = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "minimumWorkingValue");
-	p_maximumWorkingValue = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "maximumWorkingValue");
+//	p_minimumWorkingValue = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "minimumWorkingValue");
+//	p_maximumWorkingValue = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "maximumWorkingValue");
 	p_warningThreshold = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "warningThreshold");
 	p_warningThresholdTimeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "warningThresholdTimeout");
 	p_setTimeout = getAttributeCache()->getROPtr<uint32_t>(DOMAIN_INPUT, "setTimeout");

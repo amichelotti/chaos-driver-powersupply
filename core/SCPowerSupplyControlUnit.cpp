@@ -239,7 +239,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 			DataType::TYPE_INT32,
 			DataType::Input);
 
-	addAttributeToDataSet("minimumWorkingValue",
+/*	addAttributeToDataSet("minimumWorkingValue",
 			"minimum accettable working current/voltage value",
 			DataType::TYPE_DOUBLE,
 			DataType::Input);
@@ -248,7 +248,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 			"maximum accettable working current/voltage value",
 			DataType::TYPE_DOUBLE,
 			DataType::Input);
-
+*/
 	addAttributeToDataSet("warningThreshold",
 			"Defines a tollerance interval within which the readout is considered compliant with the set",
 			DataType::TYPE_DOUBLE,
@@ -386,7 +386,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 }
 
 void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineCustomAttribute() {
-  std::string config;
+/*  std::string config;
   chaos::common::data::CDWUniquePtr attr;
   
  	chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = getAccessoInstanceByIndex(0);
@@ -394,7 +394,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineCustomAttribute(
 	attr=power_supply_accessor->getDrvProperties();
   SCCUDBG << "ADDING CUSTOPN:" << attr->getCompliantJSONString();
   setDriverInfo(*attr.get());
-  
+  */
 }
 
 // Abstract method for the initialization of the control unit

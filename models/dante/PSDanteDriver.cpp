@@ -147,8 +147,10 @@ int PSDanteDriver::resetAlarms(uint64_t alrm, uint32_t timeo_ms)
 
 int PSDanteDriver::getAlarms(uint64_t *alrm, uint32_t timeo_ms)
 {
-    *alrm = 0;
-    return 0;
+    uint64_t curr = 0;
+    int ret = dante.getData("alarms", (void *)&curr);
+    *alrm = curr;
+    return ret;
 }
 
 int PSDanteDriver::shutdown(uint32_t timeo_ms)
