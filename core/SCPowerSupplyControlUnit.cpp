@@ -228,16 +228,6 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 	//         DataType::Input);
 
 	/// Dataset per analog dataset element properties
-	addAttributeToDataSet("unit",
-			"current/voltage units",
-			DataType::TYPE_STRING,
-			DataType::Input,
-			256);
-
-	addAttributeToDataSet("scale",
-			"current/voltage scale",
-			DataType::TYPE_INT32,
-			DataType::Input);
 
 /*	addAttributeToDataSet("minimumWorkingValue",
 			"minimum accettable working current/voltage value",
