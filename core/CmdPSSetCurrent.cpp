@@ -93,8 +93,6 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
                return;
 
         }
-        SCLDBG_<<"minimum working value:"<<*p_minimumWorkingValue;
-        SCLDBG_<<"maximu, working value:"<<*p_maximumWorkingValue;
         
         //min_current=std::max(*p_minimumWorkingValue,min_current);
         //max_current=std::min(max_current,*p_maximumWorkingValue);

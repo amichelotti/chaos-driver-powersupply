@@ -191,14 +191,20 @@ using namespace ::common::powersupply;
 int PSDanteDriver::getState(int *state, std::string &desc, uint32_t timeo_ms)
 {
     int32_t status;
-    bool remote;
+    bool remote,trigger;
     int ret = dante.getData("status", (void *)&status);
-    ret = dante.getData("remote", (void *)&remote);
+    dante.getData("remote", (void *)&remote);
+    dante.getData("triggerArmed", (void *)&trigger);
+
     std::stringstream ss;
     *state=0;
     if(remote==false){
 		*state|=POWER_SUPPLY_STATE_LOCAL;
         ss<<"Local|";
+    }
+    if(trigger){
+		*state|=POWER_SUPPLY_STATE_TRIGGER_ARMED;
+        ss<<"Trigger|";
     }
     if(state==0){
 		*state |=POWER_SUPPLY_STATE_OFF;
