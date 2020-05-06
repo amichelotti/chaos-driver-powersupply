@@ -49,6 +49,7 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 
 	o_pol=getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
 	i_pol=getAttributeCache()->getRWPtr<int32_t>(DOMAIN_INPUT, "polarity");
+	o_triggerArmed = getAttributeCache()->getRWPtr<bool>(DOMAIN_OUTPUT, "triggerArmed");
 
 	o_alarms = getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "alarms");
 	o_current =getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT,"current");
@@ -201,6 +202,8 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 		if(*o_alarms){
 			CMDCUDBG_<<"alarms!! "<<*o_alarms<<" desc:"<<desc;
 		}
+		*o_triggerArmed=(state & common::powersupply::POWER_SUPPLY_STATE_TRIGGER_ARMED)?true:false;
+
 	} else if(err!=DRV_BYPASS_DEFAULT_CODE) {
 		driver_error++;
 		CMDCUERR_<<"Error getting state err:"<<err;
