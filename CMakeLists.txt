@@ -27,8 +27,14 @@ TARGET_LINK_LIBRARIES(powersupply_cu ${DRIVERS_LIB} ${PROJECT_NAME} ${FrameworkL
 FILE(GLOB files "core/*.h")
 INSTALL(FILES ${files} DESTINATION include/driver/powersupply/core)
 
-INSTALL_TARGETS(/bin/powersupply powersupply_cu)
-# INSTALL_TARGETS(/bin/powerdupply powersupply_test)
-INSTALL_TARGETS(/lib ${PROJECT_NAME})
+#INSTALL_TARGETS(/bin/powersupply powersupply_cu)
+INSTALL(TARGETS powersupply_cu
+        DESTINATION "bin/powersupply"
+        PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+## INSTALL_TARGETS(/bin/powerdupply powersupply_test)
+#INSTALL_TARGETS(/lib ${PROJECT_NAME})
+INSTALL(TARGETS ${PROJECT_NAME}
+        DESTINATION "lib"
+        PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 INSTALL(FILES conf/SCPowerSupplyControlUnit.conf DESTINATION etc/test/powersupply/conf)
 
