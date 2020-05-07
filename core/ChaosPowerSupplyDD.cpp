@@ -64,52 +64,52 @@ cu_driver::MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyDD::execOp
              out->result = power->deinit();
             break;
         case OP_SET_POLARITY:
-            PSDBG<< "Set Polarity to:"<<in->ivalue<<" timeo:"<<in->timeout;
+      //      PSDBG<< "Set Polarity to:"<<in->ivalue<<" timeo:"<<in->timeout;
             out->result= power->setPolarity(in->ivalue,in->timeout);
             
             break;
         case OP_GET_POLARITY:
             out->result = power->getPolarity(&out->ivalue,in->timeout);
-            PSDBG<< "Got Polarity "<<out->ivalue;
+     //       PSDBG<< "Got Polarity "<<out->ivalue;
             break;
         case OP_SET_SP:
-            PSDBG<< "Set Current SP to:"<<in->fvalue0<<" timeo:"<<in->timeout;
+   //         PSDBG<< "Set Current SP to:"<<in->fvalue0<<" timeo:"<<in->timeout;
             out->result = power->setCurrentSP(in->fvalue0,in->timeout);
             break;
             
         case OP_FORCE_MAX_CURRENT:
-            PSDBG<< "Force max current"<<in->fvalue0;
+    //        PSDBG<< "Force max current"<<in->fvalue0;
             out->result = power->forceMaxCurrent(in->fvalue0);
             break;
         case OP_FORCE_MAX_VOLTAGE:
-            PSDBG<< "Force max voltage"<<in->fvalue0;
+    //        PSDBG<< "Force max voltage"<<in->fvalue0;
             out->result = power->forceMaxVoltage(in->fvalue0);
             break;
        case OP_SET_CURRENT_SENSIBILITY:
-            PSDBG<< "Set current Sensibility"<<in->fvalue0;
+     //       PSDBG<< "Set current Sensibility"<<in->fvalue0;
             out->result = power->setCurrentSensibility(in->fvalue0);
             break;
         case OP_SET_VOLTAGE_SENSIBILITY:
-            PSDBG<< "Set voltage sensibility"<<in->fvalue0;
+     //       PSDBG<< "Set voltage sensibility"<<in->fvalue0;
             out->result = power->setVoltageSensibility(in->fvalue0);
             break;
        
             
         case OP_GET_SP: // get current set point
             out->result = power->getCurrentSP(&out->fvalue0,in->timeout);
-            PSDBG<< "Got Current SP "<<out->fvalue0;
+     //       PSDBG<< "Got Current SP "<<out->fvalue0;
             break;
         case OP_START_RAMP: // start ramp
-            PSDBG<< "Start Ramp timeo:"<<in->timeout;
+     //       PSDBG<< "Start Ramp timeo:"<<in->timeout;
             out->result = power->startCurrentRamp(in->timeout);
             break;
         case OP_GET_VOLTAGE_OUTPUT:
             out->result = power->getVoltageOutput(&out->fvalue0,in->timeout);
-            PSDBG<< "Got Voltage "<<out->fvalue0;
+    //        PSDBG<< "Got Voltage "<<out->fvalue0;
             break;
         case OP_GET_CURRENT_OUTPUT:
             out->result = power->getCurrentOutput(&out->fvalue0,in->timeout);
-            PSDBG<< "Got Current "<<out->fvalue0;
+    ///        PSDBG<< "Got Current "<<out->fvalue0;
             break;
         case OP_SET_CURRENT_RAMP_SPEED:
             PSDBG<<"Setting current ramp speed min:"<<in->fvalue0<<" max:"<<in->fvalue1<<" timeout:"<<in->timeout;
@@ -121,13 +121,13 @@ cu_driver::MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyDD::execOp
             break;
         case OP_GET_ALARMS:
             out->result = power->getAlarms(&out->alarm_mask,in->timeout);
-            PSDBG<<"Got alarms to:"<<out->alarm_mask<<" timeout:"<<in->timeout;
+   //         PSDBG<<"Got alarms to:"<<out->alarm_mask<<" timeout:"<<in->timeout;
             break;
             
         case OP_GET_FEATURE:{
             uint64_t feat=power->getFeatures();
             out->alarm_mask=feat;
-            PSDBG<<"Got Features:"<<feat;
+    //        PSDBG<<"Got Features:"<<feat;
         }
             break;
         case OP_SHUTDOWN:
@@ -146,7 +146,7 @@ cu_driver::MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyDD::execOp
             std::string desc;
             out->result = power->getState(&out->ivalue,desc,in->timeout);
             strncpy(out->str,desc.c_str(),MAX_STR_SIZE);
-            PSDBG<<"Got State: "<<out->ivalue<<" \""<<desc<<"\" timeout:"<<in->timeout;
+      //      PSDBG<<"Got State: "<<out->ivalue<<" \""<<desc<<"\" timeout:"<<in->timeout;
             break;
         }
         case OP_GET_SWVERSION:{
@@ -167,25 +167,25 @@ cu_driver::MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyDD::execOp
         }
         case OP_GET_CURRENT_SENSIBILITY:
             out->result = power->getCurrentSensibility(&out->fvalue0);
-            PSDBG<<"Got Current sensibility: \""<<out->fvalue0<<"\"";
+     //       PSDBG<<"Got Current sensibility: \""<<out->fvalue0<<"\"";
             break;
         case OP_GET_VOLTAGE_SENSIBILITY:
             out->result = power->getVoltageSensibility(&out->fvalue0);
-            PSDBG<<"Got Voltage sensibility: \""<<out->fvalue0<<"\"";
+      //      PSDBG<<"Got Voltage sensibility: \""<<out->fvalue0<<"\"";
             break;
         
         case OP_GET_MAXMIN_CURRENT:
             out->result = power->getMaxMinCurrent(&out->fvalue0,&out->fvalue1);
-            PSDBG<<"Got Max "<<out->fvalue0<<" Min "<< out->fvalue1<<" current";
+       //     PSDBG<<"Got Max "<<out->fvalue0<<" Min "<< out->fvalue1<<" current";
 
             break;
         case OP_GET_MAXMIN_VOLTAGE:
             out->result = power->getMaxMinVoltage(&out->fvalue0,&out->fvalue1);
-            PSDBG<<"Got Max "<<out->fvalue0<<" Min "<< out->fvalue1<<" voltage";
+     //       PSDBG<<"Got Max "<<out->fvalue0<<" Min "<< out->fvalue1<<" voltage";
             break;
         case OP_GET_ALARM_DESC:
             out->result = power->getAlarmDesc(&out->alarm_mask);
-            PSDBG<<"Got Alarm maxk "<<out->alarm_mask;
+     //       PSDBG<<"Got Alarm maxk "<<out->alarm_mask;
 
             break;
         default:
