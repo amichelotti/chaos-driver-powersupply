@@ -18,7 +18,7 @@
  *    	See the License for the specific language governing permissions and
  *    	limitations under the License.
  */
-
+#undef DEBUG
 #include "ChaosPowerSupplyOpcodeLogic.h"
 #include "../../core/ChaosPowerSupplyInterface.h"
 
@@ -423,7 +423,7 @@ MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyOpcodeLogic::execOpco
             break;
         case OP_GET_POLARITY:
             out->result = getPolarity(cmd, &out->ivalue,in->timeout);
-            DBG<< "Got Polarity "<<out->ivalue;
+     //       DBG<< "Got Polarity "<<out->ivalue;
             break;
         case OP_SET_SP:
             DBG<< "Set Current SP to:"<<in->fvalue0<<" timeo:"<<in->timeout;
@@ -447,7 +447,7 @@ MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyOpcodeLogic::execOpco
             break;
         case OP_GET_SP: // get current set point
             out->result = getCurrentSP(cmd, &out->fvalue0,in->timeout);
-            DBG<< "Got Current SP "<<out->fvalue0;
+        //    DBG<< "Got Current SP "<<out->fvalue0;
             break;
         case OP_START_RAMP: // start ramp
             DBG<< "Start Ramp timeo:"<<in->timeout;
@@ -455,11 +455,11 @@ MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyOpcodeLogic::execOpco
             break;
         case OP_GET_VOLTAGE_OUTPUT:
             out->result = getVoltageOutput(cmd, &out->fvalue0,in->timeout);
-            DBG<< "Got Voltage "<<out->fvalue0;
+       //     DBG<< "Got Voltage "<<out->fvalue0;
             break;
         case OP_GET_CURRENT_OUTPUT:
             out->result = getCurrentOutput(cmd, &out->fvalue0,in->timeout);
-            DBG<< "Got Current "<<out->fvalue0;
+        //    DBG<< "Got Current "<<out->fvalue0;
             break;
         case OP_SET_CURRENT_RAMP_SPEED:
             DBG<<"Setting current ramp speed min:"<<in->fvalue0<<" max:"<<in->fvalue1<<" timeout:"<<in->timeout;
@@ -471,12 +471,12 @@ MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyOpcodeLogic::execOpco
             break;
         case OP_GET_ALARMS:
             out->result = getAlarms(cmd, &out->alarm_mask,in->timeout);
-            DBG<<"Got alarms to:"<<out->alarm_mask<<" timeout:"<<in->timeout;
+        //    DBG<<"Got alarms to:"<<out->alarm_mask<<" timeout:"<<in->timeout;
             break;
         case OP_GET_FEATURE:{
             uint64_t feat=getFeatures(cmd);
             out->alarm_mask=feat;
-            DBG<<"Got Features:"<<feat;
+       //     DBG<<"Got Features:"<<feat;
         }
             break;
         case OP_SHUTDOWN:
@@ -495,7 +495,7 @@ MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyOpcodeLogic::execOpco
             std::string desc;
             out->result = getState(cmd, &out->ivalue,desc,in->timeout);
             strncpy(out->str,desc.c_str(),MAX_STR_SIZE);
-            DBG<<"Got State: "<<out->ivalue<<" \""<<desc<<"\" timeout:"<<in->timeout;
+         //   DBG<<"Got State: "<<out->ivalue<<" \""<<desc<<"\" timeout:"<<in->timeout;
             break;
         }
         case OP_GET_SWVERSION:{
@@ -532,7 +532,7 @@ MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyOpcodeLogic::execOpco
             break;
         case OP_GET_ALARM_DESC:
             out->result = getAlarmDesc(cmd, &out->alarm_mask);
-            DBG<<"Got Alarm maxk "<<out->alarm_mask;
+          //  DBG<<"Got Alarm maxk "<<out->alarm_mask;
             break;
         default:
             ERR<<"Opcode not supported:"<<cmd->opcode;
