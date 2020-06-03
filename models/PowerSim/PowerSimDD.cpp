@@ -30,7 +30,7 @@ static const boost::regex power_supply_init_match("(\\w+):(.+)");
 
 // initialisation format for simulator <serial port>,<slaveid>,<feature=[0:monopolar,1:bipolar,2:pulse]>,<min curr:max curr>,<min volt:max voltage>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<force errors secs=0 [no error]>,<readout uncertently in percent respect (max-min) 0=no  uncertently>
 
-static const boost::regex power_supply_simulator_init_match("([\\w\\/]+),(\\d+),(\\d+),(.+):(.+),(.+):(.+),(.+):(.+),(.+):(.+),(\\d+),([\\d\.]+)");
+static const boost::regex power_supply_simulator_init_match("([\\w\\/]+),(\\d+),(\\d+),(.+):(.+),(.+):(.+),(.+):(.+),(.+):(.+),(\\d+),([\\d\\.]+)");
 
 
 //GET_PLUGIN_CLASS_DEFINITION
@@ -120,7 +120,7 @@ void chaos::driver::powersupply::PowerSimDD::driverInit(const char *initParamete
 		std::string powerSupplyType=match[1];
 		std::string initString=match[2];
 		if(powerSupplyType=="SimPSupply"){
-			if(regex_match(initString, match, power_supply_simulator_init_match, boost::match_extra)){
+			if(regex_search(initString, match, power_supply_simulator_init_match, boost::match_extra)){
 				std::string dev=match[1];
 				std::string slaveid=match[2];
 				std::string features=match[3];

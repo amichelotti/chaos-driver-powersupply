@@ -40,12 +40,12 @@ namespace driver {
 		  ~AbstractPowerSupplyCommand();
 		protected:
                     int32_t state;
-			bool		*o_stby,*o_local,*i_stby,*i_local,*o_off,*i_off;
+			bool		*o_stby,*o_local,*i_stby,*i_local,*o_off,*i_off,*o_triggerArmed;
             const bool        *c_polFromSet,*c_zeroOnStby,*c_polSwSign,*c_stbyOnPol;
 	    //            const bool  *s_bypass;
             const std::string p_unit;
             const int32_t* p_scale;
-            const double*p_minimumWorkingValue,*p_maximumWorkingValue,*p_warningThreshold,*p_resolution;
+            const double *p_warningThreshold,*p_resolution;
             const uint32_t *p_warningThresholdTimeout,*p_setTimeout,*p_getTimeout,*p_driverTimeout;
 
             double *o_current,*o_voltage;

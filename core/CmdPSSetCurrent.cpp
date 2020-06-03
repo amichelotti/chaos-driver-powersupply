@@ -93,8 +93,6 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
                return;
 
         }
-        SCLDBG_<<"minimum working value:"<<*p_minimumWorkingValue;
-        SCLDBG_<<"maximu, working value:"<<*p_maximumWorkingValue;
         
         //min_current=std::max(*p_minimumWorkingValue,min_current);
         //max_current=std::min(max_current,*p_maximumWorkingValue);
@@ -174,7 +172,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
 
 	SCLDBG_ << "Set current to value " << current;
 	if((err = powersupply_drv->setCurrentSP(current)) != 0) {
-            metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error setting current %1%") % current) );
+            metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error setting current(SP) %1% err:%2%") % current %err) );
 
             setStateVariableSeverity(StateVariableTypeAlarmCU,"current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
@@ -196,6 +194,8 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
         } 
         if((err = powersupply_drv->startCurrentRamp()) != 0) {
               SCLERR_<<"## error setting current ramp "<<current;
+                metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelError,boost::str( boost::format("Error starting current ramp(SP) %1% err:%2%") % current %err) );
+
               setStateVariableSeverity(StateVariableTypeAlarmCU,"current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
               BC_FAULT_RUNNING_PROPERTY;
