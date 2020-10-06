@@ -80,7 +80,6 @@ WRITE_ERR_ON_CMD(c, -2, "'err' key not found on external driver return package",
 #define SEND_REQUEST_OPC(opc,c, r,a) {\
     int err;\
     fillMessageWithDeviceParam(c,*r);\
-try { \
 if((err=sendOpcodeRequest(opc,ChaosMoveOperator(r),a))) {\
 WRITE_ERR_ON_CMD(err, -1, "Error from from remote driver", __PRETTY_FUNCTION__);\
 }else {\
@@ -93,10 +92,6 @@ WRITE_ERR_ON_CMD(err, -1, "Error from from remote driver", __PRETTY_FUNCTION__);
     } else {\
     WRITE_ERR_ON_CMD(c, -2, "'err' key not found on external driver return package", __PRETTY_FUNCTION__);\
     }}\
-	}\
-    catch (...) { \
-WRITE_ERR_ON_CMD(err, -6, "Exception from from remote driver", __PRETTY_FUNCTION__);\
-} \
 }
 
 #define CHECK_KEY_AND_TYPE_IN_RESPONSE(r, k, t, e1, e2)\
