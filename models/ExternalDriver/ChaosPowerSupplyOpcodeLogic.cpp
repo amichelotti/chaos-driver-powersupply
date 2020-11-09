@@ -167,7 +167,7 @@ int ChaosPowerSupplyOpcodeLogic::setCurrentSP(DrvMsgPtr cmd, float current,uint3
    // SEND_REQUEST(cmd, init_pack, response);
     SEND_REQUEST_OPC("set_cur",cmd, set_cur_pack, response);
 
-    if(response.get()){DBG << response->getJSONString();}
+   // if(response.get()){DBG << response->getJSONString();}
     return cmd->ret;
 }
 
@@ -178,10 +178,9 @@ int ChaosPowerSupplyOpcodeLogic::getCurrentSP(DrvMsgPtr cmd, float* current,uint
    // SEND_REQUEST(cmd, init_pack, response);
     SEND_REQUEST_OPC("getSP",cmd, init_pack, response);
 
-    if(response.get()){DBG << response->getJSONString();}
     if(cmd->ret) {return cmd->ret;}
     CHECK_KEY_IN_RESPONSE(response, "value", -1);
-    *current = response->getVariantValue("value").asDouble();
+    *current = response->getDoubleValue("value");
     return cmd->ret;
 }
 
@@ -192,7 +191,7 @@ int ChaosPowerSupplyOpcodeLogic::startCurrentRamp(DrvMsgPtr cmd, uint32_t timeo_
    // SEND_REQUEST(cmd, init_pack, response);
     SEND_REQUEST_OPC("start_ramp",cmd, init_pack, response);
 
-    if(response.get()){DBG << response->getJSONString();}
+  //  if(response.get()){DBG << response->getJSONString();}
     return cmd->ret;
 }
 
@@ -203,11 +202,10 @@ int ChaosPowerSupplyOpcodeLogic::getVoltageOutput(DrvMsgPtr cmd, float* volt,uin
    // SEND_REQUEST(cmd, init_pack, response);
     SEND_REQUEST_OPC("get_vol",cmd, init_pack, response);
 
-    if(response.get()){DBG << response->getJSONString();}
     if(cmd->ret) {return cmd->ret;}
     
     CHECK_KEY_IN_RESPONSE(response, "value", -1);
-    *volt = response->getVariantValue("value").asDouble();
+    *volt = response->getDoubleValue("value");
     return cmd->ret;
 }
 
@@ -218,12 +216,11 @@ int ChaosPowerSupplyOpcodeLogic::getCurrentOutput(DrvMsgPtr cmd, float* current,
    // SEND_REQUEST(cmd, init_pack, response);
     SEND_REQUEST_OPC("get_cur",cmd, init_pack, response);
 
-    if(response.get()){DBG << response->getJSONString();}
     if(cmd->ret) {return cmd->ret;}
     //CDataWrapperType type = response->getValueType("value");
    // INFO << type;
     CHECK_KEY_IN_RESPONSE(response, "value", -1);
-    *current = response->getVariantValue("value").asDouble();
+    *current = response->getDoubleValue("value");
     return cmd->ret;
 }
 
@@ -234,7 +231,6 @@ int ChaosPowerSupplyOpcodeLogic::setCurrentRampSpeed(DrvMsgPtr cmd, float asup, 
     init_pack->addDoubleValue("down", asdown);
     SEND_REQUEST_OPC("set_slope",cmd, init_pack, response);
 
-    if(response.get()){DBG << response->getJSONString();}
     return cmd->ret;
 }
 
@@ -246,7 +242,6 @@ int ChaosPowerSupplyOpcodeLogic::resetAlarms(DrvMsgPtr cmd, uint64_t alrm,uint32
    // SEND_REQUEST(cmd, init_pack, response);
     SEND_REQUEST_OPC("rst_alarm",cmd, init_pack, response);
 
-    if(response.get()){DBG << response->getJSONString();}
     return cmd->ret;
 }
 
@@ -257,11 +252,10 @@ int ChaosPowerSupplyOpcodeLogic::getAlarms(DrvMsgPtr cmd, uint64_t*alrm,uint32_t
   //  SEND_REQUEST(cmd, init_pack, response);
     SEND_REQUEST_OPC("get_alarm",cmd, init_pack, response);
 
-    if(response.get()){DBG << response->getJSONString();}
     if(cmd->ret) {return cmd->ret;}
     
     CHECK_KEY_IN_RESPONSE(response, "value", -1);
-    *alrm = response->getVariantValue("value").asUInt64();
+    *alrm = response->getInt32Value("value");
     return cmd->ret;
 }
 
@@ -277,8 +271,6 @@ int ChaosPowerSupplyOpcodeLogic::standby(DrvMsgPtr cmd, uint32_t timeo_ms){
 
     init_pack->addInt32Value("value",0);
     SEND_REQUEST_OPC("set_mode",cmd, init_pack, response);
-    if(response.get()){DBG << response->getJSONString();}
-	else {DBG << "standby Response Null";}
     if(cmd->ret) {
         return cmd->ret;
     }
@@ -294,8 +286,6 @@ int ChaosPowerSupplyOpcodeLogic::poweron(DrvMsgPtr cmd, uint32_t timeo_ms){
 
     init_pack->addInt32Value("value",1);
     SEND_REQUEST_OPC("set_mode",cmd, init_pack, response);
-    if(response.get()){DBG << response->getJSONString();}
-	else {DBG << "standby Response Null";}
     if(cmd->ret) {
         return cmd->ret;
     }
@@ -314,8 +304,11 @@ int ChaosPowerSupplyOpcodeLogic::getState(DrvMsgPtr cmd, int* state,std::string&
     
     CHECK_KEY_IN_RESPONSE(response, "value", -1);
     CHECK_KEY_IN_RESPONSE(response, "description", -2);
-    *state = response->getVariantValue("value").asInt32();
-    desc = response->getVariantValue("description").asString();
+    *state = response->getInt32Value("value");
+    if(response->hasKey("description")){
+        desc = response->getStringValue("description");
+
+    }
     return cmd->ret;
 }
 
@@ -332,11 +325,10 @@ int ChaosPowerSupplyOpcodeLogic::getHWVersion(DrvMsgPtr cmd, std::string& versio
     SEND_REQUEST_OPC("get_hw_ver",cmd, init_pack, response);
 
     //SEND_REQUEST(cmd, init_pack, response);
-    if(response.get()){DBG << response->getJSONString();}
     if(cmd->ret) {return cmd->ret;}
-    
-    CHECK_KEY_IN_RESPONSE(response, "value", -1);
-    version = response->getVariantValue("value").asString();
+    if(response->hasKey("value")){
+        version = response->getStringValue("value");
+    }
     return cmd->ret;
 }
 
@@ -390,11 +382,10 @@ uint64_t ChaosPowerSupplyOpcodeLogic::getFeatures(DrvMsgPtr cmd) {
     CDWUniquePtr init_pack(new CDataWrapper());
    // init_pack->addStringValue("opc", "get_feature");
     SEND_REQUEST_OPC("get_feature",cmd, init_pack, response);
-    if(response.get()){DBG << response->getJSONString();}
     if(cmd->ret) {return cmd->ret;}
     
     CHECK_KEY_IN_RESPONSE(response, "value", -1);
-    return response->getVariantValue("value").asUInt64();
+    return response->getInt32Value("value");
 }
 
 //! Execute a command
