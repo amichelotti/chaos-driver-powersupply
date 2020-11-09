@@ -484,11 +484,10 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDeinit() throw (CExcep
 }
 
 //! restore the control unit to snapshot
-#define RESTORE_LAPP SCCUDBG << "[RESTORE-" <<getCUID() << "] "
+#define RESTORE_LDBG SCCUDBG << "[RESTORE-" <<getCUID() << "] "
 #define RESTORE_LERR SCCUERR << "[RESTORE-" <<getCUID() << "] "
 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw (chaos::CException) {
-	RESTORE_LAPP << "Check if restore cache has the needed data";
 	//check if in the restore cache we have all information we need
   /*  if (!snapshot_cache->getSharedDomain(DOMAIN_OUTPUT).hasAttribute("local")) {
         RESTORE_LERR << " missing 'local' to restore";
@@ -509,7 +508,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	}
 
 
-	RESTORE_LAPP << "Start the restore of the powersupply";
+	RESTORE_LDBG << "Start the restore of the powersupply";
 	uint64_t start_restore_time = chaos::common::utility::TimingUtil::getTimeStamp();
 	bool cmd_result = true;
 	//get actual state
@@ -522,7 +521,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	uint64_t *alarm=getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "alarms");
 	if(*alarm!=0){
 		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,CHAOS_FORMAT("There are active alarms %1% during restore, try to rese",%*alarm ));
-		RESTORE_LAPP << " resetting alarms";
+		RESTORE_LDBG << " resetting alarms";
 
 		if(!setAlarms(1)){
 			RESTORE_LERR << " 2 error resetting alarms";
@@ -539,10 +538,10 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
     double restore_current_sp = *(snapshot_cache->getAttributeValue(DOMAIN_INPUT, "current"))->getValuePtr<double>();
     bool restore_stby = *(snapshot_cache->getAttributeValue(DOMAIN_INPUT, "stby"))->getValuePtr<bool>();
 	bool triggerStbyRestore=(restore_stby != *now_stby) || (*now_stby != *now_stby_i);
-	RESTORE_LAPP << "current SP:" << *now_current_sp << "==> " << restore_current_sp;
-	RESTORE_LAPP << "current STBY:" << *now_stby << "(input:)"<<*now_stby_i<<" ==>" << restore_stby;
+	RESTORE_LDBG << "current SP:" << *now_current_sp << "==> " << restore_current_sp;
+	RESTORE_LDBG << "current STBY:" << *now_stby << "(input:)"<<*now_stby_i<<" ==>" << restore_stby;
 
-	RESTORE_LAPP << "current POLARITY:" << *now_polarity<< "(input:)"<<*now_polarity_i << " ==>" << restore_polarity;
+	RESTORE_LDBG << "current POLARITY:" << *now_polarity<< "(input:)"<<*now_polarity_i << " ==>" << restore_polarity;
 
 	// restoring mode
 	if (triggerStbyRestore) {
@@ -550,12 +549,12 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 
 
 			// we are in on we should go in stby
-			RESTORE_LAPP << "1 set current to 0";
+			RESTORE_LDBG << "1 set current to 0";
 			if (!setCurrent(0)) {
 				RESTORE_LERR << " 2 error setting current to 0";
 				return false;
 			}
-			RESTORE_LAPP << "3 going to standby";
+			RESTORE_LDBG << "3 going to standby";
 
 			if (!powerStandby()) {
 				SCCUERR << " 4 error going in stby";
@@ -564,7 +563,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 		}
 		// now stby = true
 		if (triggerStbyRestore) {
-			RESTORE_LAPP << "5 changing polarity:" << restore_polarity;
+			RESTORE_LDBG << "5 changing polarity:" << restore_polarity;
 			if (!setPolarity(restore_polarity)) {
 				RESTORE_LERR << "6 error restoring polariy to " << restore_polarity;
 				return false;
@@ -576,7 +575,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 				return false;
 
 			}
-			RESTORE_LAPP << "11 restoring current:" << restore_current_sp;
+			RESTORE_LDBG << "11 restoring current:" << restore_current_sp;
 
 			if (!setCurrent(restore_current_sp)) {
 				RESTORE_LERR << "12 error restoring current to " << restore_current_sp;
@@ -585,7 +584,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 
 		}
 		uint64_t restore_duration_in_ms = chaos::common::utility::TimingUtil::getTimeStamp() - start_restore_time;
-		RESTORE_LAPP << "[metric] Restore successfully achieved in " << restore_duration_in_ms << " milliseconds";
+		RESTORE_LDBG << "[metric] Restore successfully achieved in " << restore_duration_in_ms << " milliseconds";
 		return true;
 	}
 
@@ -595,15 +594,15 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	///
 	if (triggerStbyRestore) {
 		//we need to change the polarity
-		RESTORE_LAPP << "Change the polarity from:" << *now_polarity << "(input:"<<*now_polarity_i<<") to:" << restore_polarity;
+		RESTORE_LDBG << "Change the polarity from:" << *now_polarity << "(input:"<<*now_polarity_i<<") to:" << restore_polarity;
 
 		//put in standby
-		RESTORE_LAPP << "Put powersupply at setpoint 0";
+		RESTORE_LDBG << "Put powersupply at setpoint 0";
 		if (setCurrent(0.0)) {
-			RESTORE_LAPP << "going to standby";
+			RESTORE_LDBG << "going to standby";
 
 			if (powerStandby()) {
-				RESTORE_LAPP << "Powersupply is gone in standby";
+				RESTORE_LDBG << "Powersupply is gone in standby";
 			} else {
 				SCCUERR << "Power supply is not gone in standby";
 				return false;
@@ -613,13 +612,13 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 			return false;
 		}
 		//set the polarity
-		RESTORE_LAPP << "Apply new polarity:" << restore_polarity;
+		RESTORE_LDBG << "Apply new polarity:" << restore_polarity;
 		if (!setPolarity(restore_polarity)) {
 			RESTORE_LERR << "Power supply is not gone to restore polarity" << restore_polarity;
 			return false;
 		}
 		if (restore_stby == false) {
-			RESTORE_LAPP << "going power on";
+			RESTORE_LDBG << "going power on";
 
 			if (powerON() == false) {
 				RESTORE_LERR << " error restoring poweron";
@@ -627,7 +626,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 			}
 		}
 	}
-	RESTORE_LAPP << "setting current:" << restore_current_sp;
+	RESTORE_LDBG << "setting current:" << restore_current_sp;
 
 	if (!setCurrent(restore_current_sp)) {
 		SCCUERR << "## error restoring current:" << restore_current_sp;
@@ -635,7 +634,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	}
 
 	uint64_t restore_duration_in_ms = chaos::common::utility::TimingUtil::getTimeStamp() - start_restore_time;
-	RESTORE_LAPP << "[metric] Restore successfully achieved in " << restore_duration_in_ms << " milliseconds";
+	RESTORE_LDBG << "[metric] Restore successfully achieved in " << restore_duration_in_ms << " milliseconds";
 	return true;
 }
 //-----------utility methdo for the restore operation---------
@@ -776,7 +775,11 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::whaitOnCommandID(uint64_t 
 	}
 	do {
 		cmd_state = getStateForCommandID(cmd_id);
-		if (!cmd_state.get()) break;
+		if (!cmd_state.get()) {
+			SCCUERR<<"cannot get command state";
+			
+			return false;
+		}
 
 		switch (cmd_state->last_event) {
 		case BatchCommandEventType::EVT_QUEUED:
@@ -806,6 +809,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::whaitOnCommandID(uint64_t 
 	} while (cmd_state->last_event != BatchCommandEventType::EVT_COMPLETED &&
 			cmd_state->last_event != BatchCommandEventType::EVT_FAULT &&
 			cmd_state->last_event != BatchCommandEventType::EVT_KILLED);
+
 	return (cmd_state.get() &&
 			cmd_state->last_event == BatchCommandEventType::EVT_COMPLETED);
 }
