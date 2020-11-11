@@ -508,7 +508,6 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	}
 
 
-	RESTORE_LDBG << "Start the restore of the powersupply";
 	uint64_t start_restore_time = chaos::common::utility::TimingUtil::getTimeStamp();
 	bool cmd_result = true;
 	//get actual state
@@ -519,6 +518,8 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	int32_t *now_polarity = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
 	int32_t *now_polarity_i = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_INPUT, "polarity");
 	uint64_t *alarm=getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "alarms");
+	RESTORE_LDBG << "Start the restore of the powersupply at:curr:"<<*now_current_sp<<" pol:"<<*now_polarity<<" stby:"<<*now_stby;
+
 	if(*alarm!=0){
 		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,CHAOS_FORMAT("There are active alarms %1% during restore, try to rese",%*alarm ));
 		RESTORE_LDBG << " resetting alarms";
@@ -646,7 +647,9 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::powerON(bool sync) {
 	cmd_pack->addInt32Value(CMD_PS_MODE_TYPE, 1);
 	//send command
 	if(getState()!=chaos::CUStateKey::START){
-		return true;
+		SCCUERR << "## not in start ..";
+
+		return false;
 	}
 	submitBatchCommand(CMD_PS_MODE_ALIAS,
 			cmd_pack.release(),
@@ -770,17 +773,14 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setRampSpeed(double sup,
 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::whaitOnCommandID(uint64_t cmd_id) {
 	ChaosUniquePtr<chaos::common::batch_command::CommandState> cmd_state;
-	if(getState()!=chaos::CUStateKey::START){
-		return true;
-	}
+	
 	do {
 		cmd_state = getStateForCommandID(cmd_id);
 		if (!cmd_state.get()) {
 			SCCUERR<<"cannot get command state";
 			
-			return false;
+			return true;
 		}
-
 		switch (cmd_state->last_event) {
 		case BatchCommandEventType::EVT_QUEUED:
 			SCCUDBG << cmd_id << " -> QUEUED";
