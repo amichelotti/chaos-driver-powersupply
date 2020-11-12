@@ -773,7 +773,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setRampSpeed(double sup,
 
 bool ::driver::powersupply::SCPowerSupplyControlUnit::whaitOnCommandID(uint64_t cmd_id) {
 	ChaosUniquePtr<chaos::common::batch_command::CommandState> cmd_state;
-	
+	uint64_t now = chaos::common::utility::TimingUtil::getTimeStamp();
 	do {
 		cmd_state = getStateForCommandID(cmd_id);
 		if (!cmd_state.get()) {
@@ -806,9 +806,9 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::whaitOnCommandID(uint64_t 
 		}
 		//whait some times
 		usleep(500000);
-	} while (cmd_state->last_event != BatchCommandEventType::EVT_COMPLETED &&
-			cmd_state->last_event != BatchCommandEventType::EVT_FAULT &&
-			cmd_state->last_event != BatchCommandEventType::EVT_KILLED);
+	} while ((cmd_state->last_event != BatchCommandEventType::EVT_COMPLETED) &&
+			(cmd_state->last_event != BatchCommandEventType::EVT_FAULT) &&
+			(cmd_state->last_event != BatchCommandEventType::EVT_KILLED) &&((chaos::common::utility::TimingUtil::getTimeStamp()-now)<10000));
 
 	return (cmd_state.get() &&
 			cmd_state->last_event == BatchCommandEventType::EVT_COMPLETED);
