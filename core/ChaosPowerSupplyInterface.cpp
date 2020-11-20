@@ -9,101 +9,109 @@
 #include "ChaosPowerSupplyInterface.h"
 using namespace chaos::driver::powersupply;
 
+#define RETURN \
+    {int tmp=ret->result;free(message.inputData);free(message.resultData);return tmp;}
+
+#define RETURN_VOID \
+    {free(message.inputData);free(message.resultData);}
+
+#define SEND_AND_RETURN \
+ accessor->send(&message);			\
+RETURN
+
+#define SEND_AND_RETURN_TIM(t) \
+ accessor->send(&message,t);			\
+RETURN
+
 #define PREPARE_OP_RET_INT_TIMEOUT(op,tim) \
-powersupply_oparams_t ret;\
-powersupply_iparams_t idata;\
-ret.result=DRV_BYPASS_DEFAULT_CODE;\
+powersupply_oparams_t* ret=(powersupply_oparams_t*)calloc(1,sizeof(powersupply_oparams_t));\
+powersupply_iparams_t* idata=(powersupply_iparams_t*)calloc(1,sizeof(powersupply_iparams_t));\
+ret->result=DRV_BYPASS_DEFAULT_CODE;\
 message.opcode = op; \
-message.inputData=(void*)&idata;\
-idata.timeout=tim;\
+message.inputData=(void*)idata;\
+idata->timeout=tim;\
 message.inputDataLength=sizeof(powersupply_iparams_t);\
 message.resultDataLength=sizeof(powersupply_oparams_t);\
-message.resultData = (void*)&ret;
+message.resultData = (void*)ret;
 
 #define WRITE_OP_INT_TIM(op,ival,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
-idata.ivalue=ival;\
-accessor->send(&message,timeout);			\
-return ret.result;
+idata->ivalue=ival;\
+SEND_AND_RETURN_TIM(timeout)
 
 #define WRITE_OP_64INT_TIM(op,ival,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
-idata.alarm_mask=ival;\
-accessor->send(&message,timeout);\
-return ret.result;
+idata->alarm_mask=ival;\
+SEND_AND_RETURN_TIM(timeout)
 
 #define WRITE_OP_FLOAT_TIM(op,fval,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
-idata.fvalue0=fval;\
-accessor->send(&message,timeout);			\
-return ret.result;
+idata->fvalue0=fval;\
+SEND_AND_RETURN_TIM(timeout)
 
 #define WRITE_OP_2FLOAT_TIM(op,fval0,fval1,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
-idata.fvalue0=fval0;\
-idata.fvalue1=fval1;\
-accessor->send(&message,timeout);\
-return ret.result;
+idata->fvalue0=fval0;\
+idata->fvalue1=fval1;\
+SEND_AND_RETURN_TIM(timeout)
 
 #define READ_OP_FLOAT_TIM(op,pfval,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout);\
-ret.fvalue0=*pfval;\
-ret.fvalue0=*pfval;\
+ret->fvalue0=*pfval;\
+ret->fvalue0=*pfval;\
 accessor->send(&message,timeout);\
-*pfval = ret.fvalue0;\
-return ret.result;
+*pfval = ret->fvalue0;\
+SEND_AND_RETURN
 
 #define READ_OP_INT_TIM(op,pival,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
-ret.ivalue=*pival;\
+ret->ivalue=*pival;\
 accessor->send(&message,timeout);\
-*pival = ret.ivalue;\
-return ret.result;
+*pival = ret->ivalue;\
+SEND_AND_RETURN
 
 #define READ_OP_INT_STRING_TIM(op,pival,pstring,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
-*ret.str=0;\
-ret.ivalue=*pival;\
+*ret->str=0;\
+ret->ivalue=*pival;\
 accessor->send(&message,timeout);\
-*pival = ret.ivalue;\
-pstring = ret.str;\
-return ret.result;
+*pival = ret->ivalue;\
+pstring = ret->str;\
+SEND_AND_RETURN
 
 #define READ_OP_INT_TIM(op,pival,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
-ret.ivalue=*pival;\
+ret->ivalue=*pival;\
 accessor->send(&message,timeout);\
-*pival = ret.ivalue;\
-return ret.result;
+*pival = ret->ivalue;\
+SEND_AND_RETURN
 
 #define READ_OP_64INT_TIM(op,pival,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
-ret.alarm_mask= *pival;\
+ret->alarm_mask= *pival;\
 accessor->send(&message,timeout);\
-*pival = ret.alarm_mask;\
-return ret.result;
+*pival = ret->alarm_mask;\
+SEND_AND_RETURN
 
 #define READ_OP_64INT_TIM_NORET(op,pival,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
-ret.alarm_mask= *pival;\
+ret->alarm_mask= *pival;\
 accessor->send(&message,timeout);\
-*pival = ret.alarm_mask;
-
+*pival = ret->alarm_mask;\
+RETURN_VOID
 
 #define READ_OP_2FLOAT_TIM(op,pfval0,pfval1,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
-ret.fvalue0=*pfval0 ;\
-ret.fvalue1=*pfval1 ;\
+ret->fvalue0=*pfval0 ;\
+ret->fvalue1=*pfval1 ;\
 accessor->send(&message,timeout);\
-*pfval0 = ret.fvalue0;\
-*pfval1 = ret.fvalue1;\
-return ret.result;
+*pfval0 = ret->fvalue0;\
+*pfval1 = ret->fvalue1;\
+RETURN
 
 #define WRITE_OP_TIM(op,timeout) \
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
-accessor->send(&message,timeout);\
-return ret.result;
-
+SEND_AND_RETURN_TIM(timeout)
 
 int ChaosPowerSupplyInterface::setPolarity(int pol,uint32_t timeo_ms){
     WRITE_OP_INT_TIM(OP_SET_POLARITY, pol, timeo_ms);
