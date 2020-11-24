@@ -127,21 +127,21 @@ int ChaosPowerSupplyInterface::setCurrentSP(float current,uint32_t timeo_ms){
 }
 
 int ChaosPowerSupplyInterface::forceMaxCurrent(float max){
-    WRITE_OP_FLOAT_TIM(OP_FORCE_MAX_CURRENT, max, 0);
+    WRITE_OP_FLOAT_TIM(OP_FORCE_MAX_CURRENT, max,5000);
 }
 
 
 int ChaosPowerSupplyInterface::forceMaxVoltage(float max){
-    WRITE_OP_FLOAT_TIM(OP_FORCE_MAX_VOLTAGE, max, 0);
+    WRITE_OP_FLOAT_TIM(OP_FORCE_MAX_VOLTAGE, max,5000);
 
 }
 
 int ChaosPowerSupplyInterface::setCurrentSensibility(float max){
-    WRITE_OP_FLOAT_TIM(OP_SET_CURRENT_SENSIBILITY, max, 0);
+    WRITE_OP_FLOAT_TIM(OP_SET_CURRENT_SENSIBILITY, max,5000);
 
 }
 int ChaosPowerSupplyInterface::setVoltageSensibility(float max){
-    WRITE_OP_FLOAT_TIM(OP_SET_VOLTAGE_SENSIBILITY, max, 0);
+    WRITE_OP_FLOAT_TIM(OP_SET_VOLTAGE_SENSIBILITY, max,5000);
 
 }
 
@@ -195,11 +195,11 @@ int ChaosPowerSupplyInterface::getState(int* state,std::string& desc,uint32_t ti
 }
 
 int ChaosPowerSupplyInterface::init(){
-    WRITE_OP_TIM(OP_INIT,0);
+    WRITE_OP_TIM(OP_INIT,5000);
 }
 
 int ChaosPowerSupplyInterface::deinit(){
-    WRITE_OP_TIM(OP_DEINIT,0);
+    WRITE_OP_TIM(OP_DEINIT,5000);
 
 }
 int ChaosPowerSupplyInterface::getSWVersion(std::string& ver,uint32_t timeo_ms){
@@ -214,18 +214,18 @@ int ChaosPowerSupplyInterface::getHWVersion(std::string&ver,uint32_t timeo_ms){
 }
 
 int ChaosPowerSupplyInterface::getCurrentSensibility(float*sens){
-    READ_OP_FLOAT_TIM(OP_GET_CURRENT_SENSIBILITY, sens, 0);
+    READ_OP_FLOAT_TIM(OP_GET_CURRENT_SENSIBILITY, sens,5000);
 }
 
 int ChaosPowerSupplyInterface::getVoltageSensibility(float*sens){
-    READ_OP_FLOAT_TIM(OP_GET_VOLTAGE_SENSIBILITY, sens, 0);
+    READ_OP_FLOAT_TIM(OP_GET_VOLTAGE_SENSIBILITY, sens,5000);
 }
 
 int ChaosPowerSupplyInterface::getMaxMinCurrent(float*max,float*min){
-    READ_OP_2FLOAT_TIM(OP_GET_MAXMIN_CURRENT,max,min,0);
+    READ_OP_2FLOAT_TIM(OP_GET_MAXMIN_CURRENT,max,min,5000);
 }
 int ChaosPowerSupplyInterface::getMaxMinVoltage(float*max,float*min){
-    READ_OP_2FLOAT_TIM(OP_GET_MAXMIN_VOLTAGE,max,min,0);
+    READ_OP_2FLOAT_TIM(OP_GET_MAXMIN_VOLTAGE,max,min,5000);
 
 }
 int ChaosPowerSupplyInterface::getAlarmDesc(uint64_t *desc){
