@@ -229,12 +229,12 @@ int ChaosPowerSupplyInterface::getMaxMinVoltage(float*max,float*min){
 
 }
 int ChaosPowerSupplyInterface::getAlarmDesc(uint64_t *desc){
-    READ_OP_64INT_TIM(OP_GET_ALARM_DESC,desc,0);
+    READ_OP_64INT_TIM(OP_GET_ALARM_DESC,desc,5000);
 
 }
 uint64_t ChaosPowerSupplyInterface::getFeatures() {
     uint64_t feats=0;
-    READ_OP_64INT_TIM_NORET(OP_GET_FEATURE,&feats,0);
+    READ_OP_64INT_TIM_NORET(OP_GET_FEATURE,&feats,5000);
     return feats;
 }
 
