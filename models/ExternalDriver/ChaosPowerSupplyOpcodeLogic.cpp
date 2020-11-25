@@ -303,7 +303,6 @@ int ChaosPowerSupplyOpcodeLogic::getState(DrvMsgPtr cmd, int* state,std::string&
     if(cmd->ret) {return cmd->ret;}
     
     CHECK_KEY_IN_RESPONSE(response, "value", -1);
-    CHECK_KEY_IN_RESPONSE(response, "description", -2);
     *state = response->getInt32Value("value");
     if(response->hasKey("description")){
         desc = response->getStringValue("description");
