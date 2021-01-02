@@ -19,6 +19,7 @@ namespace chaos {
     namespace driver {
 #define MAX_STR_SIZE 256
         namespace powersupply {
+            class ChaosPowerSupplyDD;
             typedef enum {
                 OP_INIT = chaos_driver::OpcodeType::OP_USER, // init low level driver
                 OP_DEINIT, // deinit low level driver
@@ -78,9 +79,9 @@ namespace chaos {
                 chaos_driver::DrvMsg message;
                 
             public:
-                ChaosPowerSupplyInterface(chaos_driver::DriverAccessor*_accessor):accessor(_accessor){};
-		chaos_driver::DriverAccessor* accessor;
-                
+                ChaosPowerSupplyInterface(chaos_driver::DriverAccessor*_accessor):accessor(_accessor){impl=(ChaosPowerSupplyDD*)_accessor->getImpl();};
+		        chaos_driver::DriverAccessor* accessor;
+                ChaosPowerSupplyDD*impl;
                 /**
                  @brief sets the current polarity
                  @param pol if >0 sets positive current polarity, if <0 sets negative current polarity, =0 opens the circuit, no current
@@ -193,12 +194,12 @@ namespace chaos {
                  @brief initialize and poweron the power supply
                  @return 0 if success
                  */
-                int init();
+                int initPS();
                 /**
                  @brief de-initialize the power supply and close the communication
                  @return 0 if success
                  */
-                int deinit();
+                int deinitPS();
                 
                 /**
                  @brief returns the SW/FW version of the driver/FW

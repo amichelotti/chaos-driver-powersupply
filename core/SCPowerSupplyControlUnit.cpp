@@ -414,7 +414,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
 		throw chaos::CException(-2, "Cannot allocate driver resources", __FUNCTION__);
 	}
 
-	if (powersupply_drv->init() != 0) {
+	if (powersupply_drv->initPS() != 0) {
 		throw chaos::CException(-3, "Cannot initialize powersupply " + getCUID(), __FUNCTION__);
 
 	}
@@ -478,7 +478,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitStop() throw (CExcepti
 
 void ::driver::powersupply::SCPowerSupplyControlUnit::unitDeinit() throw (CException) {
 	SCCUDBG << "deinitializing ";
-	powersupply_drv->deinit();
+	powersupply_drv->deinitPS();
 	delete powersupply_drv;
 	powersupply_drv=NULL;
 }

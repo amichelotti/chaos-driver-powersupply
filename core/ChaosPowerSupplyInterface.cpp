@@ -7,6 +7,7 @@
 //
 
 #include "ChaosPowerSupplyInterface.h"
+#include "ChaosPowerSupplyDD.h"
 using namespace chaos::driver::powersupply;
 
 #define RETURN \
@@ -113,6 +114,7 @@ RETURN
 PREPARE_OP_RET_INT_TIMEOUT(op,timeout); \
 SEND_AND_RETURN_TIM(timeout)
 
+#ifdef DETACHED_DRIVER
 int ChaosPowerSupplyInterface::setPolarity(int pol,uint32_t timeo_ms){
     WRITE_OP_INT_TIM(OP_SET_POLARITY, pol, timeo_ms);
 }
@@ -237,4 +239,156 @@ uint64_t ChaosPowerSupplyInterface::getFeatures() {
     READ_OP_64INT_TIM_NORET(OP_GET_FEATURE,&feats,chaos::common::constants::CUTimersTimeoutinMSec);
     return feats;
 }
+#else
+int ChaosPowerSupplyInterface::setPolarity(int pol,uint32_t timeo_ms){
+    return impl->setPolarity(pol);
+   // WRITE_OP_INT_TIM(OP_SET_POLARITY, pol, timeo_ms);
+}
+
+
+int ChaosPowerSupplyInterface::getPolarity(int* pol,uint32_t timeo_ms){
+   // READ_OP_INT_TIM(OP_GET_POLARITY, pol, timeo_ms);
+       return impl->getPolarity(pol);
+
+}
+
+int ChaosPowerSupplyInterface::setCurrentSP(float current,uint32_t timeo_ms){
+   // WRITE_OP_FLOAT_TIM(OP_SET_SP, current, timeo_ms);
+   return impl->setCurrentSP(current);
+}
+
+int ChaosPowerSupplyInterface::forceMaxCurrent(float max){
+    //WRITE_OP_FLOAT_TIM(OP_FORCE_MAX_CURRENT, max,chaos::common::constants::CUTimersTimeoutinMSec);
+    return 0;
+}
+
+
+int ChaosPowerSupplyInterface::forceMaxVoltage(float max){
+  //  WRITE_OP_FLOAT_TIM(OP_FORCE_MAX_VOLTAGE, max,chaos::common::constants::CUTimersTimeoutinMSec);
+  return 0;
+
+}
+
+int ChaosPowerSupplyInterface::setCurrentSensibility(float max){
+  //  WRITE_OP_FLOAT_TIM(OP_SET_CURRENT_SENSIBILITY, max,chaos::common::constants::CUTimersTimeoutinMSec);
+  return 0;
+
+}
+int ChaosPowerSupplyInterface::setVoltageSensibility(float max){
+    //WRITE_OP_FLOAT_TIM(OP_SET_VOLTAGE_SENSIBILITY, max,chaos::common::constants::CUTimersTimeoutinMSec);
+    return 0;
+
+}
+
+
+int ChaosPowerSupplyInterface::getCurrentSP(float* current,uint32_t timeo_ms){
+    //READ_OP_FLOAT_TIM(OP_GET_SP, current, timeo_ms);
+    return impl->getCurrentSP(current,timeo_ms);
+
+}
+
+int ChaosPowerSupplyInterface::startCurrentRamp(uint32_t timeo_ms){
+    // WRITE_OP_TIM(OP_START_RAMP,timeo_ms);
+    return impl->startCurrentRamp(timeo_ms);
+}
+
+
+int ChaosPowerSupplyInterface::getVoltageOutput(float* volt,uint32_t timeo_ms){
+   // READ_OP_FLOAT_TIM(OP_GET_VOLTAGE_OUTPUT, volt, timeo_ms);
+   return impl->getVoltageOutput(volt,timeo_ms);
+}
+
+int ChaosPowerSupplyInterface::getCurrentOutput(float* current,uint32_t timeo_ms){
+  //  READ_OP_FLOAT_TIM(OP_GET_CURRENT_OUTPUT, current, timeo_ms);
+    return impl->getCurrentOutput(current,timeo_ms);
+}
+int ChaosPowerSupplyInterface::setCurrentRampSpeed(float asup,float asdown,uint32_t timeo_ms){
+  //  WRITE_OP_2FLOAT_TIM(OP_SET_CURRENT_RAMP_SPEED, asup,asdown, timeo_ms);
+  return impl->setCurrentRampSpeed(asup,asdown,timeo_ms);
+}
+
+int ChaosPowerSupplyInterface::resetAlarms(uint64_t alrm,uint32_t timeo_ms){
+    //WRITE_OP_64INT_TIM(OP_RESET_ALARMS,alrm,timeo_ms);
+    return impl->resetAlarms(alrm,timeo_ms);
+}
+
+int ChaosPowerSupplyInterface::getAlarms(uint64_t*alrm,uint32_t timeo_ms){
+    //READ_OP_64INT_TIM(OP_GET_ALARMS,alrm,timeo_ms);
+    return impl->getAlarms(alrm,timeo_ms);
+}
+
+int ChaosPowerSupplyInterface::shutdown(uint32_t timeo_ms){
+   // WRITE_OP_TIM(OP_SHUTDOWN,timeo_ms);
+   return impl->shutdown(timeo_ms);
+}
+
+int ChaosPowerSupplyInterface::standby(uint32_t timeo_ms){
+   // WRITE_OP_TIM(OP_STANDBY,timeo_ms);
+   return impl->standby(timeo_ms);
+
+}
+
+int ChaosPowerSupplyInterface::poweron(uint32_t timeo_ms){
+    //WRITE_OP_TIM(OP_POWERON,timeo_ms);
+    return impl->poweron(timeo_ms);
+}
+
+int ChaosPowerSupplyInterface::getState(int* state,std::string& desc,uint32_t timeo_ms){
+   // READ_OP_INT_STRING_TIM(OP_GET_STATE, state, desc,timeo_ms);
+   return impl->getState(state,desc,timeo_ms);
+
+}
+
+int ChaosPowerSupplyInterface::initPS(){
+   // WRITE_OP_TIM(OP_INIT,chaos::common::constants::CUTimersTimeoutinMSec);
+   return impl->initPS();
+}
+
+int ChaosPowerSupplyInterface::deinitPS(){
+    //WRITE_OP_TIM(OP_DEINIT,chaos::common::constants::CUTimersTimeoutinMSec);
+     return impl->deinitPS();
+
+}
+int ChaosPowerSupplyInterface::getSWVersion(std::string& ver,uint32_t timeo_ms){
+    int state;
+    //READ_OP_INT_STRING_TIM(OP_GET_SWVERSION, &state, ver,timeo_ms);
+    return impl->getSWVersion(ver,timeo_ms);
+}
+
+int ChaosPowerSupplyInterface::getHWVersion(std::string&ver,uint32_t timeo_ms){
+    int state;
+ //   READ_OP_INT_STRING_TIM(OP_GET_HWVERSION, &state, ver,timeo_ms);
+    return impl->getHWVersion(ver,timeo_ms);
+}
+
+int ChaosPowerSupplyInterface::getCurrentSensibility(float*sens){
+  //  READ_OP_FLOAT_TIM(OP_GET_CURRENT_SENSIBILITY, sens,chaos::common::constants::CUTimersTimeoutinMSec);
+    return 0;
+}
+
+int ChaosPowerSupplyInterface::getVoltageSensibility(float*sens){
+   // READ_OP_FLOAT_TIM(OP_GET_VOLTAGE_SENSIBILITY, sens,chaos::common::constants::CUTimersTimeoutinMSec);
+   return 0;
+}
+
+int ChaosPowerSupplyInterface::getMaxMinCurrent(float*max,float*min){
+    //READ_OP_2FLOAT_TIM(OP_GET_MAXMIN_CURRENT,max,min,chaos::common::constants::CUTimersTimeoutinMSec);
+    return impl->getMaxMinCurrent(max,min);
+}
+int ChaosPowerSupplyInterface::getMaxMinVoltage(float*max,float*min){
+    //READ_OP_2FLOAT_TIM(OP_GET_MAXMIN_VOLTAGE,max,min,chaos::common::constants::CUTimersTimeoutinMSec);
+    return impl->getMaxMinVoltage(max,min);
+
+}
+int ChaosPowerSupplyInterface::getAlarmDesc(uint64_t *desc){
+   // READ_OP_64INT_TIM(OP_GET_ALARM_DESC,desc,chaos::common::constants::CUTimersTimeoutinMSec);
+    return impl->getAlarmDesc(desc);
+}
+uint64_t ChaosPowerSupplyInterface::getFeatures() {
+    uint64_t feats=0;
+    //READ_OP_64INT_TIM_NORET(OP_GET_FEATURE,&feats,chaos::common::constants::CUTimersTimeoutinMSec);
+    //return feats;
+    return impl->getFeatures();
+}
+#endif
 

@@ -44,7 +44,6 @@ namespace chaos {
 
             public:
                 PowerSimDD();
-                ~PowerSimDD();
                 //! Execute a command
             };
         }
