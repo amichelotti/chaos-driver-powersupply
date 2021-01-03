@@ -24,6 +24,7 @@
 // include your class/functions headers here
 
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
+#include <driver/powersupply/core/ChaosPowerSupplyDD.h>
 #include <chaos/cu_toolkit/driver_manager/driver/OpcodeDriverWrapper.h>
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractServerRemoteIODriver.h>
 #include "ChaosPowerSupplyOpcodeLogic.h"
@@ -40,7 +41,7 @@ namespace chaos {
             /*
              driver definition
              */
-            class ChaosPowerSupplyExtDD: ADD_CU_DRIVER_PLUGIN_SUPERCLASS,public ::common::powersupply::AbstractPowerSupply{
+            class ChaosPowerSupplyExtDD: public ChaosPowerSupplyDD{
                 
             protected:
             //chaos::cu::driver_manager::driver::AbstractClientRemoteIODriver

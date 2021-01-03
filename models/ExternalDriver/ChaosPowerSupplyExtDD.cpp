@@ -26,7 +26,7 @@
 #include <driver/powersupply/core/ChaosPowerSupplyInterface.h>
 using namespace chaos::driver::powersupply;
 //default constructor definition
-DEFAULT_CU_DRIVER_PLUGIN_CONSTRUCTOR_WITH_NS(chaos::driver::powersupply, ChaosPowerSupplyExtDD) {
+ChaosPowerSupplyExtDD::ChaosPowerSupplyExtDD() {
 	
 }
 
