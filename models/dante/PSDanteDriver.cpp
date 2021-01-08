@@ -229,12 +229,12 @@ int PSDanteDriver::getState(int *state, std::string &desc, uint32_t timeo_ms)
     return 0;
 }
 
-int PSDanteDriver::init()
+int PSDanteDriver::initPS()
 {
     return 0;
 }
 
-int PSDanteDriver::deinit()
+int PSDanteDriver::deinitPS()
 {
     	return 0;
 }

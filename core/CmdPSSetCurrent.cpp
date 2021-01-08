@@ -258,7 +258,7 @@ bool own::CmdPSSetCurrent::timeoutHandler() {
 
 		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,ss.str() );
 		BC_END_RUNNING_PROPERTY;
-                return true;
+                return false;
 	}  else {
 		ss << "Setpoint NOT reached on timeout with readout current " << *o_current << " in " << elapsed_msec << " milliseconds";
                 setStateVariableSeverity(StateVariableTypeAlarmCU,"current_value_not_reached", chaos::common::alarm::MultiSeverityAlarmLevelWarning);

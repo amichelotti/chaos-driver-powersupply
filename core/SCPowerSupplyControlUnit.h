@@ -34,7 +34,7 @@ namespace driver {
 			
 			chaos::driver::powersupply::ChaosPowerSupplyInterface *powersupply_drv;
 
-			bool whaitOnCommandID(uint64_t command_id);
+			bool whaitOnCommandID(uint64_t command_id,int timeo_ms=240000);
 		protected:
 			/*
 			 Define the Control Unit Dataset and Actions
