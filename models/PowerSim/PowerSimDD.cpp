@@ -51,10 +51,6 @@ chaos::driver::powersupply::PowerSimDD::PowerSimDD() {
 
 }
 
-//default descrutcor
-chaos::driver::powersupply::PowerSimDD::~PowerSimDD() {
-
-}
 using namespace std;
 void chaos::driver::powersupply::PowerSimDD::driverInit(const chaos::common::data::CDataWrapper& json) throw(chaos::CException){
 	GET_PARAMETER_TREE((&json),driver){
@@ -97,10 +93,10 @@ void chaos::driver::powersupply::PowerSimDD::driverInit(const chaos::common::dat
 		}
 
 		std::string ver;
-		power->getSWVersion(ver,0);
+		getSWVersion(ver,0);
 		PSLAPP<<"Initialising PowerSimDD Driver \""<<ver<<"\""<<std::endl;
 
-		if(power->init()!=0){
+		if(initPS()!=0){
 				throw chaos::CException(1, "JSON Initialisation of power supply failed", "PowerSimDD::driverInit");
 		}
 		return;
@@ -154,7 +150,7 @@ void chaos::driver::powersupply::PowerSimDD::driverInit(const char *initParamete
 	power->getSWVersion(ver,0);
 	PSLAPP<<"Initialising PowerSimDD Driver \""<<ver<<"\""<<std::endl;
 
-	if(power->init()!=0){
+	if(power->initPS()!=0){
 		throw chaos::CException(1, "Initialisation of power supply failed", "PowerSimDD::driverInit");
 	}
 
