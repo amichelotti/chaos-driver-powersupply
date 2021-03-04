@@ -44,12 +44,14 @@ PSDanteDriver::PSDanteDriver(const char *initParameter) : current(0)
     int32_t elementType;
     int ret=dante.getData("elemType",&elementType,::driver::data_import::DanteDriver::STATIC);
     if(ret!=0){
-		throw chaos::CException(1, "Cannot fetch STATIC info", __PRETTY_FUNCTION__);
+        DANTE_ERR<<"Cannot fetch STATIC info";
+		//throw chaos::CException(1, "Cannot fetch STATIC info", __PRETTY_FUNCTION__);
+    } else {
+        protocol=elementType&0xF;
+        interfaceType=(elementType>>8)&0xF;
+        polarityType=(elementType>>16)&0xF;
+        alarmType=(elementType>>24)&0xF;
     }
-    protocol=elementType&0xF;
-    interfaceType=(elementType>>8)&0xF;
-    polarityType=(elementType>>16)&0xF;
-    alarmType=(elementType>>24)&0xF;
 
 }
 PSDanteDriver::~PSDanteDriver()
@@ -114,7 +116,7 @@ int PSDanteDriver::getVoltageOutput(float *volt, uint32_t timeo_ms)
 int PSDanteDriver::getCurrentOutput(float *_curr, uint32_t timeo_m)
 {
     double curr = 0;
-    int ret = dante.getData("outputCurrent", (void *)&curr);
+    int ret = dante.getData("outputCurr", (void *)&curr);
     *_curr = curr;
     return ret;
 }
@@ -147,9 +149,9 @@ int PSDanteDriver::resetAlarms(uint64_t alrm, uint32_t timeo_ms)
 
 int PSDanteDriver::getAlarms(uint64_t *alrm, uint32_t timeo_ms)
 {
-    uint64_t curr = 0;
-    int ret = dante.getData("alarms", (void *)&curr);
-    *alrm = curr;
+    uint32_t curr[4];
+    int ret = dante.getData("faults", (void *)curr);
+    *alrm = *(uint64_t*)curr; // dont use the other 2 words
     return ret;
 }
 
@@ -195,7 +197,7 @@ int PSDanteDriver::getState(int *state, std::string &desc, uint32_t timeo_ms)
     int ret = dante.getData("status", (void *)&status);
     dante.getData("remote", (void *)&remote);
     dante.getData("triggerArmed", (void *)&trigger);
-
+    DANTE_DBG <<"Attributes:"<<dante.getDataset()->getJSONString();
     std::stringstream ss;
     *state=0;
     if(remote==false){
