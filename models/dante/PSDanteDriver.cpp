@@ -197,7 +197,7 @@ int PSDanteDriver::getState(int *state, std::string &desc, uint32_t timeo_ms)
     int ret = dante.getData("status", (void *)&status);
     dante.getData("remote", (void *)&remote);
     dante.getData("triggerArmed", (void *)&trigger);
-    DANTE_DBG <<"Attributes:"<<dante.getDataset()->getJSONString();
+    //DANTE_DBG <<"Attributes:"<<dante.getDataset()->getJSONString();
     std::stringstream ss;
     *state=0;
     if(remote==false){
