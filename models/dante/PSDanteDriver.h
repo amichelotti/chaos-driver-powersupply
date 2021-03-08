@@ -23,6 +23,7 @@ public:
 
     chaos::common::data::CDWUniquePtr getDrvProperties();
 
+    bool isBypass();
 
     /**
              @brief sets the current polarity
@@ -35,10 +36,12 @@ public:
     /**
              @brief gets the current polarity
              @param pol returns the polarity if >0 positive current polarity, if <0 negative current polarity, =0 circuit is open, no current
+             @param polsp returns the polarity if >0 positive current polarity, if <0 negative current polarity, =0 circuit is open, no current
+
              @param timeo_ms timeout in ms for the completion of the operation (0 wait indefinitively)
              @return 0 if success or an error code
              */
-    int getPolarity(int *pol, uint32_t timeo_ms = POWER_SUPPLY_DEFAULT_TIMEOUT);
+    int getPolarity(int *pol, int*polsp=NULL,uint32_t timeo_ms = POWER_SUPPLY_DEFAULT_TIMEOUT);
 
     /**
              @brief sets the current set point
@@ -132,11 +135,13 @@ public:
     /**
              @brief gets the power supply state
              @param state returns a bit field of PowerSupplyStates
+             @param statesp returns a bit field of PowerSupplyStates
+
              @param desc return a string description
              @param timeo_ms timeout in ms for the completion of the operation (0 wait indefinitively)
              @return 0 if success or an error code
              */
-    int getState(int *state, std::string &desc, uint32_t timeo_ms = POWER_SUPPLY_DEFAULT_TIMEOUT);
+    int getState(int *state, std::string &desc, int*statesp=NULL,uint32_t timeo_ms = POWER_SUPPLY_DEFAULT_TIMEOUT);
 
     /**
              @brief initialize and poweron the power supply

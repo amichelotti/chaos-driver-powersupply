@@ -52,6 +52,11 @@ PSDanteDriver::PSDanteDriver(const char *initParameter) : current(0)
         polarityType=(elementType>>16)&0xF;
         alarmType=(elementType>>24)&0xF;
     }
+    chaos::common::data::CDWUniquePtr res=dante.getDataset();
+    if(res.get()){
+        DANTE_DBG<<"DATASET:"<<res->getJSONString();
+    }
+
 
 }
 PSDanteDriver::~PSDanteDriver()
@@ -66,11 +71,28 @@ int PSDanteDriver::setPolarity(int pol, uint32_t timeo_ms)
     return 0;
 }
 
-int PSDanteDriver::getPolarity(int *_pol, uint32_t timeo_ms)
+int PSDanteDriver::getPolarity(int *_pol,int*_polsp, uint32_t timeo_ms)
 {
-    int32_t pol = 0;
+    int32_t pol=-7,polsp;
     int ret = dante.getData("outputPolarity", (void *)&pol);
-    *_pol = pol;
+
+    if(_pol&& (ret==0)){
+        if((pol>1) || (pol<-1)){
+               DANTE_ERR << "BAD VALUE FOR POLARITY: "<<pol;
+               DANTE_DBG <<"Attributes:"<<dante.getDataset()->getJSONString();
+
+            return -4;
+        }
+        *_pol = pol;
+    } else {
+            DANTE_ERR << "Cannot set polarity, err: "<<ret;
+
+    }
+    if(_polsp){
+        ret += dante.getData("polaritySetting", (void *)&polsp);
+      //  DANTE_DBG << "POL SP: "<<polsp;
+    *_polsp=polsp;
+    }
    
     return ret;
 }
@@ -80,6 +102,14 @@ int PSDanteDriver::setCurrentSP(float _current, uint32_t timeo_ms)
     current = _current;
     return 0;
 }
+
+bool PSDanteDriver::isBypass(){
+    bool res=false;
+    int ret = dante.getData("byPass", (void *)&res);
+    return res;
+
+}
+
 int PSDanteDriver::getCurrentSP(float *_current, uint32_t timeo_ms)
 {
     *_current = current;
@@ -190,44 +220,66 @@ int PSDanteDriver::poweron(uint32_t timeo_ms)
     return 0;
 }
 using namespace ::common::powersupply;
-int PSDanteDriver::getState(int *state, std::string &desc, uint32_t timeo_ms)
-{
-    int32_t status;
-    bool remote,trigger;
-    int ret = dante.getData("status", (void *)&status);
-    dante.getData("remote", (void *)&remote);
-    dante.getData("triggerArmed", (void *)&trigger);
-    //DANTE_DBG <<"Attributes:"<<dante.getDataset()->getJSONString();
+int32_t resultState(const int32_t status,const bool remote,const bool trigger,std::string&desc){
+    int32_t state=0;
     std::stringstream ss;
-    *state=0;
     if(remote==false){
-		*state|=POWER_SUPPLY_STATE_LOCAL;
+		state|=(int32_t)POWER_SUPPLY_STATE_LOCAL;
         ss<<"Local|";
     }
     if(trigger){
-		*state|=POWER_SUPPLY_STATE_TRIGGER_ARMED;
+		state|=(int32_t)POWER_SUPPLY_STATE_TRIGGER_ARMED;
         ss<<"Trigger|";
     }
-    if(state==0){
-		*state |=POWER_SUPPLY_STATE_OFF;
-        ss<<"Off|";
-
-
-    } else  if(status==1){
-        *state |= POWER_SUPPLY_STATE_STANDBY;
+   if(status==1){
+        state |= (int32_t)POWER_SUPPLY_STATE_STANDBY;
         ss<<"Stby|";
 
     } else if(status==2){
-        *state |= POWER_SUPPLY_STATE_ON;
+        state |= (int32_t)POWER_SUPPLY_STATE_ON;
         ss<<"Operational|";
 
     } else if(status==3){
-        *state |= POWER_SUPPLY_STATE_ALARM;
+        state |= (int32_t) POWER_SUPPLY_STATE_ALARM;
         ss<<"Alarm|";
-
+    //    DANTE_DBG << " DANTE ALARM STATE:"<<state<<" status:"<<status;
 
     }
    desc=ss.str();
+
+   return state;
+}
+int PSDanteDriver::getState(int *state, std::string &desc, int*statesp,uint32_t timeo_ms)
+{
+    int32_t status,statusSetting;
+    bool remote,trigger;
+    int ret = dante.getData("status", (void *)&status);
+    ret+=dante.getData("statusSetting", (void *)&statusSetting);
+    dante.getData("remote", (void *)&remote);
+    dante.getData("triggerArmed", (void *)&trigger);
+  // DANTE_DBG <<"Attributes:"<<dante.getDataset()->getJSONString();
+   *state=resultState(status,remote,trigger,desc);
+   //DANTE_DBG <<"state:"<<*state<<" status:"<<status<<" Attributes:"<<dante.getDataset()->getJSONString();
+
+   if(((*state)&(int32_t)POWER_SUPPLY_STATE_ALARM)){
+        DANTE_DBG << " DANTE ALARM STATE:"<< dante.getDataset()->getJSONString();
+
+   }
+   if(statesp){
+       std::string set;
+        *statesp=resultState(statusSetting,remote,trigger,set);
+        if(((*statesp)&(int32_t)POWER_SUPPLY_STATE_ALARM)){
+            DANTE_DBG << " SETPOINT DANTE ALARM STATE:"<< dante.getDataset()->getJSONString();
+        }
+
+   }
+   
+   if(isBypass()){
+       return DRV_BYPASS_DEFAULT_CODE;
+   }
+   if(status!=statusSetting){
+       return POWER_SUPPLY_OUT_OF_SET;
+   }
     return 0;
 }
 

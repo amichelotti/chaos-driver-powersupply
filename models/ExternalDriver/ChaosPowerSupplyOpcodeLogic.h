@@ -51,7 +51,7 @@ namespace chaos {
                  @param timeo_ms timeout in ms for the completion of the operation (0 wait indefinitively)
                  @return 0 if success or an error code
                  */
-                int getPolarity(cu::driver_manager::driver::DrvMsgPtr cmd, int* pol,uint32_t timeo_ms=POWER_SUPPLY_DEFAULT_TIMEOUT);
+                int getPolarity(cu::driver_manager::driver::DrvMsgPtr cmd, int* pol,int*polsp=NULL,uint32_t timeo_ms=POWER_SUPPLY_DEFAULT_TIMEOUT);
                 
                 /**
                  @brief sets the current set point

@@ -185,12 +185,16 @@ int ChaosPowerSupplyExtDD::setPolarity( int pol, uint32_t timeo_ms) {
     return response->getInt32Value("err");;
 }
 
-int ChaosPowerSupplyExtDD::getPolarity(int* pol,uint32_t timeo_ms){
+int ChaosPowerSupplyExtDD::getPolarity(int* pol,int*polsp,uint32_t timeo_ms){
     CDWShrdPtr response;
     CDWUniquePtr init_pack(new CDataWrapper());
     SEND_REQUEST_OPC("get_pola", init_pack, response);
    // CHECK_KEY_AND_TYPE_IN_RESPONSE(response, "value", isInt32Value, -1, -2);
     *pol = response->getInt32Value("value");
+    if(polsp){
+        //TODO: CHANGE IF SUPPORTED
+        *polsp=*pol;
+    }
     return response->getInt32Value("err");
 }
 
@@ -304,7 +308,7 @@ int ChaosPowerSupplyExtDD::poweron(uint32_t timeo_ms){
 
 }
 
-int ChaosPowerSupplyExtDD::getState(int* state,std::string& desc,uint32_t timeo_ms){
+int ChaosPowerSupplyExtDD::getState(int* state,std::string& desc,int*statesp,uint32_t timeo_ms){
     CDWShrdPtr response;
     CDWUniquePtr init_pack(new CDataWrapper());
     DBG<<"GETTING STATE...";
@@ -314,6 +318,11 @@ int ChaosPowerSupplyExtDD::getState(int* state,std::string& desc,uint32_t timeo_
     
     //CHECK_KEY_IN_RESPONSE(response, "value", -1);
     *state = response->getInt32Value("value");
+    if(statesp){
+        // TODO: if returned set the state SP
+            *statesp = response->getInt32Value("value");
+
+    }
     if(response->hasKey("description")){
         desc = response->getStringValue("description");
 

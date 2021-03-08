@@ -146,7 +146,7 @@ int ChaosPowerSupplyOpcodeLogic::setPolarity(DrvMsgPtr cmd, int pol, uint32_t ti
     return cmd->ret;
 }
 
-int ChaosPowerSupplyOpcodeLogic::getPolarity(DrvMsgPtr cmd, int* pol,uint32_t timeo_ms){
+int ChaosPowerSupplyOpcodeLogic::getPolarity(DrvMsgPtr cmd, int* pol,int*polsp,uint32_t timeo_ms){
     CDWShrdPtr response;
     CDWUniquePtr init_pack(new CDataWrapper());
     SEND_REQUEST_OPC("get_pola",cmd, init_pack, response);
@@ -156,6 +156,10 @@ int ChaosPowerSupplyOpcodeLogic::getPolarity(DrvMsgPtr cmd, int* pol,uint32_t ti
     
     CHECK_KEY_AND_TYPE_IN_RESPONSE(response, "value", isInt32Value, -1, -2);
     *pol = response->getInt32Value("value");
+    if(polsp){
+        /// TODO: support if supported
+        *polsp=*pol;
+    }
     return cmd->ret;
 }
 
@@ -407,7 +411,8 @@ MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyOpcodeLogic::execOpco
             out->result= setPolarity(cmd, in->ivalue,in->timeout);
             break;
         case OP_GET_POLARITY:
-            out->result = getPolarity(cmd, &out->ivalue,in->timeout);
+            int polsp;
+            out->result = getPolarity(cmd, &out->ivalue,&polsp,in->timeout);
      //       DBG<< "Got Polarity "<<out->ivalue;
             break;
         case OP_SET_SP:
