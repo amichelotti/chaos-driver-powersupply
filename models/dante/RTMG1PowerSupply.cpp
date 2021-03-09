@@ -388,11 +388,11 @@ void ::driver::powersupply::RTMG1PowerSupply::unitRun() throw(chaos::CException)
 		uint64_t alarms[2];
 		driver.getData("faults", (void *)alarms);
 		getAttributeCache()->setOutputAttributeValue("alarms", alarms[0]);
-		SCCUDBG<<"curr set:"<<cs<<" all:"<<p->getCompliantJSONString();
+		//SCCUDBG<<"curr set:"<<cs<<" all:"<<p->getCompliantJSONString();
 		pushInputDataset();
     }
-   getAttributeCache()->setOutputDomainAsChanged();
-    getAttributeCache()->setInputDomainAsChanged();
+   //getAttributeCache()->setOutputDomainAsChanged();
+   // getAttributeCache()->setInputDomainAsChanged();
 
   
 }
