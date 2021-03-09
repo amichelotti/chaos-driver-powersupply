@@ -4,7 +4,7 @@ project(chaos_driver_powersupply_dante_dd)
 SET(DRIVERS_LIB ${DRIVERS_LIB} ${PROJECT_NAME} ${PROJECT_NAME} PARENT_SCOPE)
 
 message(STATUS "DANTE driver ${DRIVERS_LIB}")
-SET( src DanteDD.cpp PSDanteDriver.cpp)
+SET( src DanteDD.cpp PSDanteDriver.cpp RTMG1PowerSupply.cpp)
 IF(BUILD_FORCE_STATIC)
 ADD_LIBRARY(${PROJECT_NAME} STATIC ${src})
 ELSE()
