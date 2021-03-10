@@ -31,7 +31,7 @@ using namespace chaos::cu::control_manager;
 using namespace chaos::cu::control_manager::slow_command;
 using namespace chaos::cu::driver_manager::driver;
 using namespace ::common::powersupply;
-
+using namespace ::driver::powersupply;
 #define SCCUAPP CUINFO
 #define SCCUDBG CUDBG<< "[" << getDeviceID() << "] "
 #define SCCUERR CUERR<< "[" << getDeviceID() << "] "
@@ -118,6 +118,10 @@ void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset() throw
 			"Alarms input clear, output alarm mask",
 			DataType::TYPE_INT64,
 			DataType::Bidirectional);
+	addAttributeToDataSet("alarms2",
+			"Alarms supplemental",
+			DataType::TYPE_INT64,
+			DataType::Output);
 
 	addAttributeToDataSet("rampUpRate",
 			"ramp up in A/S or V/s",
@@ -265,6 +269,8 @@ void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset() throw
 
 	addStateVariable(StateVariableTypeAlarmDEV,"interlock",
 			"Notify when an interlock arise");
+	addStateVariable(StateVariableTypeAlarmDEV,"alarm_state",
+			"Notify when an alarm state arise");
 
 	addStateVariable(StateVariableTypeAlarmCU,"current_invalid_set",
 			"Notify when a 'current' set cannot be done, for limits or mode");
@@ -358,6 +364,12 @@ void ::driver::powersupply::RTMG1PowerSupply::unitStop() throw (CException) {
 void ::driver::powersupply::RTMG1PowerSupply::unitDeinit() throw (CException) {
 	
 }
+chaos::common::data::CDWUniquePtr RTMG1PowerSupply::getProperty(chaos::common::data::CDWUniquePtr d){
+	return   driver.getDataset();
+}
+chaos::common::data::CDWUniquePtr RTMG1PowerSupply::setProperty(chaos::common::data::CDWUniquePtr d ){
+
+}
 void ::driver::powersupply::RTMG1PowerSupply::unitRun() throw(chaos::CException) {
     chaos::common::data::CDWUniquePtr p=driver.getDataset();
     if(p.get()){
@@ -379,7 +391,12 @@ void ::driver::powersupply::RTMG1PowerSupply::unitRun() throw(chaos::CException)
 		int32_t state=resultState(p->getInt32Value("status"),p->getBoolValue("onLine"),p->getBoolValue("triggerArmed"),desc);
 		getAttributeCache()->setOutputAttributeValue("stby", ((state & ::common::powersupply::POWER_SUPPLY_STATE_STANDBY)?true:false));
 		getAttributeCache()->setOutputAttributeValue("local", ((state & ::common::powersupply::POWER_SUPPLY_STATE_LOCAL)?true:false));
+		if(state&::common::powersupply::POWER_SUPPLY_STATE_ALARM){
+			setStateVariableSeverity(StateVariableTypeAlarmDEV,"alarm_state", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+		} else {
+			setStateVariableSeverity(StateVariableTypeAlarmDEV,"alarm_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
+		}
 		getAttributeCache()->setInputAttributeValue("stby", ((statesp & ::common::powersupply::POWER_SUPPLY_STATE_STANDBY)?true:false));
 		getAttributeCache()->setInputAttributeValue("local", ((statesp & ::common::powersupply::POWER_SUPPLY_STATE_LOCAL)?true:false));
 
@@ -388,6 +405,12 @@ void ::driver::powersupply::RTMG1PowerSupply::unitRun() throw(chaos::CException)
 		uint64_t alarms[2];
 		driver.getData("faults", (void *)alarms);
 		getAttributeCache()->setOutputAttributeValue("alarms", alarms[0]);
+		getAttributeCache()->setOutputAttributeValue("alarms", alarms[1]);
+		if((alarms[0]!=0) || (alarms[1]!=0)){
+			setStateVariableSeverity(StateVariableTypeAlarmDEV,"interlock", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+		} else {
+			setStateVariableSeverity(StateVariableTypeAlarmDEV,"interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+		}
 		//SCCUDBG<<"curr set:"<<cs<<" all:"<<p->getCompliantJSONString();
 		pushInputDataset();
     }

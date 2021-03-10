@@ -78,6 +78,8 @@ namespace driver {
 			 
 			
     		void unitRun() throw(chaos::CException);
+  			 chaos::common::data::CDWUniquePtr getProperty(chaos::common::data::CDWUniquePtr);
+  			 chaos::common::data::CDWUniquePtr setProperty(chaos::common::data::CDWUniquePtr);
 
 
 		};
