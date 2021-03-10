@@ -66,7 +66,15 @@ static int32_t resultState(const int32_t status,const bool remote,const bool tri
         ss<<"Alarm|";
     //    DANTE_DBG << " DANTE ALARM STATE:"<<state<<" status:"<<status;
 
-    }
+    }else if(status==4){
+        state |= (int32_t)::common::powersupply::POWER_SUPPLY_STATE_ERROR;
+        ss<<"Error|";
+    //    DANTE_DBG << " DANTE ALARM STATE:"<<state<<" status:"<<status;
+
+    } else {
+		state |= (int32_t)::common::powersupply::POWER_SUPPLY_STATE_UKN;
+        ss<<"Uknown|";
+	}
    desc=ss.str();
 
    return state;
@@ -247,7 +255,10 @@ void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset() throw
 			&::driver::powersupply::RTMG1PowerSupply::setAlarms,
 			"alarms");
 */
+	addStateVariable(StateVariableTypeAlarmCU,"fetch_error",
+			"Fetch error");
 
+	/*
 	addStateVariable(StateVariableTypeAlarmCU,"current_out_of_set",
 			"Notify when the 'current' readout drifts respect the 'current' set");
 
@@ -265,14 +276,7 @@ void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset() throw
 
 	addStateVariable(StateVariableTypeAlarmCU,"stby_value_not_reached",
 			"Notify when 'stby' readout is not reached");
-
-
-	addStateVariable(StateVariableTypeAlarmDEV,"interlock",
-			"Notify when an interlock arise");
-	addStateVariable(StateVariableTypeAlarmDEV,"alarm_state",
-			"Notify when an alarm state arise");
-
-	addStateVariable(StateVariableTypeAlarmCU,"current_invalid_set",
+			addStateVariable(StateVariableTypeAlarmCU,"current_invalid_set",
 			"Notify when a 'current' set cannot be done, for limits or mode");
 
 	addStateVariable(StateVariableTypeAlarmCU,"stby_invalid_set",
@@ -289,6 +293,17 @@ void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset() throw
 	addStateVariable(StateVariableTypeAlarmCU,"communication_failure",
 			"Notify when a CU->HW communication error");
 
+
+*/
+	addStateVariable(StateVariableTypeAlarmDEV,"interlock",
+			"Notify when an interlock arise alarms !=0");
+
+	addStateVariable(StateVariableTypeAlarmDEV,"bad_state","Notify when a bad state state=4");
+	addStateVariable(StateVariableTypeAlarmDEV,"unknown_state","Notify when a bad state state>4");		
+
+	addStateVariable(StateVariableTypeAlarmDEV,"faulty_state","Notify when a state=3 arise");
+
+	
 	addStateVariable(StateVariableTypeAlarmDEV,"door_open",
 			"Notify when a door open");
 	addStateVariable(StateVariableTypeAlarmDEV,"over_temp",
@@ -371,6 +386,9 @@ chaos::common::data::CDWUniquePtr RTMG1PowerSupply::setProperty(chaos::common::d
 
 }
 void ::driver::powersupply::RTMG1PowerSupply::unitRun() throw(chaos::CException) {
+	setStateVariableSeverity(StateVariableTypeAlarmCU,"fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
+	try {
     chaos::common::data::CDWUniquePtr p=driver.getDataset();
     if(p.get()){
 		double cs=p->getDoubleValue("currentSetting");
@@ -392,9 +410,23 @@ void ::driver::powersupply::RTMG1PowerSupply::unitRun() throw(chaos::CException)
 		getAttributeCache()->setOutputAttributeValue("stby", ((state & ::common::powersupply::POWER_SUPPLY_STATE_STANDBY)?true:false));
 		getAttributeCache()->setOutputAttributeValue("local", ((state & ::common::powersupply::POWER_SUPPLY_STATE_LOCAL)?true:false));
 		if(state&::common::powersupply::POWER_SUPPLY_STATE_ALARM){
-			setStateVariableSeverity(StateVariableTypeAlarmDEV,"alarm_state", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+			setStateVariableSeverity(StateVariableTypeAlarmDEV,"faulty_state", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 		} else {
-			setStateVariableSeverity(StateVariableTypeAlarmDEV,"alarm_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+			setStateVariableSeverity(StateVariableTypeAlarmDEV,"faulty_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
+		}
+
+		if(state&::common::powersupply::POWER_SUPPLY_STATE_ERROR){
+			setStateVariableSeverity(StateVariableTypeAlarmDEV,"bad_state", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+		} else {
+			setStateVariableSeverity(StateVariableTypeAlarmDEV,"bad_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
+		}
+
+		if(state&::common::powersupply::POWER_SUPPLY_STATE_UKN){
+			setStateVariableSeverity(StateVariableTypeAlarmDEV,"unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+		} else {
+			setStateVariableSeverity(StateVariableTypeAlarmDEV,"unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
 		}
 		getAttributeCache()->setInputAttributeValue("stby", ((statesp & ::common::powersupply::POWER_SUPPLY_STATE_STANDBY)?true:false));
@@ -405,15 +437,19 @@ void ::driver::powersupply::RTMG1PowerSupply::unitRun() throw(chaos::CException)
 		uint64_t alarms[2];
 		driver.getData("faults", (void *)alarms);
 		getAttributeCache()->setOutputAttributeValue("alarms", alarms[0]);
-		getAttributeCache()->setOutputAttributeValue("alarms", alarms[1]);
-		if((alarms[0]!=0) || (alarms[1]!=0)){
+		getAttributeCache()->setOutputAttributeValue("alarms2", alarms[1]);
+	/*	if((alarms[0]!=0) || (alarms[1]!=0)){
 			setStateVariableSeverity(StateVariableTypeAlarmDEV,"interlock", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 		} else {
 			setStateVariableSeverity(StateVariableTypeAlarmDEV,"interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-		}
+		}*/
 		//SCCUDBG<<"curr set:"<<cs<<" all:"<<p->getCompliantJSONString();
 		pushInputDataset();
     }
+	} catch(chaos::CException& e){
+		setStateVariableSeverity(StateVariableTypeAlarmCU,"fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+		SCCUERR<<"Fetch error:"<<e.what();
+	}
    //getAttributeCache()->setOutputDomainAsChanged();
    // getAttributeCache()->setInputDomainAsChanged();
 
