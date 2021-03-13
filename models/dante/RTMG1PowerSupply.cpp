@@ -383,7 +383,7 @@ chaos::common::data::CDWUniquePtr RTMG1PowerSupply::getProperty(chaos::common::d
 	return   driver.getDataset();
 }
 chaos::common::data::CDWUniquePtr RTMG1PowerSupply::setProperty(chaos::common::data::CDWUniquePtr d ){
-
+	return chaos::common::data::CDWUniquePtr();
 }
 void ::driver::powersupply::RTMG1PowerSupply::unitRun() throw(chaos::CException) {
 	setStateVariableSeverity(StateVariableTypeAlarmCU,"fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelClear);
@@ -395,8 +395,8 @@ void ::driver::powersupply::RTMG1PowerSupply::unitRun() throw(chaos::CException)
      //  getAttributeCache()->setInputAttributeValue("voltage",p->getDoubleValue("outputVolt"));
 		getAttributeCache()->setInputAttributeValue("current",cs);
 		getAttributeCache()->setInputAttributeValue("polarity",p->getInt32Value("polaritySetting"));
-		getAttributeCache()->setOutputAttributeValue("rampUpRate",p->getDoubleValue("slewRateSetting"));
-		getAttributeCache()->setOutputAttributeValue("rampDownRate",p->getDoubleValue("slewRateSetting"));
+		getAttributeCache()->setInputAttributeValue("rampUpRate",p->getDoubleValue("slewRateSetting"));
+		getAttributeCache()->setInputAttributeValue("rampDownRate",p->getDoubleValue("slewRateSetting"));
 
 		getAttributeCache()->setOutputAttributeValue("voltage",p->getDoubleValue("outputVolt"));
 		getAttributeCache()->setOutputAttributeValue("current",p->getDoubleValue("outputCurr"));
