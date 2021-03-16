@@ -33,8 +33,12 @@ namespace driver {
 			  std::string device_hw;
 			
     		::driver::data_import::DanteDriver driver;
+			chaos::common::data::CDataWrapper in,out,pin,pout;		
+
 
 		protected:
+			void acquireOut();
+			void acquireIn();
 			/*
 			 Define the Control Unit Dataset and Actions
 			 */
