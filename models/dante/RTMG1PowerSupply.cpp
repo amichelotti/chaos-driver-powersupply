@@ -336,7 +336,7 @@ void ::driver::powersupply::RTMG1PowerSupply::unitDefineCustomAttribute() {
 // Abstract method for the initialization of the control unit
 
 void ::driver::powersupply::RTMG1PowerSupply::unitInit() throw(CException) {
-	in.reset();
+  in.reset();
   out.reset();
   in.addDoubleValue("currentSetting", 0);
   in.addInt32Value("polaritySetting", 0);
@@ -356,24 +356,21 @@ void ::driver::powersupply::RTMG1PowerSupply::unitInit() throw(CException) {
   out.addInt32Value("slewRateSetting", 0);
   out.addDoubleValue("slewRateReadout", 0);
   if ((driver.getData(in) != 0) || (driver.getData(out) != 0)) {
-      setStateVariableSeverity(StateVariableTypeAlarmCU, "fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+    setStateVariableSeverity(StateVariableTypeAlarmCU, "fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
   }
 }
 
 // Abstract method for the start of the control unit
 
 void ::driver::powersupply::RTMG1PowerSupply::unitStart() throw(CException) {
-	    if ((driver.getData(in) != 0) || (driver.getData(out) != 0)) {
-      setStateVariableSeverity(StateVariableTypeAlarmCU, "fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
-    } else {
-		acquireIn();
-		acquireOut();
-		pushInputDataset();
-		pushOutputDataset();
-
-
-	}
-
+  if ((driver.getData(in) != 0) || (driver.getData(out) != 0)) {
+    setStateVariableSeverity(StateVariableTypeAlarmCU, "fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+  } else {
+    acquireIn();
+    acquireOut();
+    pushInputDataset();
+    pushOutputDataset();
+  }
 }
 
 // Abstract method for the stop of the control unit
@@ -384,7 +381,6 @@ void ::driver::powersupply::RTMG1PowerSupply::unitStop() throw(CException) {
 // Abstract method for the deinit of the control unit
 
 void ::driver::powersupply::RTMG1PowerSupply::unitDeinit() throw(CException) {
-  
 }
 chaos::common::data::CDWUniquePtr RTMG1PowerSupply::getProperty(chaos::common::data::CDWUniquePtr d) {
   return driver.getDataset();
@@ -393,55 +389,54 @@ chaos::common::data::CDWUniquePtr RTMG1PowerSupply::setProperty(chaos::common::d
   return chaos::common::data::CDWUniquePtr();
 }
 
-void RTMG1PowerSupply::acquireOut(){
-			std::string desc;
+void RTMG1PowerSupply::acquireOut() {
+  std::string desc;
 
-	 int32_t state = resultState(out.getInt32Value("status"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
-		getAttributeCache()->setOutputAttributeValue("voltage",out.getDoubleValue("outputVolt"));
-		getAttributeCache()->setOutputAttributeValue("current",out.getDoubleValue("outputCurr"));
-		getAttributeCache()->setOutputAttributeValue("polarity",out.getInt32Value("outputPolarity"));
-		getAttributeCache()->setOutputAttributeValue("rampUpRate",out.getDoubleValue("slewRateReadout"));
-		getAttributeCache()->setOutputAttributeValue("rampDownRate",out.getDoubleValue("slewRateReadout"));
+  int32_t state = resultState(out.getInt32Value("status"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
+  getAttributeCache()->setOutputAttributeValue("voltage", out.getDoubleValue("outputVolt"));
+  getAttributeCache()->setOutputAttributeValue("current", out.getDoubleValue("outputCurr"));
+  getAttributeCache()->setOutputAttributeValue("polarity", out.getInt32Value("outputPolarity"));
+  getAttributeCache()->setOutputAttributeValue("rampUpRate", out.getDoubleValue("slewRateReadout"));
+  getAttributeCache()->setOutputAttributeValue("rampDownRate", out.getDoubleValue("slewRateReadout"));
 
-        getAttributeCache()->setOutputAttributeValue("stby", ((state & ::common::powersupply::POWER_SUPPLY_STATE_STANDBY) ? true : false));
-        getAttributeCache()->setOutputAttributeValue("local", ((state & ::common::powersupply::POWER_SUPPLY_STATE_LOCAL) ? true : false));
-        if (state & ::common::powersupply::POWER_SUPPLY_STATE_ALARM) {
-          setStateVariableSeverity(StateVariableTypeAlarmDEV, "faulty_state", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
-        } else {
-          setStateVariableSeverity(StateVariableTypeAlarmDEV, "faulty_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-        }
+  getAttributeCache()->setOutputAttributeValue("stby", ((state & ::common::powersupply::POWER_SUPPLY_STATE_STANDBY) ? true : false));
+  getAttributeCache()->setOutputAttributeValue("local", ((state & ::common::powersupply::POWER_SUPPLY_STATE_LOCAL) ? true : false));
+  if (state & ::common::powersupply::POWER_SUPPLY_STATE_ALARM) {
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "faulty_state", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+  } else {
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "faulty_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+  }
 
-        if (state & ::common::powersupply::POWER_SUPPLY_STATE_ERROR) {
-          setStateVariableSeverity(StateVariableTypeAlarmDEV, "bad_state", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
-        } else {
-          setStateVariableSeverity(StateVariableTypeAlarmDEV, "bad_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-        }
+  if (state & ::common::powersupply::POWER_SUPPLY_STATE_ERROR) {
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "bad_state", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+  } else {
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "bad_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+  }
 
-        if (state & ::common::powersupply::POWER_SUPPLY_STATE_UKN) {
-          setStateVariableSeverity(StateVariableTypeAlarmDEV, "unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
-        } else {
-          setStateVariableSeverity(StateVariableTypeAlarmDEV, "unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-        }
-        setBusyFlag(out.getBoolValue("busy"));
-        setBypassFlag(out.getBoolValue("byPass"));
-        uint64_t alarms[2];
-        driver.getData("faults", (void *)alarms);
-        getAttributeCache()->setOutputAttributeValue("alarms", alarms[0]);
-        getAttributeCache()->setOutputAttributeValue("alarms2", alarms[1]);
-        getAttributeCache()->setOutputDomainAsChanged();
-
+  if (state & ::common::powersupply::POWER_SUPPLY_STATE_UKN) {
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+  } else {
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+  }
+  setBusyFlag(out.getBoolValue("busy"));
+  setBypassFlag(out.getBoolValue("byPass"));
+  uint64_t alarms[2];
+  driver.getData("faults", (void *)alarms);
+  getAttributeCache()->setOutputAttributeValue("alarms", alarms[0]);
+  getAttributeCache()->setOutputAttributeValue("alarms2", alarms[1]);
+  getAttributeCache()->setOutputDomainAsChanged();
 }
-void RTMG1PowerSupply::acquireIn(){
-			std::string desc;
+void RTMG1PowerSupply::acquireIn() {
+  std::string desc;
 
-		getAttributeCache()->setInputAttributeValue("current", in.getDoubleValue("currentSetting"));
-        getAttributeCache()->setInputAttributeValue("polarity", in.getInt32Value("polaritySetting"));
-        getAttributeCache()->setInputAttributeValue("rampUpRate", in.getDoubleValue("slewRateSetting"));
-        getAttributeCache()->setInputAttributeValue("rampDownRate", in.getDoubleValue("slewRateSetting"));
-        int32_t statesp = resultState(in.getInt32Value("statusSetting"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
-        getAttributeCache()->setInputAttributeValue("stby", ((statesp & ::common::powersupply::POWER_SUPPLY_STATE_STANDBY) ? true : false));
-        getAttributeCache()->setInputAttributeValue("local", ((statesp & ::common::powersupply::POWER_SUPPLY_STATE_LOCAL) ? true : false));
-        getAttributeCache()->setInputDomainAsChanged();
+  getAttributeCache()->setInputAttributeValue("current", in.getDoubleValue("currentSetting"));
+  getAttributeCache()->setInputAttributeValue("polarity", in.getInt32Value("polaritySetting"));
+  getAttributeCache()->setInputAttributeValue("rampUpRate", in.getDoubleValue("slewRateSetting"));
+  getAttributeCache()->setInputAttributeValue("rampDownRate", in.getDoubleValue("slewRateSetting"));
+  int32_t statesp = resultState(in.getInt32Value("statusSetting"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
+  getAttributeCache()->setInputAttributeValue("stby", ((statesp & ::common::powersupply::POWER_SUPPLY_STATE_STANDBY) ? true : false));
+  getAttributeCache()->setInputAttributeValue("local", ((statesp & ::common::powersupply::POWER_SUPPLY_STATE_LOCAL) ? true : false));
+  getAttributeCache()->setInputDomainAsChanged();
 }
 void ::driver::powersupply::RTMG1PowerSupply::unitRun() throw(chaos::CException) {
   setStateVariableSeverity(StateVariableTypeAlarmCU, "fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelClear);
@@ -450,27 +445,27 @@ void ::driver::powersupply::RTMG1PowerSupply::unitRun() throw(chaos::CException)
     if ((driver.getData(in) != 0) || (driver.getData(out) != 0)) {
       setStateVariableSeverity(StateVariableTypeAlarmCU, "fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
     } else {
-      if (!(in == pin)) {
-		SCCUDBG << "INPUT CHANGED prev:"<<pin.getCompliantJSONString();
-		SCCUDBG << "INPUT CHANGED curr:"<<in.getCompliantJSONString();
+      if ((in != pin)) {
+        SCCUDBG << "INPUT CHANGED prev:" << pin.getCompliantJSONString();
+        SCCUDBG << "INPUT CHANGED curr:" << in.getCompliantJSONString();
+        pin.reset();
 
         in.copyAllTo(pin);
         acquireIn();
-		pushInputDataset();
-
-
-      } 
-      if (!(out == pout)) {
-		SCCUDBG << "OUTPUT CHANGED prev:"<<pout.getCompliantJSONString();
-		SCCUDBG << "OUTPUT CHANGED curr:"<<out.getCompliantJSONString();
-
-		out.copyAllTo(pout);
-		acquireOut();
-      }/*else {
+        pushInputDataset();
+      }
+      if (out != pout) {
+        SCCUDBG << "OUTPUT CHANGED prev:" << pout.getCompliantJSONString();
+        SCCUDBG << "OUTPUT CHANGED curr:" << out.getCompliantJSONString();
+        pout.reset();
+        out.copyAllTo(pout);
+        acquireOut();
+      } /*else {
 		      SCCUDBG << "OUTPUT DATASET EQUALS";
 
 	  }*/
     }
+    //  SCCUDBG << "OUTPUT:"<<out.getCompliantJSONString();
 
     /*
     chaos::common::data::CDWUniquePtr p=driver.getDataset();
