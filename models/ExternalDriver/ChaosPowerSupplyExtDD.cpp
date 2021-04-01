@@ -406,5 +406,7 @@ uint64_t ChaosPowerSupplyExtDD::getFeatures() {
 //! Execute a command
 MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyExtDD::execOpcode(DrvMsgPtr cmd) {
          ERR<<"Opcode not supported:"<<cmd->opcode;
+         return MsgManagmentResultType::MMR_ERROR				/**< Opcode operation ha given an error. */
+;
     
 }
