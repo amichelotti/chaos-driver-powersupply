@@ -69,7 +69,10 @@ cu_driver::MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyDD::execOp
             
             break;
         case OP_GET_POLARITY:
-            out->result = power->getPolarity(&out->ivalue,in->timeout);
+        {
+            int polsp;
+            out->result = power->getPolarity(&out->ivalue,&polsp,in->timeout);
+        }
      //       PSDBG<< "Got Polarity "<<out->ivalue;
             break;
         case OP_SET_SP:
@@ -144,7 +147,8 @@ cu_driver::MsgManagmentResultType::MsgManagmentResult ChaosPowerSupplyDD::execOp
             break;
         case OP_GET_STATE:{
             std::string desc;
-            out->result = power->getState(&out->ivalue,desc,in->timeout);
+            int statesp;
+            out->result = power->getState(&out->ivalue,desc,&statesp,in->timeout);
             strncpy(out->str,desc.c_str(),MAX_STR_SIZE);
       //      PSDBG<<"Got State: "<<out->ivalue<<" \""<<desc<<"\" timeout:"<<in->timeout;
             break;
@@ -201,9 +205,9 @@ int ChaosPowerSupplyDD::setPolarity(int pol,uint32_t timeo_ms){
 }
 
 
-int ChaosPowerSupplyDD::getPolarity(int* pol,uint32_t timeo_ms){
+int ChaosPowerSupplyDD::getPolarity(int* pol,int*polsp,uint32_t timeo_ms){
    // READ_OP_INT_TIM(OP_GET_POLARITY, pol, timeo_ms);
-       return power->getPolarity(pol,timeo_ms);
+       return power->getPolarity(pol,polsp,timeo_ms);
 
 }
 
@@ -288,9 +292,9 @@ int ChaosPowerSupplyDD::poweron(uint32_t timeo_ms){
     return power->poweron(timeo_ms);
 }
 
-int ChaosPowerSupplyDD::getState(int* state,std::string& desc,uint32_t timeo_ms){
+int ChaosPowerSupplyDD::getState(int* state,std::string& desc,int*statesp,uint32_t timeo_ms){
    // READ_OP_INT_STRING_TIM(OP_GET_STATE, state, desc,timeo_ms);
-   return power->getState(state,desc,timeo_ms);
+   return power->getState(state,desc,statesp,timeo_ms);
 
 }
 
