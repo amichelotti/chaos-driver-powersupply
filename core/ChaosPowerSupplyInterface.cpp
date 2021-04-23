@@ -120,7 +120,7 @@ int ChaosPowerSupplyInterface::setPolarity(int pol,uint32_t timeo_ms){
 }
 
 
-int ChaosPowerSupplyInterface::getPolarity(int* pol,uint32_t timeo_ms){
+int ChaosPowerSupplyInterface::getPolarity(int* pol,int*polsp,uint32_t timeo_ms){
     READ_OP_INT_TIM(OP_GET_POLARITY, pol, timeo_ms);
 }
 
@@ -191,7 +191,7 @@ int ChaosPowerSupplyInterface::poweron(uint32_t timeo_ms){
 
 }
 
-int ChaosPowerSupplyInterface::getState(int* state,std::string& desc,uint32_t timeo_ms){
+int ChaosPowerSupplyInterface::getState(int* state,std::string& desc,int*statesp,uint32_t timeo_ms){
     READ_OP_INT_STRING_TIM(OP_GET_STATE, state, desc,timeo_ms);
 
 }
@@ -246,9 +246,9 @@ int ChaosPowerSupplyInterface::setPolarity(int pol,uint32_t timeo_ms){
 }
 
 
-int ChaosPowerSupplyInterface::getPolarity(int* pol,uint32_t timeo_ms){
+int ChaosPowerSupplyInterface::getPolarity(int* pol,int*polsp,uint32_t timeo_ms){
    // READ_OP_INT_TIM(OP_GET_POLARITY, pol, timeo_ms);
-       return impl->getPolarity(pol);
+       return impl->getPolarity(pol,polsp,timeo_ms);
 
 }
 
@@ -333,9 +333,9 @@ int ChaosPowerSupplyInterface::poweron(uint32_t timeo_ms){
     return impl->poweron(timeo_ms);
 }
 
-int ChaosPowerSupplyInterface::getState(int* state,std::string& desc,uint32_t timeo_ms){
+int ChaosPowerSupplyInterface::getState(int* state,std::string& desc,int*statesp,uint32_t timeo_ms){
    // READ_OP_INT_STRING_TIM(OP_GET_STATE, state, desc,timeo_ms);
-   return impl->getState(state,desc,timeo_ms);
+   return impl->getState(state,desc,statesp,timeo_ms);
 
 }
 

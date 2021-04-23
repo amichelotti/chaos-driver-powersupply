@@ -436,9 +436,11 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
 		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,"No slop down speed set" );
 	}
 
-
-	if (powersupply_drv->getState(&state_id, state_str, 30000) != 0) {
-		throw chaos::CException(-6, "Error getting the state of the powersupply, possibily off", __FUNCTION__);
+	int statesp;
+	if ((err=powersupply_drv->getState(&state_id, state_str,&statesp, 30000))< 0) {
+		std::stringstream ss;
+		ss<<err;
+		throw chaos::CException(-6, "Error getting the state of the powersupply, possibily off, err:"+ss.str(), __FUNCTION__);
 	}
 	//notify change on status_id cached attribute
 	getAttributeCache()->setOutputDomainAsChanged();

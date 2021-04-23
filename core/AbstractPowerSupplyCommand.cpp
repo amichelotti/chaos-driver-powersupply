@@ -98,9 +98,17 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 	uint64_t tmp_uint64;
 	chaos::common::alarm::MultiSeverityAlarmLevel level_stat;
 	int driver_error=0;
+	// read also setpoint
+	if((err = powersupply_drv->getCurrentSP(&tmp_float))==0){
+		*i_current=(double)tmp_float;
+		getAttributeCache()->setInputAttributeValue("current",(double)tmp_float);
+
+	}
 
 	if((err = powersupply_drv->getCurrentOutput(&tmp_float))==0){
-		*o_current = (double)tmp_float;
+		*o_current=(double)tmp_float;
+		getAttributeCache()->setOutputAttributeValue("current",(double)tmp_float);
+
 	} else if(err!=DRV_BYPASS_DEFAULT_CODE){
 		driver_error++;
 		CMDCUERR_<<"Error getting current err:"<<err;
@@ -120,7 +128,9 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 		}
 	}
 	if((err = powersupply_drv->getVoltageOutput(&tmp_float)) == 0){
-		*o_voltage = (double)tmp_float;
+		//*o_voltage = (double)tmp_float;
+		getAttributeCache()->setOutputAttributeValue("voltage",(double)tmp_float);
+
 	} else if(err!=DRV_BYPASS_DEFAULT_CODE){
 		driver_error++;
 		CMDCUERR_<<"Error getting voltage err:"<<err;
@@ -145,9 +155,13 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 
 	if (powersupply_drv->getFeatures() & common::powersupply::POWER_SUPPLY_FEAT_MONOPOLAR)
 {
-    
-	if((err = powersupply_drv->getPolarity(&tmp_int32)) == 0){
+    int32_t polsp;
+	if((err = powersupply_drv->getPolarity(&tmp_int32,&polsp)) == 0){
 		*o_pol = tmp_int32;
+		getAttributeCache()->setInputAttributeValue("polarity",polsp);
+
+		getAttributeCache()->setOutputAttributeValue("polarity",tmp_int32);
+
 	} else if(err!=DRV_BYPASS_DEFAULT_CODE){
 		driver_error++;
 		CMDCUERR_<<"Error getting feature err:"<<err;
@@ -195,14 +209,34 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 	}
 
 	std::string desc;
-	if((err = powersupply_drv->getState(&state, desc,*p_driverTimeout)) == 0){
-		*o_stby = (state & common::powersupply::POWER_SUPPLY_STATE_STANDBY)?true:false;
-		*o_local= (state & common::powersupply::POWER_SUPPLY_STATE_LOCAL)?true:false;
-		*o_off=(state & common::powersupply::POWER_SUPPLY_STATE_OFF)?true:false;
+	int32_t statesp;
+	if((err = powersupply_drv->getState(&state, desc,&statesp,*p_driverTimeout)) == 0){
+
+		*o_stby = ((state & common::powersupply::POWER_SUPPLY_STATE_STANDBY)?true:false);
+		*o_local= ((state & common::powersupply::POWER_SUPPLY_STATE_LOCAL)?true:false);
+		*o_off=((state & common::powersupply::POWER_SUPPLY_STATE_OFF)?true:false);
+		getAttributeCache()->setOutputAttributeValue("stby",*o_stby);
+		getAttributeCache()->setOutputAttributeValue("local",*o_local);
+
 		if(*o_alarms){
 			CMDCUDBG_<<"alarms!! "<<*o_alarms<<" desc:"<<desc;
 		}
 		*o_triggerArmed=(state & common::powersupply::POWER_SUPPLY_STATE_TRIGGER_ARMED)?true:false;
+
+	} else if(err==common::powersupply::POWER_SUPPLY_OUT_OF_SET){
+		*o_stby = (state & common::powersupply::POWER_SUPPLY_STATE_STANDBY)?true:false;
+		*o_local= (state & common::powersupply::POWER_SUPPLY_STATE_LOCAL)?true:false;
+		*o_off=(state & common::powersupply::POWER_SUPPLY_STATE_OFF)?true:false;
+		
+		*i_stby = (statesp & common::powersupply::POWER_SUPPLY_STATE_STANDBY)?true:false;
+		*i_local= (statesp & common::powersupply::POWER_SUPPLY_STATE_LOCAL)?true:false;
+		
+		getAttributeCache()->setInputAttributeValue("stby",*i_stby);
+		getAttributeCache()->setInputAttributeValue("local",*i_local);
+
+		getAttributeCache()->setOutputAttributeValue("stby",*o_stby);
+		getAttributeCache()->setOutputAttributeValue("local",*o_local);
+
 
 	} else if(err!=DRV_BYPASS_DEFAULT_CODE) {
 		driver_error++;
@@ -222,6 +256,9 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 			setStateVariableSeverity(StateVariableTypeAlarmCU,"driver_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
 
 		}
+	} else {
+		// bypass
+		
 	}
 
 	if(driver_error==0){
@@ -241,7 +278,8 @@ void AbstractPowerSupplyCommand::getState(int& current_state, std::string& curre
 	CHAOS_ASSERT(powersupply_drv)
 																			int err = 0;
 	std::string state_str;
-	if((err=powersupply_drv->getState(&current_state, state_str, *p_getTimeout?*p_getTimeout:10000)) != 0) {
+	int statesp;
+	if((err=powersupply_drv->getState(&current_state, state_str, &statesp,*p_getTimeout?*p_getTimeout:10000)) != 0) {
 		CMDCUERR_ << boost::str( boost::format("Error getting the powersupply state = %1% ") % err);
 	}
 
