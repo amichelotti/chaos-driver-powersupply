@@ -509,6 +509,9 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 		return false;
 	}
 
+    int32_t restore_polarity = (snapshot_cache->getAttributeValue(DOMAIN_INPUT, "polarity"))->getAsVariant();
+    double restore_current_sp = (snapshot_cache->getAttributeValue(DOMAIN_INPUT, "current"))->getAsVariant();
+    bool restore_stby = (snapshot_cache->getAttributeValue(DOMAIN_INPUT, "stby"))->getAsVariant();
 
 	uint64_t start_restore_time = chaos::common::utility::TimingUtil::getTimeStamp();
 	bool cmd_result = true;
@@ -521,6 +524,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	int32_t *now_polarity_i = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_INPUT, "polarity");
 	uint64_t *alarm=getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "alarms");
 	RESTORE_LDBG << "Start the restore of the powersupply at:curr:"<<*now_current_sp<<" pol:"<<*now_polarity<<" stby:"<<*now_stby;
+	RESTORE_LDBG << "Restore of the powersupply at:curr:"<<restore_current_sp<<" pol:"<<restore_polarity<<" stby:"<<restore_stby;
 
 	if(*alarm!=0){
 		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,CHAOS_FORMAT("There are active alarms %1% during restore, try to rese",%*alarm ));
@@ -536,16 +540,16 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	int is_bipolar = powersupply_drv->getFeatures()& ::common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR;
 
 	//chec the restore polarity
-    int32_t restore_polarity = *(snapshot_cache->getAttributeValue(DOMAIN_INPUT, "polarity"))->getValuePtr<int32_t>();
 	bool triggerPolarityRestore=((is_bipolar == 0) && ((*now_polarity != restore_polarity) || (*now_polarity_i!= *now_polarity)));
-    double restore_current_sp = *(snapshot_cache->getAttributeValue(DOMAIN_INPUT, "current"))->getValuePtr<double>();
-    bool restore_stby = *(snapshot_cache->getAttributeValue(DOMAIN_INPUT, "stby"))->getValuePtr<bool>();
 	bool triggerStbyRestore=(restore_stby != *now_stby) || (*now_stby != *now_stby_i);
 	RESTORE_LDBG << "current SP:" << *now_current_sp << "==> " << restore_current_sp;
 	RESTORE_LDBG << "current STBY:" << *now_stby << "(input:)"<<*now_stby_i<<" ==>" << restore_stby;
 
 	RESTORE_LDBG << "current POLARITY:" << *now_polarity<< "(input:)"<<*now_polarity_i << " ==>" << restore_polarity;
-
+	if(restore_polarity==0 && restore_current_sp>0){
+		RESTORE_LERR<<" incongruent settings polarity =0 and current:"<<restore_current_sp;
+		return false;
+	}
 	// restoring mode
 	if (triggerStbyRestore) {
 		if (*now_stby == false) {
