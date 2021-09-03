@@ -390,8 +390,6 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineCustomAttribute(
 // Abstract method for the initialization of the control unit
 
 void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CException) {
-	metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,"Initializing");
-
 	int err = 0;
 	int state_id;
 	std::string max_range;
@@ -427,14 +425,12 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
 	/*
 	 * current_sp_attr_info.reset();
 	 */
-	if (*asup <= 0) {
+	if ((*asup <= 0) ||(*asdown <= 0)) {
 		//throw chaos::CException(-4, "No slop up speed set", __FUNCTION__);
-		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,"No slop up speed set" );
+		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,"No slop up or down speed set" );
 
 	}
-	if (*asdown <= 0) {
-		metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelWarning,"No slop down speed set" );
-	}
+	
 
 	int statesp;
 	if ((err=powersupply_drv->getState(&state_id, state_str,&statesp, 30000))< 0) {
@@ -460,7 +456,6 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
 		//throw chaos::CException(2, boost::str( boost::format("Error %1 setting the slope in state %2%[%3%]") % err % state_str % state_id), std::string(__FUNCTION__));
 	}
 */
-	metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,"Init Done");
 
 }
 
