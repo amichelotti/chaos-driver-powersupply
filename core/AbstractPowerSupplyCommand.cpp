@@ -77,7 +77,7 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper *data) {
 
 
 	//get pointer to the output datase variable
-	chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = (driverAccessorsErogator->getAccessoInstanceByIndex(1))?driverAccessorsErogator->getAccessoInstanceByIndex(1):driverAccessorsErogator->getAccessoInstanceByIndex(0);
+	chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = driverAccessorsErogator->getAccessoInstanceByIndex(0);//(driverAccessorsErogator->getAccessoInstanceByIndex(1))?driverAccessorsErogator->getAccessoInstanceByIndex(1):driverAccessorsErogator->getAccessoInstanceByIndex(0);
 	if(power_supply_accessor != NULL) {
 		if(powersupply_drv == NULL){
 			powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
