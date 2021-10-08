@@ -92,7 +92,6 @@ uint8_t AbstractPowerSupplyCommand::implementedHandler() {
 }
 
 void AbstractPowerSupplyCommand::acquireHandler() {
-	static bool initSet=false;
 	int err;
 	float tmp_float;
 	int32_t tmp_int32;
@@ -268,14 +267,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 
 	}
 	CMDCUDBG_ << "current:" << *o_current<< ",current_sp:" << *i_current<< ",polarity:" << *o_pol<< ",alarms:" << *o_alarms<< ",stby -> " << *o_stby;
-	if(initSet==false){
-		CMDCUDBG_ << " INITIALIZE SETs current:" << *o_current<< ",current_sp:" << *i_current<< ",polarity:" << *o_pol<< ",alarms:" << *o_alarms<< ",stby -> " << *o_stby;
-		initSet=true;
-		getControlUnit()->dsInitSetFromReadout();
-		getAttributeCache()->setInputDomainAsChanged();
-		getControlUnit()->pushInputDataset();
-
-	} 
+	 
 
 
 	//force output dataset as changed

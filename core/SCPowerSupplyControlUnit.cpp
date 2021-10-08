@@ -438,8 +438,6 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
 		ss<<err;
 		throw chaos::CException(-6, "Error getting the state of the powersupply, possibily off, err:"+ss.str(), __FUNCTION__);
 	}
-	//notify change on status_id cached attribute
-	getAttributeCache()->setOutputDomainAsChanged();
 
 	if (powersupply_drv->getHWVersion(device_hw, 1000) == 0) {
 		SCCUDBG << "hardware found: \"" << device_hw << "\"";
