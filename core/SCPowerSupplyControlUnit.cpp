@@ -115,7 +115,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setRampH(const std::string
 
 	const double *asdown = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampDownRate");
 	if (value > 0 && *asdown > 0) {
-		SCCUDBG << "set ramp up:" << value;
+		SCCUDBG << "set ramp up:" << value<<" ramp down:"<<*asdown;
 
 		err = powersupply_drv->setCurrentRampSpeed(value, *asdown);
 	}
@@ -126,7 +126,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setRampL(const std::string
 	int err = -1;
 	const double *asup = getAttributeCache()->getROPtr<double>(DOMAIN_INPUT, "rampUpRate");
 	if (value > 0 && *asup > 0) {
-		SCCUDBG << "set ramp down:" << value;
+		SCCUDBG << "set ramp down:" << value<<" ramp up:"<<*asup;
 
 		err = powersupply_drv->setCurrentRampSpeed(*asup, value);
 	}
@@ -456,7 +456,6 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
 		//throw chaos::CException(2, boost::str( boost::format("Error %1 setting the slope in state %2%[%3%]") % err % state_str % state_id), std::string(__FUNCTION__));
 	}
 */
-
 }
 
 // Abstract method for the start of the control unit
