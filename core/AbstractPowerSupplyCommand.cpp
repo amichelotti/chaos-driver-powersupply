@@ -267,6 +267,8 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 
 	}
 	CMDCUDBG_ << "current:" << *o_current<< ",current_sp:" << *i_current<< ",polarity:" << *o_pol<< ",alarms:" << *o_alarms<< ",stby -> " << *o_stby;
+	 
+
 
 	//force output dataset as changed
 }
