@@ -91,7 +91,7 @@ namespace driver {
              bool setStby(const std::string &name,bool value,uint32_t size);
 
 			 bool setAlarms(const std::string &name,uint64_t value,uint32_t size);
-
+			uint8_t feature;
 
 
 		};

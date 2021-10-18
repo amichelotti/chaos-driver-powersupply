@@ -63,7 +63,7 @@ void own::CmdPSSetCurrent::setHandler(c_data::CDataWrapper *data) {
         chaos::common::data::RangeValueInfo attr_info;
 	getDeviceDatabase()->getAttributeRangeValueInfo("current", attr_info);
         setStateVariableSeverity(StateVariableTypeAlarmCU,"current_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-        setStateVariableSeverity(StateVariableTypeAlarmCU,"current_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+      //  setStateVariableSeverity(StateVariableTypeAlarmCU,"current_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
   // REQUIRE MIN MAX SET IN THE MDS
         if (attr_info.maxRange.size()) {

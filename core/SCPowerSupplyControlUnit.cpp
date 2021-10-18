@@ -57,6 +57,7 @@ PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(::driver::powersupply::SCPowerSupplyCont
 				_control_unit_param,
 				_control_unit_drivers) {
 	powersupply_drv = NULL;
+	
 }
 
 /*
@@ -144,18 +145,35 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSSetSlope));
 	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSSetCurrent));
 	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdSetPolarity));
+	if(powersupply_drv==NULL){
+		chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = getAccessoInstanceByIndex(0);
 
+		if (power_supply_accessor == NULL) {
+			throw chaos::CException(-1, "Cannot retrieve the requested driver", __FUNCTION__);
+		}
+		powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
+		if (powersupply_drv == NULL) {
+			throw chaos::CException(-2, "Cannot allocate driver resources", __FUNCTION__);
+		}
+
+		if (powersupply_drv->initPS() != 0) {
+			throw chaos::CException(-3, "Cannot initialize powersupply " + getCUID(), __FUNCTION__);
+
+		}
+	}
+	feature=powersupply_drv->getFeatures();
 
 	// input/output DataSet
 	addAttributeToDataSet("stby",
 			"force standby",
 			DataType::TYPE_BOOLEAN,
 			DataType::Bidirectional);
-	addAttributeToDataSet("polarity",
-			"drive the polarity (for bipolar) -1 negative, 0 open, +1 positive",
-			DataType::TYPE_INT32,
-			DataType::Bidirectional);
-
+	if(feature & ::common::powersupply::POWER_SUPPLY_FEAT_MONOPOLAR){
+		addAttributeToDataSet("polarity",
+				"drive the polarity  -1 negative, 0 open, +1 positive",
+				DataType::TYPE_INT32,
+				DataType::Bidirectional);
+	}
 	addAttributeToDataSet("current",
 			"setpoint the current",
 			DataType::TYPE_DOUBLE,
@@ -201,10 +219,6 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 
 	//// CONFIGURATION
 	/// power supply configuration
-	addAttributeToDataSet("polFromSet",
-			"use the sign of set to drive polarity",
-			DataType::TYPE_BOOLEAN,
-			DataType::Input);
 
 	addAttributeToDataSet("polSwSign",
 			"invert the polarity",
@@ -287,15 +301,19 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 	addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, bool >(this,
 			&::driver::powersupply::SCPowerSupplyControlUnit::setStby,
 			"stby");
-	addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, int32_t >(this,
-			&::driver::powersupply::SCPowerSupplyControlUnit::setPol,
-			"polarity");
+	if(feature & ::common::powersupply::POWER_SUPPLY_FEAT_MONOPOLAR){
+
+		addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, int32_t >(this,
+				&::driver::powersupply::SCPowerSupplyControlUnit::setPol,
+				"polarity");
+	}
 
 	addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, uint64_t >(this,
 			&::driver::powersupply::SCPowerSupplyControlUnit::setAlarms,
 			"alarms");
 
 
+	/*
 	addStateVariable(StateVariableTypeAlarmCU,"current_out_of_set",
 			"Notify when the 'current' readout drifts respect the 'current' set");
 
@@ -304,12 +322,15 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 
 	addStateVariable(StateVariableTypeAlarmCU,"polarity_out_of_set",
 			"Notify when the 'polarity' readout drifts respect the 'polarity' set");
+	*/
+	if(feature & ::common::powersupply::POWER_SUPPLY_FEAT_MONOPOLAR){
 
-	addStateVariable(StateVariableTypeAlarmCU,"polarity_value_not_reached",
-			"Notify when 'polarity' readout is not reached");
-
-	addStateVariable(StateVariableTypeAlarmCU,"stby_out_of_set",
-			"Notify when the 'stby' readout drifts respect the 'polarity' set");
+		addStateVariable(StateVariableTypeAlarmCU,"polarity_value_not_reached",
+				"Notify when 'polarity' readout is not reached");
+				addStateVariable(StateVariableTypeAlarmCU,"polarity_invalid_set",
+			"Notify when a 'polarity' set cannot be done, for limits or mode");
+	}
+	
 
 	addStateVariable(StateVariableTypeAlarmCU,"stby_value_not_reached",
 			"Notify when 'stby' readout is not reached");
@@ -324,8 +345,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 	addStateVariable(StateVariableTypeAlarmCU,"stby_invalid_set",
 			"Notify when a 'stby' set cannot be done, for limits or mode");
 
-	addStateVariable(StateVariableTypeAlarmCU,"polarity_invalid_set",
-			"Notify when a 'polarity' set cannot be done, for limits or mode");
+	
 
 	addStateVariable(StateVariableTypeAlarmCU,"driver_error",
 			"Notify when an error arise from driver");
@@ -402,20 +422,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
 	//    const bool* s_bypass = getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "bypass");
 	//    chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = *s_bypass && (getAccessoInstanceByIndex(1)) ? getAccessoInstanceByIndex(1) : getAccessoInstanceByIndex(0);
 
-	chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = getAccessoInstanceByIndex(0);
-
-	if (power_supply_accessor == NULL) {
-		throw chaos::CException(-1, "Cannot retrieve the requested driver", __FUNCTION__);
-	}
-	powersupply_drv = new chaos::driver::powersupply::ChaosPowerSupplyInterface(power_supply_accessor);
-	if (powersupply_drv == NULL) {
-		throw chaos::CException(-2, "Cannot allocate driver resources", __FUNCTION__);
-	}
-
-	if (powersupply_drv->initPS() != 0) {
-		throw chaos::CException(-3, "Cannot initialize powersupply " + getCUID(), __FUNCTION__);
-
-	}
+	
 	//check mandatory default values
 	/*
 	 */
@@ -487,9 +494,20 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
         RESTORE_LERR << " missing 'local' to restore";
         return false;
     }*/
-    if (!snapshot_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute("polarity")) {
-		RESTORE_LERR << " missing 'polarity' to restore";
-		return false;
+	int32_t restore_polarity=-1000;
+	int32_t *now_polarity,*now_polarity_i ;
+	bool triggerPolarityRestore=false;
+	if(feature & ::common::powersupply::POWER_SUPPLY_FEAT_MONOPOLAR){
+
+		if (!snapshot_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute("polarity")) {
+			RESTORE_LERR << " missing 'polarity' to restore";
+			return false;
+		}
+		restore_polarity = (snapshot_cache->getAttributeValue(DOMAIN_INPUT, "polarity"))->getAsVariant();
+		now_polarity = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
+		now_polarity_i = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_INPUT, "polarity");
+		triggerPolarityRestore=((*now_polarity != restore_polarity) || (*now_polarity_i!= *now_polarity));
+
 	}
 	if (!snapshot_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute("current")) {
 		RESTORE_LERR << " missing 'current' to restore";
@@ -501,7 +519,6 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 		return false;
 	}
 
-    int32_t restore_polarity = (snapshot_cache->getAttributeValue(DOMAIN_INPUT, "polarity"))->getAsVariant();
     double restore_current_sp = (snapshot_cache->getAttributeValue(DOMAIN_INPUT, "current"))->getAsVariant();
     bool restore_stby = (snapshot_cache->getAttributeValue(DOMAIN_INPUT, "stby"))->getAsVariant();
 
@@ -512,10 +529,9 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	bool *now_stby = getAttributeCache()->getRWPtr<bool>(DOMAIN_OUTPUT, "stby");
 	bool *now_stby_i = getAttributeCache()->getRWPtr<bool>(DOMAIN_INPUT, "stby");
 
-	int32_t *now_polarity = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
-	int32_t *now_polarity_i = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_INPUT, "polarity");
+	
 	uint64_t *alarm=getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "alarms");
-	RESTORE_LDBG << "Start the restore of the powersupply at:curr:"<<*now_current_sp<<" pol:"<<*now_polarity<<" stby:"<<*now_stby;
+	RESTORE_LDBG << "Start the restore of the powersupply at:curr:"<<*now_current_sp;
 	RESTORE_LDBG << "Restore of the powersupply at:curr:"<<restore_current_sp<<" pol:"<<restore_polarity<<" stby:"<<restore_stby;
 
 	if(*alarm!=0){
@@ -529,10 +545,8 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 			return false;
 		}
 	}
-	int is_bipolar = powersupply_drv->getFeatures()& ::common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR;
 
 	//chec the restore polarity
-	bool triggerPolarityRestore=((is_bipolar == 0) && ((*now_polarity != restore_polarity) || (*now_polarity_i!= *now_polarity)));
 	bool triggerStbyRestore=(restore_stby != *now_stby) || (*now_stby != *now_stby_i);
 	RESTORE_LDBG << "current SP:" << *now_current_sp << "==> " << restore_current_sp;
 	RESTORE_LDBG << "current STBY:" << *now_stby << "(input:)"<<*now_stby_i<<" ==>" << restore_stby;
@@ -561,7 +575,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 			}
 		}
 		// now stby = true
-		if (triggerStbyRestore) {
+		if (triggerPolarityRestore) {
 			RESTORE_LDBG << "5 changing polarity:" << restore_polarity;
 			if (!setPolarity(restore_polarity)) {
 				RESTORE_LERR << "6 error restoring polariy to " << restore_polarity;
@@ -591,7 +605,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	//handle bipolar
 
 	///
-	if (triggerStbyRestore) {
+	if (triggerPolarityRestore) {
 		//we need to change the polarity
 		RESTORE_LDBG << "Change the polarity from:" << *now_polarity << "(input:"<<*now_polarity_i<<") to:" << restore_polarity;
 
