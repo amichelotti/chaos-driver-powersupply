@@ -156,10 +156,7 @@ void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset() throw
 
   //// CONFIGURATION
   /// power supply configuration
-  addAttributeToDataSet("polFromSet",
-                        "use the sign of set to drive polarity",
-                        DataType::TYPE_BOOLEAN,
-                        DataType::Input);
+  
 
   addAttributeToDataSet("polSwSign",
                         "invert the polarity",

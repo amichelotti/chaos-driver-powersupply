@@ -76,11 +76,11 @@ void CmdPSDefault::acquireHandler() {
 
 void CmdPSDefault::ccHandler() {
 	/////  CHECKS during operational mode
-	if(*i_stby!=*o_stby){
+	/*if(*i_stby!=*o_stby){
 		setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 	} else {
 		setStateVariableSeverity(StateVariableTypeAlarmCU,"stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
-	}
+	}*/
 	if(*o_alarms){
 		SETDEVALARM(*o_alarms,POWER_SUPPLY_EVENT_DOOR_OPEN,"door_open");
 		SETDEVALARM(*o_alarms,POWER_SUPPLY_EVENT_OVER_TEMP,"over_temp");
@@ -108,6 +108,7 @@ void CmdPSDefault::ccHandler() {
 		setStateVariableSeverity(StateVariableTypeAlarmDEV,"interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
 	}
+/*
 	setStateVariableSeverity(StateVariableTypeAlarmDEV, chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
 
@@ -140,5 +141,6 @@ void CmdPSDefault::ccHandler() {
 	} else {
 		setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 	}
+	*/
 	getAttributeCache()->setOutputDomainAsChanged();
 }

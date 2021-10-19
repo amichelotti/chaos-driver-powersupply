@@ -41,7 +41,7 @@ namespace driver {
 		protected:
                     int32_t state;
 			bool		*o_stby,*o_local,*i_stby,*i_local,*o_off,*i_off,*o_triggerArmed;
-            const bool        *c_polFromSet,*c_zeroOnStby,*c_polSwSign,*c_stbyOnPol;
+            const bool        *c_zeroOnStby,*c_polSwSign,*c_stbyOnPol;
 	    //            const bool  *s_bypass;
             const std::string p_unit;
             const int32_t* p_scale;
@@ -66,7 +66,8 @@ namespace driver {
 			void setHandler(c_data::CDataWrapper *data);
 
 			void getState(int& current_state, std::string& current_state_str);
-			
+			uint8_t feature;
+
 		};
 	}
 }
