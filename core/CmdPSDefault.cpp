@@ -54,7 +54,6 @@ CmdPSDefault::~CmdPSDefault() {
 void CmdPSDefault::setHandler(c_data::CDataWrapper *data) {
 
 	AbstractPowerSupplyCommand::setHandler(data);
-	metadataLogging(chaos::common::metadata_logging::StandardLoggingChannel::LogLevelInfo,"Entering in Default");
 
 	BC_NORMAL_RUNNING_PROPERTY
 }
