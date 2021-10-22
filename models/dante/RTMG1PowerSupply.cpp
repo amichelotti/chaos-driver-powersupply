@@ -386,18 +386,9 @@ chaos::common::data::CDWUniquePtr RTMG1PowerSupply::setProperty(chaos::common::d
   return chaos::common::data::CDWUniquePtr();
 }
 
-void RTMG1PowerSupply::acquireOut() {
+void  RTMG1PowerSupply::setFlags(){
   std::string desc;
-
-  int32_t state = resultState(out.getInt32Value("status"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
-  getAttributeCache()->setOutputAttributeValue("voltage", out.getDoubleValue("outputVolt"));
-  getAttributeCache()->setOutputAttributeValue("current", out.getDoubleValue("outputCurr"));
-  getAttributeCache()->setOutputAttributeValue("polarity", out.getInt32Value("outputPolarity"));
-  getAttributeCache()->setOutputAttributeValue("rampUpRate", out.getDoubleValue("slewRateReadout"));
-  getAttributeCache()->setOutputAttributeValue("rampDownRate", out.getDoubleValue("slewRateReadout"));
-
-  getAttributeCache()->setOutputAttributeValue("stby", ((state & ::common::powersupply::POWER_SUPPLY_STATE_STANDBY) ? true : false));
-  getAttributeCache()->setOutputAttributeValue("local", ((state & ::common::powersupply::POWER_SUPPLY_STATE_LOCAL) ? true : false));
+    int32_t state = resultState(out.getInt32Value("status"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
   if (state & ::common::powersupply::POWER_SUPPLY_STATE_ALARM) {
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "faulty_state", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
   } else {
@@ -415,6 +406,21 @@ void RTMG1PowerSupply::acquireOut() {
   } else {
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
   }
+}
+
+void RTMG1PowerSupply::acquireOut() {
+  std::string desc;
+
+  int32_t state = resultState(out.getInt32Value("status"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
+  getAttributeCache()->setOutputAttributeValue("voltage", out.getDoubleValue("outputVolt"));
+  getAttributeCache()->setOutputAttributeValue("current", out.getDoubleValue("outputCurr"));
+  getAttributeCache()->setOutputAttributeValue("polarity", out.getInt32Value("outputPolarity"));
+  getAttributeCache()->setOutputAttributeValue("rampUpRate", out.getDoubleValue("slewRateReadout"));
+  getAttributeCache()->setOutputAttributeValue("rampDownRate", out.getDoubleValue("slewRateReadout"));
+
+  getAttributeCache()->setOutputAttributeValue("stby", ((state & ::common::powersupply::POWER_SUPPLY_STATE_STANDBY) ? true : false));
+  getAttributeCache()->setOutputAttributeValue("local", ((state & ::common::powersupply::POWER_SUPPLY_STATE_LOCAL) ? true : false));
+  
   setBusyFlag(out.getBoolValue("busy"));
   setBypassFlag(out.getBoolValue("byPass"));
   uint64_t alarms[2];
@@ -457,10 +463,8 @@ void ::driver::powersupply::RTMG1PowerSupply::unitRun() throw(chaos::CException)
         pout.reset();
         out.copyAllTo(pout);
         acquireOut();
-      } /*else {
-		      SCCUDBG << "OUTPUT DATASET EQUALS";
-
-	  }*/
+      }
+      setFlags(); 
     }
     //  SCCUDBG << "OUTPUT:"<<out.getCompliantJSONString();
 

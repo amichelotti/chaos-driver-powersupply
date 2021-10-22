@@ -39,6 +39,7 @@ namespace driver {
 		protected:
 			void acquireOut();
 			void acquireIn();
+			void setFlags();
 			/*
 			 Define the Control Unit Dataset and Actions
 			 */
