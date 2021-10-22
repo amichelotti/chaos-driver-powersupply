@@ -39,6 +39,7 @@ namespace driver {
 		protected:
 			void acquireOut();
 			void acquireIn();
+			void setFlags();
 			/*
 			 Define the Control Unit Dataset and Actions
 			 */
@@ -66,7 +67,7 @@ namespace driver {
             //!restore method for powersupply
 
 		
-
+			uint64_t alarms[2];
 		public:
 			/*
 			 Construct a new CU with an identifier
