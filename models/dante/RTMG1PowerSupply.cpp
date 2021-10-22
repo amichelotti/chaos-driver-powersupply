@@ -352,6 +352,9 @@ void ::driver::powersupply::RTMG1PowerSupply::unitInit() throw(CException) {
   out.addInt32Value("outputPolarity", 0);
   out.addInt32Value("slewRateSetting", 0);
   out.addDoubleValue("slewRateReadout", 0);
+  alarms[0]=0;
+  alarms[1]=0;
+
   if ((driver.getData(in) != 0) || (driver.getData(out) != 0)) {
     setStateVariableSeverity(StateVariableTypeAlarmCU, "fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
   }
@@ -406,6 +409,12 @@ void  RTMG1PowerSupply::setFlags(){
   } else {
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
   }
+  if(alarms[0]){
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "interlock", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
+  } else {
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
+  }
 }
 
 void RTMG1PowerSupply::acquireOut() {
@@ -423,7 +432,6 @@ void RTMG1PowerSupply::acquireOut() {
   
   setBusyFlag(out.getBoolValue("busy"));
   setBypassFlag(out.getBoolValue("byPass"));
-  uint64_t alarms[2];
   driver.getData("faults", (void *)alarms);
   getAttributeCache()->setOutputAttributeValue("alarms", alarms[0]);
   getAttributeCache()->setOutputAttributeValue("alarms2", alarms[1]);
