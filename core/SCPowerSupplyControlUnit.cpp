@@ -296,20 +296,21 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 			"alarms");
 
 
-	addStateVariable(StateVariableTypeAlarmCU,"current_out_of_set",
-			"Notify when the 'current' readout drifts respect the 'current' set");
-
 	addStateVariable(StateVariableTypeAlarmCU,"current_value_not_reached",
 			"Notify when 'current' readout is not reached");
 
+/*
+	addStateVariable(StateVariableTypeAlarmCU,"current_out_of_set",
+			"Notify when the 'current' readout drifts respect the 'current' set");
 	addStateVariable(StateVariableTypeAlarmCU,"polarity_out_of_set",
 			"Notify when the 'polarity' readout drifts respect the 'polarity' set");
+	addStateVariable(StateVariableTypeAlarmCU,"stby_out_of_set",
+			"Notify when the 'stby' readout drifts respect the 'polarity' set");
 
+*/
 	addStateVariable(StateVariableTypeAlarmCU,"polarity_value_not_reached",
 			"Notify when 'polarity' readout is not reached");
 
-	addStateVariable(StateVariableTypeAlarmCU,"stby_out_of_set",
-			"Notify when the 'stby' readout drifts respect the 'polarity' set");
 
 	addStateVariable(StateVariableTypeAlarmCU,"stby_value_not_reached",
 			"Notify when 'stby' readout is not reached");

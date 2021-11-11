@@ -134,11 +134,11 @@ void CmdPSDefault::ccHandler() {
 			}
 		}
 	}
-	if((powersupply_drv->getFeatures()& common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR)&&(*i_pol!=*o_pol)){
+/*	if((powersupply_drv->getFeatures()& common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR)&&(*i_pol!=*o_pol)){
 		setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
 
 	} else {
 		setStateVariableSeverity(StateVariableTypeAlarmCU,"polarity_out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-	}
+	}*/
 	getAttributeCache()->setOutputDomainAsChanged();
 }
