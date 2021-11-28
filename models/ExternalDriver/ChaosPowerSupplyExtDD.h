@@ -45,7 +45,7 @@ namespace chaos {
                 
             protected:
             //chaos::cu::driver_manager::driver::AbstractClientRemoteIODriver
-                 boost::mutex io_mux;
+                 ChaosMutex io_mux;
                  chaos::cu::driver_manager::driver::AbstractClientRemoteIODriver client;
                 // chaos::cu::driver_manager::driver::OpcodeDriverWrapper<ChaosPowerSupplyExtDD, chaos::cu::driver_manager::driver::AbstractServerRemoteIODriver> client;
             public:
