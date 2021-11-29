@@ -39,7 +39,7 @@ namespace chaos {
             class ChaosPowerSupplyDD: ADD_CU_DRIVER_PLUGIN_SUPERCLASS,public ::common::powersupply::AbstractPowerSupply{
                 
             protected:
-                 boost::mutex io_mux;
+                 ChaosMutex io_mux;
 
                 ::common::powersupply::AbstractPowerSupply* power;
             public:
