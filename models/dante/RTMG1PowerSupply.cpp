@@ -391,6 +391,9 @@ chaos::common::data::CDWUniquePtr RTMG1PowerSupply::setProperty(chaos::common::d
 
 void  RTMG1PowerSupply::setFlags(){
   std::string desc;
+  if(out.getBoolValue("byPass")){
+    return;
+  }
     int32_t state = resultState(out.getInt32Value("status"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
   if (state & ::common::powersupply::POWER_SUPPLY_STATE_ALARM) {
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "faulty_state", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
