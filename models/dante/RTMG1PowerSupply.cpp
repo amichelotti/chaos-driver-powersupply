@@ -392,6 +392,14 @@ chaos::common::data::CDWUniquePtr RTMG1PowerSupply::setProperty(chaos::common::d
 void  RTMG1PowerSupply::setFlags(){
   std::string desc;
   if(out.getBoolValue("byPass")){
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "faulty_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "bad_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "polarity_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "current_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
     return;
   }
     int32_t state = resultState(out.getInt32Value("status"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
@@ -429,8 +437,14 @@ void RTMG1PowerSupply::acquireOut() {
   getAttributeCache()->setOutputAttributeValue("polarity", out.getInt32Value("outputPolarity"));
   getAttributeCache()->setOutputAttributeValue("rampUpRate", out.getDoubleValue("slewRateReadout"));
   getAttributeCache()->setOutputAttributeValue("rampDownRate", out.getDoubleValue("slewRateReadout"));
+  bool stby=((state & ::common::powersupply::POWER_SUPPLY_STATE_STANDBY) ? true : false);
+  getAttributeCache()->setOutputAttributeValue("stby", stby);
+  if(stby==true){
+    setStateMask("current_out_of_set",true);
+  } else {
+    setStateMask("current_out_of_set",false);
 
-  getAttributeCache()->setOutputAttributeValue("stby", ((state & ::common::powersupply::POWER_SUPPLY_STATE_STANDBY) ? true : false));
+  }
   getAttributeCache()->setOutputAttributeValue("local", ((state & ::common::powersupply::POWER_SUPPLY_STATE_LOCAL) ? true : false));
   
   setBusyFlag(out.getBoolValue("busy"));
