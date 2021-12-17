@@ -53,15 +53,15 @@ static int32_t resultState(const int32_t status, const bool remote, const bool t
     state |= (int32_t)::common::powersupply::POWER_SUPPLY_STATE_TRIGGER_ARMED;
     ss << "Trigger|";
   }
-  if (status == 1) {
+  if ((status == 1)||status==5) { //5 for powersupply pulsed
     state |= (int32_t)::common::powersupply::POWER_SUPPLY_STATE_STANDBY;
     ss << "Stby|";
 
-  } else if (status == 2) {
+  } else if ((status == 2)||(status==6)) {//6 for powersupply pulsed
     state |= (int32_t)::common::powersupply::POWER_SUPPLY_STATE_ON;
     ss << "Operational|";
 
-  } else if (status == 3) {
+  } else if ((status == 3) ||(state==7)){ //7 for pulsed
     state |= (int32_t)::common::powersupply::POWER_SUPPLY_STATE_ALARM;
     ss << "Alarm|";
     //    DANTE_DBG << " DANTE ALARM STATE:"<<state<<" status:"<<status;
