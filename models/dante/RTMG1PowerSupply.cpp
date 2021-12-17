@@ -343,9 +343,9 @@ void ::driver::powersupply::RTMG1PowerSupply::unitInit() throw(CException) {
   out.addDoubleValue("outputCurr", 0);
   out.addDoubleValue("outputVolt", 0);
   out.addInt32Value("status", 0);
-  out.addBoolValue("onLine", 0);
-  out.addBoolValue("busy", 0);
-  out.addBoolValue("byPass", 0);
+  out.addBoolValue("onLine", false);
+  out.addBoolValue("busy", false);
+  out.addBoolValue("byPass",false);
 
   out.addInt32Value("triggerArmed", 0);
 
@@ -456,7 +456,6 @@ void RTMG1PowerSupply::acquireOut() {
   getAttributeCache()->setOutputAttributeValue("local", ((state & ::common::powersupply::POWER_SUPPLY_STATE_LOCAL) ? true : false));
   
   setBusyFlag(out.getBoolValue("busy"));
-  setBypassFlag(out.getBoolValue("byPass"));
   driver.getData("faults", (void *)alarms);
   getAttributeCache()->setOutputAttributeValue("alarms", alarms[0]);
   getAttributeCache()->setOutputAttributeValue("alarms2", alarms[1]);
@@ -498,7 +497,7 @@ void ::driver::powersupply::RTMG1PowerSupply::unitRun() throw(chaos::CException)
         out.copyAllTo(pout);
         acquireOut();
       }
-      setFlags(); 
+        setFlags(); 
     }
     //SCCUDBG << "OUTPUT:"<<out.getCompliantJSONString();
 
