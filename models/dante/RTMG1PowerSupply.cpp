@@ -423,12 +423,12 @@ void  RTMG1PowerSupply::setFlags(){
   } else {
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
   }
-  if(alarms[0]){
+ /* if(alarms[0]){
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "interlock", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
   } else {
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
-  }
+  }*/
 }
 
 void RTMG1PowerSupply::acquireOut() {
