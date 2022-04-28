@@ -396,9 +396,9 @@ void  RTMG1PowerSupply::setFlags(){
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "bad_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-    setStateVariableSeverity(StateVariableTypeAlarmDEV, "polarity_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
-    setStateVariableSeverity(StateVariableTypeAlarmDEV, "current_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
-    setStateVariableSeverity(StateVariableTypeAlarmDEV, "stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    setStateVariableSeverity(StateVariableTypeAlarmCU, "polarity_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    setStateVariableSeverity(StateVariableTypeAlarmCU, "current_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    setStateVariableSeverity(StateVariableTypeAlarmCU, "stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setBypassFlag(true);
 
     return;
