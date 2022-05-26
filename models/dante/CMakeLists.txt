@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.9)
 project(chaos_driver_powersupply_dante_dd)
 
 SET(DRIVERS_LIB ${DRIVERS_LIB} ${PROJECT_NAME} ${PROJECT_NAME} PARENT_SCOPE)

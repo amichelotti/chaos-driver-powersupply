@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.9)
 project(chaos_driver_powersupply_ocem_dd)
 
 SET(DRIVERS_LIB ${DRIVERS_LIB} ${PROJECT_NAME} common_powersupply_ocem PARENT_SCOPE)
