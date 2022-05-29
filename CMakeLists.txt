@@ -1,5 +1,5 @@
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.9)
 project(chaos_driver_powersupply)
 SET(CHAOS_CUS core/SCPowerSupplyControlUnit.cpp)
 find_package(chaos MODULE REQUIRED)
