@@ -1,5 +1,5 @@
 /*
- *	RTMG1PowerSupply
+ *	RTCORPowerSupply
  *	!CHAOS
  *	Created by Andrea Michelotti
  *
@@ -18,7 +18,7 @@
  *    	limitations under the License.
  */
 
-#include "RTMG1PowerSupply.h"
+#include "RTCORPowerSupply.h"
 #include <common/powersupply/powersupply.h>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
@@ -36,7 +36,7 @@ using namespace ::driver::powersupply;
 #define SCCUDBG CUDBG << "[" << getDeviceID() << "] "
 #define SCCUERR CUERR << "[" << getDeviceID() << "] "
 
-PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(::driver::powersupply::RTMG1PowerSupply)
+PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(::driver::powersupply::RTCORPowerSupply)
 
 /*
  Construct a new CU with an identifier
@@ -71,6 +71,9 @@ static int32_t resultState(const int32_t status, const bool remote, const bool t
     ss << "Error|";
     //    DANTE_DBG << " DANTE ALARM STATE:"<<state<<" status:"<<status;
 
+  } else if (status == 0) {
+     state |= (int32_t)::common::powersupply::POWER_SUPPLY_STATE_SHUTDOWN;
+    ss << "Shutdown|";
   } else {
     state = (int32_t)::common::powersupply::POWER_SUPPLY_STATE_UKN;
     ss << "Uknown|";
@@ -79,7 +82,7 @@ static int32_t resultState(const int32_t status, const bool remote, const bool t
 
   return state;
 }
-::driver::powersupply::RTMG1PowerSupply::RTMG1PowerSupply(const string &               _control_unit_id,
+::driver::powersupply::RTCORPowerSupply::RTCORPowerSupply(const string &               _control_unit_id,
                                                           const string &               _control_unit_param,
                                                           const ControlUnitDriverList &_control_unit_drivers)
     : RTAbstractControlUnit(_control_unit_id,
@@ -91,23 +94,19 @@ static int32_t resultState(const int32_t status, const bool remote, const bool t
 /*
  Base destructor
  */
-::driver::powersupply::RTMG1PowerSupply::~RTMG1PowerSupply() {
+::driver::powersupply::RTCORPowerSupply::~RTCORPowerSupply() {
 }
 
 /*
  Return the default configuration
  */
-void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset() throw(chaos::CException) {
+void ::driver::powersupply::RTCORPowerSupply::unitDefineActionAndDataset() throw(chaos::CException) {
   //install all command
 
   // input/output DataSet
   addAttributeToDataSet("stby",
                         "force standby",
                         DataType::TYPE_BOOLEAN,
-                        DataType::Bidirectional);
-  addAttributeToDataSet("polarity",
-                        "drive the polarity (for bipolar) -1 negative, 0 open, +1 positive",
-                        DataType::TYPE_INT32,
                         DataType::Bidirectional);
 
   addAttributeToDataSet("current",
@@ -158,20 +157,7 @@ void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset() throw
   /// power supply configuration
   
 
-  addAttributeToDataSet("polSwSign",
-                        "invert the polarity",
-                        DataType::TYPE_BOOLEAN,
-                        DataType::Input);
-
-  addAttributeToDataSet("stbyOnPol",
-                        "force standby on polarity changes",
-                        DataType::TYPE_BOOLEAN,
-                        DataType::Input);
-
-  addAttributeToDataSet("zeroOnStby",
-                        "force zero set on standby on standby",
-                        DataType::TYPE_BOOLEAN,
-                        DataType::Input);
+  
 
   // ===================================== shoul be system
   // addAttributeToDataSet("bypass",
@@ -214,82 +200,14 @@ void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset() throw
                         "default driver timeout)",
                         DataType::TYPE_INT32,
                         DataType::Input);
-  //addBinaryAttributeAsSubtypeToDataSet("conversionFactor", "Array of double Coefficents used to convert value from the CU actual units and the driver elementary units", chaos::DataType::SUB_TYPE_DOUBLE, 1, chaos::DataType::Input);
-
-  /*	addAttributeToDataSet("resolution",
-			"Double Minimum meaningful variation of the set respect to the last accepted one",
-			DataType::TYPE_DOUBLE,
-			DataType::Input);*/
-
-  ////////// CONFIGURATION?
-
-  /*
-	addHandlerOnInputAttributeName< ::driver::powersupply::RTMG1PowerSupply, double >(this,
-			&::driver::powersupply::RTMG1PowerSupply::setSP,
-			"current");
-	addHandlerOnInputAttributeName< ::driver::powersupply::RTMG1PowerSupply, double >(this,
-			&::driver::powersupply::RTMG1PowerSupply::setRampH,
-			"rampUpRate");
-	addHandlerOnInputAttributeName< ::driver::powersupply::RTMG1PowerSupply, double >(this,
-			&::driver::powersupply::RTMG1PowerSupply::setRampL,
-			"rampDownRate");
-	addHandlerOnInputAttributeName< ::driver::powersupply::RTMG1PowerSupply, bool >(this,
-			&::driver::powersupply::RTMG1PowerSupply::setOff,
-			"off");
-	addHandlerOnInputAttributeName< ::driver::powersupply::RTMG1PowerSupply, bool >(this,
-			&::driver::powersupply::RTMG1PowerSupply::setStby,
-			"stby");
-	addHandlerOnInputAttributeName< ::driver::powersupply::RTMG1PowerSupply, int32_t >(this,
-			&::driver::powersupply::RTMG1PowerSupply::setPol,
-			"polarity");
-
-	addHandlerOnInputAttributeName< ::driver::powersupply::RTMG1PowerSupply, uint64_t >(this,
-			&::driver::powersupply::RTMG1PowerSupply::setAlarms,
-			"alarms");
-*/
+ 
   addStateVariable(StateVariableTypeAlarmCU, "fetch_error", "Fetch error");
 
-  /*
-	addStateVariable(StateVariableTypeAlarmCU,"current_out_of_set",
-			"Notify when the 'current' readout drifts respect the 'current' set");
-
-	addStateVariable(StateVariableTypeAlarmCU,"current_value_not_reached",
-			"Notify when 'current' readout is not reached");
-
-	addStateVariable(StateVariableTypeAlarmCU,"polarity_out_of_set",
-			"Notify when the 'polarity' readout drifts respect the 'polarity' set");
-
-	addStateVariable(StateVariableTypeAlarmCU,"polarity_value_not_reached",
-			"Notify when 'polarity' readout is not reached");
-
-	addStateVariable(StateVariableTypeAlarmCU,"stby_out_of_set",
-			"Notify when the 'stby' readout drifts respect the 'polarity' set");
-
-	addStateVariable(StateVariableTypeAlarmCU,"stby_value_not_reached",
-			"Notify when 'stby' readout is not reached");
-			addStateVariable(StateVariableTypeAlarmCU,"current_invalid_set",
-			"Notify when a 'current' set cannot be done, for limits or mode");
-
-	addStateVariable(StateVariableTypeAlarmCU,"stby_invalid_set",
-			"Notify when a 'stby' set cannot be done, for limits or mode");
-
-	addStateVariable(StateVariableTypeAlarmCU,"polarity_invalid_set",
-			"Notify when a 'polarity' set cannot be done, for limits or mode");
-
-	addStateVariable(StateVariableTypeAlarmCU,"driver_error",
-			"Notify when an error arise from driver");
-	addStateVariable(StateVariableTypeAlarmCU,"driver_timeout",
-			"Notify when a driver timeout error arise");
-
-	addStateVariable(StateVariableTypeAlarmCU,"communication_failure",
-			"Notify when a CU->HW communication error");
-
-
-*/
   addStateVariable(StateVariableTypeAlarmDEV, "interlock", "Notify when an interlock arise alarms !=0");
 
   addStateVariable(StateVariableTypeAlarmDEV, "bad_state", "Notify when a bad state state=4");
   addStateVariable(StateVariableTypeAlarmDEV, "unknown_state", "Notify when a bad state state>4");
+  addStateVariable(StateVariableTypeAlarmDEV, "shutdown_state", "Notify when shutdown state state=0");
 
   addStateVariable(StateVariableTypeAlarmDEV, "faulty_state", "Notify when a state=3 arise");
 
@@ -318,7 +236,7 @@ void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset() throw
   addStateVariable(StateVariableTypeAlarmDEV, "active_filter_overtemp", "Notify when a filter fuse overtemp");
 }
 
-void ::driver::powersupply::RTMG1PowerSupply::unitDefineCustomAttribute() {
+void ::driver::powersupply::RTCORPowerSupply::unitDefineCustomAttribute() {
   /*  std::string config;
   chaos::common::data::CDWUniquePtr attr;
   
@@ -332,24 +250,24 @@ void ::driver::powersupply::RTMG1PowerSupply::unitDefineCustomAttribute() {
 
 // Abstract method for the initialization of the control unit
 
-void ::driver::powersupply::RTMG1PowerSupply::unitInit() throw(CException) {
+void ::driver::powersupply::RTCORPowerSupply::unitInit() throw(CException) {
   in.reset();
   out.reset();
   in.addDoubleValue("currentSetting", 0);
-  in.addInt32Value("polaritySetting", 0);
   in.addDoubleValue("slewRateSetting", 0);
   in.addInt32Value("statusSetting", 0);
 
   out.addDoubleValue("outputCurr", 0);
   out.addDoubleValue("outputVolt", 0);
   out.addInt32Value("status", 0);
+  out.addInt32Value("statusReadout", 0);
+
   out.addBoolValue("onLine", false);
   out.addBoolValue("busy", false);
   out.addBoolValue("byPass",false);
 
   out.addInt32Value("triggerArmed", 0);
 
-  out.addInt32Value("outputPolarity", 0);
   out.addInt32Value("slewRateSetting", 0);
   out.addDoubleValue("slewRateReadout", 0);
   alarms[0]=0;
@@ -362,7 +280,7 @@ void ::driver::powersupply::RTMG1PowerSupply::unitInit() throw(CException) {
 
 // Abstract method for the start of the control unit
 
-void ::driver::powersupply::RTMG1PowerSupply::unitStart() throw(CException) {
+void ::driver::powersupply::RTCORPowerSupply::unitStart() throw(CException) {
   if ((driver.getData(in) != 0) || (driver.getData(out) != 0)) {
     setStateVariableSeverity(StateVariableTypeAlarmCU, "fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
   } else {
@@ -375,28 +293,29 @@ void ::driver::powersupply::RTMG1PowerSupply::unitStart() throw(CException) {
 
 // Abstract method for the stop of the control unit
 
-void ::driver::powersupply::RTMG1PowerSupply::unitStop() throw(CException) {
+void ::driver::powersupply::RTCORPowerSupply::unitStop() throw(CException) {
 }
 
 // Abstract method for the deinit of the control unit
 
-void ::driver::powersupply::RTMG1PowerSupply::unitDeinit() throw(CException) {
+void ::driver::powersupply::RTCORPowerSupply::unitDeinit() throw(CException) {
 }
-chaos::common::data::CDWUniquePtr RTMG1PowerSupply::getProperty(chaos::common::data::CDWUniquePtr d) {
+chaos::common::data::CDWUniquePtr RTCORPowerSupply::getProperty(chaos::common::data::CDWUniquePtr d) {
   return driver.getDataset();
 }
-chaos::common::data::CDWUniquePtr RTMG1PowerSupply::setProperty(chaos::common::data::CDWUniquePtr d) {
+chaos::common::data::CDWUniquePtr RTCORPowerSupply::setProperty(chaos::common::data::CDWUniquePtr d) {
   return chaos::common::data::CDWUniquePtr();
 }
 
-void  RTMG1PowerSupply::setFlags(){
+void  RTCORPowerSupply::setFlags(){
   std::string desc;
   if(out.getBoolValue("byPass")){
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "faulty_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "bad_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-    setStateVariableSeverity(StateVariableTypeAlarmCU, "polarity_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "shutdown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
     setStateVariableSeverity(StateVariableTypeAlarmCU, "current_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmCU, "stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setBypassFlag(true);
@@ -405,7 +324,7 @@ void  RTMG1PowerSupply::setFlags(){
   }
     setBypassFlag(false);
 
-    int32_t state = resultState(out.getInt32Value("status"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
+    int32_t state = resultState(out.getInt32Value("statusReadout"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
   if (state & ::common::powersupply::POWER_SUPPLY_STATE_ALARM) {
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "faulty_state", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
   } else {
@@ -417,12 +336,17 @@ void  RTMG1PowerSupply::setFlags(){
   } else {
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "bad_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
   }
-
+  if (state & ::common::powersupply::POWER_SUPPLY_STATE_SHUTDOWN) {
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "shutdown_state", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+  } else {
+    setStateVariableSeverity(StateVariableTypeAlarmDEV, "shutdown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+  }
   if (state == ::common::powersupply::POWER_SUPPLY_STATE_UKN) {
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
   } else {
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
   }
+  
  /* if(alarms[0]){
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "interlock", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
   } else {
@@ -431,13 +355,12 @@ void  RTMG1PowerSupply::setFlags(){
   }*/
 }
 
-void RTMG1PowerSupply::acquireOut() {
+void RTCORPowerSupply::acquireOut() {
   std::string desc;
 
   int32_t state = resultState(out.getInt32Value("status"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
   getAttributeCache()->setOutputAttributeValue("voltage", out.getDoubleValue("outputVolt"));
   getAttributeCache()->setOutputAttributeValue("current", out.getDoubleValue("outputCurr"));
-  getAttributeCache()->setOutputAttributeValue("polarity", out.getInt32Value("outputPolarity"));
   getAttributeCache()->setOutputAttributeValue("rampUpRate", out.getDoubleValue("slewRateReadout"));
   getAttributeCache()->setOutputAttributeValue("rampDownRate", out.getDoubleValue("slewRateReadout"));
   bool stby=((state & ::common::powersupply::POWER_SUPPLY_STATE_STANDBY) ? true : false);
@@ -461,11 +384,10 @@ void RTMG1PowerSupply::acquireOut() {
   getAttributeCache()->setOutputAttributeValue("alarms2", alarms[1]);
   getAttributeCache()->setOutputDomainAsChanged();
 }
-void RTMG1PowerSupply::acquireIn() {
+void RTCORPowerSupply::acquireIn() {
   std::string desc;
 
   getAttributeCache()->setInputAttributeValue("current", in.getDoubleValue("currentSetting"));
-  getAttributeCache()->setInputAttributeValue("polarity", in.getInt32Value("polaritySetting"));
   getAttributeCache()->setInputAttributeValue("rampUpRate", in.getDoubleValue("slewRateSetting"));
   getAttributeCache()->setInputAttributeValue("rampDownRate", in.getDoubleValue("slewRateSetting"));
   int32_t statesp = resultState(in.getInt32Value("statusSetting"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
@@ -473,7 +395,7 @@ void RTMG1PowerSupply::acquireIn() {
   getAttributeCache()->setInputAttributeValue("local", ((statesp & ::common::powersupply::POWER_SUPPLY_STATE_LOCAL) ? true : false));
   getAttributeCache()->setInputDomainAsChanged();
 }
-void ::driver::powersupply::RTMG1PowerSupply::unitRun() throw(chaos::CException) {
+void ::driver::powersupply::RTCORPowerSupply::unitRun() throw(chaos::CException) {
   setStateVariableSeverity(StateVariableTypeAlarmCU, "fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
   try {
