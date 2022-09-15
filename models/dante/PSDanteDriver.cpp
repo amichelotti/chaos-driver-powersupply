@@ -254,7 +254,15 @@ int PSDanteDriver::getState(int *state, std::string &desc, int*statesp,uint32_t 
     int32_t status,statusSetting;
     bool remote,trigger;
     int ret = dante.getData("status", (void *)&status);
+    if(ret){
+        DANTE_ERR <<"Reading status err:"<<ret<<" dataset:"<<dante.getDataset()->getJSONString();
+        return ret;
+    }
     ret+=dante.getData("statusSetting", (void *)&statusSetting);
+    if(ret){
+        DANTE_ERR <<"Reading statusSetting err:"<<ret<<" dataset:"<<dante.getDataset()->getJSONString();
+        return ret;
+    }
     dante.getData("remote", (void *)&remote);
     dante.getData("triggerArmed", (void *)&trigger);
   // DANTE_DBG <<"Attributes:"<<dante.getDataset()->getJSONString();

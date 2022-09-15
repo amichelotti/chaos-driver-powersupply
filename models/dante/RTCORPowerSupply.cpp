@@ -207,7 +207,7 @@ void ::driver::powersupply::RTCORPowerSupply::unitDefineActionAndDataset() throw
 
   addStateVariable(StateVariableTypeAlarmDEV, "bad_state", "Notify when a bad state state=4");
   addStateVariable(StateVariableTypeAlarmDEV, "unknown_state", "Notify when a bad state state>4");
-  addStateVariable(StateVariableTypeAlarmDEV, "shutdown_state", "Notify when shutdown state state=0");
+ // addStateVariable(StateVariableTypeAlarmDEV, "shutdown_state", "Notify when shutdown state state=0");
 
   addStateVariable(StateVariableTypeAlarmDEV, "faulty_state", "Notify when a state=3 arise");
 
@@ -314,7 +314,7 @@ void  RTCORPowerSupply::setFlags(){
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "bad_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-    setStateVariableSeverity(StateVariableTypeAlarmDEV, "shutdown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    //setStateVariableSeverity(StateVariableTypeAlarmDEV, "shutdown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
     setStateVariableSeverity(StateVariableTypeAlarmCU, "current_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmCU, "stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
@@ -337,9 +337,13 @@ void  RTCORPowerSupply::setFlags(){
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "bad_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
   }
   if (state & ::common::powersupply::POWER_SUPPLY_STATE_SHUTDOWN) {
-    setStateVariableSeverity(StateVariableTypeAlarmDEV, "shutdown_state", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+      getAttributeCache()->setOutputAttributeValue("off", true);
+      setStateVariableSeverity(StateVariableTypeAlarmCU, "current_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+      setStateVariableSeverity(StateVariableTypeAlarmCU, "stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+
+   // setStateVariableSeverity(StateVariableTypeAlarmDEV, "shutdown_state", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
   } else {
-    setStateVariableSeverity(StateVariableTypeAlarmDEV, "shutdown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+      getAttributeCache()->setOutputAttributeValue("off", false);
   }
   if (state == ::common::powersupply::POWER_SUPPLY_STATE_UKN) {
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelHigh);

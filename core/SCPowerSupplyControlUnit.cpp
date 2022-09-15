@@ -55,9 +55,28 @@ PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(::driver::powersupply::SCPowerSupplyCont
 		//call base constructor
 		chaos::cu::control_manager::SCAbstractControlUnit(_control_unit_id,
 				_control_unit_param,
-				_control_unit_drivers) {
+				_control_unit_drivers),feature(::common::powersupply::POWER_SUPPLY_FEAT_UKN) {
 	powersupply_drv = NULL;
-	
+	if(_control_unit_param.size()){
+    	chaos::common::data::CDataWrapper c;
+    	c.setSerializedJsonData(_control_unit_param.c_str());
+		if(c.hasKey("feature")){
+			int type=c.getInt32Value("feature");
+			switch(type){
+				case 0:
+					feature=::common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR;
+					break;
+				case 1:
+					feature=::common::powersupply::POWER_SUPPLY_FEAT_MONOPOLAR;
+					break;
+				case 2:
+					feature=::common::powersupply::POWER_SUPPLY_FEAT_MONOPOLAR_FIXED;
+					break;
+				default:
+					::common::powersupply::POWER_SUPPLY_FEAT_UKN;
+			}
+		}
+  }
 }
 
 /*
@@ -144,7 +163,9 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSReset));
 	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSSetSlope));
 	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSSetCurrent));
-	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdSetPolarity));
+	if(feature!=::common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR){
+		installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdSetPolarity));
+	}
 	if(powersupply_drv==NULL){
 		chaos::cu::driver_manager::driver::DriverAccessor *power_supply_accessor = getAccessoInstanceByIndex(0);
 
@@ -161,18 +182,35 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 
 		}
 	}
-	feature=powersupply_drv->getFeatures();
-
+	if(feature==::common::powersupply::POWER_SUPPLY_FEAT_UKN){
+		feature=powersupply_drv->getFeatures();
+	}
 	// input/output DataSet
 	addAttributeToDataSet("stby",
 			"force standby",
 			DataType::TYPE_BOOLEAN,
 			DataType::Bidirectional);
-	if(feature & ::common::powersupply::POWER_SUPPLY_FEAT_MONOPOLAR){
+	if(feature!=::common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR){
+	
 		addAttributeToDataSet("polarity",
 				"drive the polarity  -1 negative, 0 open, +1 positive",
 				DataType::TYPE_INT32,
 				DataType::Bidirectional);
+		addAttributeToDataSet("polSwSign",
+			"invert the polarity",
+			DataType::TYPE_BOOLEAN,
+			DataType::Input);
+
+	addAttributeToDataSet("stbyOnPol",
+			"force standby on polarity changes",
+			DataType::TYPE_BOOLEAN,
+			DataType::Input);
+
+	addAttributeToDataSet("zeroOnStby",
+			"force zero set on standby on standby",
+			DataType::TYPE_BOOLEAN,
+			DataType::Input);
+
 	}
 	addAttributeToDataSet("current",
 			"setpoint the current",
@@ -220,21 +258,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 	//// CONFIGURATION
 	/// power supply configuration
 
-	addAttributeToDataSet("polSwSign",
-			"invert the polarity",
-			DataType::TYPE_BOOLEAN,
-			DataType::Input);
-
-	addAttributeToDataSet("stbyOnPol",
-			"force standby on polarity changes",
-			DataType::TYPE_BOOLEAN,
-			DataType::Input);
-
-	addAttributeToDataSet("zeroOnStby",
-			"force zero set on standby on standby",
-			DataType::TYPE_BOOLEAN,
-			DataType::Input);
-
+	
 	// ===================================== shoul be system
 	// addAttributeToDataSet("bypass",
 	//         "exclude HW changes",
@@ -301,7 +325,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 	addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, bool >(this,
 			&::driver::powersupply::SCPowerSupplyControlUnit::setStby,
 			"stby");
-	if(feature & ::common::powersupply::POWER_SUPPLY_FEAT_MONOPOLAR){
+	if(feature!=::common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR){
 
 		addHandlerOnInputAttributeName< ::driver::powersupply::SCPowerSupplyControlUnit, int32_t >(this,
 				&::driver::powersupply::SCPowerSupplyControlUnit::setPol,
@@ -325,9 +349,11 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset
 			"Notify when the 'stby' readout drifts respect the 'polarity' set");
 
 */
+if(feature!=::common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR){
+
 	addStateVariable(StateVariableTypeAlarmCU,"polarity_value_not_reached",
 			"Notify when 'polarity' readout is not reached");
-
+}
 
 	addStateVariable(StateVariableTypeAlarmCU,"stby_value_not_reached",
 			"Notify when 'stby' readout is not reached");
@@ -436,12 +462,14 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
 	}
 	
 
+	
 	int statesp;
-	if ((err=powersupply_drv->getState(&state_id, state_str,&statesp, 30000))< 0) {
+	if (((err=powersupply_drv->getState(&state_id, state_str,&statesp, 30000))< 0)&& (err!=DRV_BYPASS_DEFAULT_CODE)) {
 		std::stringstream ss;
 		ss<<err;
 		throw chaos::CException(-6, "Error getting the state of the powersupply, possibily off, err:"+ss.str(), __FUNCTION__);
 	}
+	
 
 	if (powersupply_drv->getHWVersion(device_hw, 1000) == 0) {
 		SCCUDBG << "hardware found: \"" << device_hw << "\"";
@@ -493,7 +521,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	int32_t restore_polarity=-1000;
 	int32_t *now_polarity,*now_polarity_i ;
 	bool triggerPolarityRestore=false;
-	if(feature & ::common::powersupply::POWER_SUPPLY_FEAT_MONOPOLAR){
+	if(feature!=::common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR){
 
 		if (!snapshot_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute("polarity")) {
 			RESTORE_LERR << " missing 'polarity' to restore";
@@ -546,8 +574,9 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chao
 	bool triggerStbyRestore=(restore_stby != *now_stby) || (*now_stby != *now_stby_i);
 	RESTORE_LDBG << "current SP:" << *now_current_sp << "==> " << restore_current_sp;
 	RESTORE_LDBG << "current STBY:" << *now_stby << "(input:)"<<*now_stby_i<<" ==>" << restore_stby;
-
-	RESTORE_LDBG << "current POLARITY:" << *now_polarity<< "(input:)"<<*now_polarity_i << " ==>" << restore_polarity;
+	if(feature!=::common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR){
+		RESTORE_LDBG << "current POLARITY:" << *now_polarity<< "(input:)"<<*now_polarity_i << " ==>" << restore_polarity;
+	}
 	if(restore_polarity==0 && restore_current_sp>0){
 		RESTORE_LERR<<" incongruent settings polarity =0 and current:"<<restore_current_sp;
 		return false;

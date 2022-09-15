@@ -31,7 +31,7 @@ namespace driver {
 
 			// init paramter
 			  std::string device_hw;
-			
+			int type;
     		::driver::data_import::DanteDriver driver;
 			chaos::common::data::CDataWrapper in,out,pin,pout;		
 
