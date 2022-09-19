@@ -66,6 +66,7 @@ namespace driver {
 			void setHandler(c_data::CDataWrapper *data);
 
 			void getState(int& current_state, std::string& current_state_str);
+			
 			int feature;
 
 		};

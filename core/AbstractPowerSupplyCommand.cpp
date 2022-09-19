@@ -244,7 +244,13 @@ void AbstractPowerSupplyCommand::acquireHandler() {
   } else {
     // bypass
   }
+  if(powersupply_drv->isBypass()){
+    ((SCPowerSupplyControlUnit*)getControlUnit())->setBypassFlag(true);
 
+  } else {
+    ((SCPowerSupplyControlUnit*)getControlUnit())->setBypassFlag(false);
+
+  }
   if (driver_error == 0) {
     setStateVariableSeverity(StateVariableTypeAlarmCU, "driver_error", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmCU, "driver_timeout", chaos::common::alarm::MultiSeverityAlarmLevelClear);

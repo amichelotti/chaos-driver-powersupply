@@ -282,9 +282,9 @@ int PSDanteDriver::getState(int *state, std::string &desc, int*statesp,uint32_t 
 
    }
    
-   if(isBypass()){
+  /* if(isBypass()){
        return DRV_BYPASS_DEFAULT_CODE;
-   }
+   }*/
    if(status!=statusSetting){
        return POWER_SUPPLY_OUT_OF_SET;
    }

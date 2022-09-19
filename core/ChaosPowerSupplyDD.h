@@ -270,6 +270,7 @@ namespace chaos {
              */
              int forceMaxVoltage(float max);
              uint64_t getFeatures() ;
+            
             };
         }
     }
