@@ -58,15 +58,17 @@ namespace chaos {
                 
                 void driverInit(const char *initParameter) throw(chaos::CException);
                 void driverInit(const chaos::common::data::CDataWrapper& json) throw(chaos::CException);
-                ::driver::data_import::DanteDriver dante;
                 double current;
                 std::string protocol2String(int32_t t);
                 int alarmType,polarityType,interfaceType,protocol;
+                std::string ws_server;
                 //void driverDeinit() throw(chaos::CException);
             public:
+                            ::driver::data_import::DanteDriver dante;
+
                 DanteDD();
                 ~DanteDD();
-                chaos::common::data::CDWUniquePtr getDrvProperties();
+               // chaos::common::data::CDWUniquePtr getDrvProperties();
                   
                 //int setDrvProperty(const std::string& key, const std::string& value);
                  bool isBypass();

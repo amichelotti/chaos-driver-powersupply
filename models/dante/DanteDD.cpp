@@ -22,7 +22,6 @@
 #include <chaos/common/data/CDataWrapper.h>
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
 #include <common/powersupply/core/AbstractPowerSupply.h>
-#include <boost/regex.hpp>
 #include <string>
 #include "DanteDD.h"
 
@@ -58,11 +57,15 @@ void chaos::driver::powersupply::DanteDD::driverInit(const chaos::common::data::
 
 void chaos::driver::powersupply::DanteDD::driverInit(const char *initParameter) throw(chaos::CException) {
   // check the input parameter
-  boost::smatch match;
   std::string   inputStr = initParameter;
   std::string   slaveid;
   DANTE_DBG << "Init  driver initialisation string:\"" << initParameter << "\"" << std::endl;
   dante.driverInit(initParameter);
+  chaos::common::data::CDataWrapper c;
+  c.setSerializedJsonData(initParameter);
+  if(c.hasKey("dantewebserver")){
+    ws_server=c.getStringValue("dantewebserver");
+  }
   // no w accces static DS to get type and other information
   int32_t elementType;
   int     ret = dante.getData("elemType", &elementType, ::driver::data_import::DanteDriver::STATIC);
@@ -284,6 +287,35 @@ int DanteDD::getState(int *state, std::string &desc, int *statesp, uint32_t time
 }
 
 int DanteDD::initPS() {
+    DANTE_DBG << "Initialize ";
+
+    createProperty(
+          "dataset",
+          [](AbstractDriver *thi, const std::string &name,
+             const chaos::common::data::CDataWrapper &p)
+              -> chaos::common::data::CDWUniquePtr {
+            DanteDD *t = (DanteDD *)thi;
+            std::string ton;
+            chaos::common::data::CDWUniquePtr ret(
+                new chaos::common::data::CDataWrapper());
+               //std::string ds= t->dante.getDataset()->getCompliantJSONString();
+              chaos::common::data::CDWUniquePtr ds=t->dante.getDataset();
+              if(ds.get()){
+                ret->addCSDataValue(PROPERTY_VALUE_KEY,*ds.get());
+              }
+               
+
+            return ret;
+          },
+          [](AbstractDriver *thi, const std::string &name,
+             const chaos::common::data::CDataWrapper &p)
+              -> chaos::common::data::CDWUniquePtr {
+            
+              return p.clone();
+            
+
+          
+          });
   return 0;
 }
 
@@ -339,13 +371,13 @@ uint64_t DanteDD::getFeatures() {
   }
   return ::common::powersupply::POWER_SUPPLY_FEAT_MONOPOLAR;
 }
-
+/*
 chaos::common::data::CDWUniquePtr DanteDD::getDrvProperties() {
   chaos::common::data::CDWUniquePtr ret = dante.getDrvProperties();
   DANTE_DBG << "Props:" << ret->getCompliantJSONString();
   return ret;
 }
-
+*/
 std::string DanteDD::protocol2String(int32_t t) {
   switch (t) {
     case 0:
