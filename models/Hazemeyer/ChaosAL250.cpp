@@ -56,7 +56,7 @@ chaos::driver::powersupply::C_AL250::~C_AL250() {
 }
 
 
-void chaos::driver::powersupply::C_AL250::driverInit(const chaos::common::data::CDataWrapper& json) throw(chaos::CException)
+void chaos::driver::powersupply::C_AL250::driverInit(const chaos::common::data::CDataWrapper& json) 
 {
     PSLAPP << "Init  driver initialisation with json " <<json.getJSONString().c_str();
     ::common::modbus::AbstractModbusChannel_psh channel=::common::modbus::ModbusChannelFactory::getChannel(json);
@@ -76,7 +76,7 @@ void chaos::driver::powersupply::C_AL250::driverInit(const chaos::common::data::
 }
 
 
-void chaos::driver::powersupply::C_AL250::driverInit(const char *initParameter) throw(chaos::CException) {
+void chaos::driver::powersupply::C_AL250::driverInit(const char *initParameter)  {
     //check the input parameter
 	boost::smatch match;
 	std::string inputStr = initParameter;

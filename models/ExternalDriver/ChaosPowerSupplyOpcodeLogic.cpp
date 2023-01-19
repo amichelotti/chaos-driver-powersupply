@@ -40,11 +40,11 @@ OpcodeExternalCommandMapper(_remote_driver){}
 
 ChaosPowerSupplyOpcodeLogic::~ChaosPowerSupplyOpcodeLogic() {}
 
-void ChaosPowerSupplyOpcodeLogic::driverInit(const chaos::common::data::CDataWrapper& init_parameter) throw(chaos::CException) {
+void ChaosPowerSupplyOpcodeLogic::driverInit(const chaos::common::data::CDataWrapper& init_parameter)  {
     INFO << init_parameter.getJSONString();
 }
 
-void ChaosPowerSupplyOpcodeLogic::driverDeinit() throw(chaos::CException) {
+void ChaosPowerSupplyOpcodeLogic::driverDeinit()  {
     
 }
 

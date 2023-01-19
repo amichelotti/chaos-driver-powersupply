@@ -53,7 +53,7 @@ chaos::driver::powersupply::OcemDD::OcemDD() {
 chaos::driver::powersupply::OcemDD::~OcemDD() {
 
 }
-void chaos::driver::powersupply::OcemDD::driverInit(const chaos::common::data::CDataWrapper& json) throw(chaos::CException){
+void chaos::driver::powersupply::OcemDD::driverInit(const chaos::common::data::CDataWrapper& json) {
 	::common::serial::AbstractSerialChannel_psh channel=::common::serial::SerialChannelFactory::getChannel(json);
 	GET_PARAMETER_TREE((&json),driver){
 		GET_PARAMETER(driver,slaveid,int32_t,1);
@@ -76,7 +76,7 @@ void chaos::driver::powersupply::OcemDD::driverInit(const chaos::common::data::C
 
 }
 
-void chaos::driver::powersupply::OcemDD::driverInit(const char *initParameter) throw(chaos::CException) {
+void chaos::driver::powersupply::OcemDD::driverInit(const char *initParameter)  {
 	//check the input parameter
 	boost::smatch match;
 	std::string inputStr = initParameter;
@@ -130,7 +130,7 @@ void chaos::driver::powersupply::OcemDD::driverInit(const char *initParameter) t
 
 }
 
-void chaos::driver::powersupply::OcemDD::driverDeinit() throw(chaos::CException) {
+void chaos::driver::powersupply::OcemDD::driverDeinit()  {
 	if(power){
 		PSDBG<< "Removing PowerSupply driver "<<std::hex<<power<<std::dec;
 

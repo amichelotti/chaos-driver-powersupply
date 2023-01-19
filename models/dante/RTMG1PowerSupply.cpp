@@ -105,7 +105,7 @@ static int32_t resultState(const int32_t status, const bool remote, const bool t
 /*
  Return the default configuration
  */
-void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset() throw(chaos::CException) {
+void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset()  {
   //install all command
 
   // input/output DataSet
@@ -343,7 +343,7 @@ void ::driver::powersupply::RTMG1PowerSupply::unitDefineCustomAttribute() {
 
 // Abstract method for the initialization of the control unit
 
-void ::driver::powersupply::RTMG1PowerSupply::unitInit() throw(CException) {
+void ::driver::powersupply::RTMG1PowerSupply::unitInit() {
   in.reset();
   out.reset();
   in.addDoubleValue("currentSetting", 0);
@@ -373,7 +373,7 @@ void ::driver::powersupply::RTMG1PowerSupply::unitInit() throw(CException) {
 
 // Abstract method for the start of the control unit
 
-void ::driver::powersupply::RTMG1PowerSupply::unitStart() throw(CException) {
+void ::driver::powersupply::RTMG1PowerSupply::unitStart() {
   if ((driver.getData(in) != 0) || (driver.getData(out) != 0)) {
     setStateVariableSeverity(StateVariableTypeAlarmCU, "fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
   } else {
@@ -386,12 +386,12 @@ void ::driver::powersupply::RTMG1PowerSupply::unitStart() throw(CException) {
 
 // Abstract method for the stop of the control unit
 
-void ::driver::powersupply::RTMG1PowerSupply::unitStop() throw(CException) {
+void ::driver::powersupply::RTMG1PowerSupply::unitStop() {
 }
 
 // Abstract method for the deinit of the control unit
 
-void ::driver::powersupply::RTMG1PowerSupply::unitDeinit() throw(CException) {
+void ::driver::powersupply::RTMG1PowerSupply::unitDeinit() {
 }
 chaos::common::data::CDWUniquePtr RTMG1PowerSupply::getProperty(chaos::common::data::CDWUniquePtr d) {
   return driver.getDataset();
@@ -490,7 +490,7 @@ void RTMG1PowerSupply::acquireIn() {
   getAttributeCache()->setInputAttributeValue("local", ((statesp & ::common::powersupply::POWER_SUPPLY_STATE_LOCAL) ? true : false));
   getAttributeCache()->setInputDomainAsChanged();
 }
-void ::driver::powersupply::RTMG1PowerSupply::unitRun() throw(chaos::CException) {
+void ::driver::powersupply::RTMG1PowerSupply::unitRun()  {
   setStateVariableSeverity(StateVariableTypeAlarmCU, "fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
   try {

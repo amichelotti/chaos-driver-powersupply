@@ -48,7 +48,7 @@ namespace chaos {
                 //! Execute a command
                 cu_driver::MsgManagmentResultType::MsgManagmentResult execOpcode(cu_driver::DrvMsgPtr cmd);
                 
-                void driverDeinit()  throw(chaos::CException);
+                void driverDeinit()  ;
  /**
              @brief sets the current polarity
              @param pol if >0 sets positive current polarity, if <0 sets negative current polarity, =0 opens the circuit, no current

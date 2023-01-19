@@ -40,8 +40,8 @@ namespace chaos {
              */
             class C_AL250: public ChaosPowerSupplyDD{
                 //::common::powersupply::AL250 *Unit;
-                void driverInit(const char *initParameter) throw(chaos::CException);
-                void driverInit(const chaos::common::data::CDataWrapper& json) throw(chaos::CException);
+                void driverInit(const char *initParameter) ;
+                void driverInit(const chaos::common::data::CDataWrapper& json) ;
             public:
                 C_AL250();
                 ~C_AL250();

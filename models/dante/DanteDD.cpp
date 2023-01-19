@@ -51,11 +51,11 @@ chaos::driver::powersupply::DanteDD::DanteDD() {
 // default descrutcor
 chaos::driver::powersupply::DanteDD::~DanteDD() {
 }
-void chaos::driver::powersupply::DanteDD::driverInit(const chaos::common::data::CDataWrapper &json) throw(chaos::CException) {
+void chaos::driver::powersupply::DanteDD::driverInit(const chaos::common::data::CDataWrapper &json)  {
   driverInit((const char *)json.getCompliantJSONString().c_str());
 }
 
-void chaos::driver::powersupply::DanteDD::driverInit(const char *initParameter) throw(chaos::CException) {
+void chaos::driver::powersupply::DanteDD::driverInit(const char *initParameter)  {
   // check the input parameter
   std::string   inputStr = initParameter;
   std::string   slaveid;

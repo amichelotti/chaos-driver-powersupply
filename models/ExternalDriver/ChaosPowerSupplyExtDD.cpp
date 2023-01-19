@@ -80,16 +80,16 @@ CLOSE_REGISTER_PLUGIN
 
 ChaosPowerSupplyExtDD::~ChaosPowerSupplyExtDD() {}
 
-void ChaosPowerSupplyExtDD::driverInit(const chaos::common::data::CDataWrapper& init_parameter) throw(chaos::CException) {
+void ChaosPowerSupplyExtDD::driverInit(const chaos::common::data::CDataWrapper& init_parameter)  {
     INFO << init_parameter.getJSONString();
     client.driverInit(init_parameter);
 
 }
-void ChaosPowerSupplyExtDD::driverInit(const char*c)throw(chaos::CException) {
+void ChaosPowerSupplyExtDD::driverInit(const char*c) {
 
 }
 
-void ChaosPowerSupplyExtDD::driverDeinit() throw(chaos::CException) {
+void ChaosPowerSupplyExtDD::driverDeinit()  {
         client.driverDeinit();
 
 }

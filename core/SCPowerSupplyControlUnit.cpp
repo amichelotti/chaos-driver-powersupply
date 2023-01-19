@@ -156,7 +156,7 @@ bool ::driver::powersupply::SCPowerSupplyControlUnit::setRampL(const std::string
 /*
  Return the default configuration
  */
-void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset() throw (chaos::CException) {
+void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineActionAndDataset()  {
 	//install all command
 	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSDefault), true,true);
 	installCommand(BATCH_COMMAND_GET_DESCRIPTION(CmdPSMode));
@@ -432,7 +432,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDefineCustomAttribute(
 
 // Abstract method for the initialization of the control unit
 
-void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CException) {
+void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit()  {
 	int err = 0;
 	int state_id;
 	std::string max_range;
@@ -490,19 +490,19 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitInit() throw (CExcepti
 
 // Abstract method for the start of the control unit
 
-void ::driver::powersupply::SCPowerSupplyControlUnit::unitStart() throw (CException) {
+void ::driver::powersupply::SCPowerSupplyControlUnit::unitStart()  {
 
 }
 
 // Abstract method for the stop of the control unit
 
-void ::driver::powersupply::SCPowerSupplyControlUnit::unitStop() throw (CException) {
+void ::driver::powersupply::SCPowerSupplyControlUnit::unitStop()  {
 
 }
 
 // Abstract method for the deinit of the control unit
 
-void ::driver::powersupply::SCPowerSupplyControlUnit::unitDeinit() throw (CException) {
+void ::driver::powersupply::SCPowerSupplyControlUnit::unitDeinit()  {
 	SCCUDBG << "deinitializing ";
 	powersupply_drv->deinitPS();
 	
@@ -512,7 +512,7 @@ void ::driver::powersupply::SCPowerSupplyControlUnit::unitDeinit() throw (CExcep
 #define RESTORE_LDBG SCCUDBG << "[RESTORE-" <<getCUID() << "] "
 #define RESTORE_LERR SCCUERR << "[RESTORE-" <<getCUID() << "] "
 
-bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw (chaos::CException) {
+bool ::driver::powersupply::SCPowerSupplyControlUnit::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache)  {
 	//check if in the restore cache we have all information we need
   /*  if (!snapshot_cache->getSharedDomain(DOMAIN_OUTPUT).hasAttribute("local")) {
         RESTORE_LERR << " missing 'local' to restore";

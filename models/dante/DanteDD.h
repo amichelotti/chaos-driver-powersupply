@@ -56,13 +56,13 @@ namespace chaos {
              */
             class DanteDD: public ChaosPowerSupplyDD{
                 
-                void driverInit(const char *initParameter) throw(chaos::CException);
-                void driverInit(const chaos::common::data::CDataWrapper& json) throw(chaos::CException);
+                void driverInit(const char *initParameter) ;
+                void driverInit(const chaos::common::data::CDataWrapper& json) ;
                 double current;
                 std::string protocol2String(int32_t t);
                 int alarmType,polarityType,interfaceType,protocol;
                 std::string ws_server;
-                //void driverDeinit() throw(chaos::CException);
+                //void driverDeinit() ;
             public:
                             ::driver::data_import::DanteDriver dante;
 

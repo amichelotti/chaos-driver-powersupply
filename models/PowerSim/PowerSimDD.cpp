@@ -52,7 +52,7 @@ chaos::driver::powersupply::PowerSimDD::PowerSimDD() {
 }
 
 using namespace std;
-void chaos::driver::powersupply::PowerSimDD::driverInit(const chaos::common::data::CDataWrapper& json) throw(chaos::CException){
+void chaos::driver::powersupply::PowerSimDD::driverInit(const chaos::common::data::CDataWrapper& json) {
 	GET_PARAMETER_TREE((&json),driver){
 		GET_PARAMETER(driver,slaveid,int32_t,1);
 		GET_PARAMETER(driver,dev,string,1);
@@ -104,7 +104,7 @@ void chaos::driver::powersupply::PowerSimDD::driverInit(const chaos::common::dat
 	throw chaos::CException(1, "JSON Initialisation of power supply failed, bad json", "PowerSimDD::driverInit");
 }
 
-void chaos::driver::powersupply::PowerSimDD::driverInit(const char *initParameter) throw(chaos::CException) {
+void chaos::driver::powersupply::PowerSimDD::driverInit(const char *initParameter)  {
 	//check the input parameter
 	boost::smatch match;
 	std::string inputStr = initParameter;
