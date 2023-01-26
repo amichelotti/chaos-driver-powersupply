@@ -20,7 +20,7 @@
 #include "ChaosPowerSupplyExtDD.h"
 
 #include <string>
-#include <boost/regex.hpp>
+#include <regex>
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
 #include "ChaosPowerSupplyExtDD.h"
 #include <driver/powersupply/core/ChaosPowerSupplyInterface.h>
