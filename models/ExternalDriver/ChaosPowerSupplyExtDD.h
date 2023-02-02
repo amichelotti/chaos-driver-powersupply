@@ -54,10 +54,10 @@ namespace chaos {
                 //! Execute a command
                 cu_driver::MsgManagmentResultType::MsgManagmentResult execOpcode(cu_driver::DrvMsgPtr cmd);
                 int asyncMessageReceived(chaos::common::data::CDWUniquePtr message);
-                void driverDeinit() throw(chaos::CException);
-                void driverInit(const char*) throw(chaos::CException);
+                void driverDeinit() ;
+                void driverInit(const char*) ;
 
-                void driverInit(const chaos::common::data::CDataWrapper& init_parameter) throw(chaos::CException);
+                void driverInit(const chaos::common::data::CDataWrapper& init_parameter) ;
  /**
              @brief sets the current polarity
              @param pol if >0 sets positive current polarity, if <0 sets negative current polarity, =0 opens the circuit, no current

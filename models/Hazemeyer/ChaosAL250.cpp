@@ -20,15 +20,15 @@
 #include "ChaosAL250.h"
 
 #include <string>
-#include <boost/regex.hpp>
+#include <regex>
 #include <common/modbus/core/ModbusChannelFactory.h>
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
 
 // initialization format is <POWERSUPPLY TYPE>:'<INITALISATION PARAMETERS>'
-static const boost::regex power_supply_init_match("(\\w+):(.+)");
+static const std::regex power_supply_init_match("(\\w+):(.+)");
 
 // initialisation format for ocem <serialstring>:<slaveid>
-static const boost::regex power_supply_hazemeyer_init_match("([\\w\\/,]+):(\\d+)");
+static const std::regex power_supply_hazemeyer_init_match("([\\w\\/,]+):(\\d+)");
 
 //GET_PLUGIN_CLASS_DEFINITION
 //we need only to define the driver because we don't are making a plugin
@@ -56,7 +56,7 @@ chaos::driver::powersupply::C_AL250::~C_AL250() {
 }
 
 
-void chaos::driver::powersupply::C_AL250::driverInit(const chaos::common::data::CDataWrapper& json) throw(chaos::CException)
+void chaos::driver::powersupply::C_AL250::driverInit(const chaos::common::data::CDataWrapper& json) 
 {
     PSLAPP << "Init  driver initialisation with json " <<json.getJSONString().c_str();
     ::common::modbus::AbstractModbusChannel_psh channel=::common::modbus::ModbusChannelFactory::getChannel(json);
@@ -76,19 +76,19 @@ void chaos::driver::powersupply::C_AL250::driverInit(const chaos::common::data::
 }
 
 
-void chaos::driver::powersupply::C_AL250::driverInit(const char *initParameter) throw(chaos::CException) {
+void chaos::driver::powersupply::C_AL250::driverInit(const char *initParameter)  {
     //check the input parameter
-	boost::smatch match;
+	std::smatch match;
 	std::string inputStr = initParameter;
 	PSLAPP << "Init  driver initialisation string:\""<<initParameter<<"\""<<std::endl;
     if(power){
           throw chaos::CException(1, "Already Initialised", "C_AL250::driverInit");
     }
-    if(regex_match(inputStr, match, power_supply_init_match, boost::match_extra)){
+    if(std::regex_match(inputStr, match, power_supply_init_match, std::regex_constants::match_any)){
         std::string powerSupplyType=match[1];
         std::string initString=match[2];
         if(powerSupplyType=="HazemeyerAL250"){
-            if(regex_match(initString, match, power_supply_hazemeyer_init_match, boost::match_extra)){
+            if(regex_match(initString, match, power_supply_hazemeyer_init_match, std::regex_constants::match_any)){
                 std::string dev=match[1];
                 std::string slaveid=match[2];
                 PSLAPP<<"Allocating HazemeyerAL250 device \""<<slaveid<<"\""<<" on dev:\""<<dev<<"\""<<std::endl;

@@ -287,6 +287,10 @@ namespace chaos {
                  */
                 uint64_t getFeatures() ;
 
+
+                bool isBypass();
+			    void setBypass(bool);
+
             };
         }
     }

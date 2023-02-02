@@ -390,5 +390,12 @@ uint64_t ChaosPowerSupplyInterface::getFeatures() {
     //return feats;
     return impl->getFeatures();
 }
+
+bool ChaosPowerSupplyInterface::isBypass(){
+    return accessor->isBypass();
+}
+void ChaosPowerSupplyInterface::setBypass(bool val){
+    accessor->setBypass(val);
+}
 #endif
 

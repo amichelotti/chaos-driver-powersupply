@@ -20,16 +20,16 @@
 #include "OcemDD.h"
 
 #include <string>
-#include <boost/regex.hpp>
+#include <regex>
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
 #include <common/serial/core/SerialChannelFactory.h>
 #include <chaos/common/data/CDataWrapper.h>
 using namespace chaos::common::data;
 // initialization format is <POWERSUPPLY TYPE>:'<INITALISATION PARAMETERS>'
-static const boost::regex power_supply_init_match("(\\w+):(.+)");
+static const std::regex power_supply_init_match("(\\w+):(.+)");
 
 // initialisation format for ocem <serial port>,<slaveid>,<maxcurr:maxvoltage>
-static const boost::regex power_supply_ocem_init_match("([\\w\\/]+),(\\d+),(\\d+):(\\d+)");
+static const std::regex power_supply_ocem_init_match("([\\w\\/]+),(\\d+),(\\d+):(\\d+)");
 
 //GET_PLUGIN_CLASS_DEFINITION
 //we need only to define the driver because we don't are makeing a plugin
@@ -53,7 +53,7 @@ chaos::driver::powersupply::OcemDD::OcemDD() {
 chaos::driver::powersupply::OcemDD::~OcemDD() {
 
 }
-void chaos::driver::powersupply::OcemDD::driverInit(const chaos::common::data::CDataWrapper& json) throw(chaos::CException){
+void chaos::driver::powersupply::OcemDD::driverInit(const chaos::common::data::CDataWrapper& json) {
 	::common::serial::AbstractSerialChannel_psh channel=::common::serial::SerialChannelFactory::getChannel(json);
 	GET_PARAMETER_TREE((&json),driver){
 		GET_PARAMETER(driver,slaveid,int32_t,1);
@@ -76,9 +76,9 @@ void chaos::driver::powersupply::OcemDD::driverInit(const chaos::common::data::C
 
 }
 
-void chaos::driver::powersupply::OcemDD::driverInit(const char *initParameter) throw(chaos::CException) {
+void chaos::driver::powersupply::OcemDD::driverInit(const char *initParameter)  {
 	//check the input parameter
-	boost::smatch match;
+	std::smatch match;
 	std::string inputStr = initParameter;
 	std::string slaveid;
 	PSLAPP << "Init  driver initialisation string:\""<<initParameter<<"\""<<std::endl;
@@ -88,11 +88,11 @@ void chaos::driver::powersupply::OcemDD::driverInit(const char *initParameter) t
 
 
 
-	if(regex_match(inputStr, match, power_supply_init_match, boost::match_extra)){
+	if(regex_match(inputStr, match, power_supply_init_match, std::regex_constants::match_any)){
 		std::string powerSupplyType=match[1];
 		std::string initString=match[2];
 		if(powerSupplyType=="OcemE642X"){
-			if(regex_match(initString, match, power_supply_ocem_init_match, boost::match_extra)){
+			if(regex_match(initString, match, power_supply_ocem_init_match, std::regex_constants::match_any)){
 				std::string dev=match[1];
 				slaveid=match[2];
 				std::string maxcurr=match[3];
@@ -130,7 +130,7 @@ void chaos::driver::powersupply::OcemDD::driverInit(const char *initParameter) t
 
 }
 
-void chaos::driver::powersupply::OcemDD::driverDeinit() throw(chaos::CException) {
+void chaos::driver::powersupply::OcemDD::driverDeinit()  {
 	if(power){
 		PSDBG<< "Removing PowerSupply driver "<<std::hex<<power<<std::dec;
 

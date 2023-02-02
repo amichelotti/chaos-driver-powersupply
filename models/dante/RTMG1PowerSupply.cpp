@@ -84,8 +84,16 @@ static int32_t resultState(const int32_t status, const bool remote, const bool t
                                                           const ControlUnitDriverList &_control_unit_drivers)
     : RTAbstractControlUnit(_control_unit_id,
                             _control_unit_param,
-                            _control_unit_drivers) {
+                            _control_unit_drivers),type(1) {
+  
   driver.driverInit(_control_unit_param.c_str());
+  if(_control_unit_param.size()){
+    chaos::common::data::CDataWrapper c;
+    c.setSerializedJsonData(_control_unit_param.c_str());
+    if(c.hasKey("feature")){
+      type=c.getInt32Value("feature");
+    }
+  }
 }
 
 /*
@@ -97,7 +105,7 @@ static int32_t resultState(const int32_t status, const bool remote, const bool t
 /*
  Return the default configuration
  */
-void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset() throw(chaos::CException) {
+void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset()  {
   //install all command
 
   // input/output DataSet
@@ -105,10 +113,21 @@ void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset() throw
                         "force standby",
                         DataType::TYPE_BOOLEAN,
                         DataType::Bidirectional);
-  addAttributeToDataSet("polarity",
-                        "drive the polarity (for bipolar) -1 negative, 0 open, +1 positive",
-                        DataType::TYPE_INT32,
-                        DataType::Bidirectional);
+  if(type>0){
+    addAttributeToDataSet("polarity",
+                          "drive the polarity (for unipolar with remote control) -1 negative, 0 open, +1 positive",
+                          DataType::TYPE_INT32,
+                          DataType::Bidirectional);
+    addAttributeToDataSet("polSwSign",
+                        "invert the polarity",
+                        DataType::TYPE_BOOLEAN,
+                        DataType::Input);
+
+  addAttributeToDataSet("stbyOnPol",
+                        "force standby on polarity changes",
+                        DataType::TYPE_BOOLEAN,
+                        DataType::Input);
+  }
 
   addAttributeToDataSet("current",
                         "setpoint the current",
@@ -158,15 +177,7 @@ void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset() throw
   /// power supply configuration
   
 
-  addAttributeToDataSet("polSwSign",
-                        "invert the polarity",
-                        DataType::TYPE_BOOLEAN,
-                        DataType::Input);
-
-  addAttributeToDataSet("stbyOnPol",
-                        "force standby on polarity changes",
-                        DataType::TYPE_BOOLEAN,
-                        DataType::Input);
+  
 
   addAttributeToDataSet("zeroOnStby",
                         "force zero set on standby on standby",
@@ -332,7 +343,7 @@ void ::driver::powersupply::RTMG1PowerSupply::unitDefineCustomAttribute() {
 
 // Abstract method for the initialization of the control unit
 
-void ::driver::powersupply::RTMG1PowerSupply::unitInit() throw(CException) {
+void ::driver::powersupply::RTMG1PowerSupply::unitInit() {
   in.reset();
   out.reset();
   in.addDoubleValue("currentSetting", 0);
@@ -362,7 +373,7 @@ void ::driver::powersupply::RTMG1PowerSupply::unitInit() throw(CException) {
 
 // Abstract method for the start of the control unit
 
-void ::driver::powersupply::RTMG1PowerSupply::unitStart() throw(CException) {
+void ::driver::powersupply::RTMG1PowerSupply::unitStart() {
   if ((driver.getData(in) != 0) || (driver.getData(out) != 0)) {
     setStateVariableSeverity(StateVariableTypeAlarmCU, "fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
   } else {
@@ -375,12 +386,12 @@ void ::driver::powersupply::RTMG1PowerSupply::unitStart() throw(CException) {
 
 // Abstract method for the stop of the control unit
 
-void ::driver::powersupply::RTMG1PowerSupply::unitStop() throw(CException) {
+void ::driver::powersupply::RTMG1PowerSupply::unitStop() {
 }
 
 // Abstract method for the deinit of the control unit
 
-void ::driver::powersupply::RTMG1PowerSupply::unitDeinit() throw(CException) {
+void ::driver::powersupply::RTMG1PowerSupply::unitDeinit() {
 }
 chaos::common::data::CDWUniquePtr RTMG1PowerSupply::getProperty(chaos::common::data::CDWUniquePtr d) {
   return driver.getDataset();
@@ -396,7 +407,9 @@ void  RTMG1PowerSupply::setFlags(){
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "bad_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-    setStateVariableSeverity(StateVariableTypeAlarmCU, "polarity_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    if(type>0){
+      setStateVariableSeverity(StateVariableTypeAlarmCU, "polarity_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    }
     setStateVariableSeverity(StateVariableTypeAlarmCU, "current_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmCU, "stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setBypassFlag(true);
@@ -437,7 +450,9 @@ void RTMG1PowerSupply::acquireOut() {
   int32_t state = resultState(out.getInt32Value("status"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
   getAttributeCache()->setOutputAttributeValue("voltage", out.getDoubleValue("outputVolt"));
   getAttributeCache()->setOutputAttributeValue("current", out.getDoubleValue("outputCurr"));
-  getAttributeCache()->setOutputAttributeValue("polarity", out.getInt32Value("outputPolarity"));
+  if(type>0){
+    getAttributeCache()->setOutputAttributeValue("polarity", out.getInt32Value("outputPolarity"));
+  }
   getAttributeCache()->setOutputAttributeValue("rampUpRate", out.getDoubleValue("slewRateReadout"));
   getAttributeCache()->setOutputAttributeValue("rampDownRate", out.getDoubleValue("slewRateReadout"));
   bool stby=((state & ::common::powersupply::POWER_SUPPLY_STATE_STANDBY) ? true : false);
@@ -465,7 +480,9 @@ void RTMG1PowerSupply::acquireIn() {
   std::string desc;
 
   getAttributeCache()->setInputAttributeValue("current", in.getDoubleValue("currentSetting"));
-  getAttributeCache()->setInputAttributeValue("polarity", in.getInt32Value("polaritySetting"));
+  if(type>0){
+    getAttributeCache()->setInputAttributeValue("polarity", in.getInt32Value("polaritySetting"));
+  }
   getAttributeCache()->setInputAttributeValue("rampUpRate", in.getDoubleValue("slewRateSetting"));
   getAttributeCache()->setInputAttributeValue("rampDownRate", in.getDoubleValue("slewRateSetting"));
   int32_t statesp = resultState(in.getInt32Value("statusSetting"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
@@ -473,7 +490,7 @@ void RTMG1PowerSupply::acquireIn() {
   getAttributeCache()->setInputAttributeValue("local", ((statesp & ::common::powersupply::POWER_SUPPLY_STATE_LOCAL) ? true : false));
   getAttributeCache()->setInputDomainAsChanged();
 }
-void ::driver::powersupply::RTMG1PowerSupply::unitRun() throw(chaos::CException) {
+void ::driver::powersupply::RTMG1PowerSupply::unitRun()  {
   setStateVariableSeverity(StateVariableTypeAlarmCU, "fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelClear);
 
   try {

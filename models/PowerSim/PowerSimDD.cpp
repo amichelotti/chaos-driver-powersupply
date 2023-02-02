@@ -19,18 +19,18 @@
 #include "PowerSimDD.h"
 
 #include <string>
-#include <boost/regex.hpp>
+#include <regex>
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
 #include "driver/powersupply/core/ChaosPowerSupplyInterface.h"
 #include <common/misc/driver/ConfigDriverMacro.h>
 
 
 // initialization format is <POWERSUPPLY TYPE>:'<INITALISATION PARAMETERS>'
-static const boost::regex power_supply_init_match("(\\w+):(.+)");
+static const std::regex power_supply_init_match("(\\w+):(.+)");
 
 // initialisation format for simulator <serial port>,<slaveid>,<feature=[0:monopolar,1:bipolar,2:pulse]>,<min curr:max curr>,<min volt:max voltage>,<write_latency_min:write_latency_max>,<read_latency_min:read_latency_min>,<force errors secs=0 [no error]>,<readout uncertently in percent respect (max-min) 0=no  uncertently>
 
-static const boost::regex power_supply_simulator_init_match("([\\w\\/]+),(\\d+),(\\d+),(.+):(.+),(.+):(.+),(.+):(.+),(.+):(.+),(\\d+),([\\d\\.]+)");
+static const std::regex power_supply_simulator_init_match("([\\w\\/]+),(\\d+),(\\d+),(.+):(.+),(.+):(.+),(.+):(.+),(.+):(.+),(\\d+),([\\d\\.]+)");
 
 
 //GET_PLUGIN_CLASS_DEFINITION
@@ -52,7 +52,7 @@ chaos::driver::powersupply::PowerSimDD::PowerSimDD() {
 }
 
 using namespace std;
-void chaos::driver::powersupply::PowerSimDD::driverInit(const chaos::common::data::CDataWrapper& json) throw(chaos::CException){
+void chaos::driver::powersupply::PowerSimDD::driverInit(const chaos::common::data::CDataWrapper& json) {
 	GET_PARAMETER_TREE((&json),driver){
 		GET_PARAMETER(driver,slaveid,int32_t,1);
 		GET_PARAMETER(driver,dev,string,1);
@@ -104,19 +104,19 @@ void chaos::driver::powersupply::PowerSimDD::driverInit(const chaos::common::dat
 	throw chaos::CException(1, "JSON Initialisation of power supply failed, bad json", "PowerSimDD::driverInit");
 }
 
-void chaos::driver::powersupply::PowerSimDD::driverInit(const char *initParameter) throw(chaos::CException) {
+void chaos::driver::powersupply::PowerSimDD::driverInit(const char *initParameter)  {
 	//check the input parameter
-	boost::smatch match;
+	std::smatch match;
 	std::string inputStr = initParameter;
 	PSLAPP << "Init PowerSimDD driver initialisation string:\""<<initParameter<<"\""<<std::endl;
 	if(power){
 		throw chaos::CException(1, "Already Initialised", "PowerSimDD::driverInit");
 	}
-	if(regex_match(inputStr, match, power_supply_init_match, boost::match_extra)){
+	if(std::regex_match(inputStr, match, power_supply_init_match, std::regex_constants::match_any)){
 		std::string powerSupplyType=match[1];
 		std::string initString=match[2];
 		if(powerSupplyType=="SimPSupply"){
-			if(regex_search(initString, match, power_supply_simulator_init_match, boost::match_extra)){
+			if(std::regex_search(initString, match, power_supply_simulator_init_match, std::regex_constants::match_any)){
 				std::string dev=match[1];
 				std::string slaveid=match[2];
 				std::string features=match[3];

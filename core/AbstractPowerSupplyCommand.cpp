@@ -50,7 +50,7 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper* data) {
 
   o_local = getAttributeCache()->getRWPtr<bool>(DOMAIN_OUTPUT, "local");
   i_local = getAttributeCache()->getRWPtr<bool>(DOMAIN_INPUT, "local");
-  if(feature & ::common::powersupply::POWER_SUPPLY_FEAT_MONOPOLAR){
+  if(feature != ::common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR){
 
     o_pol          = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_OUTPUT, "polarity");
     i_pol          = getAttributeCache()->getRWPtr<int32_t>(DOMAIN_INPUT, "polarity");
@@ -64,7 +64,7 @@ void AbstractPowerSupplyCommand::setHandler(c_data::CDataWrapper* data) {
   i_asup    = getAttributeCache()->getRWPtr<double>(DOMAIN_INPUT, "rampUpRate");
   i_asdown  = getAttributeCache()->getRWPtr<double>(DOMAIN_INPUT, "rampDownRate");
   i_current = getAttributeCache()->getRWPtr<double>(DOMAIN_INPUT, "current");
-
+  
   c_polSwSign  = getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "polSwSign");
   c_stbyOnPol  = getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "stbyOnPol");
   c_zeroOnStby = getAttributeCache()->getROPtr<bool>(DOMAIN_INPUT, "zeroOnStby");
@@ -149,7 +149,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
     }
   }
 
-  if (feature & common::powersupply::POWER_SUPPLY_FEAT_MONOPOLAR) {
+  if (feature != common::powersupply::POWER_SUPPLY_FEAT_BIPOLAR) {
     int32_t polsp;
     if ((err = powersupply_drv->getPolarity(&tmp_int32, &polsp)) == 0) {
       *o_pol = tmp_int32;
@@ -159,7 +159,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
 
     } else if (err != DRV_BYPASS_DEFAULT_CODE) {
       driver_error++;
-      CMDCUERR_ << "Error getting feature err:" << err;
+      CMDCUERR_ << "Error getting polarity err:" << err<<" feature:"<<feature;
 
       if (err == POWER_SUPPLY_TIMEOUT) {
         if (getStateVariableSeverity(StateVariableTypeAlarmCU, "driver_timeout", level_stat) && (level_stat != chaos::common::alarm::MultiSeverityAlarmLevelHigh)) {
@@ -225,7 +225,7 @@ void AbstractPowerSupplyCommand::acquireHandler() {
     getAttributeCache()->setOutputAttributeValue("stby", *o_stby);
     getAttributeCache()->setOutputAttributeValue("local", *o_local);
 
-  } else if (err != DRV_BYPASS_DEFAULT_CODE) {
+  }  else if (err != DRV_BYPASS_DEFAULT_CODE) {
     driver_error++;
     CMDCUERR_ << "Error getting state err:" << err;
 
@@ -244,7 +244,13 @@ void AbstractPowerSupplyCommand::acquireHandler() {
   } else {
     // bypass
   }
+  if(powersupply_drv->isBypass()){
+    ((SCPowerSupplyControlUnit*)getControlUnit())->setBypassFlag(true);
 
+  } else {
+    ((SCPowerSupplyControlUnit*)getControlUnit())->setBypassFlag(false);
+
+  }
   if (driver_error == 0) {
     setStateVariableSeverity(StateVariableTypeAlarmCU, "driver_error", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmCU, "driver_timeout", chaos::common::alarm::MultiSeverityAlarmLevelClear);

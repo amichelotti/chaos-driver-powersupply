@@ -20,7 +20,7 @@
 #include "ChaosPowerSupplyDD.h"
 
 #include <string>
-#include <boost/regex.hpp>
+#include <regex>
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
 #include <driver/powersupply/core/ChaosPowerSupplyDD.h>
 #include <driver/powersupply/core/ChaosPowerSupplyInterface.h>
@@ -36,7 +36,7 @@ ChaosPowerSupplyDD::~ChaosPowerSupplyDD() {
 	
 }
 
-void ChaosPowerSupplyDD::driverDeinit() throw(chaos::CException) {
+void ChaosPowerSupplyDD::driverDeinit()  {
     if(power){
         PSDBG<< "Removing PowerSupply driver "<<std::hex<<power<<std::dec;
 
@@ -349,7 +349,6 @@ uint64_t ChaosPowerSupplyDD::getFeatures() {
     //return feats;
     return power->getFeatures();
 }
-
 
 
 

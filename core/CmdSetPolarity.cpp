@@ -82,7 +82,7 @@ void own::CmdSetPolarity::setHandler(c_data::CDataWrapper *data) {
   polarity_set_point       = data->getInt32Value(CMD_PS_SET_POLARITY_VALUE);
   SCLAPP_ << "Set polarity called with value " << polarity_set_point;
 
-  if (*c_stbyOnPol) {
+  if (c_stbyOnPol && *c_stbyOnPol) {
     if (*o_stby == false) {
       // SCLERR_ << "## cannot change polarity since is not in standby";
       setStateVariableSeverity(StateVariableTypeAlarmCU, "polarity_invalid_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);

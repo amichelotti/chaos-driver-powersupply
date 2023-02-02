@@ -31,7 +31,7 @@ namespace driver {
 
 			// init paramter
 			  std::string device_hw;
-			
+			int type;
     		::driver::data_import::DanteDriver driver;
 			chaos::common::data::CDataWrapper in,out,pin,pout;		
 
@@ -43,26 +43,26 @@ namespace driver {
 			/*
 			 Define the Control Unit Dataset and Actions
 			 */
-			void unitDefineActionAndDataset()throw(chaos::CException);
+			void unitDefineActionAndDataset();
 
 			void unitDefineCustomAttribute();
 			
 			/*(Optional)
 			 Initialize the Control Unit and all driver, with received param from MetadataServer
 			 */
-			void unitInit() throw(chaos::CException);
+			void unitInit() ;
 			/*(Optional)
 			 Execute the work, this is called with a determinated delay, it must be as fast as possible
 			 */
-			void unitStart() throw(chaos::CException);
+			void unitStart() ;
 			/*(Optional)
 			 The Control Unit will be stopped
 			 */
-			void unitStop() throw(chaos::CException);
+			void unitStop() ;
 			/*(Optional)
 			 The Control Unit will be deinitialized and disposed
 			 */
-			void unitDeinit() throw(chaos::CException);
+			void unitDeinit() ;
 
             //!restore method for powersupply
 
@@ -82,7 +82,7 @@ namespace driver {
 			~RTMG1PowerSupply();
 			 
 			
-    		void unitRun() throw(chaos::CException);
+    		void unitRun() ;
   			 chaos::common::data::CDWUniquePtr getProperty(chaos::common::data::CDWUniquePtr);
   			 chaos::common::data::CDWUniquePtr setProperty(chaos::common::data::CDWUniquePtr);
 
