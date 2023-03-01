@@ -53,28 +53,25 @@ static int32_t resultState(const int32_t status, const bool remote, const bool t
     state |= (int32_t)::common::powersupply::POWER_SUPPLY_STATE_TRIGGER_ARMED;
     ss << "Trigger|";
   }
-  if ((status == 1)||status==5) { //5 for powersupply pulsed
+  if ((status == 0)) { 
     state |= (int32_t)::common::powersupply::POWER_SUPPLY_STATE_STANDBY;
     ss << "Stby|";
 
-  } else if ((status == 2)||(status==6)) {//6 for powersupply pulsed
+  } else if ((status == 1)) {
     state |= (int32_t)::common::powersupply::POWER_SUPPLY_STATE_ON;
     ss << "Operational|";
 
-  } else if ((status == 3) ||(state==7)){ //7 for pulsed
+  } else if ((status == 2)){ 
     state |= (int32_t)::common::powersupply::POWER_SUPPLY_STATE_ALARM;
     ss << "Alarm|";
     //    DANTE_DBG << " DANTE ALARM STATE:"<<state<<" status:"<<status;
 
-  } else if (status == 4) {
+  } else if (status == 3) {
     state |= (int32_t)::common::powersupply::POWER_SUPPLY_STATE_ERROR;
     ss << "Error|";
     //    DANTE_DBG << " DANTE ALARM STATE:"<<state<<" status:"<<status;
 
-  } else if (status == 0) {
-     state |= (int32_t)::common::powersupply::POWER_SUPPLY_STATE_SHUTDOWN;
-    ss << "Shutdown|";
-  } else {
+  }  else {
     state = (int32_t)::common::powersupply::POWER_SUPPLY_STATE_UKN;
     ss << "Uknown|";
   }
@@ -309,6 +306,8 @@ chaos::common::data::CDWUniquePtr RTCORPowerSupply::setProperty(chaos::common::d
 
 void  RTCORPowerSupply::setFlags(){
   std::string desc;
+  int32_t state = resultState(out.getInt32Value("statusReadout"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
+
   if(out.getBoolValue("byPass")){
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "faulty_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "bad_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
@@ -319,12 +318,11 @@ void  RTCORPowerSupply::setFlags(){
     setStateVariableSeverity(StateVariableTypeAlarmCU, "current_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmCU, "stby_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setBypassFlag(true);
-
+   //CUDBG<<" BYPASS ENABLED";
     return;
   }
     setBypassFlag(false);
 
-    int32_t state = resultState(out.getInt32Value("statusReadout"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
   if (state & ::common::powersupply::POWER_SUPPLY_STATE_ALARM) {
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "faulty_state", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
   } else {
