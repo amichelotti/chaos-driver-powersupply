@@ -113,7 +113,16 @@ void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset()  {
                         "force standby",
                         DataType::TYPE_BOOLEAN,
                         DataType::Bidirectional);
-  if(type>0){
+  switch (type){
+    case 0: //bipolar no polarity (included in current)
+    break;
+    case 2: //unipolar without polarity control
+      addAttributeToDataSet("polarity",
+                          "drive the polarity (unipolar without control) -1 negative, 0 open, +1 positive",
+                          DataType::TYPE_INT32,
+                          DataType::Output);
+      break;
+    default:{
     addAttributeToDataSet("polarity",
                           "drive the polarity (for unipolar with remote control) -1 negative, 0 open, +1 positive",
                           DataType::TYPE_INT32,
@@ -123,12 +132,14 @@ void ::driver::powersupply::RTMG1PowerSupply::unitDefineActionAndDataset()  {
                         DataType::TYPE_BOOLEAN,
                         DataType::Input);
 
-  addAttributeToDataSet("stbyOnPol",
+    addAttributeToDataSet("stbyOnPol",
                         "force standby on polarity changes",
                         DataType::TYPE_BOOLEAN,
                         DataType::Input);
   }
 
+  }
+  
   addAttributeToDataSet("current",
                         "setpoint the current",
                         DataType::TYPE_DOUBLE,
@@ -407,7 +418,7 @@ void  RTMG1PowerSupply::setFlags(){
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "bad_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "interlock", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmDEV, "unknown_state", chaos::common::alarm::MultiSeverityAlarmLevelClear);
-    if(type>0){
+    if(type==1){
       setStateVariableSeverity(StateVariableTypeAlarmCU, "polarity_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
     }
     setStateVariableSeverity(StateVariableTypeAlarmCU, "current_out_of_set",chaos::common::alarm::MultiSeverityAlarmLevelClear);
@@ -480,7 +491,7 @@ void RTMG1PowerSupply::acquireIn() {
   std::string desc;
 
   getAttributeCache()->setInputAttributeValue("current", in.getDoubleValue("currentSetting"));
-  if(type>0){
+  if(type==1){
     getAttributeCache()->setInputAttributeValue("polarity", in.getInt32Value("polaritySetting"));
   }
   getAttributeCache()->setInputAttributeValue("rampUpRate", in.getDoubleValue("slewRateSetting"));
