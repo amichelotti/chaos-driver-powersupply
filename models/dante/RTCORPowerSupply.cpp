@@ -283,6 +283,9 @@ void ::driver::powersupply::RTCORPowerSupply::unitStart() {
   } else {
     acquireIn();
     acquireOut();
+    getAttributeCache()->setOutputDomainAsChanged();
+    getAttributeCache()->setInputDomainAsChanged();
+
     pushInputDataset();
     pushOutputDataset();
   }
@@ -357,7 +360,7 @@ void  RTCORPowerSupply::setFlags(){
   }*/
 }
 
-void RTCORPowerSupply::acquireOut() {
+int RTCORPowerSupply::acquireOut() {
   std::string desc;
 
   int32_t state = resultState(out.getInt32Value("status"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
@@ -384,9 +387,10 @@ void RTCORPowerSupply::acquireOut() {
   driver.getData("faults", (void *)alarms);
   getAttributeCache()->setOutputAttributeValue("alarms", alarms[0]);
   getAttributeCache()->setOutputAttributeValue("alarms2", alarms[1]);
-  getAttributeCache()->setOutputDomainAsChanged();
+ // getAttributeCache()->setOutputDomainAsChanged();
+  return state;
 }
-void RTCORPowerSupply::acquireIn() {
+int RTCORPowerSupply::acquireIn() {
   std::string desc;
 
   getAttributeCache()->setInputAttributeValue("current", in.getDoubleValue("currentSetting"));
@@ -395,7 +399,7 @@ void RTCORPowerSupply::acquireIn() {
   int32_t statesp = resultState(in.getInt32Value("statusSetting"), out.getBoolValue("onLine"), out.getBoolValue("triggerArmed"), desc);
   getAttributeCache()->setInputAttributeValue("stby", ((statesp & ::common::powersupply::POWER_SUPPLY_STATE_STANDBY) ? true : false));
   getAttributeCache()->setInputAttributeValue("local", ((statesp & ::common::powersupply::POWER_SUPPLY_STATE_LOCAL) ? true : false));
-  getAttributeCache()->setInputDomainAsChanged();
+  return statesp;
 }
 void ::driver::powersupply::RTCORPowerSupply::unitRun()  {
   setStateVariableSeverity(StateVariableTypeAlarmCU, "fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelClear);
@@ -404,13 +408,15 @@ void ::driver::powersupply::RTCORPowerSupply::unitRun()  {
     if ((driver.getData(in) != 0) || (driver.getData(out) != 0)) {
       setStateVariableSeverity(StateVariableTypeAlarmCU, "fetch_error", chaos::common::alarm::MultiSeverityAlarmLevelHigh);
     } else {
+      int istate=acquireIn();
+      int outstate=acquireOut();
+      
       if ((in != pin)) {
         SCCUDBG << "INPUT CHANGED prev:" << pin.getCompliantJSONString();
         SCCUDBG << "INPUT CHANGED curr:" << in.getCompliantJSONString();
         pin.reset();
 
         in.copyAllTo(pin);
-        acquireIn();
         getAttributeCache()->setInputDomainAsChanged();
         pushInputDataset();
       }
@@ -419,7 +425,8 @@ void ::driver::powersupply::RTCORPowerSupply::unitRun()  {
         SCCUDBG << "OUTPUT CHANGED curr:" << out.getCompliantJSONString();
         pout.reset();
         out.copyAllTo(pout);
-        acquireOut();
+        //acquireOut();
+        getAttributeCache()->setOutputDomainAsChanged();
       }
         setFlags(); 
     }
