@@ -462,7 +462,14 @@ void RTMG1PowerSupply::acquireOut() {
   getAttributeCache()->setOutputAttributeValue("voltage", out.getDoubleValue("outputVolt"));
   getAttributeCache()->setOutputAttributeValue("current", out.getDoubleValue("outputCurr"));
   if(type>0){
-    getAttributeCache()->setOutputAttributeValue("polarity", out.getInt32Value("outputPolarity"));
+    int pol=out.getInt32Value("outputPolarity");
+    if((pol>0)){
+      pol=1;
+    }
+    if((pol<0)){
+      pol=-1;
+    }
+    getAttributeCache()->setOutputAttributeValue("polarity", pol);
   }
   getAttributeCache()->setOutputAttributeValue("rampUpRate", out.getDoubleValue("slewRateReadout"));
   getAttributeCache()->setOutputAttributeValue("rampDownRate", out.getDoubleValue("slewRateReadout"));
@@ -492,7 +499,13 @@ void RTMG1PowerSupply::acquireIn() {
 
   getAttributeCache()->setInputAttributeValue("current", in.getDoubleValue("currentSetting"));
   if(type==1){
-    getAttributeCache()->setInputAttributeValue("polarity", in.getInt32Value("polaritySetting"));
+    int pol=in.getInt32Value("polaritySetting");
+    if((pol>0)){
+      pol=1;
+    } else if(pol<0){
+      pol=-1;
+    }
+    getAttributeCache()->setInputAttributeValue("polarity", pol);
   }
   getAttributeCache()->setInputAttributeValue("rampUpRate", in.getDoubleValue("slewRateSetting"));
   getAttributeCache()->setInputAttributeValue("rampDownRate", in.getDoubleValue("slewRateSetting"));
